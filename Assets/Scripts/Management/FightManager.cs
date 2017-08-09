@@ -836,11 +836,13 @@ namespace FightingLegends
 				{
 					if (profile.ChallengeResult == "Won")
 					{
-						// payout coins and congratulations
+						// payout coins and congratulationss
+						ShowChallengeWin(null, true, null);
 					}
 					else if (profile.ChallengeResult == "Lost")
 					{
 						// commiserations
+						ShowChallengeWin(null, false, null);
 					}
 
 					profile.ChallengeResult = "";
@@ -3523,7 +3525,7 @@ namespace FightingLegends
 			FightPaused = true;
 
 			LoadSavedData();
-			CheckForChallengeResult();
+//			CheckForChallengeResult();
 
 			GameUIVisible(true);
 			InitMenus();

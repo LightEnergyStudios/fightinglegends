@@ -166,7 +166,7 @@ namespace FightingLegends
 
 			yield return null;
 		}
-
+			
 
 		private void TakeWinnings()
 		{

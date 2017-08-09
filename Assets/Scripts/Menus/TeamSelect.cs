@@ -418,6 +418,8 @@ namespace FightingLegends
 
 			uploadText.text = FightManager.Translate("upload");
 			EnableActionButtons();
+
+			FightManager.CheckForChallengeResult();
 		}
 
 		private void RemoveListeners()
