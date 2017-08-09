@@ -129,7 +129,7 @@ namespace FightingLegends
 
 		private void RegisterNewUser()
 		{
-			FirebaseManager.UploadUserProfile(new UserProfile {
+			FirebaseManager.SaveUserProfile(new UserProfile {
 				UserID = userIdInput.text,
 				DateCreated = DateTime.Now.ToString(),
 			}

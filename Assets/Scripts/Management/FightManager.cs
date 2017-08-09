@@ -822,6 +822,36 @@ namespace FightingLegends
 		}
 
 
+		public static void CheckForChallengeResult()
+		{
+			if (SavedGameStatus.UserId != "")
+				FirebaseManager.GetUserProfile(SavedGameStatus.UserId);		// callback below checks for result and coins to collect
+		}
+
+		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
+		{
+			if (success && profile != null)		// not found!
+			{
+				if (profile.ChallengeResult != "")
+				{
+					if (profile.ChallengeResult == "Won")
+					{
+						// payout coins and congratulations
+					}
+					else if (profile.ChallengeResult == "Lost")
+					{
+						// commiserations
+					}
+
+					profile.ChallengeResult = "";
+					profile.CoinsToCollect = 0;
+					profile.ChallengeKey = "";
+
+					FirebaseManager.SaveUserProfile(profile);		// no need for a callback - nothing to do
+				}
+			}
+		}
+
 		#region touch event handlers
 
 		private void OnEnable()
@@ -830,6 +860,7 @@ namespace FightingLegends
 
 			AreYouSure.OnCancelConfirm += OnConfirmNo;			// don't quit fight
 //			FirebaseManager.OnUserChallengePotUpdated += OnUserChallengePotUpdated;
+			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
 
 //			FBManager.OnLoginFail += FBLoginFail;
 //			FBManager.OnLoginSuccess += FBLoginSuccess;
@@ -847,6 +878,7 @@ namespace FightingLegends
 			}
 				
 			AreYouSure.OnCancelConfirm -= OnConfirmNo;
+			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
 //			FirebaseManager.OnUserChallengePotUpdated -= OnUserChallengePotUpdated;
 
 //			FBManager.OnLoginFail -= FBLoginFail;
@@ -1835,6 +1867,10 @@ namespace FightingLegends
 
 		private void QuitFight()
 		{
+			// quitting a challenge automatically loses the pot to the defender
+			if (CombatMode == FightMode.Challenge)
+				PayoutChallengePot(Player2);
+			
 			CleanupFighters();
 			HideDojoUI();
 
@@ -2019,19 +2055,8 @@ namespace FightingLegends
 			{
 				UpdateMatchStats(winner);
 
-				// collect challenge pot
 				if (CombatMode == FightMode.Challenge)
-				{
-					if (!winner.UnderAI)
-					{
-						SavedGameStatus.Coins += ChallengePot;
-						ChallengePot = 0;
-						challengeInProgress = null;
-					}
-
-					// challenge defender is awarded coins for later collection or notified of challenge defeat
-					PublishChallengeResult(winner.UnderAI);				
-				}
+					PayoutChallengePot(winner);
 
 				yield return StartCoroutine(ShowMatchStatsCanvas(winner));			// winner image + fight stats - until user taps
 			}
@@ -2074,21 +2099,28 @@ namespace FightingLegends
 		}
 
 
-		// update firebase challenge defender with completed challenge
-		private void PublishChallengeResult(bool defenderWon)
+		private void PayoutChallengePot(Fighter winner)
 		{
 			if (CombatMode != FightMode.Challenge)
 				return;
-			
+
 			if (challengeInProgress == null)
 				return;
+			
+			if (!winner.UnderAI)
+			{
+				// challenger won - pay pot coins immediately
+				SavedGameStatus.Coins += ChallengePot;
+				ChallengePot = 0;
+				challengeInProgress = null;
+			}
 
-			FirebaseManager.CompleteChallenge(challengeInProgress, defenderWon, ChallengePot);		// callback on successful update
+			// challenge defender is awarded coins for later collection or notified of challenge defeat
+			FirebaseManager.CompleteChallenge(challengeInProgress, winner.UnderAI, ChallengePot);		// callback on successful update
 
 			challengeInProgress = null;
 			ChallengePot = 0;
 		}
-			
 
 		// new arcade match, same fighters and location
 		private IEnumerator RestartMatch()
@@ -3491,6 +3523,8 @@ namespace FightingLegends
 			FightPaused = true;
 
 			LoadSavedData();
+			CheckForChallengeResult();
+
 			GameUIVisible(true);
 			InitMenus();
 
@@ -3520,6 +3554,7 @@ namespace FightingLegends
 			if (OnLoadSavedStatus != null)
 				OnLoadSavedStatus(SavedGameStatus);
 		}
+
 
 		public static void ResetInfoBubbleMessages()
 		{

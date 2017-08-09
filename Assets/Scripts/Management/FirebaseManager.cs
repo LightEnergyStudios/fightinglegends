@@ -187,7 +187,7 @@ namespace FightingLegends
 			Dictionary<string, object> childUpdates = new Dictionary<string, object>();
 			childUpdates["/Users/" + userId + "/CoinsToCollect"] = defenderWon ? challengePot : 0;	
 			childUpdates["/Users/" + userId + "/ChallengeKey"] =  "";
-			childUpdates["/Users/" + userId + "/ChallengeWon"] = defenderWon;
+			childUpdates["/Users/" + userId + "/ChallengeResult"] = defenderWon ? "Won" : "Lost";
 
 			databaseRoot.UpdateChildrenAsync(childUpdates).ContinueWith(task => {
 
@@ -536,7 +536,7 @@ namespace FightingLegends
 
 
 
-		public static void UploadUserProfile(UserProfile profile)
+		public static void SaveUserProfile(UserProfile profile)
 		{
 			var usersNode = databaseRoot.Child("Users");
 			var userJson = JsonUtility.ToJson(profile);
@@ -554,7 +554,7 @@ namespace FightingLegends
 				}
 				else
 				{
-					Debug.Log("UploadUserProfile: error = " + task.Exception.Message);
+					Debug.Log("SaveUserProfile: error = " + task.Exception.Message);
 					if (OnUserProfileUploaded != null)
 						OnUserProfileUploaded(profile.UserID, profile, false); 
 				}
@@ -671,7 +671,7 @@ namespace FightingLegends
 		public string DateCreated = DateTime.Now.ToShortTimeString();
 
 		public string ChallengeKey = "";	// current challenge (only one at a time allowed) - cleared when challenge completed
-		public bool ChallengeWon = false;	// true if last challenge posted won by AI team (defender)
+		public string ChallengeResult = "";	// true if last challenge posted won by AI team (defender)
 
 		public int CoinsToCollect = 0;		// set if challenge won by user that posted it
 
