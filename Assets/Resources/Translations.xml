@@ -318,6 +318,9 @@
 		<string name="chooseCategory">CHOOSE A CATEGORY!</string>
 		<string name="upload">UPLOAD</string>
 		<string name="uploaded">UPLOADED</string>
+		<string name="result">RESULT</string>
+		<string name="youWon">YOU WON</string>
+		<string name="youLost">YOU LOST</string>
 		<string name="challengeExpires">Challenge expires</string>
 		<string name="confirmUploadChallenge">Upload your challenge to the Challenge Arena?</string>
 		<string name="confirmFightChallenge">Accept this challenge? There's no going back!</string>

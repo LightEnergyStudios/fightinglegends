@@ -19,7 +19,8 @@ namespace FightingLegends
 		public Image coinsPanel;
 		public Text coinsValue;
 
-		private ChallengeData completedChallenge = null;
+//		private ChallengeData completedChallenge = null;
+		private int challengePot = 0;
 		private bool challengeWon = false;		// this user
 
 		public Text Congratuations;				// or commiserations
@@ -85,16 +86,16 @@ namespace FightingLegends
 		}
 			
 		// public entry point 
-		public void Notify(ChallengeData challenge, bool wonChallenge, Action onOk)
+		public void Notify(int pot, bool wonChallenge, string challengerId, Action onOk)
 		{
-			completedChallenge = challenge;
+			challengePot = pot;
 			challengeWon = wonChallenge;
 			actionOnOk = onOk;
 
 			Congratuations.text = wonChallenge ? FightManager.Translate("congratulations", false, true) : FightManager.Translate("betterLuckNextTime", false, true);
 			WinMessage.text = wonChallenge ? FightManager.Translate("yourTeamWon", false, true) : FightManager.Translate("yourTeamLost", false, true);
-			ChallengeName.text = challenge.Name;
-			ChallengeUserId.text = challenge.UserId;
+//			ChallengeName.text = challenge.Name;
+			ChallengeUserId.text = challengerId;
 
 			StartCoroutine(Show());
 		}
@@ -102,16 +103,11 @@ namespace FightingLegends
 
 		private IEnumerator Show()
 		{
-			if (completedChallenge == null)
-				yield break;
-		
 			background.enabled = true;
 			panel.gameObject.SetActive(true);
 
-			var winnings = TeamSelect.ChallengePot(completedChallenge);
-
-			coinsValue.text = string.Format("{0:N0}", winnings);
-			coinsPanel.gameObject.SetActive(winnings > 0);
+			coinsValue.text = string.Format("{0:N0}", challengePot);
+			coinsPanel.gameObject.SetActive(challengePot > 0);
 
 			panel.transform.localScale = Vector3.zero;
 			background.color = Color.clear;
@@ -172,22 +168,18 @@ namespace FightingLegends
 		{
 			canOk = false;
 
+			// take the coins!
+			if (challengePot > 0)
+			{
+				FightManager.Coins += challengePot;
+
+				FightManager.SavedGameStatus.TotalChallengeWinnings += challengePot;
+				FirebaseManager.PostLeaderboardScore(Leaderboard.ChallengeWinnings, FightManager.SavedGameStatus.TotalChallengeWinnings);
+			}
+
 			// call the passed-in delegate
 			if (actionOnOk != null)
-			{
-				var winnings = TeamSelect.ChallengePot(completedChallenge);
-
-				// take the coins!
-				if (winnings > 0)
-				{
-					FightManager.Coins += winnings;
-
-					FightManager.SavedGameStatus.TotalChallengeWinnings += winnings;
-					FirebaseManager.PostLeaderboardScore(Leaderboard.ChallengeWinnings, FightManager.SavedGameStatus.TotalChallengeWinnings);
-				}
-
 				actionOnOk();
-			}
 
 			if (OkSound != null)
 				AudioSource.PlayClipAtPoint(OkSound, Vector3.zero, FightManager.SFXVolume);

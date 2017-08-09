@@ -11,6 +11,7 @@ namespace FightingLegends
 	{
 		public Button fightButton;			// select challenge category, then challenge to take on
 		public Button uploadButton;
+		public Button resultButton;
 //		public Button powerUpButton;
 //		public Text powerUpText;			// shown on power-up button
 
@@ -20,6 +21,7 @@ namespace FightingLegends
 		public Text titleText;
 		public Text fightText;
 		public Text uploadText;
+		public Text resultText;
 
 		public Button leoniButton;		// set in Inspector
 		public Button shiroButton;			
@@ -217,7 +219,7 @@ namespace FightingLegends
 		private const float animatePauseTime = 0.5f;		// pause before animated card entry
 
 		private const int challengeExpiryDays = 30;
-
+		private UserProfile userProfile = null;				// for challenge results
 
 		// 'constructor'
 		private void Awake()
@@ -237,6 +239,7 @@ namespace FightingLegends
 //			fightText.text = FightManager.Translate("chooseChallenge");
 			fightText.text = FightManager.Translate("fight", false, true);
 			uploadText.text = FightManager.Translate("upload");
+			resultText.text = FightManager.Translate("result");
 			uploadButton.interactable = true;
 
 			diamondLabel.text = FightManager.Translate("diamond");
@@ -383,12 +386,14 @@ namespace FightingLegends
 			FirebaseManager.OnChallengeSaved += OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted += OnChallengeAccepted;
 			FirebaseManager.OnChallengesDownloaded += OnChallengesDownloaded;
+			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
 
 //			Debug.Log("TeamSelect.AddListeners");
 			OnOverlayHidden += OverlayHidden;
 
 			fightButton.onClick.AddListener(delegate { ShowChallengesOverlay(); });
 			uploadButton.onClick.AddListener(delegate { ConfirmUploadSelectedTeam(); });
+			resultButton.onClick.AddListener(delegate { ShowChallengeResult(); });
 //			powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
 
 			ChallengeUpload.OnCancelClicked += OnUploadCancelled;
@@ -417,9 +422,11 @@ namespace FightingLegends
 			LayerTeam();
 
 			uploadText.text = FightManager.Translate("upload");
+			resultText.text = FightManager.Translate("result");
 			EnableActionButtons();
 
-			FightManager.CheckForChallengeResult();
+			FightManager.CheckForChallengeResult();		// OnGetUserProfile callback handles result
+			resultButton.interactable = false;
 		}
 
 		private void RemoveListeners()
@@ -428,12 +435,14 @@ namespace FightingLegends
 			FirebaseManager.OnChallengeSaved -= OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted -= OnChallengeAccepted;
 			FirebaseManager.OnChallengesDownloaded -= OnChallengesDownloaded;
+			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;		
 
 //			Debug.Log("TeamSelect.RemoveListeners");
 			OnOverlayHidden -= OverlayHidden;
 
 			fightButton.onClick.RemoveListener(delegate { ShowChallengesOverlay(); });
 			uploadButton.onClick.RemoveListener(delegate { ConfirmUploadSelectedTeam(); });
+			resultButton.onClick.RemoveListener(delegate { ShowChallengeResult(); });
 
 			ChallengeUpload.OnCancelClicked -= OnUploadCancelled;
 
@@ -1288,6 +1297,47 @@ namespace FightingLegends
 			SetCardDifficulties(difficulty);
 
 			selectedLocation = location;
+		}
+
+
+		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
+		{
+			userProfile = profile;
+
+			if (success && profile != null)	
+			{
+				if (profile.ChallengeResult == "")
+					resultText.text = "";	
+				else if (profile.ChallengeResult == "Won")
+					resultText.text = FightManager.Translate("youWon", false, true);
+				else if (profile.ChallengeResult == "Lost")
+					resultText.text = FightManager.Translate("youLost", false, true);
+
+				resultButton.interactable = profile.ChallengeResult != "";
+
+				profile.ChallengeResult = "";
+				profile.CoinsToCollect = 0;
+				profile.ChallengeKey = "";
+
+				FirebaseManager.SaveUserProfile(profile);		// no need for a callback - nothing to do
+			}
+		}
+
+		private void ShowChallengeResult()
+		{
+			if (userProfile == null)
+				return;
+			
+			if (userProfile.ChallengeResult == "Won")
+			{
+				// payout coins and congratulations
+				FightManager.ShowChallengeResult(userProfile.CoinsToCollect, true, "", null);		// TODO: challengerId?
+			}
+			else if (userProfile.ChallengeResult == "Lost")
+			{
+				// commiserations
+				FightManager.ShowChallengeResult(0, false, "", null);
+			}
 		}
 
 

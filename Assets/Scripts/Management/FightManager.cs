@@ -828,31 +828,31 @@ namespace FightingLegends
 				FirebaseManager.GetUserProfile(SavedGameStatus.UserId);		// callback below checks for result and coins to collect
 		}
 
-		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
-		{
-			if (success && profile != null)		// not found!
-			{
-				if (profile.ChallengeResult != "")
-				{
-					if (profile.ChallengeResult == "Won")
-					{
-						// payout coins and congratulationss
-						ShowChallengeWin(null, true, null);
-					}
-					else if (profile.ChallengeResult == "Lost")
-					{
-						// commiserations
-						ShowChallengeWin(null, false, null);
-					}
-
-					profile.ChallengeResult = "";
-					profile.CoinsToCollect = 0;
-					profile.ChallengeKey = "";
-
-					FirebaseManager.SaveUserProfile(profile);		// no need for a callback - nothing to do
-				}
-			}
-		}
+//		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
+//		{
+//			if (success && profile != null)		// not found!
+//			{
+//				if (profile.ChallengeResult != "")
+//				{
+//					if (profile.ChallengeResult == "Won")
+//					{
+//						// payout coins and congratulations
+//						ShowChallengeResult(ChallengePot, true, userId, null);
+//					}
+//					else if (profile.ChallengeResult == "Lost")
+//					{
+//						// commiserations
+//						ShowChallengeResult(ChallengePot, false, userId, null);
+//					}
+//
+//					profile.ChallengeResult = "";
+//					profile.CoinsToCollect = 0;
+//					profile.ChallengeKey = "";
+//
+//					FirebaseManager.SaveUserProfile(profile);		// no need for a callback - nothing to do
+//				}
+//			}
+//		}
 
 		#region touch event handlers
 
@@ -862,7 +862,7 @@ namespace FightingLegends
 
 			AreYouSure.OnCancelConfirm += OnConfirmNo;			// don't quit fight
 //			FirebaseManager.OnUserChallengePotUpdated += OnUserChallengePotUpdated;
-			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
+//			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
 
 //			FBManager.OnLoginFail += FBLoginFail;
 //			FBManager.OnLoginSuccess += FBLoginSuccess;
@@ -880,7 +880,7 @@ namespace FightingLegends
 			}
 				
 			AreYouSure.OnCancelConfirm -= OnConfirmNo;
-			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
+//			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
 //			FirebaseManager.OnUserChallengePotUpdated -= OnUserChallengePotUpdated;
 
 //			FBManager.OnLoginFail -= FBLoginFail;
@@ -2111,10 +2111,14 @@ namespace FightingLegends
 			
 			if (!winner.UnderAI)
 			{
-				// challenger won - pay pot coins immediately
-				SavedGameStatus.Coins += ChallengePot;
-				ChallengePot = 0;
-				challengeInProgress = null;
+				if (ChallengePot > 0)
+				{
+					// challenger won - payout pot coins immediately
+					Coins += ChallengePot;
+
+					FightManager.SavedGameStatus.TotalChallengeWinnings += ChallengePot;
+					FirebaseManager.PostLeaderboardScore(Leaderboard.ChallengeWinnings, FightManager.SavedGameStatus.TotalChallengeWinnings);
+				}
 			}
 
 			// challenge defender is awarded coins for later collection or notified of challenge defeat
@@ -4001,9 +4005,9 @@ namespace FightingLegends
 			challengeUpload.Confirm(challenge, actionOnYes);
 		}
 
-		public static void ShowChallengeWin(ChallengeData challenge, bool AIWon, Action actionOnOk)
+		public static void ShowChallengeResult(int challengePot, bool AIWon, string challengerId, Action actionOnOk)
 		{
-			challengeResult.Notify(challenge, AIWon, actionOnOk);
+			challengeResult.Notify(challengePot, AIWon, challengerId, actionOnOk);
 		}
 
 		#endregion 		// menus
