@@ -1,0 +1,396 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+
+<languages>
+
+	<English>
+
+		<string name="arcadeMode">ARCADE MODE</string>
+		<string name="arcadeTitle">DEFEAT THE CAST OF FIGHTING LEGENDS!</string>
+		<string name="survivalMode">SURVIVAL MODE</string>
+		<string name="survivalTitle">FIGHT ENDLESS OPPONENTS AND LEVEL-UP!</string>
+		<string name="challengeMode">CHALLENGE MODE</string>
+		<string name="challengeTitle">LEAD A TEAM OF CHAMPIONS TO VICTORY!</string>
+		<string name="dojoTitle2">TRAIN WITH AND ENHANCE YOUR FIGHTERS</string>
+		<string name="dojoTitle">TRAINING, POWER-UP AND COMMUNITY HUB</string>
+		<string name="trainingTitle">LEARN BASIC TIMING AND TECHNIQUE</string>
+
+        <string name="redLightHeader2">RED = MOVE NOT POSSIBLE</string>
+        <string name="greenLightHeader2">GREEN = EXECUTE A MOVE!</string>
+        <string name="yellowLightHeader2">YELLOW = RESET AVAILABLE!</string>
+        <string name="leftArrowHeader2">LEFT ARROW = COUNTER ATTACK!</string>
+
+        <string name="redLightNarrative2">Whilst you are under attack \n or already executing a move</string>
+        <string name="greenLightNarrative2">Your opportunity to attack or block! \n A green flash indicates successful input!</string>
+        <string name="yellowLightNarrative2">Escape an attack to retaliate, or cut-off \n the end of a move to follow-up for a combo!</string>
+        <string name="leftArrowNarrative2">Your chance to counter attack \n before your opponent strikes!</string>
+
+        <string name="redLightHeading">RED = BLOCK</string>
+        <string name="greenLightHeading">GREEN = FIGHT</string>
+        <string name="flashingGreenLightHeading">FLASHING GREEN = ATTACK</string>
+        <string name="yellowLightHeading">YELLOW LIGHT = RESET</string>
+        <string name="leftArrowHeading">LEFT ARROW = COUNTER</string>
+        <string name="rightArrowHeading">RIGHT ARROW = EXTRA</string>
+
+        <string name="redLightNarrative">BLOCK your opponent's oncoming attack!</string>
+        <string name="flashingGreenLightNarrative">Strike while your opponent is VULNERABLE! \n FIRE characters mash to follow-up your SPECIAL attack!</string>
+        <string name="greenLightNarrative">Don't stand IDLE for too long! Attack or block!</string>
+        <string name="yellowLightNarrative">You have enough crystals to RESET! \n Escape your opponent's combo or extend your own!</string>
+        <string name="leftArrowNarrative">You have enough crystals to COUNTER ATTACK before your opponent makes contact!</string>
+        <string name="rightArrowNarrative">WATER characters follow-up your SPECIAL with another swipe!</string>
+
+        <string name="specialExtraWaterNarrative">Swipe forward to follow-up your SPECIAL attack!</string>
+        <string name="specialExtraFireNarrative">Mash to follow-up your SPECIAL attack!</string>
+
+        <string name="tapInfoHeading">TAP!</string>
+        <string name="bothTapInfoHeading">TWO FINGER TAP!</string>
+        <string name="holdInfoHeading">HOLD!</string>
+        <string name="swipeRightInfoHeading">SWIPE RIGHT!</string>
+        <string name="swipeLeftInfoHeading">SWIPE LEFT!</string>
+        <string name="swipeDownInfoHeading">SWIPE DOWN!</string>
+        <string name="swipeUpInfoHeading">SWIPE UP!</string>
+        <string name="swipeVengeanceInfoHeading">SWIPE LEFT AND RIGHT!</string>
+        <string name="mashInfoHeading">MASH!</string>
+
+         <string name="swipeOnceInfoHeading">SWIPE ONCE!</string>
+		 <string name="swipeTwiceInfoHeading">SWIPE LEFT AND RIGHT!</string>
+         
+		 <string name="swipeOnceInfoMessage">Swipe once, then lift your finger!</string>
+		 <string name="swipeTwiceInfoMessage">Swipe back and forward, then lift your finger!</string>
+
+        <string name="tapInfoMessage">Tap once quickly! Use your index finger lightly for best results!</string>
+        <string name="bothTapInfoMessage">Tap with two fingers for a RESET! Requires 1 crystal. Be ready to follow-up immediately!</string>
+        <string name="holdInfoMessage">Hold finger down to BLOCK, release finger to release block!</string>
+        <string name="swipeRightInfoMessage">Swipe right to launch a SPECIAL attack! WATER characters can follow-up with another swipe!</string>
+        <string name="swipeLeftInfoMessage">Catch your opponent off-balance with a COUNTER ATTACK just before they strike you! Requires 2 crystals.</string>
+        <string name="swipeDownInfoMessage">SHOVE your opponent out of their block! Be sure to follow-up!</string>
+        <string name="swipeUpInfoMessage">Trigger the POWER-UP you have equipped! It will replenish after a while!</string>
+        <string name="swipeVengeanceInfoMessage">Swipe back and forward once to mount a VENGEANCE attack! Requires 3 crystals.</string>
+        <string name="mashInfoMessage">FIRE characters follow-up a SPECIAL by mashing at the right time!</string>
+
+        <string name="dojoMenuInfoMessage">Use the DOJO to spar, power-up and connect to other players! String together long combos to feature on the leader board!</string>
+        <string name="arcadeMenuInfoMessage">Choose a fighter and a location on the world map to take on the local champion. Complete a WORLD TOUR for extra rewards!</string>
+        <string name="survivalMenuInfoMessage">Face an endless stream of opponents and SURVIVE as many fights as you can!</string>
+        <string name="challengeMenuInfoMessage">Pick a team and upload to the ARENA to challenge other players for coins ... or choose a challenge to pit them against!</string>
+        <string name="facebookMenuInfoMessage">Check out how your top score compares with your Facebook friends!</string>
+        <string name="leaderboardsMenuInfoMessage">Compete on the world stage with your fight statistics!</string>
+
+        <string name="dojoFightInfoMessage">Practice your attack and defence technique. The hilighted moves indicate the choices available at any given time.</string>
+        <string name="trainingFightInfoMessage">Follow the prompts to learn some basic moves and understand the importance of TIMING.</string>
+        <string name="arcadeFightInfoMessage">Defeat your chosen opponent to progress on your WORLD TOUR!</string>
+        <string name="survivalFightInfoMessage">How long can you SURVIVE an endless onslaught from random opponents? Use power-ups to maximise your chances!</string>
+        <string name="challengeFightInfoMessage">Your team against theirs. The victorious team wins the challenge pot!</string>
+
+        <string name="crystalInfoHeading">CRYSTALS</string>
+        <string name="crystalInfoMessage">These pink crystals are activated as you sustain damage. Some moves cannot be performed without crystals!</string>
+
+        <string name="comboTimingInfoHeading">TIMING!</string>
+        <string name="LMHComboTimingMessage">As any Ninja will teach you ... you must master perfect TIMING to string together a long HIT COMBO!</string>
+        <string name="ResetComboTimingMessage">When you have enough crystals, RESET to escape and then quickly follow-up with a cool COUNTER ATTACK!</string>
+
+        <string name="specialExtraComboNarrative">Now practice your TIMING with \n a COMBO at full speed!</string>
+		<string name="resetCounterComboNarrative">Next follow-up a RESET with a COUNTER \n ATTACK when you have enough crystals!</string>
+
+		<string name="tapLight">TAP SCREEN TO ATTACK!</string>
+		<string name="tapMedium">TAP AGAIN TO FOLLOW UP!</string>
+		<string name="tapHeavy">TAP ONE MORE TIME \n FOR A HEAVY HIT!</string>
+		<string name="holdBlock">HOLD DOWN TO BLOCK!</string>
+		<string name="swipeSpecial">SWIPE FORWARD \n FOR A SPECIAL ATTACK!</string>
+		<string name="swipeSpecialExtra">SWIPE FORWARD AGAIN \n FOR A FINAL SMASH!</string>
+		<string name="swipeShove">SHE BLOCKED IT! \n SWIPE DOWN TO SHOVE!</string>
+		<string name="specialAgain">ATTACK AGAIN WHILE \n SHE IS OFF BALANCE!</string>
+		<string name="tapLightShoveStun">TAP TO STRIKE WHILE \n THE OPPONENT IS OFF BALANCE!</string>
+		<string name="tapMediumShoveStun">TAP AGAIN FOR A SECOND IMPACT!</string>
+		<string name="tapHeavyShoveStun">TAP ONE MORE TIME \n FOR A THIRD STRIKE!</string>
+		<string name="swipeChainSpecial">YOU CAN SWIPE FORWARD HALFWAY \n THROUGH YOUR 2nd OR 3rd STRIKE...</string>
+		<string name="swipeCounter">SWIPE BACK TO COUNTER!</string>
+		<string name="swipeVengeance">SWIPE BACK AND FORWARD \n FOR A VENGEANCE ATTACK!</string>
+
+		<string name="ninjaAtTheBeach">What's a Ninja doing here at the beach!? \n Looks like she's not backing down!</string>
+		<string name="blockNinja">Take THAT! \n I guess it's your turn!</string>
+		<string name="coolMoves">Get ready!! \n I'll show you some COOL moves!</string>
+		<string name="tryItAgain">That was GREAT! \n Let's try it again!</string>
+		<string name="offBalance">She blocked the whole thing? \n I have to get her off balance!</string>
+		<string name="reallyMad">Now she looks REALLY mad!</string>
+		<string name="ouchGauge">OUCH!! So when we take damage those \n crystals light up to enable other moves..!</string>
+		<string name="comesAgain">Here she comes again!</string>
+		<string name="vengeanceGauge">I have enough crystals to perform a \n vengeance attack! Let's FINISH THIS!!</string>
+
+		<string name="moves">MOVES</string>
+		<string name="strike">STRIKE</string>
+		<string name="strikeLight">LIGHT STRIKE</string>
+		<string name="strikeMedium">MEDIUM STRIKE</string>
+		<string name="strikeHeavy">HEAVY STRIKE</string>
+		<string name="shove">SHOVE</string>
+		<string name="block">BLOCK</string>
+		<string name="blocking">BLOCKING</string>
+		<string name="releaseBlock">RELEASE BLOCK</string>
+		<string name="special">SPECIAL</string>
+		<string name="specialExtra">SPECIAL EXTRA</string>
+		<string name="waterSpecialExtra">WATER SPECIAL EXTRA</string>
+		<string name="fireSpecialExtra">FIRE SPECIAL EXTRA</string>
+		<string name="counter">COUNTER</string>
+		<string name="counterAttack">COUNTER ATTACK</string>
+		<string name="taunt">TAUNT</string>
+		<string name="vengeance">VENGEANCE</string>
+		<string name="reset">RESET</string>
+		<string name="followUp">FOLLOW-UP</string>
+		<string name="chain">CHAIN</string>
+		<string name="chained">CHAINED</string>
+		<string name="cued">CUED</string>
+		<string name="triggered">TRIGGERED</string>
+		<string name="damage">DAMAGE</string>
+		<string name="health">HEALTH</string>
+		<string name="KO">K.O.!</string>
+		<string name="playback">PLAYBACK</string>
+		<string name="recording">RECORDING</string>
+		<string name="best">BEST</string>
+
+		<string name="firstHit">1st HIT!</string>
+		<string name="secondImpact">2nd IMPACT!</string>
+		<string name="thirdStrike">3rd STRIKE!</string>
+		<string name="shoved">SHOVED!</string>
+		<string name="blocked">BLOCKED!</string>
+		<string name="countered">COUNTERED!</string>
+		<string name="extra">EXTRA</string>
+		<string name="missed">MISSED!</string>
+		<string name="hitCombo">HIT COMBO!</string>
+		<string name="chainMoves">CHAIN MOVES TOGETHER!</string>
+
+		<string name="armourDown">ARMOUR DOWN!</string>
+		<string name="armourUp">ARMOUR UP!</string>
+		<string name="healthUp">HEALTH UP!</string>
+		<string name="onFire">ON FIRE!</string>
+
+		<string name="notEnoughCrystals">NOT ENOUGH CRYSTALS!</string>
+		<string name="needs">NEEDS</string>
+		<string name="crystal">CRYSTAL!</string>
+		<string name="crystals">CRYSTALS!</string>
+
+		<string name="powerUpInventory">POWER-UP INVENTORY</string>
+		<string name="powerUps">POWER-UPS</string>
+		<string name="powerUp">POWER-UP</string>
+
+		<string name="secondLife">SECOND LIFE</string>
+		<string name="ignite">IGNITE</string>
+		<string name="healthBooster">HEALTH BOOSTER</string>
+		<string name="powerAttack">POWER ATTACK</string>
+		<string name="vengeanceBooster">VENGEANCE BOOSTER</string>
+		<string name="armourPiercing">ARMOUR PIERCING</string>
+		<string name="avenger">AVENGER</string>
+		<string name="regenerator">REGENERATOR</string>
+		<string name="poiseMaster">POISE MASTER</string>
+		<string name="poiseWrecker">POISE WRECKER</string>
+
+		<string name="healthBoost">HEALTH BOOST</string>
+		<string name="vengeanceBoost">VENGEANCE BOOST</string>
+
+		<string name="equip">EQUIP</string>
+
+		<string name="armourPiercingDesc">Hits impart extra damage through opponent's block</string>
+		<string name="avengerDesc">Vengeance gauge fills faster when taking damage</string>
+		<string name="regeneratorDesc">Health constantly regenerates over time</string>
+		<string name="poiseMasterDesc">Stun durations are halved</string>
+		<string name="poiseWreckerDesc">Opponent's stun durations are doubled</string>
+		<string name="healthBoosterDesc">Triggers an instant health boost!</string>
+		<string name="vengeanceBoosterDesc">Triggers an instant vengeance gauge boost!</string>
+		<string name="powerAttackDesc">Executes a unique heavy strike which cannot be blocked or countered!</string>
+		<string name="secondLifeDesc">Triggers an instant return to full health after a KO!</string> 
+		<string name="igniteDesc">Sets opponent on fire!</string>
+
+		<string name="activeForFight">ACTIVE FOR DURATION OF FIGHT</string>
+		<string name="constantlyActive">CONSTANTLY ACTIVE</string>
+		<string name="swipeUpToActivate">SWIPE UP TO ACTIVATE</string>
+		<string name="cooldown">[ COOL-DOWN {0}s ]</string>
+		<string name="oneTimeOnly">[ ONE-TIME ONLY ]</string>
+
+		<string name="yes">YES</string>
+		<string name="no">NO</string>
+		<string name="yesPlease">YES PLEASE</string>
+		<string name="noThanks">NO THANKS</string>
+		
+		<string name="buyCoins">BUY MORE COINS!</string>
+		<string name="spendCoins">SPEND SOME COINS!</string>
+		<string name="insertCoin">INSERT COIN</string>
+		<string name="cancel">CANCEL</string>
+		<string name="ok">OK</string>
+		<string name="tapToConfirm">Tap to confirm!</string>
+		<string name="enterNickname">TAP HERE TO ENTER YOUR NAME!</string>
+		<string name="welcome">Welcome"</string>
+		
+		<string name="register">REGISTER</string>
+
+		<string name="levelUp">LEVEL-UP</string>
+		<string name="buy">BUY</string>
+		<string name="resetLevel">RESET LEVEL</string>
+		<string name="resetGame">RESET GAME</string>
+		<string name="newUser">NEW USER</string>
+		<string name="postScores">POST SCORES</string>
+		<string name="friends">FRIENDS</string>
+		<string name="noLeaderboard">NO LEADER BOARD</string>
+		<string name="leaderBoard">LEADER BOARD</string>
+		<string name="leaderBoards">LEADER BOARDS</string>
+		<string name="challengeArena">CHALLENGE ARENA</string>
+		<string name="loadingScores">Downloading scores</string>
+		<string name="unableToRetrieve">UNABLE TO RETRIEVE</string>
+
+		<string name="level">Level</string>
+		<string name="lv">Lv</string>
+
+		<string name="playerId">Player ID</string>
+
+		<string name="confirmPurchase">Purchase {0} \n for {1} {2}?</string> 
+		<string name="confirmPurchase2">Are you sure you want to purchase \n {0} \n for {1} {2}?</string> 
+		<string name="confirmBuyCoins">You need more coins! \n Would you like to buy some?</string> 
+		<string name="confirmUsePowerUpCoins">Use coins to equip this power-up?</string> 
+		<string name="confirmBuyPowerUpCoins">You need more coins \n to equip this power-up. \n Would you like to buy some?</string> 
+		<string name="confirmLevelUp">Use coins to level-up {0}?</string> 
+		<string name="confirmLevelUp2">Are you sure you want to level-up {0}?</string> 
+		<string name="confirmBuyLevelUpCoins">You need more coins \n to level-up {0}. \n Would you like to buy some?</string> 
+		<string name="confirmLevelReset">Are you sure you want to reset \n {0} to Level 1 ? \n Kudos reward: {1} !!</string> 
+		<string name="confirmQuitFight">Quit this fight?</string>
+		<string name="confirmQuitFight2">Are you sure you want to \n quit this fight?</string>
+		<string name="confirmExitDojo">Exit the Dojo?</string>
+		<string name="confirmExitDojo2">Are you sure you want to \n exit the Dojo?</string>
+		<string name="confirmExitTraining">Quit Ninja School?</string>
+		
+		<string name="confirmChangeDifficulty">Change Arcade Mode difficulty to \n {0}?</string> 
+		<string name="confirmChangeDifficulty2">Are you sure you want to change \n Arcade Mode difficulty to \n {0}?</string> 
+		<string name="confirmResetHints">Are you sure you want to read all hint bubble messages again?</string> 
+		<string name="confirmResetGame">Are you really sure you want to completely RESET the game? All saved data will be deleted.</string> 
+		<string name="confirmAgainResetGame">Are you really sure you want to RESET? All saved data will be deleted.</string> 
+
+		<string name="settings">SETTINGS</string>
+		<string name="arcadeModeDifficulty">ARCADE MODE DIFFICULTY</string>
+		<string name="volume">VOLUME</string>
+		<string name="theme">THEME</string>
+		<string name="fight">FIGHT</string>
+		<string name="music">MUSIC</string>
+		<string name="sfx">SFX</string>
+		<string name="quitFight">QUIT FIGHT</string>
+		<string name="captionsOn">CAPTIONS ON</string>
+		<string name="captionsOff">CAPTIONS OFF</string>
+		<string name="narrative">NARRATIVE</string>
+		<string name="resetHits">RESET HINTS</string>
+		<string name="on">ON</string>
+		<string name="off">OFF</string>
+
+		<string name="arcade">ARCADE</string>
+		<string name="survival">SURVIVAL</string>
+		<string name="challenge">CHALLENGE</string>
+		<string name="dojo">DOJO</string>
+		<string name="training">TRAINING</string>
+		<string name="ninjaSchool">NINJA SCHOOL</string>
+
+		<string name="simple">SIMPLE</string>
+		<string name="easy">EASY</string>
+		<string name="medium">MEDIUM</string>
+		<string name="hard">HARD</string>
+		<string name="brutal">BRUTAL</string>
+
+		<string name="chooseYourFighter">CHOOSE YOUR FIGHTER!</string>
+		<string name="play">PLAY!</string>
+		<string name="train">TRAIN</string>
+
+		<string name="air">AIR</string>
+		<string name="fire">FIRE</string>
+		<string name="earth">EARTH</string>
+		<string name="water">WATER</string>
+
+		<string name="speed">SPEED</string>
+		<string name="power">POWER</string>
+		<string name="boss">BOSS</string>
+
+		<string name="na">N/A</string>
+
+		<string name="diamond">DIAMOND</string>
+		<string name="gold">GOLD</string>
+		<string name="silver">SILVER</string>
+		<string name="bronze">BRONZE</string>
+		<string name="iron">IRON</string>
+		<string name="inProgress">IN PROGRESS</string>
+
+		<string name="pickYourTeam">PICK YOUR TEAM!</string>
+		<string name="noTeamMembers">NO TEAM MEMBERS</string>
+		<string name="costToFieldTeam">COST TO FIELD TEAM</string>
+		<string name="teamValue">TEAM VALUE</string>
+		<string name="chooseChallenge2">CHOOSE A CHALLENGE!</string>
+		<string name="chooseCategory">CHOOSE A CATEGORY!</string>
+		<string name="upload">UPLOAD</string>
+		<string name="uploaded">UPLOADED</string>
+		<string name="challengeExpires">Challenge expires</string>
+		<string name="confirmUploadChallenge">Upload your challenge to the Challenge Arena?</string>
+		<string name="confirmFightChallenge">Accept this challenge? There's no going back!</string>
+		<string name="uploadingChallenge">Uploading challenge</string>
+		<string name="congratulations">CONGRATULATIONS</string>
+		<string name="betterLuckNextTime">BETTER LUCK NEXT TIME</string>
+		<string name="yourTeamWon">YOUR TEAM WON THE CHALLENGE</string>
+		<string name="yourTeamLost">YOUR TEAM LOST THE CHALLENGE</string>
+
+		<string name="healthPoints">HP</string>
+		<string name="attackRating">AR</string>
+
+		<string name="topFriends">TOP 50 FRIENDS</string>
+		<string name="refresh">REFRESH</string>
+		<string name="invite">INVITE</string>
+		<string name="share">SHARE</string>
+
+		<string name="kudos">KUDOS</string>
+		<string name="dojoDamage">DOJO DAMAGE</string>
+		<string name="survivalEndurance">SURVIVAL ENDURANCE</string>
+		<string name="challengeWinnings">CHALLENGE WINNINGS</string>
+		<string name="topKudos">KUDOS TOP</string>
+		<string name="topDojoDamage">DOJO DAMAGE TOP</string>
+		<string name="topSurvivalEndurance">SURVIVAL ENDURANCE TOP</string>
+		<string name="topChallengeWinnings">CHALLENGE WINNINGS TOP</string>
+
+		<string name="chooseLocation">CHOOSE FIGHT LOCATION</string>
+
+		<string name="wins">WINS!</string>
+		<string name="insertContinueCoin">INSERT COIN TO CONTINUE...!</string>
+		<string name="continue">CONTINUE</string>
+		<string name="insertCoinToPlay">INSERT COIN TO PLAY!</string>
+
+	</English>
+
+
+	<Arabic>
+	</Arabic>
+
+	<French>
+	</French>
+
+	<German>
+	</German>
+
+	<Italian>
+	</Italian>
+
+	<Japanese>
+	</Japanese>
+
+	<Korean>
+	</Korean>
+
+	<BrazilianPortuguese>
+	</BrazilianPortuguese>
+
+	<Portuguese>
+	</Portuguese>
+
+	<Russian>
+	</Russian>
+
+	<ChineseTraditional>
+	</ChineseTraditional>
+
+	<ChineseSimplified>
+	</ChineseSimplified>
+
+	<Spanish>
+	</Spanish>
+
+	<Turkish>
+	</Turkish>
+
+</languages>

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f0b625614a406468ee087f147489e7, type: 3}
+  m_Name: '[ShiroP2]7a303e4e8dc51452394af46c6e8111cd_1_1'
+  m_EditorClassIdentifier: 
+  m_Asset: {fileID: 0}
+  m_Scale: 1
+  m_CSF: 1
+  m_CurrentDataPath: Assets/Artwork/Characters/ShiroP2/
+  m_Data:
+  - m_SearchName: ShiroP2
+    m_SharedTexture: {fileID: 2800000, guid: 8a11681f7eb8c4ade94958b0e4af8d3a, type: 3}
+    m_SharedMaterial: {fileID: 2100000, guid: 2b4a49a5f69f34e96b5d7e00abd07daf, type: 2}

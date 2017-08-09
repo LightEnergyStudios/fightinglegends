@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 0eab12ca086044eda82720f1905c417e
+timeCreated: 1466899742
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - DanjumiPrefab: {instanceID: 0}
+  - LeoniPrefab: {instanceID: 0}
+  - NatalyaPrefab: {instanceID: 0}
+  - ShiroPrefab: {instanceID: 0}
+  - Player1: {instanceID: 0}
+  - Player2: {instanceID: 0}
+  executionOrder: -5000
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

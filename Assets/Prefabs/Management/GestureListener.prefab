@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1000012600718266}
+  m_IsPrefabParent: 1
+--- !u!1 &1000012600718266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4000013404709228}
+  - component: {fileID: 114000010704851312}
+  m_Layer: 0
+  m_Name: GestureListener
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4000013404709228
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012600718266}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114000010704851312
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012600718266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 188a90c23d7104f4a9eb8e3cb5ec6bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TapSeconds: 0.15
+  SwipeSeconds: 0.2
+  HoldSeconds: 0.25
+  DragPixels: 50
+  SwipePixels: 75
+  ScalePixels: 200
+  touchSparkPrefab: {fileID: 100000, guid: 8e4e3f61bb1fa46bcaae17286d8810b7, type: 2}
+  trailSparkPrefab: {fileID: 100000, guid: ceeff377f4eee40b19715e79694631b4, type: 2}
+  ripplePrefab: {fileID: 100000, guid: a74d2ae3799f9486ca51f386d2b0073b, type: 2}
+  okSparkPrefab: {fileID: 1000012357270356, guid: e866b9f30bfda432b9271d8ab8909aab,
+    type: 2}
+  notOkSparkPrefab: {fileID: 1000011947357980, guid: 907eac1ca35f34b999664571f62613b1,
+    type: 2}
+  releaseSparkPrefab: {fileID: 1000010620314298, guid: e5ebb0c237b914803803dd9ed80c54f3,
+    type: 2}
+  sparkCamera: {fileID: 0}
+  InputEnabled: 1

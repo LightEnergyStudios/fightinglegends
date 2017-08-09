@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1050376626273",
+    "firebase_url": "https://fighting-legends.firebaseio.com",
+    "project_id": "fighting-legends",
+    "storage_bucket": "fighting-legends.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050376626273:android:ea39d010ff8c2460",
+        "android_client_info": {
+          "package_name": "com.BurningHeart.FightingLegends"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050376626273-prbk1md0unmc73sb3q448sb1c2orflel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATw-v2Mm4evt4wnpNm-D-3mmmu8Fy3Zhg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

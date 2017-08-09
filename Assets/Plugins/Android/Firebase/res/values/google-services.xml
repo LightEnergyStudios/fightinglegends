@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+  <string name="firebase_database_url" translatable="false">https://fighting-legends.firebaseio.com</string>
+  <string name="gcm_defaultSenderId" translatable="false">1050376626273</string>
+  <string name="google_storage_bucket" translatable="false">fighting-legends.appspot.com</string>
+  <string name="project_id" translatable="false">fighting-legends</string>
+  <string name="google_api_key" translatable="false">AIzaSyATw-v2Mm4evt4wnpNm-D-3mmmu8Fy3Zhg</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyATw-v2Mm4evt4wnpNm-D-3mmmu8Fy3Zhg</string>
+  <string name="google_app_id" translatable="false">1:1050376626273:android:ea39d010ff8c2460</string>
+  <string name="default_web_client_id" translatable="false">1050376626273-prbk1md0unmc73sb3q448sb1c2orflel.apps.googleusercontent.com</string>
+</resources>

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f0b625614a406468ee087f147489e7, type: 3}
+  m_Name: '[ElementsMaster]8f62d4b52a1794898b45fad575906d44_1_1'
+  m_EditorClassIdentifier: 
+  m_Asset: {fileID: 0}
+  m_Scale: 1
+  m_CSF: 1
+  m_CurrentDataPath: Assets/Artwork/FX/Elements/
+  m_Data:
+  - m_SearchName: ElementsMaster
+    m_SharedTexture: {fileID: 2800000, guid: 684b2bde31213456ea7d9645995e957f, type: 3}
+    m_SharedMaterial: {fileID: 2100000, guid: aa514cc22f49345ae86d3aceba9b5641, type: 2}
+  - m_SearchName: ElementsMaster_2
+    m_SharedTexture: {fileID: 2800000, guid: e0f65d62ce71e4608ad26d5a8b8425b5, type: 3}
+    m_SharedMaterial: {fileID: 2100000, guid: 0139de52cbda24d43a561c70837b8561, type: 2}

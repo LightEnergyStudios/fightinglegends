@@ -1,0 +1,59 @@
+﻿
+using System;
+using UnityEngine;
+using System.Collections.Generic;
+
+
+namespace FightingLegends
+{
+	// data saved for each fighter
+	[Serializable]
+	public class SavedProfile
+	{
+		public DateTime SavedTime;
+
+		public string FighterName = "";
+		public string FighterColour = "";
+
+		public float Health = 0;				// decreased by hit and block damage
+		public int Level = 1;					// increased when XP reaches threshold
+		public float XP = 0;					// increased by successful strikes, blocks, combos - reset when level increased
+		public float TotalXP = 0;				// never reset
+
+		public int Gauge = 0;					// 0-4
+		public float GaugeDamage = 0;			// reset when enough to trip gauge
+
+		public bool IsLocked = false;
+
+		public PowerUp TriggerPowerUp = PowerUp.None;
+		public PowerUp StaticPowerUp = PowerUp.None;
+
+		public int TriggerPowerUpCoolDown = 0;		// 1/100s before triggered power-up reactivates
+		public int TriggerPowerUpCost = 0;			// when equipped
+		public int StaticPowerUpCost = 0;			// when equipped
+
+		public int FightStartLevel = 1;			// level as at start of fight
+
+		public List<string> CompletedLocations = new List<string>();	// arcade mode only
+		public int WorldTourCompletions = 0;							// arcade mode only
+
+		// stats...
+		public int RoundsWon { get; set; }			// in total
+		public int RoundsLost { get; set; }			// in total
+
+		public int MatchRoundsWon { get; set; }		// rounds won in current match
+		public int MatchRoundsLost { get; set; }	// rounds lost in current match
+
+		public int MatchesWon { get; set; }
+		public int MatchesLost { get; set; }
+
+		public int DeliveredHits { get; set; }		// successful hits delivered
+		public int BlockedHits { get; set; }		// unsuccessful hits (blocked)
+
+		public int HitsTaken { get; set; }			// hits taken
+		public int HitsBlocked { get; set; }		// hits successfully blocked
+
+		public float DamageInflicted { get; set; }	// health points
+		public float DamageSustained { get; set; }	// health points
+    }
+}

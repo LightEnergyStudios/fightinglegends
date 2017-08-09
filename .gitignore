@@ -1,0 +1,9 @@
+/Library
+/obj
+/Temp
+/*.csproj
+/*.sln
+*.apk
+/Assets/GAF/Docs*
+/Assets/GAF/Examples*
+/*.userprefs

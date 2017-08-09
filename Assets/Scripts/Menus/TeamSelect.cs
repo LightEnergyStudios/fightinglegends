@@ -1,0 +1,1807 @@
+﻿using System;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+
+
+namespace FightingLegends
+{
+	public class TeamSelect : MenuCanvas
+	{
+		public Button fightButton;			// select challenge category, then challenge to take on
+		public Button uploadButton;
+//		public Button powerUpButton;
+//		public Text powerUpText;			// shown on power-up button
+
+		public Text teamLabel;
+		public Image coin;
+		public Text costToField;
+		public Text titleText;
+		public Text fightText;
+		public Text uploadText;
+
+		public Button leoniButton;		// set in Inspector
+		public Button shiroButton;			
+		public Button natalyaButton;
+		public Button danjumaButton;
+		public Button hoiLunButton;
+		public Button jacksonButton;
+		public Button shiyangButton;
+		public Button alazneButton;
+		public Button skeletronButton;
+		public Button ninjaButton;
+
+		private FighterCard leoniCard;
+		private FighterCard shiroCard;
+		private FighterCard natalyaCard;
+		private FighterCard danjumaCard;
+		private FighterCard hoiLunCard;
+		private FighterCard jacksonCard;
+		private FighterCard shiyangCard;
+		private FighterCard alazneCard;
+		private FighterCard skeletronCard;
+		private FighterCard ninjaCard;
+
+		private const float cardXOffset = 76.0f; // 80.0f;
+		private const float firstCardXOffset = -342.0f; // -282.0f; 		// first selected card (in team)
+		private const float firstCardYOffset = -95.0f;
+		private const float staggeredYOffset = 15.0f;
+		private const float cardMoveTime = 0.15f;		// in/out of team
+		private const float cardGatherTime = 0.04f;		// each card
+
+		// power-up sprites for card inlays
+		public Sprite ArmourPiercing;		// set in Inspector
+		public Sprite Avenger;
+		public Sprite Ignite;
+		public Sprite HealthBooster;
+		public Sprite PoiseMaster;
+		public Sprite PoiseWrecker;
+		public Sprite PowerAttack;
+		public Sprite Regenerator;
+		public Sprite SecondLife;
+		public Sprite VengeanceBooster;
+
+		public AudioClip moveAudio;
+		public AudioClip shuffleAudio;
+		public AudioClip addToTeamAudio;
+		public AudioClip enterCardsAudio;
+
+		public Image ChallengesOverlay;			// overlay panel (categories)
+		public Text challengesTitle;			// diamond, gold, silver etc
+
+		public Text UploadingMessage;
+
+		private bool upLoadingChallenge = false;
+		private bool UpLoadingChallenge
+		{
+			get { return upLoadingChallenge; }
+			set
+			{
+				upLoadingChallenge = value;
+				uploadButton.interactable = !upLoadingChallenge;	
+
+				if (upLoadingChallenge)
+				{
+					UploadingMessage.text = FightManager.Translate("uploadingChallenge") + " ...";
+				}
+				else
+				{
+					UploadingMessage.text = "";
+					ChallengeUploading = null;
+					CategoryUploading = ChallengeCategory.None;
+				}
+			}
+		}
+
+		private ChallengeData ChallengeUploading = null;
+		private ChallengeCategory CategoryUploading = ChallengeCategory.None;
+		private bool challengeUploaded = false;
+		private static AIDifficulty defaultDifficulty = AIDifficulty.Medium; 
+		private static string defaultLocation = FightManager.dojo; 
+		private string selectedLocation = ""; 
+
+//		private static int DiamondThreshold = 10000;	// prize coins
+		private static int GoldThreshold = 100;		// prize coins <=
+		private static int SilverThreshold = 50;	// prize coins <=
+		private static int BronzeThreshold = 20;	// prize coins <=
+		private static int IronThreshold = 10;		// prize coins <=
+
+//		private bool diamondFilled = false;		// with challenge buttons 
+//		private bool goldFilled = false;		// with challenge buttons 
+//		private bool silverFilled = false;		// with challenge buttons 
+//		private bool bronzeFilled = false;		// with challenge buttons 
+//		private bool ironFilled = false;		// with challenge buttons 
+
+		// challenge category buttons
+		public Button diamondButton;
+		public Button goldButton;
+		public Button silverButton;
+		public Button bronzeButton;
+		public Button ironButton;
+
+		// challenge category button text
+		public Text diamondLabel;
+		public Text goldLabel;
+		public Text silverLabel;
+		public Text bronzeLabel;
+		public Text ironLabel;
+
+		// challenge category overlays
+		public Image diamondOverlay;
+		public Image goldOverlay;
+		public Image silverOverlay;
+		public Image bronzeOverlay;
+		public Image ironOverlay;
+
+		// challenge category viewports
+		public ScrollRect diamondViewport;
+		public ScrollRect goldViewport;	
+		public ScrollRect silverViewport;
+		public ScrollRect bronzeViewport;
+		public ScrollRect ironViewport;	
+
+		// challenge button backgrounds
+		public Sprite diamondSprite;			
+		public Sprite goldSprite;
+		public Sprite silverSprite;
+		public Sprite bronzeSprite;
+		public Sprite ironSprite;
+
+		// challenge button fighter portraits
+		public Sprite danjumaSprite;			
+		public Sprite leoniSprite;
+		public Sprite shiroSprite;
+		public Sprite natalyaSprite;
+		public Sprite hoiLunSprite;
+		public Sprite alazneSprite;
+		public Sprite shiyangSprite;
+		public Sprite jacksonSprite;
+		public Sprite skeletronSprite;
+		public Sprite ninjaSprite;
+
+		// challenge button locations
+		public Sprite hawaiiSprite;
+		public Sprite chinaSprite;
+		public Sprite tokyoSprite;
+		public Sprite ghettoSprite;
+		public Sprite cubaSprite;
+		public Sprite nigeriaSprite;
+		public Sprite sovietSprite;
+		public Sprite hongKongSprite;
+		public Sprite dojoSprite;
+		public Sprite spaceStationSprite;
+
+		// fighter element frames
+		public Sprite airFireSprite;			
+		public Sprite airWaterSprite;
+		public Sprite earthFireSprite;
+		public Sprite earthWaterSprite;
+
+		public Sprite skeletronFrameSprite;
+		public Sprite ninjaFrameSprite;
+
+		public GameObject challengeButtonPrefab;		// for filling challenge viewports
+		public GameObject fighterButtonPrefab;			// for populating challenge buttons
+
+		private const float fighterButtonScale = 0.7f;
+		private const float fighterCardXOffset = -1260.0f;	// first card
+		private const float fighterCardYOffset = -7.0f;
+		private const float fighterCardOddOffset = -5.0f;	// staggered up/down
+		private const float fighterCardWidth = 56.0f;		// overlapped slightly
+
+		private const float challengeHeight = 124.0f;	// results in slight overlap of buttons to reduce gap
+		private const float challengeOffset = challengeHeight / 2.0f;
+
+		private const float challengesYOffset = -245.0f;
+		private const float challengesLeft = 3;
+
+		private TeamChallenge chosenChallenge = null;
+
+		private bool gatheringTeam = false;		// shuffling cards up together
+		private bool movingCard = false;		// in / out of team
+
+		private int firstCardIndex;
+
+		private ChallengeCategory selectedCategory = ChallengeCategory.None;
+		private int selectedCategoryCount = 0;		// for list title
+
+		private List<FighterCard> fighterDeck;		// in left-right order
+		private List<FighterCard> selectedTeam;		// hand-picked
+		private List<FighterCard> selectedAITeam;	// according to challenge chosen
+
+		private FightManager fightManager;
+
+		private Animator animator;
+		private bool animatingEntry = false;
+		private const float animatePauseTime = 0.5f;		// pause before animated card entry
+
+		private const int challengeExpiryDays = 30;
+
+
+		// 'constructor'
+		private void Awake()
+		{
+			fighterDeck = new List<FighterCard>();
+			selectedTeam = new List<FighterCard>();
+			selectedAITeam = new List<FighterCard>();
+		}
+
+		// initialization
+		public void Start()
+		{
+			var fightManagerObject = GameObject.Find("FightManager");
+			fightManager = fightManagerObject.GetComponent<FightManager>();
+
+			titleText.text = FightManager.Translate("pickYourTeam");
+//			fightText.text = FightManager.Translate("chooseChallenge");
+			fightText.text = FightManager.Translate("fight", false, true);
+			uploadText.text = FightManager.Translate("upload");
+			uploadButton.interactable = true;
+
+			diamondLabel.text = FightManager.Translate("diamond");
+			goldLabel.text = FightManager.Translate("gold");
+			silverLabel.text = FightManager.Translate("silver");
+			bronzeLabel.text = FightManager.Translate("bronze");
+			ironLabel.text = FightManager.Translate("iron");
+
+			PopulateFighterCards();
+			UpdateTeamCost();
+			EnableActionButtons();
+
+			AddListeners();
+
+			StartCoroutine(AnimateCardEntry());
+		}
+
+		public void OnDestroy()
+		{
+			RemoveListeners();
+		}
+
+
+		private void PopulateFighterCards()
+		{
+			fighterDeck.Add(ninjaCard = new FighterCard(ninjaButton, "Ninja", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(leoniCard = new FighterCard(leoniButton, "Leoni", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(shiroCard = new FighterCard(shiroButton, "Shiro", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(danjumaCard = new FighterCard(danjumaButton, "Danjuma", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(natalyaCard = new FighterCard(natalyaButton, "Natalya", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(hoiLunCard = new FighterCard(hoiLunButton, "Hoi Lun", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(jacksonCard = new FighterCard(jacksonButton, "Jackson", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(alazneCard = new FighterCard(alazneButton, "Alazne", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(shiyangCard = new FighterCard(shiyangButton, "Shiyang", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(skeletronCard = new FighterCard(skeletronButton, "Skeletron", "P1", 1, 0, null, null, null));
+
+			firstCardIndex = leoniCard.CardButton.transform.GetSiblingIndex();
+
+			// lookup level, xp and power-ups from fighter profile (saved) data
+			SetDeckProfiles();
+			SetCardDifficulties(defaultDifficulty);
+
+			LayerTeam();
+		}
+
+		private void SetCardDifficulties(AIDifficulty difficulty)
+		{
+			leoniCard.SetDifficulty(difficulty);
+			shiroCard.SetDifficulty(difficulty);
+			natalyaCard.SetDifficulty(difficulty);
+			danjumaCard.SetDifficulty(difficulty);
+			hoiLunCard.SetDifficulty(difficulty);
+			jacksonCard.SetDifficulty(difficulty);
+			shiyangCard.SetDifficulty(difficulty);
+			alazneCard.SetDifficulty(difficulty);
+			skeletronCard.SetDifficulty(difficulty);
+			ninjaCard.SetDifficulty(difficulty);
+		}
+
+		// lookup level, xp and power-ups from fighter profile (saved) data
+		private void SetDeckProfiles()
+		{
+			foreach (var card in fighterDeck)
+			{
+				var profile = Profile.GetFighterProfile(card.FighterName);
+				if (profile != null)
+					card.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(card.FighterName), profile.IsLocked);
+			}
+		}
+
+		private Sprite PowerUpSprite(PowerUp powerUp)
+		{
+			switch (powerUp)
+			{
+				case PowerUp.None:
+				default:
+					return null;
+
+				case PowerUp.ArmourPiercing:
+					return ArmourPiercing;
+
+				case PowerUp.Avenger:
+					return Avenger;
+
+				case PowerUp.Ignite:
+					return Ignite;
+
+				case PowerUp.HealthBooster:
+					return HealthBooster;
+
+				case PowerUp.PoiseMaster:
+					return PoiseMaster;
+
+				case PowerUp.PoiseWrecker:
+					return PoiseWrecker;
+
+				case PowerUp.PowerAttack:
+					return PowerAttack;
+
+				case PowerUp.Regenerator:
+					return Regenerator;
+
+				case PowerUp.SecondLife:
+					return SecondLife;
+
+				case PowerUp.VengeanceBooster:
+					return VengeanceBooster;
+			}
+		}
+
+		private Sprite CardFrame(string fighterName)
+		{
+			switch (fighterName)
+			{
+				case "Shiro":
+					return earthFireSprite;
+				case "Natalya":
+					return airFireSprite;
+				case "Hoi Lun":
+					return airWaterSprite;
+				case "Leoni":
+					return airWaterSprite;
+				case "Danjuma":
+					return earthWaterSprite;
+				case "Jackson":
+					return earthFireSprite;
+				case "Alazne":
+					return earthWaterSprite;
+				case "Shiyang":
+					return airFireSprite;
+				case "Skeletron":
+					return skeletronFrameSprite;
+				case "Ninja":
+					return ninjaFrameSprite;
+				default:
+					return null;
+			}
+		}
+
+		private void AddListeners()
+		{
+			FightManager.OnThemeChanged += SetTheme;
+
+			FirebaseManager.OnChallengeSaved += OnChallengeUploaded;
+			FirebaseManager.OnChallengeAccepted += OnChallengeAccepted;
+			FirebaseManager.OnChallengesDownloaded += OnChallengesDownloaded;
+
+//			Debug.Log("TeamSelect.AddListeners");
+			OnOverlayHidden += OverlayHidden;
+
+			fightButton.onClick.AddListener(delegate { ShowChallengesOverlay(); });
+			uploadButton.onClick.AddListener(delegate { ConfirmUploadSelectedTeam(); });
+//			powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
+
+			ChallengeUpload.OnCancelClicked += OnUploadCancelled;
+
+			leoniButton.onClick.AddListener(delegate { CardClicked(leoniCard); });
+			shiroButton.onClick.AddListener(delegate { CardClicked(shiroCard); });
+			natalyaButton.onClick.AddListener(delegate { CardClicked(natalyaCard); });
+			danjumaButton.onClick.AddListener(delegate { CardClicked(danjumaCard); });
+			hoiLunButton.onClick.AddListener(delegate { CardClicked(hoiLunCard); });
+			jacksonButton.onClick.AddListener(delegate { CardClicked(jacksonCard); });
+			shiyangButton.onClick.AddListener(delegate { CardClicked(shiyangCard); });
+			alazneButton.onClick.AddListener(delegate { CardClicked(alazneCard); });
+			skeletronButton.onClick.AddListener(delegate { CardClicked(skeletronCard); });
+			ninjaButton.onClick.AddListener(delegate { CardClicked(ninjaCard); });
+
+			// challenges
+			diamondButton.onClick.AddListener(delegate { CategoryChosen(ChallengeCategory.Diamond); });
+			goldButton.onClick.AddListener(delegate { CategoryChosen(ChallengeCategory.Gold); });
+			silverButton.onClick.AddListener(delegate { CategoryChosen(ChallengeCategory.Silver); });
+			bronzeButton.onClick.AddListener(delegate { CategoryChosen(ChallengeCategory.Bronze); });
+			ironButton.onClick.AddListener(delegate { CategoryChosen(ChallengeCategory.Iron); });
+		}
+
+		private void OnEnable()
+		{
+			LayerTeam();
+
+			uploadText.text = FightManager.Translate("upload");
+			EnableActionButtons();
+		}
+
+		private void RemoveListeners()
+		{
+			FightManager.OnThemeChanged -= SetTheme;
+			FirebaseManager.OnChallengeSaved -= OnChallengeUploaded;
+			FirebaseManager.OnChallengeAccepted -= OnChallengeAccepted;
+			FirebaseManager.OnChallengesDownloaded -= OnChallengesDownloaded;
+
+//			Debug.Log("TeamSelect.RemoveListeners");
+			OnOverlayHidden -= OverlayHidden;
+
+			fightButton.onClick.RemoveListener(delegate { ShowChallengesOverlay(); });
+			uploadButton.onClick.RemoveListener(delegate { ConfirmUploadSelectedTeam(); });
+
+			ChallengeUpload.OnCancelClicked -= OnUploadCancelled;
+
+//			powerUpButton.onClick.RemoveListener(delegate { PowerUpFighter(); });
+
+			leoniButton.onClick.RemoveListener(delegate { CardClicked(leoniCard); });
+			shiroButton.onClick.RemoveListener(delegate { CardClicked(shiroCard); });
+			natalyaButton.onClick.RemoveListener(delegate { CardClicked(natalyaCard); });
+			danjumaButton.onClick.RemoveListener(delegate { CardClicked(danjumaCard); });
+			hoiLunButton.onClick.RemoveListener(delegate { CardClicked(hoiLunCard); });
+			jacksonButton.onClick.RemoveListener(delegate { CardClicked(jacksonCard); });
+			shiyangButton.onClick.RemoveListener(delegate { CardClicked(shiyangCard); });
+			alazneButton.onClick.RemoveListener(delegate { CardClicked(alazneCard); });
+			skeletronButton.onClick.RemoveListener(delegate { CardClicked(skeletronCard); });
+			ninjaButton.onClick.RemoveListener(delegate { CardClicked(ninjaCard); });
+
+			// challenges
+			diamondButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Diamond); });
+			goldButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Gold); });
+			silverButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Silver); });
+			bronzeButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Bronze); });
+			ironButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Iron); });
+		}
+
+		private void OnDisable()
+		{
+			EmptyChallengeButtons(ChallengeCategory.Diamond);
+			EmptyChallengeButtons(ChallengeCategory.Gold);
+			EmptyChallengeButtons(ChallengeCategory.Silver);
+			EmptyChallengeButtons(ChallengeCategory.Bronze);
+			EmptyChallengeButtons(ChallengeCategory.Iron);
+
+			RestoreAllCards();			// to original positions
+
+			ChallengeUploading = null;
+			challengeUploaded = false;
+		}
+			
+		private void OverlayHidden(Image panel, int overlayCount)
+		{
+			// reset title if hiding a challenge category overlay
+			if (panel == diamondOverlay || panel == goldOverlay || panel == silverOverlay || panel == bronzeOverlay || panel == ironOverlay)
+			{
+				selectedCategory = ChallengeCategory.None;
+				SetChallengesTitle();
+			}
+		}
+
+
+		private IEnumerator MoveCardTo(FighterCard card, Vector3 targetPosition, float moveTime, AudioClip audio)
+		{
+			var button = card.CardButton;
+			var startPosition = button.transform.localPosition;
+			float t = 0.0f;
+
+			if (startPosition == targetPosition)
+				yield break;
+
+			if (moveAudio != null)
+				AudioSource.PlayClipAtPoint(moveAudio, Vector3.zero, FightManager.SFXVolume);
+
+			movingCard = true;
+			
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / moveTime); 
+				button.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+				yield return null;
+			}
+
+			if (audio != null)
+				AudioSource.PlayClipAtPoint(audio, Vector3.zero, FightManager.SFXVolume);
+
+			movingCard = false;
+			yield return null;
+		}
+
+		private IEnumerator MoveCardToTeam(FighterCard card)
+		{
+			yield return StartCoroutine(MoveCardTo(card, NextTeamPosition, cardMoveTime, addToTeamAudio));
+		}
+
+		private Vector3 FirstTeamPosition
+		{
+			get { return new Vector3(firstCardXOffset, firstCardYOffset, 0.0f); }
+		}
+
+		private Vector3 NextTeamPosition
+		{
+			get
+			{
+				if (selectedTeam.Count == 0)
+				{
+					return FirstTeamPosition;
+				}
+				else
+				{
+					var lastPosition = selectedTeam[selectedTeam.Count - 1].currentPosition;
+					return CardPosition(selectedTeam, lastPosition);
+				}
+			}
+		}
+
+		private Vector3 CardPosition(List<FighterCard> team, Vector3 lastPosition)
+		{
+			return new Vector3(lastPosition.x + cardXOffset, lastPosition.y + (IsOdd(team.Count) ? -staggeredYOffset : staggeredYOffset), lastPosition.z);
+		}
+
+		private bool IsOdd(int number)
+		{
+			return (number % 2 != 0);
+		}
+
+		private IEnumerator GatherTeam()
+		{
+			if (selectedTeam.Count == 0)
+				yield break;
+
+			gatheringTeam = true;
+
+			Vector3 lastPosition = Vector3.zero;
+			int counter = 0;
+
+			foreach (var teamMember in selectedTeam)
+			{
+				if (counter == 0)
+					yield return StartCoroutine(MoveCardTo(teamMember, FirstTeamPosition, cardGatherTime, shuffleAudio));
+				else
+				{
+					var newPosition = new Vector3(lastPosition.x + cardXOffset, lastPosition.y + (IsOdd(counter) ? -staggeredYOffset : staggeredYOffset), lastPosition.z);
+					yield return StartCoroutine(MoveCardTo(teamMember, newPosition, cardGatherTime, shuffleAudio));
+				}
+				lastPosition = teamMember.currentPosition;
+				counter++;
+			}
+
+			gatheringTeam = false;
+			yield return null;
+		}
+
+		private void LayerTeam()
+		{
+			int index = 1;
+
+			foreach (var teamMember in selectedTeam)
+			{
+				// layer the cards from left to right
+				var button = teamMember.CardButton;
+
+				button.transform.SetSiblingIndex(firstCardIndex + index++);
+			}
+		}
+
+		// cards not in team
+		private void LayerCards()
+		{
+			int index = 1;
+
+			foreach (var card in fighterDeck)
+			{
+				if (card.InTeam)
+					continue;
+				
+				// layer the cards from left to right
+				var button = card.CardButton;
+
+				button.transform.SetSiblingIndex(firstCardIndex + index++);
+			}
+		}
+
+		private void UpdateTeamCost(bool silent = true)
+		{
+//			if (selectedTeam.Count == 0)
+//			{
+//				teamLabel.text = FightManager.Translate("noTeamMembers");
+//				costToField.text = "";
+//				coin.gameObject.SetActive(false);
+//				return;
+//			}
+
+//			teamLabel.text = FightManager.Translate("costToFieldTeam") + " ";
+			teamLabel.text = FightManager.Translate("teamValue") + " ";
+			costToField.text = string.Format("{0:N0}", SelectedTeamPrizeCoins());	// thousands separator, for clarity
+			coin.gameObject.SetActive(true);
+
+			if (!silent)
+				fightManager.CoinAudio();
+		}
+
+		private int SelectedTeamPrizeCoins()
+		{
+			int teamCost = 0;
+
+			foreach (var teamMember in selectedTeam)
+			{
+				teamCost += Store.TeamMemberCoinValue(ConvertToTeamMember(teamMember), false);
+			}
+
+			return teamCost;
+		}
+
+		// move card in / out of selectedTeam
+		private void CardClicked(FighterCard card)
+		{
+			if (card.IsLocked)
+				return;
+			
+			if (gatheringTeam || movingCard || animatingEntry)
+				return;
+
+			StartCoroutine(SwitchCard(card));		// in / out of team
+		}
+
+//		private void PowerUpFighter()
+//		{
+//			if (selectedTeam.Count > 0)
+//			{
+//				fightManager.TeamSelectChoice = MenuType.Store;									// triggers fade to black and new menu
+//				var fighterName = selectedTeam[ selectedTeam.Count-1 ].FighterName;
+//				var fighterColour = selectedTeam[ selectedTeam.Count-1 ].FighterColour;
+//				fightManager.StorePowerUpOverlay(fighterName, fighterColour, true);				// direct to store power-up overlay
+//			}
+//		}
+
+
+		// move in / out of team
+		private IEnumerator SwitchCard(FighterCard card)
+		{
+			if (card.InTeam) 		// already in team so remove
+			{
+				// complete move before gathering team
+				yield return StartCoroutine(MoveCardTo(card, card.originalPosition, cardMoveTime, null));
+				selectedTeam.Remove(card);
+				card.InTeam = false;
+
+//				if (selectedTeam.Count > 0)
+//					powerUpText.text = "POWER-UP " + selectedTeam[ selectedTeam.Count-1 ].FighterName.ToUpper();	// last added to team
+//				else 
+//					powerUpText.text = "POWER-UP";
+
+				LayerTeam();
+				LayerCards();
+				EnableActionButtons();
+
+				StartCoroutine(GatherTeam());
+			}
+			else 						// not in team so add
+			{
+//				var teamDifficulty = GetTeamDifficulty(selectedTeam);
+
+				StartCoroutine(MoveCardToTeam(card));
+				selectedTeam.Add(card);
+				card.InTeam = true;
+//				powerUpText.text = "POWER-UP " + card.FighterName.ToUpper();
+
+//				if (addToTeamAudio != null)
+//					AudioSource.PlayClipAtPoint(addToTeamAudio, Vector3.zero, FightManager.SFXVolume);
+		
+				LayerTeam();
+				EnableActionButtons();
+			}
+				
+			UpdateTeamCost(false);
+			yield return null;
+		}
+
+		private void RestoreAllCards()
+		{
+			foreach (var card in fighterDeck)
+			{
+				card.RestorePosition();
+
+				if (card.InTeam)
+				{
+					card.InTeam = false;
+					selectedTeam.Remove(card);
+				}
+			}
+
+			LayerCards();
+			UpdateTeamCost();
+
+			EnableActionButtons();
+		}
+			
+
+		#region challenges
+
+		private void EnableActionButtons()
+		{
+			bool fightersInTeam = selectedTeam.Count > 0;
+			fightButton.interactable = fightersInTeam;
+			uploadButton.interactable = fightersInTeam;
+//			powerUpButton.interactable = fightersInTeam;
+		}
+
+
+		private IEnumerator AnimateCardEntry()
+		{
+			animator = GetComponent<Animator>();
+			animatingEntry = true;
+
+//			yield return new WaitForSeconds(animatePauseTime);
+
+			animator.enabled = true;
+			animator.SetTrigger("EnterCards");
+			yield return null;
+		}
+
+		public void EnterCardSound()
+		{
+			if (enterCardsAudio != null)
+				AudioSource.PlayClipAtPoint(enterCardsAudio, Vector3.zero, FightManager.SFXVolume);
+		}
+
+		public void CardEntryComplete()
+		{
+			animator.enabled = false;
+			animatingEntry = false;
+		}
+
+		private void CategoryChosen(ChallengeCategory category)
+		{
+			selectedCategory = category;
+
+			switch (selectedCategory)
+			{
+				case ChallengeCategory.Diamond:
+					StartCoroutine(RevealOverlay(diamondOverlay));
+					break;
+
+				case ChallengeCategory.Gold:
+					StartCoroutine(RevealOverlay(goldOverlay));
+					break;
+
+				case ChallengeCategory.Silver:
+					StartCoroutine(RevealOverlay(silverOverlay));
+					break;
+
+				case ChallengeCategory.Bronze:
+					StartCoroutine(RevealOverlay(bronzeOverlay));
+					break;
+
+				case ChallengeCategory.Iron:
+					StartCoroutine(RevealOverlay(ironOverlay));
+					break;
+			}
+
+//			SetChallengesTitle();
+			GetChallenges(selectedCategory); //, false);
+		}
+
+		private void SetChallengesTitle()
+		{
+			switch (selectedCategory)
+			{
+				case ChallengeCategory.Diamond:
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("diamond"), selectedCategoryCount);
+					break;
+
+				case ChallengeCategory.Gold:
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("gold"), selectedCategoryCount);
+					break;
+
+				case ChallengeCategory.Silver:
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("silver"), selectedCategoryCount);
+					break;
+
+				case ChallengeCategory.Bronze:
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("bronze"), selectedCategoryCount);
+					break;
+
+				case ChallengeCategory.Iron:
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("iron"), selectedCategoryCount);
+					break;
+
+				default:
+					challengesTitle.text = FightManager.Translate("chooseCategory");
+					break;
+			}
+		}
+			
+//		private TeamChallenge GetChallenge(ChallengeCategory category, int categoryIndex)
+//		{
+//			switch (category)
+//			{
+//				case ChallengeCategory.Diamond:
+//					return DiamondChallenges[categoryIndex];	
+//
+//				case ChallengeCategory.Gold:
+//					return GoldChallenges[categoryIndex];	
+//
+//				case ChallengeCategory.Silver:
+//					return SilverChallenges[categoryIndex];	
+//
+//				case ChallengeCategory.Bronze:
+//					return BronzeChallenges[categoryIndex];	
+//
+//				case ChallengeCategory.Iron:
+//					return IronChallenges[categoryIndex];	
+//
+//				default:
+//					return null;
+//			}
+//		}
+
+		private void ChallengeChosen(ChallengeButton challengeButton)
+		{
+			chosenChallenge = challengeButton.Challenge;
+
+			if (chosenChallenge == null)
+			{
+				Debug.Log("ChallengeChosen: no challenge!");
+				return;
+			}
+
+			selectedCategoryCount = 0;
+			HideAllOverlays();
+			ConfirmFightChallenge();
+		}
+			
+		private void ConfirmFightChallenge()
+		{
+			if (chosenChallenge != null)
+				FightManager.GetConfirmation(FightManager.Translate("confirmFightChallenge"), SelectedTeamPrizeCoins(), FightChallenge);
+		}
+
+		private void FightChallenge()
+		{
+			if (chosenChallenge == null)
+				return;
+			
+//			Debug.Log("FightChallenge: selectedTeam " + selectedTeam.Count + ", AITeam " + challenge.AITeam.Count);
+
+			// create AI team according to challenge
+			selectedAITeam.Clear();
+
+			foreach (var AICard in chosenChallenge.AITeam)
+			{
+				selectedAITeam.Add(AICard);
+			}
+
+			if (chosenChallenge.UserId != "")			// player created challenge (one per user) - flag as accepted (in progress)
+				FirebaseManager.AcceptChallenge(chosenChallenge, SelectedTeamPrizeCoins());
+			else
+				SetupChallenge(chosenChallenge);
+		}
+
+
+		private void SetupChallenge(TeamChallenge challenge)
+		{
+			fightManager.SetupChallenge(challenge, selectedTeam, SelectedTeamPrizeCoins(), selectedAITeam);
+
+			FightManager.CombatMode = FightMode.Challenge;
+			fightManager.TeamSelectChoice = MenuType.Combat;			// triggers fade to black and new fight
+
+			chosenChallenge = null;
+		}
+
+		private void OnChallengeAccepted(TeamChallenge challenge, string challengerId, bool success)
+		{
+			if (success)
+			{
+				SetupChallenge(challenge);
+				GetChallenges(selectedCategory); 		// reload to exclude challenge newly accepted challenge(s)
+			}
+			else
+				Debug.Log("OnChallengeAccepted: Challenge not currently available");
+		}
+
+		public void ShowChallengesOverlay()
+		{
+			SetChallengesTitle();
+			StartCoroutine(RevealOverlay(ChallengesOverlay));		// challenge categories
+		}
+
+		private void HideChallengesOverlay()
+		{
+			// categories = 0;
+			StartCoroutine(HideOverlay(ChallengesOverlay));			// challenge categories
+		}
+			
+
+		public static int ChallengePot(ChallengeData challenge)
+		{
+			var challengePot = challenge.PrizeCoins + challenge.ChallengerTeamCoins;
+			return challengePot - (int)((float)challengePot * FightManager.ChallengeFee / 100.0f);
+		}
+
+		// populate the ChallengeButton with a FighterButton for each AI team member
+		private void FillChallengeFighterButtons(ChallengeButton challengeButton)
+		{
+			float lastPositionX = fighterCardXOffset;		// starting position of first card
+			int fighterIndex = 0;
+
+			foreach (var fighterCard in challengeButton.Challenge.AITeam)
+			{
+				var fighterButtonObject = Instantiate(fighterButtonPrefab, challengeButton.Fighters.transform) as GameObject;		// viewport content
+				fighterButtonObject.transform.localScale = new Vector3(fighterButtonScale, fighterButtonScale, fighterButtonScale);
+
+				var fighterButton = fighterButtonObject.GetComponent<FighterButton>();
+				var fighterRect = fighterButtonObject.GetComponent<RectTransform>();
+
+				switch (fighterCard.FighterName)
+				{
+					case "Shiro":
+						fighterButton.SetFighterCard(shiroSprite, fighterCard);
+						break;
+					case "Natalya":
+						fighterButton.SetFighterCard(natalyaSprite, fighterCard);
+						break;
+					case "Hoi Lun":
+						fighterButton.SetFighterCard(hoiLunSprite, fighterCard);
+						break;
+					case "Leoni":
+						fighterButton.SetFighterCard(leoniSprite, fighterCard);
+						break;
+					case "Danjuma":
+						fighterButton.SetFighterCard(danjumaSprite, fighterCard);
+						break;
+					case "Jackson":
+						fighterButton.SetFighterCard(jacksonSprite, fighterCard);
+						break;
+					case "Alazne":
+						fighterButton.SetFighterCard(alazneSprite, fighterCard);
+						break;
+					case "Shiyang":
+						fighterButton.SetFighterCard(shiyangSprite, fighterCard);
+						break;
+					case "Ninja":
+						fighterButton.SetFighterCard(ninjaSprite, fighterCard);
+						break;
+					case "Skeletron":
+						fighterButton.SetFighterCard(skeletronSprite, fighterCard);
+						break;
+				}
+
+				// currently clicking a fighter button has the same effect as clicking the challenge button
+				fighterCard.CardButton.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });
+				fighterCard.CardButton.interactable = challengeButton.Challenge.UserId != FightManager.SavedGameStatus.UserId; 	// can't fight own challenge!
+
+				// set fighter button position within container challenge button viewport
+				var yOffset = fighterCardYOffset - (IsOdd(fighterIndex) ? fighterCardOddOffset : 0);
+				fighterRect.SetAnchor(AnchorPresets.MiddleLeft, lastPositionX, yOffset);
+				lastPositionX += fighterCardWidth;
+
+				fighterIndex++;
+			}
+
+			// set width of Fighters panel according to number of fighterCards
+//			var fightersWidth = challenge.AITeam.Count * fighterCardWidth;
+//			challengeButton.Fighters.sizeDelta = new Vector2(fightersWidth, 0); // challengeButton.Fighters.sizeDelta.y);
+		}
+
+
+		private void GetChallenges(ChallengeCategory category) //, bool playerCreated)
+		{
+			if (fightManager.PlayerCreatedChallenges) // playerCreated)
+			{
+				FirebaseManager.GetCategoryChallenges(category);		// FillChallengeButtons on callback
+			}
+			else
+			{
+				switch (category)
+				{
+					case ChallengeCategory.Diamond:
+						FillChallengeButtons(category, DiamondChallenges); //, false);
+						break;
+
+					case ChallengeCategory.Gold:
+						FillChallengeButtons(category, GoldChallenges); //, false);
+						break;
+
+					case ChallengeCategory.Silver:
+						FillChallengeButtons(category, SilverChallenges); //, false);
+						break;
+
+					case ChallengeCategory.Bronze:
+						FillChallengeButtons(category, BronzeChallenges); //, false);
+						break;
+
+					case ChallengeCategory.Iron:
+						FillChallengeButtons(category, IronChallenges); //, false);
+						break;
+
+					default:
+						return;
+				}
+			}
+		}
+
+
+		private void FillChallengeButtons(ChallengeCategory category, List<TeamChallenge> challenges) //, bool playerCreated)
+		{
+//			Debug.Log("GetChallenges " + category);
+
+			EmptyChallengeButtons(category);
+
+			selectedCategoryCount = challenges.Count;
+			SetChallengesTitle();
+
+			RectTransform viewportContent;
+			Sprite categorySprite;
+
+			switch (category)
+			{
+				case ChallengeCategory.Diamond:
+//					if (diamondFilled && ! fightManager.PlayerCreatedChallenges)
+//						return;
+					viewportContent = diamondViewport.content;
+					categorySprite = diamondSprite;
+//					diamondFilled = true;
+					break;
+
+				case ChallengeCategory.Gold:
+//					if (goldFilled && ! fightManager.PlayerCreatedChallenges)
+//						return;
+					viewportContent = goldViewport.content;
+					categorySprite = goldSprite;
+//					goldFilled = true;
+					break;
+
+				case ChallengeCategory.Silver:
+//					if (silverFilled && ! fightManager.PlayerCreatedChallenges)
+//						return;
+					viewportContent = silverViewport.content;
+					categorySprite = silverSprite;
+//					silverFilled = true;
+					break;
+
+				case ChallengeCategory.Bronze:
+//					if (bronzeFilled && ! fightManager.PlayerCreatedChallenges)
+//						return;
+					viewportContent = bronzeViewport.content;
+					categorySprite = bronzeSprite;
+//					bronzeFilled = true;
+					break;
+
+				case ChallengeCategory.Iron:
+//					if (ironFilled && ! fightManager.PlayerCreatedChallenges)
+//						return;
+					viewportContent = ironViewport.content;
+					categorySprite = ironSprite;
+//					ironFilled = true;
+					break;
+
+				default:
+					return;
+			}
+
+			// calculate prize coins from members of 'system' challenge team
+			if (! fightManager.PlayerCreatedChallenges) // playerCreated)
+			{
+				foreach (var challenge in challenges)
+				{
+					foreach (var teamMember in challenge.AITeam)
+					{
+						challenge.PrizeCoins += Store.TeamMemberCoinValue(ConvertToTeamMember(teamMember), true);
+					}
+				}
+			}
+					
+			int counter = 0;
+
+			foreach (var challenge in challenges)
+			{
+				var challengeButtonObject = Instantiate(challengeButtonPrefab, viewportContent.transform) as GameObject;
+				challengeButtonObject.transform.localScale = Vector3.one;						// somehow corrupted by instantiate! - crappy
+				challengeButtonObject.transform.localPosition = Vector3.zero;					// to make sure z is zero!! ...
+
+				var challengeButton = challengeButtonObject.GetComponent<ChallengeButton>();
+				var challengeBackground = challengeButtonObject.GetComponent<Image>();
+
+				var locationSprite = LocationSprite(challenge);
+				challengeButton.locationImage.sprite = locationSprite;
+				challengeButton.locationImage.gameObject.SetActive(locationSprite != null);
+
+				challengeButton.SetChallenge(challenge); 
+
+				challengeBackground.sprite = categorySprite;
+				challengeButton.PrizeCoins.text = string.Format("{0:N0}", challenge.PrizeCoins);		// thousands separator, for clarity
+				challengeButton.Name.text = challenge.Name;
+				challengeButton.Date.text = challenge.DateCreated;
+
+				var button = challengeButtonObject.GetComponent<Button>();
+				button.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });		// ref to challenge data, not data in this loop
+				button.interactable = challenge.UserId != FightManager.SavedGameStatus.UserId; 	// can't fight own challenge!
+
+				// populate challenge button fighters viewport by instantiating fighter buttons	
+				FillChallengeFighterButtons(challengeButton);		
+
+				counter++;
+			}
+		}
+			
+
+		private void EmptyChallengeButtons(ChallengeCategory category)
+		{
+			RectTransform viewportContent;
+//			Debug.Log("EmptyChallengeButtons " + category);
+
+			switch (category)
+			{
+				case ChallengeCategory.Diamond:
+					viewportContent = diamondViewport.content;
+//					diamondFilled = false;
+					break;
+
+				case ChallengeCategory.Gold:
+					viewportContent = goldViewport.content;
+//					goldFilled = false;
+					break;
+
+				case ChallengeCategory.Silver:
+					viewportContent = silverViewport.content;
+//					silverFilled = false;
+					break;
+
+				case ChallengeCategory.Bronze:
+					viewportContent = bronzeViewport.content;
+//					bronzeFilled = false;
+					break;
+
+				case ChallengeCategory.Iron:
+					viewportContent = ironViewport.content;
+//					ironFilled = false;
+					break;
+
+				default:
+					return;
+			}
+
+			foreach (var challengeButton in viewportContent.GetComponentsInChildren<Button>())
+			{
+				challengeButton.onClick.RemoveAllListeners();
+				Destroy(challengeButton.gameObject);
+			}
+		}
+
+		private Sprite LocationSprite(TeamChallenge challenge)
+		{
+			switch (challenge.Location)
+			{
+				case FightManager.hawaii:
+					return hawaiiSprite;
+
+				case FightManager.china:
+					return chinaSprite;
+
+				case FightManager.tokyo:
+					return tokyoSprite;
+
+				case FightManager.ghetto:
+					return ghettoSprite;
+
+				case FightManager.cuba:
+					return cubaSprite;
+
+				case FightManager.nigeria:
+					return nigeriaSprite;
+
+				case FightManager.soviet:
+					return sovietSprite;
+
+				case FightManager.hongKong:
+					return hongKongSprite;
+
+				case FightManager.dojo:
+					return dojoSprite;
+
+				case FightManager.spaceStation:
+					return spaceStationSprite;
+
+				default:
+					return null;
+			}
+		}
+//		private FighterCard CreateChallengeCard(string name, string colour, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
+		private FighterCard CreateChallengeCard(string name, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
+		{
+			// AI fighter colour is determined by Player1, so not relevant here
+//			return new FighterCard(null, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
+			return new FighterCard(null, name, "P1", level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
+		}
+
+
+		private void ConfirmUploadSelectedTeam()
+		{
+			// must register as a user before uploading!
+			if (string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
+			{
+				FightManager.RegisterNewUser();
+				return;
+			}
+
+			if (upLoadingChallenge)
+				return;
+
+			if (selectedTeam.Count == 0)
+				return;
+
+			if (selectedLocation == "")
+				selectedLocation = defaultLocation;
+
+			ChallengeUploading = new ChallengeData {
+
+				Name = FightManager.SavedGameStatus.UserId,		// future use? user assigned challenge name?
+				DateCreated = DateTime.Now.ToString(),
+				ExpiryDate = DateTime.Now.AddDays(challengeExpiryDays).ToString(),
+				Location = selectedLocation,
+				Team = new List<ChallengeTeamMember>(),		// filled below
+				PrizeCoins = 0,								// set below according to team members
+				ParentCategory = "",						// set according to PrizeCoins below
+
+				UserId = FightManager.SavedGameStatus.UserId,
+			};
+				
+			foreach (var teamMember in selectedTeam)
+			{
+				var newTeamMember = ConvertToTeamMember(teamMember);
+				ChallengeUploading.Team.Add(newTeamMember);
+
+				ChallengeUploading.PrizeCoins += Store.TeamMemberCoinValue(newTeamMember, true);
+			}
+
+			CategoryUploading = DetermineCoinCategory(ChallengeUploading);
+			ChallengeUploading.ParentCategory = CategoryUploading.ToString();
+
+//			FightManager.GetConfirmation(FightManager.Translate("confirmUploadChallenge"), ChallengeUploading.PrizeCoins, UploadChallenge);
+			FightManager.ConfirmChallengeUpload(ChallengeUploading, UploadChallenge);
+		}
+
+
+		private void UploadChallenge()
+		{
+			if (challengeUploaded)
+				return;
+
+			if (ChallengeUploading == null)
+				return;
+			
+			if (CategoryUploading == ChallengeCategory.None)
+				return;
+			
+			UpLoadingChallenge = true;
+			FirebaseManager.SaveChallenge(ChallengeUploading, CategoryUploading, true); 
+		}
+
+		private void OnUploadCancelled(AIDifficulty difficulty, string location)
+		{
+			// set all cards to the selected difficulty in case more team members are added
+			SetCardDifficulties(difficulty);
+
+			selectedLocation = location;
+		}
+
+
+		public static ChallengeCategory DetermineCoinCategory(ChallengeData challenge)
+		{
+			if (challenge.PrizeCoins <= IronThreshold)
+				return ChallengeCategory.Iron;
+
+			if (challenge.PrizeCoins <= BronzeThreshold)
+				return ChallengeCategory.Bronze;
+
+			if (challenge.PrizeCoins <= SilverThreshold)
+				return ChallengeCategory.Silver;
+
+			if (challenge.PrizeCoins <= GoldThreshold)
+				return ChallengeCategory.Gold;
+
+			return ChallengeCategory.Diamond;
+		}
+
+//		public static AIDifficulty? GetTeamDifficulty(TeamChallenge challenge)
+//		{
+//			AIDifficulty? difficulty = null;
+//
+//			foreach (var teamMember in challenge.AITeam)
+//			{
+//				if (difficulty == null)					// first team member
+//					difficulty = teamMember.Difficulty;
+//
+//				if (teamMember.Difficulty != difficulty)	// not same as first - must be mixed difficulties
+//					return null;
+//			}
+//
+//			return difficulty;
+//		}
+
+		// callback from Firebase
+		private void OnChallengeUploaded(ChallengeCategory category, ChallengeData challenge, bool success)
+		{
+			if (success)
+			{
+				if (UpLoadingChallenge)
+				{
+					UpLoadingChallenge = false;
+					challengeUploaded = true;
+
+					uploadText.text = FightManager.Translate("uploaded");
+					uploadButton.interactable = false;
+				}
+				else 		// uploaded by someone else - refresh list
+				{
+					if (category == selectedCategory)
+						GetChallenges(category);//, true);			// refresh challenge buttons
+				}
+
+//				Debug.Log("OnChallengeUploaded: " + challenge.TimeCreated);
+			}
+		}
+
+		// callback from Firebase
+		private void OnChallengesDownloaded(ChallengeCategory category, List<ChallengeData> challenges, bool success)
+		{
+			UpLoadingChallenge = false;
+
+			if (success)
+			{
+				List<TeamChallenge> teamChallenges = new List<TeamChallenge>();
+
+				foreach (var challenge in challenges)
+				{
+					teamChallenges.Add(ConvertToTeamChallenge(challenge));
+				}
+
+				FillChallengeButtons(category, teamChallenges); //, true);
+//				Debug.Log("OnChallengesDownloaded: " + category);
+			}
+		}
+
+		private TeamChallenge ConvertToTeamChallenge(ChallengeData challenge)
+		{
+			var teamChallenge = new TeamChallenge
+			{
+				ChallengeKey = challenge.Key,
+				ChallengeCategory = (ChallengeCategory) Enum.Parse(typeof(ChallengeCategory), challenge.ParentCategory),
+				Location = challenge.Location,
+				PrizeCoins = challenge.PrizeCoins,
+				Name = challenge.Name,
+				DateCreated = challenge.DateCreated,
+				UserId = challenge.UserId,
+
+				AITeam = new List<FighterCard>(),
+			};
+
+			foreach (var teamMember in challenge.Team)
+			{
+				var difficulty = (AIDifficulty) Enum.Parse(typeof(AIDifficulty), teamMember.Difficulty);
+				var staticPowerUp = (PowerUp) Enum.Parse(typeof(PowerUp), teamMember.StaticPowerUp);
+				var triggerPowerUp = (PowerUp) Enum.Parse(typeof(PowerUp), teamMember.TriggerPowerUp);
+				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
+//				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.FighterColour, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
+//				Debug.Log("ConvertToTeamChallenge: " + teamMember.FighterName + " Level " + teamMember.Level);
+
+			}
+
+			return teamChallenge;
+		}
+
+		private ChallengeTeamMember ConvertToTeamMember(FighterCard fighterCard)
+		{
+			return new ChallengeTeamMember
+			{
+				FighterName = fighterCard.FighterName,
+				FighterColour = fighterCard.FighterColour,
+				Level = fighterCard.Level,
+				XP = (int)fighterCard.XP,
+				Difficulty = fighterCard.Difficulty.ToString(),
+				StaticPowerUp = fighterCard.StaticPowerUp.ToString(),
+				TriggerPowerUp = fighterCard.TriggerPowerUp.ToString(),
+			};
+		}
+			
+			
+		private List<TeamChallenge> DiamondChallenges
+		{
+			get
+			{
+				return new List<TeamChallenge>
+				{
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Diamond,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", 4, 45.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+						},
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Diamond,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Danjuma", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", 24, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, null, ArmourPiercing),
+							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Diamond,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Jackson", 5, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Alazne", 5, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 15, 10.0f, AIDifficulty.Medium, null, null),
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Diamond,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Shiro", 7, 75.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Hoi Lun", 11, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", 16, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+						}
+					}, 
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Diamond,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Alazne", 31, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", 1, 50.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+						}
+					},
+				};
+			}
+		}
+
+		private List<TeamChallenge> GoldChallenges
+		{
+			get
+			{
+				return new List<TeamChallenge>
+				{
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Gold,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+
+						}
+					}, 
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Gold,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, null, HealthBooster),
+							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, null, ArmourPiercing),	
+							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Gold,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, null, PoiseWrecker),	
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Gold,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Alazne", 51, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+						}
+					},
+				};
+			}
+		}
+
+		private List<TeamChallenge> SilverChallenges
+		{
+			get
+			{
+				return new List<TeamChallenge>
+				{
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Silver,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Alazne", 8, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Silver,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Shiyang", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Shiro", 42, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, null, Ignite),
+							CreateChallengeCard("Hoi Lun", 41, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 6, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+						}
+					}, 
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Silver,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Alazne", 12, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiyang", 28, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 31, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Danjuma", 3, 0.0f, AIDifficulty.Medium, SecondLife, null),
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Silver,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Leoni", 21, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", 7, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 9, 10.0f, AIDifficulty.Medium, Avenger, null),
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Silver,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Danjuma", 28, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", 18, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", 11, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 5, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", 4, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+						}
+					},
+				};
+			}
+		}
+
+		private List<TeamChallenge> BronzeChallenges
+		{
+			get
+			{
+				return new List<TeamChallenge>
+				{
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Bronze,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Shiyang", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Shiro", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", 48, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Danjuma", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", 9, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 4, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", 17, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+						}
+					}, 
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Bronze,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Leoni", 11, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", 24, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", 33, 10.0f, AIDifficulty.Medium, Avenger, null),
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Bronze,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", 16, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 19, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", 32, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Bronze,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Alazne", 15, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Danjuma", 25, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Natalya", 35, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", 15, 0.0f, AIDifficulty.Medium, SecondLife, null),
+						}
+					},
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Bronze,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Natalya", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Jackson", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Hoi Lun", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+						}
+					},
+				};
+			}
+		}
+
+		private List<TeamChallenge> IronChallenges
+		{
+			get
+			{
+				return new List<TeamChallenge>
+				{
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Iron,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Danjuma", 20, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", 10, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", 10, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", 10, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Jackson", 14, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+						}
+					}, 
+
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Iron,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+						}
+					},
+							
+					new TeamChallenge
+					{
+						ChallengeCategory = ChallengeCategory.Iron,
+						Location = FightManager.china,
+
+						AITeam = new List<FighterCard>
+						{
+							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),
+							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+						}
+					},
+				};
+			}
+		}
+
+		#endregion 		// challenges
+	}
+
+
+//	public class ChallengePot
+//	{
+//		public DateTime DateAccepted;
+//
+//		public TeamChallenge AcceptedChallenge = null;
+//		public int SelectedTeamPrizeCoins = 0;
+//
+//		public int PotCoins { get { return AcceptedChallenge.PrizeCoins + SelectedTeamPrizeCoins; } }
+//	}
+}

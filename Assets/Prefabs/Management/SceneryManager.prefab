@@ -1,0 +1,472 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1000013338303472}
+  m_IsPrefabParent: 1
+--- !u!1 &1000013338303472
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4000011459882662}
+  - component: {fileID: 114000011241090334}
+  - component: {fileID: 114000012795993058}
+  - component: {fileID: 114000012223618098}
+  - component: {fileID: 114000010858845474}
+  - component: {fileID: 114000014108974914}
+  - component: {fileID: 114000012487930316}
+  - component: {fileID: 114000011551915190}
+  - component: {fileID: 114000011781721104}
+  - component: {fileID: 114000011710535278}
+  - component: {fileID: 114000013339910076}
+  - component: {fileID: 114000010147997924}
+  - component: {fileID: 114234476663862656}
+  - component: {fileID: 114930434734715112}
+  - component: {fileID: 114417049015730456}
+  - component: {fileID: 82000011165525256}
+  - component: {fileID: 167000012042618672}
+  m_Layer: 9
+  m_Name: SceneryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4000011459882662
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &82000011165525256
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+--- !u!114 &114000010147997924
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1000011268207096, guid: 0a3e841ec9770419d98aebb83187f962, type: 2}
+  sceneryName: Ghetto Street
+  width: 560
+  replications: 2
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 0.683511, g: 0.6985294, b: 0.52389705, a: 1}
+  fogStart: 200
+  fogEnd: 1500
+  fogDensity: 0
+  MusicTrack: {fileID: 8300000, guid: 35b15e72584764fafa87e821520c4e16, type: 3}
+  PinToCamera: 0
+--- !u!114 &114000010858845474
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 123800, guid: 1261d920e39724ef08427934be05a657, type: 2}
+  sceneryName: Tokyo Car Park
+  width: 720
+  replications: 2
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 1, g: 0.7745099, b: 0.5, a: 1}
+  fogStart: 200
+  fogEnd: 10000
+  fogDensity: 0.001
+  MusicTrack: {fileID: 8300000, guid: a448ff191de994029956df2643fc7461, type: 3}
+  PinToCamera: 0
+--- !u!114 &114000011241090334
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77afe62939f634311b2f079440df55eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlaySceneryMusic: 1
+--- !u!114 &114000011551915190
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 128120, guid: c0db74cb7f914480fbdd6af19d628de9, type: 2}
+  sceneryName: Nigerian Fight Club
+  width: 560
+  replications: 1
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 1, g: 1, b: 1, a: 1}
+  fogStart: 100
+  fogEnd: 1000
+  fogDensity: 0
+  MusicTrack: {fileID: 8300000, guid: 247d4f3de0fb84d2b97a769add734871, type: 3}
+  PinToCamera: 0
+--- !u!114 &114000011710535278
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 148174, guid: e93528d57873e402d9ec506d7476cdb9, type: 2}
+  sceneryName: Hawaii Beach
+  width: 640
+  replications: 2
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 0.64705884, g: 0.8533618, b: 1, a: 1}
+  fogStart: 200
+  fogEnd: 2700
+  fogDensity: 0
+  MusicTrack: {fileID: 8300000, guid: 8d9d01a482c49480e99b9747db014f56, type: 3}
+  PinToCamera: 0
+--- !u!114 &114000011781721104
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 196576, guid: b995cbcc26195474f8ff919894ba4d63, type: 2}
+  sceneryName: Hawaii Beach
+  width: 1920
+  replications: 1
+  fogEnabled: 0
+  fogMode: 1
+  fogColour: {r: 1, g: 1, b: 0.822, a: 1}
+  fogStart: 200
+  fogEnd: 1500
+  fogDensity: 0
+  MusicTrack: {fileID: 0}
+  PinToCamera: 0
+--- !u!114 &114000012223618098
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 145050, guid: 2bb86f9c9e33e4d1a8f92776aa29e7ec, type: 2}
+  sceneryName: Tokyo Car Park
+  width: 720
+  replications: 3
+  fogEnabled: 0
+  fogMode: 1
+  fogColour: {r: 1, g: 0.9097846, b: 0.79995674, a: 1}
+  fogStart: 200
+  fogEnd: 2800
+  fogDensity: 0.001
+  MusicTrack: {fileID: 0}
+  PinToCamera: 0
+--- !u!114 &114000012487930316
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 119940, guid: b1a3b0eb065494b4f8a234764ad50ac4, type: 2}
+  sceneryName: China High Street
+  width: 960
+  replications: 2
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 1, g: 1, b: 1, a: 1}
+  fogStart: 200
+  fogEnd: 4000
+  fogDensity: 0.002
+  MusicTrack: {fileID: 8300000, guid: 72f13edb02f54497aaaa6251beb73abb, type: 3}
+  PinToCamera: 0
+--- !u!114 &114000012795993058
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 153428, guid: ea3421324d3384788a99aa6efd8b78a2, type: 2}
+  sceneryName: Soviet Air Museum
+  width: 560
+  replications: 2
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 0.97794116, g: 0.9060337, b: 0.9060337, a: 1}
+  fogStart: 200
+  fogEnd: 2000
+  fogDensity: 0.001
+  MusicTrack: {fileID: 8300000, guid: ae1095e02c1c743b793f9817368f0bff, type: 3}
+  PinToCamera: 0
+--- !u!114 &114000013339910076
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1000010153438702, guid: a2e824d7e99694f7bb6c7ed952b6aad4, type: 2}
+  sceneryName: Cuba Gas Station
+  width: 640
+  replications: 1
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 1, g: 0.93509126, b: 0.7647059, a: 1}
+  fogStart: 200
+  fogEnd: 1500
+  fogDensity: 0
+  MusicTrack: {fileID: 8300000, guid: 9f1cf5a0b25ac49d5b18826e8c4378d0, type: 3}
+  PinToCamera: 0
+--- !u!114 &114000014108974914
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 104220, guid: 87cbdf6df3ca54f058a5fae265058134, type: 2}
+  sceneryName: Hong Kong High School
+  width: 560
+  replications: 1
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 0.86764705, g: 1, b: 1, a: 1}
+  fogStart: 200
+  fogEnd: 2000
+  fogDensity: 0.001
+  MusicTrack: {fileID: 8300000, guid: 7ea0521c450984d2d862c97ab6345775, type: 3}
+  PinToCamera: 0
+--- !u!114 &114234476663862656
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1953970419969980, guid: 048d5dc8763564b78859ed6331985845, type: 2}
+  sceneryName: Dojo
+  width: 560
+  replications: 1
+  fogEnabled: 1
+  fogMode: 1
+  fogColour: {r: 0.7809957, g: 0.8308824, b: 0.7331315, a: 1}
+  fogStart: 350
+  fogEnd: 1500
+  fogDensity: 0
+  MusicTrack: {fileID: 8300000, guid: b0546c545b1a84c1f96e1cf832aa31e8, type: 3}
+  PinToCamera: 0
+--- !u!114 &114417049015730456
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1062902251863604, guid: 6e872ac66059e4894b3708d7b50923ac, type: 2}
+  sceneryName: Space Station
+  width: 720
+  replications: 1
+  fogEnabled: 0
+  fogMode: 1
+  fogColour: {r: 1.0313647, g: 1.0294118, b: 1.0521194, a: 1}
+  fogStart: 200
+  fogEnd: 1500
+  fogDensity: 0
+  MusicTrack: {fileID: 8300000, guid: e9937d1b5939b43b98c802afac08f5c0, type: 3}
+  PinToCamera: 0
+--- !u!114 &114930434734715112
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1215157389593672, guid: a626467e2e4d7404eb6afe6a279d81f7, type: 2}
+  sceneryName: Space Station
+  width: 820
+  replications: 0
+  fogEnabled: 0
+  fogMode: 1
+  fogColour: {r: 1.0313647, g: 1.0294118, b: 1.0521194, a: 1}
+  fogStart: 200
+  fogEnd: 1500
+  fogDensity: 0
+  MusicTrack: {fileID: 0}
+  PinToCamera: 1
+--- !u!167 &167000012042618672
+AudioReverbZone:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_MinDistance: 10
+  m_MaxDistance: 15
+  m_ReverbPreset: 10
+  m_Room: -1000
+  m_RoomHF: -698
+  m_DecayTime: 7.24
+  m_DecayHFRatio: 0.33
+  m_Reflections: -1166
+  m_ReflectionsDelay: 0.02
+  m_Reverb: 16
+  m_ReverbDelay: 0.03
+  m_HFReference: 5000
+  m_RoomRolloffFactor: 0
+  m_Diffusion: 100
+  m_Density: 100
+  m_LFReference: 250
+  m_RoomLF: 0

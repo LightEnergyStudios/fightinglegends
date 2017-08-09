@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f0b625614a406468ee087f147489e7, type: 3}
+  m_Name: '[JacksonP1]58671a46b606f45d99b68f25099edfce_1_1'
+  m_EditorClassIdentifier: 
+  m_Asset: {fileID: 11400000, guid: 58671a46b606f45d99b68f25099edfce, type: 2}
+  m_Scale: 1
+  m_CSF: 1
+  m_CurrentDataPath: Assets/Artwork/Characters/Jackson/Save/
+  m_Data:
+  - m_SearchName: JacksonP1
+    m_SharedTexture: {fileID: 2800000, guid: 8222912faa959445aaf0a8199d583f69, type: 3}
+    m_SharedMaterial: {fileID: 2100000, guid: 9d5826d36893f46bca0fe4a7ebff9f6b, type: 2}

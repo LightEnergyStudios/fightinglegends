@@ -1,0 +1,180 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1000013258189770}
+  m_IsPrefabParent: 1
+--- !u!1 &1000013258189770
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4000012071242476}
+  - component: {fileID: 114000011511193482}
+  - component: {fileID: 81000013090207800}
+  m_Layer: 0
+  m_Name: FightManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4000012071242476
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013258189770}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &81000013090207800
+AudioListener:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013258189770}
+  m_Enabled: 1
+--- !u!114 &114000011511193482
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013258189770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eab12ca086044eda82720f1905c417e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DirectToOverlay: 0
+  NavigatedFrom: 0
+  ParentCanvas: {fileID: 0}
+  MusicTrack: {fileID: 0}
+  FadeSound: {fileID: 0}
+  dojoUI: {fileID: 0}
+  HoiLunP1Prefab: {fileID: 117932, guid: 459b62cc846424b138f8291e90fc1aec, type: 2}
+  HoiLunP2Prefab: {fileID: 188436, guid: b8fa731f8ae46416d86a5554b152576f, type: 2}
+  HoiLunP3Prefab: {fileID: 180096, guid: e9262a1ec22e148e3bfd61170fa1655a, type: 2}
+  NinjaP1Prefab: {fileID: 197900, guid: 3e9915b4fd3614c499f343fd7001c890, type: 2}
+  NinjaP2Prefab: {fileID: 113064, guid: 5675ce0769a9c440eac3c53892f8f179, type: 2}
+  NinjaP3Prefab: {fileID: 195328, guid: 1e2503266d3ec4c8c8e250d034089e15, type: 2}
+  DanjumaP1Prefab: {fileID: 1000013774939974, guid: 5e7b1db1c0d0c4959b443a2cf73d2c72,
+    type: 2}
+  DanjumaP2Prefab: {fileID: 1000011886294068, guid: 41aefbdb8092e470ebfdaa62f569735d,
+    type: 2}
+  DanjumaP3Prefab: {fileID: 1000013866504344, guid: 7c9015b7432ae402cb190a58997f3ef4,
+    type: 2}
+  LeoniP1Prefab: {fileID: 163814, guid: 5addc3eef5abf44299bdabfa6673a5ca, type: 2}
+  LeoniP2Prefab: {fileID: 130032, guid: c046c5ccf53934ba2a447c4bb81b63c8, type: 2}
+  LeoniP3Prefab: {fileID: 151328, guid: 6c60fb72039634510922aed3c5e13312, type: 2}
+  NatalyaP1Prefab: {fileID: 173456, guid: 8cb8d8b181a194150a5de71e85b82327, type: 2}
+  NatalyaP2Prefab: {fileID: 198818, guid: 997acb226928b4a5a8b5ebf17c849536, type: 2}
+  NatalyaP3Prefab: {fileID: 116602, guid: 5b1afc03e1bbf4fff93cce901c5d14c7, type: 2}
+  ShiroP1Prefab: {fileID: 143518, guid: 9d037f4bce6f24083ab7719ded96875f, type: 2}
+  ShiroP2Prefab: {fileID: 136998, guid: 845b50745a919428aad98843acc13d00, type: 2}
+  ShiroP3Prefab: {fileID: 148612, guid: 43c9b92fc38c34d0d974e6c0aa700599, type: 2}
+  AlazneP1Prefab: {fileID: 1000011067239720, guid: 3742495a09cd94b5582a720302974db1,
+    type: 2}
+  AlazneP2Prefab: {fileID: 1000013197959568, guid: 860ab2e7ff3e9403e9278f1ac2ae6030,
+    type: 2}
+  AlazneP3Prefab: {fileID: 1000014042887364, guid: 20f35749ea96a44229df7c6a1ee7c87b,
+    type: 2}
+  JacksonP1Prefab: {fileID: 1000013295437442, guid: c08d6f45352ba4e3e93050e25b710fff,
+    type: 2}
+  JacksonP2Prefab: {fileID: 1000010343289280, guid: f60b99a834bfa4b759927908a42d1b8e,
+    type: 2}
+  JacksonP3Prefab: {fileID: 1000014052481156, guid: f87fc936dbd75413fa47cb5ebf7210f3,
+    type: 2}
+  ShiyangP1Prefab: {fileID: 1000012388219020, guid: 04f4032dc29dd4ff0b1dc045d6d22c84,
+    type: 2}
+  ShiyangP2Prefab: {fileID: 1000012884355634, guid: a4dd21062de114c599c1b2c35e03d397,
+    type: 2}
+  ShiyangP3Prefab: {fileID: 1000010350761864, guid: 66e7b82c56f4c420a803629345167e62,
+    type: 2}
+  SkeletronP1Prefab: {fileID: 1581562543976310, guid: 8fea3c4f0f6d142dd918e4a9b24868b5,
+    type: 2}
+  SkeletronP2Prefab: {fileID: 1012549100889032, guid: f982357e410824856b792eccc6b7e209,
+    type: 2}
+  SkeletronP3Prefab: {fileID: 1236957594757668, guid: 9e04fb9050ca345418f89bb628766d92,
+    type: 2}
+  KOSound: {fileID: 8300000, guid: 72640739509dd47c78c5187bc81a3dc6, type: 3}
+  SuccessSound: {fileID: 8300000, guid: 9a22579c1e42648719e5e8838683ad2a, type: 3}
+  RoundSound: {fileID: 8300000, guid: c2e8bf39937ab4722b2adc328479646b, type: 3}
+  FightSound: {fileID: 8300000, guid: dce43835534fa49deb83667241d910d6, type: 3}
+  OKSound: {fileID: 8300000, guid: 775d400e6e76d4e08b05a038bcf2fd4e, type: 3}
+  BlingSound: {fileID: 8300000, guid: 8b77febbd0579426fbee857dd2928daf, type: 3}
+  CoinSound: {fileID: 8300000, guid: c9dc675ee5cb04493b943628990c566e, type: 3}
+  WrongSound: {fileID: 8300000, guid: 094f69562d8d44577b3f48e981847cd1, type: 3}
+  ThemeSound: {fileID: 8300000, guid: 8b77febbd0579426fbee857dd2928daf, type: 3}
+  OneSound: {fileID: 8300000, guid: a882f06bb787e40a7890ba619279560c, type: 3}
+  TwoSound: {fileID: 8300000, guid: e5d1fa07aadae462a82c45330b6bc260, type: 3}
+  ThreeSound: {fileID: 8300000, guid: 24c152d235a954034813ad8199bd2e1c, type: 3}
+  FourSound: {fileID: 8300000, guid: 18cc3bf7b44d44e23ab8029440d57d90, type: 3}
+  FiveSound: {fileID: 8300000, guid: e5a4bb8c669554eb9873aa985ebf3dfc, type: 3}
+  SixSound: {fileID: 8300000, guid: 053130abc3f46450f895e5bdb3cdde27, type: 3}
+  SevenSound: {fileID: 8300000, guid: 4c8c0657365364f4abc37cbaaa7cf0e8, type: 3}
+  EightSound: {fileID: 8300000, guid: b999afdde16a840ce850abac1904a398, type: 3}
+  NineSound: {fileID: 8300000, guid: 6acda550528ff41ea8f62af1ff9fc2e3, type: 3}
+  ZeroSound: {fileID: 8300000, guid: 5f15854919e0d447a92db3083983d498, type: 3}
+  ErrorSound: {fileID: 8300000, guid: e92517eab5b9e4b0f9f1fff769c4461c, type: 3}
+  PowerUpSound: {fileID: 8300000, guid: 358bd814393754479ad28041f603d4f2, type: 3}
+  BackSound: {fileID: 8300000, guid: 094f69562d8d44577b3f48e981847cd1, type: 3}
+  ForwardSound: {fileID: 8300000, guid: d5153df1a663b4f6aabb18dd9cf1b773, type: 3}
+  TrainingPromptSound: {fileID: 8300000, guid: fa441a6ed23df4467b1d430d83a214b3, type: 3}
+  Player1: {fileID: 0}
+  Player2: {fileID: 0}
+  IsMobileDevice: 1
+  CurrentMenuCanvas: 0
+  matchStats: {fileID: 0}
+  MatchStatsChoice: 0
+  MatchStatsRestartMatch: 0
+  pauseSettings: {fileID: 0}
+  PauseSettingsChoice: 0
+  worldMap: {fileID: 0}
+  SelectedLocation: 
+  SelectedAIName: 
+  WorldMapChoice: 0
+  WorldMapPosition: {x: 0, y: 0, z: 0}
+  PlayerCreatedChallenges: 0
+  arcadeFighterSelect: {fileID: 0}
+  survivalFighterSelect: {fileID: 0}
+  FighterSelectChoice: 0
+  teamSelect: {fileID: 0}
+  TeamSelectChoice: 0
+  modeSelect: {fileID: 0}
+  ModeSelectChoice: 0
+  storeManager: {fileID: 0}
+  StoreChoice: 0
+  FBManager: {fileID: 0}
+  FacebookChoice: 0
+  LeaderboardManager: {fileID: 0}
+  LeaderboardsChoice: 0
+  options: {fileID: 0}
+  SelectedMenuOverlay: 0
+  MatchBestOf: 3
+  countdownFreeze: 1
+  dashInAudio: {fileID: 8300000, guid: fa441a6ed23df4467b1d430d83a214b3, type: 3}
+  dashInTime: 0.5
+  recycleTime: 0.05
+  InitialCoins: 100
+  waterHeader: {fileID: 21300000, guid: d63f8cb0febeb48f6aedfb5dc7bb6081, type: 3}
+  airHeader: {fileID: 21300000, guid: e00f0d1fc106045cf9753528f568d8e2, type: 3}
+  fireHeader: {fileID: 21300000, guid: f79c23c9b29f74510a93034d071d2a00, type: 3}
+  earthHeader: {fileID: 21300000, guid: 43c36c88ae8d344758c4542380a43b34, type: 3}
+  waterFooter: {fileID: 21300000, guid: 4aa8bcd3c78e84881bc0567cb46448da, type: 3}
+  airFooter: {fileID: 21300000, guid: ba656c26f030f4f11ab6b12913610789, type: 3}
+  fireFooter: {fileID: 21300000, guid: 0c059c720ac434ef7ae3fc318131b4f4, type: 3}
+  earthFooter: {fileID: 21300000, guid: f61b6bfd3dbb94f2fbbd6f6792ac1861, type: 3}

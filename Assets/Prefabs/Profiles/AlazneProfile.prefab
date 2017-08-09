@@ -1,0 +1,2694 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &177230
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 412642}
+  - component: {fileID: 11404614}
+  m_Layer: 0
+  m_Name: AlazneProfile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &412642
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 177230}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &11404614
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 177230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23c5152759de945918c7426938c7043e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ProfileName: Alazne
+  SpotFXPrefab: {fileID: 117072, guid: 1213e66111dee43fbb8bf6e07778c016, type: 2}
+  ElementsFXPrefab: {fileID: 1976077684887768, guid: ca979ec03bf8b43af812445dfab209af,
+    type: 2}
+  SmokeFXPrefab: {fileID: 1666175661137048, guid: f23a282ce668f498ab1fcf88dc62a2e1,
+    type: 2}
+  DustPrefab: {fileID: 1723952538234936, guid: 0dce63d3f965942c9af456a9ea0d9820, type: 2}
+  FirePrefab: {fileID: 1000012818959194, guid: a93f850e8002e4e3c8294dfb3a61af77, type: 2}
+  WaterPrefab: {fileID: 0}
+  ProfileData:
+    SavedData:
+      FighterName: 
+      FighterColour: 
+      Health: 0
+      Level: 1
+      XP: 0
+      TotalXP: 0
+      Gauge: 0
+      GaugeDamage: 0
+      IsLocked: 0
+      TriggerPowerUp: 0
+      StaticPowerUp: 0
+      TriggerPowerUpCoolDown: 0
+      TriggerPowerUpCost: 0
+      StaticPowerUpCost: 0
+      FightStartLevel: 1
+      CompletedLocations: []
+      WorldTourCompletions: 0
+    InitialHealth: 500
+    AttackRating: 256
+    FighterClass: 1
+    Element1: 4
+    Element2: 2
+    ArmourDownDamageFactor: 2
+    ArmourUpDamageFactor: 0.5
+    OnFireDamagePerTick: 0.33
+    HealthUpBoost: 10
+    StrikeTravelTime: 0.1
+    RecoilTravelTime: 0.1
+    AttackDistance: 140
+    RomanCancelFreezeFrames: 6
+    ExpiryTime: 4
+    ExpiryDistance: 750
+    AIDoNothingFactor: 1
+    AIHealthBoostLevel: 250
+    AIVengeanceBoostLevel: 2
+    HitDamageFactor: 1
+    RomanCancelGauge: 1
+    VengeanceGauge: 3
+    CounterGauge: 2
+    DamagePerGaugeLozenge: 20
+    PoiseWreckerFactor: 2
+    PoiseMasterFactor: 0.5
+    AvengerFactor: 2
+    RegeneratorFactor: 0.05
+    ArmourPiercingFactor: 2
+    PowerAttackDamageFactor: 2
+    lightWhiff: {fileID: 8300000, guid: fa441a6ed23df4467b1d430d83a214b3, type: 3}
+    mediumWhiff: {fileID: 8300000, guid: b7fe5052b85a04fbc9d4f9631dc20896, type: 3}
+    heavyWhiff: {fileID: 8300000, guid: 3505cb948553540e1a9a7026c4417c77, type: 3}
+    specialWhiff: {fileID: 8300000, guid: 3505cb948553540e1a9a7026c4417c77, type: 3}
+    counterWhiff: {fileID: 8300000, guid: 3505cb948553540e1a9a7026c4417c77, type: 3}
+    vengeanceWhiff: {fileID: 8300000, guid: ced887097e240475faf6c0024a5251d2, type: 3}
+    missSound: {fileID: 8300000, guid: 8e3ded0eb47e74eebafd0b5b733c3758, type: 3}
+    counterTriggerSound: {fileID: 8300000, guid: 8162916d87e01478bad5cc7132e6314b,
+      type: 3}
+    romanCancelSound: {fileID: 8300000, guid: 785f3fdf893e14290bd258c3eeae83e5, type: 3}
+    blockedHitSound: {fileID: 8300000, guid: dcfc4b4b69cd64459868491b53ae78fe, type: 3}
+    waterSound: {fileID: 8300000, guid: f983095349dc541c4b00b0ec3ab6e136, type: 3}
+    fireSound: {fileID: 8300000, guid: 6277ddce152514470a6cd67880396de4, type: 3}
+    airSound: {fileID: 8300000, guid: 358bd814393754479ad28041f603d4f2, type: 3}
+    earthSound: {fileID: 8300000, guid: 7882460a55198445eb60d2e801c25240, type: 3}
+  StateSignature:
+    LightStrike:
+    - State: 2000
+      FrameNumber: 1
+      Actions: 02000000
+      TypeOfHit: 1
+      HitStunFrames: 2
+      BlockStunFrames: 1
+      HitDamage: 8
+      BlockDamage: 2
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 16480adc2384c445b86f5f4fa4a181d3, type: 3}
+      SpotEffect: 1
+    MediumStrike:
+    - State: 6000
+      FrameNumber: 1
+      Actions: 02000000
+      TypeOfHit: 1
+      HitStunFrames: 4
+      BlockStunFrames: 2
+      HitDamage: 12
+      BlockDamage: 3
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 75dfc23e514e0447a9c93c7f3ecddea3, type: 3}
+      SpotEffect: 2
+    HeavyStrike:
+    - State: 10000
+      FrameNumber: 1
+      Actions: 02000000
+      TypeOfHit: 4
+      HitStunFrames: 8
+      BlockStunFrames: 4
+      HitDamage: 18
+      BlockDamage: 4.5
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 4747d228f36824fb29ba3d352d96abb4, type: 3}
+      SpotEffect: 3
+    Shove:
+    - State: 13000
+      FrameNumber: 1
+      Actions: 02000000
+      TypeOfHit: 5
+      HitStunFrames: 4
+      BlockStunFrames: 8
+      HitDamage: 0
+      BlockDamage: 0
+      FreezeFrames: 0
+      CameraShakes: 0
+      SoundEffect: {fileID: 8300000, guid: c8aa4064dedb84c4ab777982befcfe99, type: 3}
+      SpotEffect: 9
+    Special:
+    - State: 16000
+      FrameNumber: 5
+      Actions: 01000000
+      TypeOfHit: 1
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 4
+      BlockDamage: 1
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 16480adc2384c445b86f5f4fa4a181d3, type: 3}
+      SpotEffect: 2
+    - State: 16000
+      FrameNumber: 9
+      Actions: 01000000
+      TypeOfHit: 3
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 4
+      BlockDamage: 1
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 75dfc23e514e0447a9c93c7f3ecddea3, type: 3}
+      SpotEffect: 2
+    - State: 16000
+      FrameNumber: 16
+      Actions: 01000000
+      TypeOfHit: 4
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 4
+      BlockDamage: 1
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 16480adc2384c445b86f5f4fa4a181d3, type: 3}
+      SpotEffect: 2
+    - State: 16000
+      FrameNumber: 18
+      Actions: 01000000
+      TypeOfHit: 4
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 4
+      BlockDamage: 1
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 4747d228f36824fb29ba3d352d96abb4, type: 3}
+      SpotEffect: 2
+    - State: 16000
+      FrameNumber: 21
+      Actions: 01000000
+      TypeOfHit: 4
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 4
+      BlockDamage: 1
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 75dfc23e514e0447a9c93c7f3ecddea3, type: 3}
+      SpotEffect: 2
+    - State: 16000
+      FrameNumber: 30
+      Actions: 02000000
+      TypeOfHit: 3
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 4
+      BlockDamage: 1
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 4747d228f36824fb29ba3d352d96abb4, type: 3}
+      SpotEffect: 3
+    - State: 18000
+      FrameNumber: 1
+      Actions: 02000000
+      TypeOfHit: 1
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 40
+      BlockDamage: 10
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: a60266e86fa6741e79d9b365c31872c6, type: 3}
+      SpotEffect: 3
+    Vengeance:
+    - State: 14000
+      FrameNumber: 13
+      Actions: 01000000
+      TypeOfHit: 1
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.25
+      FreezeFrames: 0
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 4747d228f36824fb29ba3d352d96abb4, type: 3}
+      SpotEffect: 1
+    - State: 14000
+      FrameNumber: 20
+      Actions: 01000000
+      TypeOfHit: 3
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.25
+      FreezeFrames: 0
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 16480adc2384c445b86f5f4fa4a181d3, type: 3}
+      SpotEffect: 2
+    - State: 14000
+      FrameNumber: 24
+      Actions: 01000000
+      TypeOfHit: 2
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.24
+      FreezeFrames: 0
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 16480adc2384c445b86f5f4fa4a181d3, type: 3}
+      SpotEffect: 1
+    - State: 14000
+      FrameNumber: 28
+      Actions: 01000000
+      TypeOfHit: 4
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.25
+      FreezeFrames: 0
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 75dfc23e514e0447a9c93c7f3ecddea3, type: 3}
+      SpotEffect: 2
+    - State: 14000
+      FrameNumber: 32
+      Actions: 01000000
+      TypeOfHit: 3
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.25
+      FreezeFrames: 0
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 16480adc2384c445b86f5f4fa4a181d3, type: 3}
+      SpotEffect: 1
+    - State: 14000
+      FrameNumber: 36
+      Actions: 01000000
+      TypeOfHit: 3
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.25
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 16480adc2384c445b86f5f4fa4a181d3, type: 3}
+      SpotEffect: 3
+    - State: 14000
+      FrameNumber: 42
+      Actions: 01000000
+      TypeOfHit: 4
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.25
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: 75dfc23e514e0447a9c93c7f3ecddea3, type: 3}
+      SpotEffect: 3
+    - State: 14000
+      FrameNumber: 44
+      Actions: 02000000
+      TypeOfHit: 4
+      HitStunFrames: 18
+      BlockStunFrames: 6
+      HitDamage: 13
+      BlockDamage: 3.25
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: b3cb3184c686249b3a52626980ceb8be, type: 3}
+      SpotEffect: 3
+    Counter:
+    - State: 22000
+      FrameNumber: 5
+      Actions: 02000000
+      TypeOfHit: 3
+      HitStunFrames: 12
+      BlockStunFrames: 4
+      HitDamage: 50
+      BlockDamage: 12.5
+      FreezeFrames: 2
+      CameraShakes: 2
+      SoundEffect: {fileID: 8300000, guid: a60266e86fa6741e79d9b365c31872c6, type: 3}
+      SpotEffect: 0
+    Tutorial: []
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].Events.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[2].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[3].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[4].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[7].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].Events.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].Events.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].Events.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].Events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].Actions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.Element1
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.Element2
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.BlockStunDamageFactor
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.isPreset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.ProfileName
+      value: Danjuma
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.FighterClass
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].FrameNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].Label
+      value: Light Hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].HitStunFrames
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].BlockStunFrames
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].HitDamage
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].BlockDamage
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].FrameNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].Label
+      value: Medium Hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].HitStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].BlockStunFrames
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].HitDamage
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].BlockDamage
+      value: 4.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].FrameNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].Label
+      value: Heavy Hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].HitStunFrames
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].HitDamage
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].BlockDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].FrameNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].TypeOfHit
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].Label
+      value: Shove Hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].HitStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].FrameNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].Label
+      value: Special Hit 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].HitDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].BlockDamage
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].FrameNumber
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].Label
+      value: Special Hit 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].HitDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].BlockDamage
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].FrameNumber
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].Label
+      value: Special Hit 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].HitDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].BlockDamage
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].FrameNumber
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].Label
+      value: Special Hit 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].HitDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].BlockDamage
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].FrameNumber
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].Label
+      value: Spcecial Hit 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].HitDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].BlockDamage
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].FrameNumber
+      value: 43
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].Label
+      value: Special Hit 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].TypeOfHit
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].HitDamage
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].BlockDamage
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].FrameNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].Label
+      value: Special Extra Hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].TypeOfHit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].BlockStunFrames
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].HitDamage
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].BlockDamage
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].FrameNumber
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].FrameNumber
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].FrameNumber
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].FrameNumber
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].FrameNumber
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].FrameNumber
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].Label
+      value: Vengeance Hit 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].Label
+      value: Vengeance Hit 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].Label
+      value: Vengeance Hit 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].Label
+      value: Vengeance Hit 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].Label
+      value: Vengeance Hit 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].Label
+      value: Vengeance Hit 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].HitStunFrames
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].BlockStunFrames
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].HitDamage
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].BlockDamage
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].HitStunFrames
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].BlockStunFrames
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].HitDamage
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].BlockDamage
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].HitStunFrames
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].BlockStunFrames
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].HitDamage
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].BlockDamage
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].HitStunFrames
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].BlockStunFrames
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].HitDamage
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].BlockDamage
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].HitStunFrames
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].BlockStunFrames
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].HitDamage
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].BlockDamage
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].HitStunFrames
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].BlockStunFrames
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].HitDamage
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].BlockDamage
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].FrameNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].TypeOfHit
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].Label
+      value: Counter Hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].HitDamage
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].BlockDamage
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].soundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: f61f58c2d5cdc497eac7a7e61f78fddc, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].SpotEffect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6e2e19189818a4c9b9017c11aef796be, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].SpotEffect
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: d75b64f845dbc4223a475aaa3a387e38, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: d75b64f845dbc4223a475aaa3a387e38, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].SpotEffect
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: f61f58c2d5cdc497eac7a7e61f78fddc, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: d75b64f845dbc4223a475aaa3a387e38, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: d75b64f845dbc4223a475aaa3a387e38, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: d75b64f845dbc4223a475aaa3a387e38, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.SpecialExtra.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 78ed7274a91dc445aa3ef9dcd53ff429, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].SpotEffect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: d75b64f845dbc4223a475aaa3a387e38, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].SpotEffect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].SpotEffect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: f61f58c2d5cdc497eac7a7e61f78fddc, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].SpotEffect
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].FrameNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].Label
+      value: Light Windup End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].FrameNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].Label
+      value: Light Recovery End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].FrameNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].Label
+      value: Light Cutoff End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].FrameNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].Label
+      value: Medium Windup End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].FrameNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].Label
+      value: Medium recovery End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].FrameNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].Label
+      value: Medium Cutoff End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].FrameNumber
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].FrameEvent
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].Label
+      value: Heavy Windup End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].FrameNumber
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].Label
+      value: Heavy Recovery End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].FrameNumber
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].Label
+      value: Heavy Cutoff End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].FrameNumber
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].Label
+      value: Shove End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].TypeOfHit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].TypeOfHit
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].FrameNumber
+      value: 46
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].Label
+      value: Vengeance End
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].State
+      value: 16000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].State
+      value: 16000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].State
+      value: 16000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].State
+      value: 16000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].State
+      value: 16000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].State
+      value: 16000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].State
+      value: 18000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].FrameNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].Label
+      value: Special Extra Hit
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].TypeOfHit
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].HitDamage
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].BlockDamage
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].State
+      value: 22000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].State
+      value: 13000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].State
+      value: 13000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].State
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].State
+      value: 12000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].State
+      value: 12000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].State
+      value: 12000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].State
+      value: 6000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].State
+      value: 8000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].State
+      value: 8000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].State
+      value: 8000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].State
+      value: 2000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].State
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].State
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].State
+      value: 4000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].FrameNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].State
+      value: 19000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].FrameNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].State
+      value: 19000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].FrameNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].State
+      value: 19000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].FrameNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[11].State
+      value: 19000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[11].FrameNumber
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].State
+      value: 23000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].FrameNumber
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].FrameEvent
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].TypeOfHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].HitStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].BlockStunFrames
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].HitDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].BlockDamage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].SoundEffect
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[2].State
+      value: 23000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[2].FrameNumber
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[3].State
+      value: 23000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[3].FrameNumber
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[3].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[2].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[4].State
+      value: 23000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[4].SpotEffect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].Events.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].TypeOfHit
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[8].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].Events.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[9].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[10].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[1].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[2].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[3].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[4].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].Events.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[1].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[2].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[3].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].Events.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[1].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[2].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[3].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].Events.Array.data[1]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[1].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[2].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[3].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].Events.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[1].Events.Array.data[0]
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].SpotEffect
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].SpotEffect
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[7].FrameNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[7].Events.Array.data[0]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[7].SpotEffect
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].SpotEffect
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[7].State
+      value: 14000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].SoundEffect
+      value: 
+      objectReference: {fileID: 8300000, guid: 6f1d13124691d4d3f9eb96f238ad97f8, type: 3}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.lightWhiff
+      value: 
+      objectReference: {fileID: 8300000, guid: 6cd4f9b984f9b47e2aff1f28e703a82e, type: 3}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.mediumWhiff
+      value: 
+      objectReference: {fileID: 8300000, guid: d2f48098b629c4ff8b12203ac3540a52, type: 3}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.heavyWhiff
+      value: 
+      objectReference: {fileID: 8300000, guid: 6e2e19189818a4c9b9017c11aef796be, type: 3}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.specialWhiff
+      value: 
+      objectReference: {fileID: 8300000, guid: d2f48098b629c4ff8b12203ac3540a52, type: 3}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.counterWhiff
+      value: 
+      objectReference: {fileID: 8300000, guid: 6e2e19189818a4c9b9017c11aef796be, type: 3}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.vengeanceWhiff
+      value: 
+      objectReference: {fileID: 8300000, guid: 6e2e19189818a4c9b9017c11aef796be, type: 3}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].BlockStunFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].CameraShakes
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[6].ShakeDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].ShakeDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].BlockStunFrames
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.ExpiryFrames
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.AttackDistance
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.AttackTravelTime
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.CounterPowerPoints
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.VengeancePowerPoints
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.TravelFrames
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.LightStrike.Array.data[0].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.MediumStrike.Array.data[0].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.HeavyStrike.Array.data[0].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Shove.Array.data[0].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[1].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[2].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[3].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[4].Actions.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].Actions.Array.data[0]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[4].FrameNumber
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[7].State
+      value: 19000
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.RecoilDistance
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.StrikeTravelTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: SpotFXPrefab
+      value: 
+      objectReference: {fileID: 117072, guid: 1213e66111dee43fbb8bf6e07778c016, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ElementsFXPrefab
+      value: 
+      objectReference: {fileID: 112162, guid: 0f9ab57af6e3343d081a3d37e5aec0a5, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.FighterName
+      value: Danjuma
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.ExpiryDistance
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.ExpiryTime
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[0].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[1].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[3].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[5].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].HitStunFrames
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[6].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[4].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Special.Array.data[2].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[0].CameraShakes
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Counter.Array.data[0].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: StateSignature.Vengeance.Array.data[5].FreezeFrames
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.RecoilTravelTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: UIPrefab
+      value: 
+      objectReference: {fileID: 178468, guid: e08f174b2d7c04a1588ace7828e1bdc9, type: 2}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.RomanCancelFreezeFrames
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.ShowDamageOnLastHit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.InitialHealth
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.HealthUpBoost
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.DamagePerGaugeLozenge
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: ProfileData.OnFireDamagePerTick
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 177230}
+  m_IsPrefabParent: 1

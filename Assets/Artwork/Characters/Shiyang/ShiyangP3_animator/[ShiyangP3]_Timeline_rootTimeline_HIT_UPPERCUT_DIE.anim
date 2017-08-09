@@ -1,0 +1,761 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!74 &7400000
+AnimationClip:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: '[ShiyangP3]_Timeline_rootTimeline_HIT_UPPERCUT_DIE'
+  serializedVersion: 6
+  m_Legacy: 0
+  m_Compressed: 0
+  m_UseHighQualityCurve: 1
+  m_RotationCurves: []
+  m_CompressedRotationCurves: []
+  m_EulerCurves: []
+  m_PositionCurves: []
+  m_ScaleCurves: []
+  m_FloatCurves: []
+  m_PPtrCurves: []
+  m_SampleRate: 30
+  m_WrapMode: 0
+  m_Bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  m_ClipBindingConstant:
+    genericBindings: []
+    pptrCurveMapping: []
+  m_AnimationClipSettings:
+    serializedVersion: 2
+    m_AdditiveReferencePoseClip: {fileID: 0}
+    m_AdditiveReferencePoseTime: 0
+    m_StartTime: 0
+    m_StopTime: 3.3333316
+    m_OrientationOffsetY: 0
+    m_Level: 0
+    m_CycleOffset: 0
+    m_HasAdditiveReferencePose: 0
+    m_LoopTime: 1
+    m_LoopBlend: 0
+    m_LoopBlendOrientation: 0
+    m_LoopBlendPositionY: 0
+    m_LoopBlendPositionXZ: 0
+    m_KeepOriginalOrientation: 0
+    m_KeepOriginalPositionY: 1
+    m_KeepOriginalPositionXZ: 0
+    m_HeightFromFeet: 0
+    m_Mirror: 0
+  m_EditorCurves: []
+  m_EulerEditorCurves: []
+  m_HasGenericRootTransform: 0
+  m_HasMotionFloatCurves: 0
+  m_GenerateMotionCurves: 0
+  m_IsEmpty: 0
+  m_Events:
+  - time: 0
+    functionName: updateToFrameAnimatorWithRefresh
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 728
+    messageOptions: 0
+  - time: 0.033333335
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 729
+    messageOptions: 0
+  - time: 0.06666667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 730
+    messageOptions: 0
+  - time: 0.10000001
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 731
+    messageOptions: 0
+  - time: 0.13333334
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 732
+    messageOptions: 0
+  - time: 0.16666667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 733
+    messageOptions: 0
+  - time: 0.2
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 734
+    messageOptions: 0
+  - time: 0.23333333
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 735
+    messageOptions: 0
+  - time: 0.26666668
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 736
+    messageOptions: 0
+  - time: 0.3
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 737
+    messageOptions: 0
+  - time: 0.33333334
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 738
+    messageOptions: 0
+  - time: 0.36666667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 739
+    messageOptions: 0
+  - time: 0.4
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 740
+    messageOptions: 0
+  - time: 0.43333334
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 741
+    messageOptions: 0
+  - time: 0.46666667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 742
+    messageOptions: 0
+  - time: 0.5
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 743
+    messageOptions: 0
+  - time: 0.53333336
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 744
+    messageOptions: 0
+  - time: 0.5666667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 745
+    messageOptions: 0
+  - time: 0.6000001
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 746
+    messageOptions: 0
+  - time: 0.63333344
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 747
+    messageOptions: 0
+  - time: 0.6666668
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 748
+    messageOptions: 0
+  - time: 0.70000017
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 749
+    messageOptions: 0
+  - time: 0.7333335
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 750
+    messageOptions: 0
+  - time: 0.7666669
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 751
+    messageOptions: 0
+  - time: 0.80000025
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 752
+    messageOptions: 0
+  - time: 0.8333336
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 753
+    messageOptions: 0
+  - time: 0.866667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 754
+    messageOptions: 0
+  - time: 0.90000033
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 755
+    messageOptions: 0
+  - time: 0.9333337
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 756
+    messageOptions: 0
+  - time: 0.96666706
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 757
+    messageOptions: 0
+  - time: 1.0000004
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 758
+    messageOptions: 0
+  - time: 1.0333337
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 759
+    messageOptions: 0
+  - time: 1.066667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 760
+    messageOptions: 0
+  - time: 1.1000003
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 761
+    messageOptions: 0
+  - time: 1.1333336
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 762
+    messageOptions: 0
+  - time: 1.1666669
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 763
+    messageOptions: 0
+  - time: 1.2000002
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 764
+    messageOptions: 0
+  - time: 1.2333335
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 765
+    messageOptions: 0
+  - time: 1.2666668
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 766
+    messageOptions: 0
+  - time: 1.3000001
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 767
+    messageOptions: 0
+  - time: 1.3333334
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 768
+    messageOptions: 0
+  - time: 1.3666667
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 769
+    messageOptions: 0
+  - time: 1.4
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 770
+    messageOptions: 0
+  - time: 1.4333333
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 771
+    messageOptions: 0
+  - time: 1.4666666
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 772
+    messageOptions: 0
+  - time: 1.4999999
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 773
+    messageOptions: 0
+  - time: 1.5333332
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 774
+    messageOptions: 0
+  - time: 1.5666665
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 775
+    messageOptions: 0
+  - time: 1.5999998
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 776
+    messageOptions: 0
+  - time: 1.6333331
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 777
+    messageOptions: 0
+  - time: 1.6666664
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 778
+    messageOptions: 0
+  - time: 1.6999997
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 779
+    messageOptions: 0
+  - time: 1.733333
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 780
+    messageOptions: 0
+  - time: 1.7666663
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 781
+    messageOptions: 0
+  - time: 1.7999996
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 782
+    messageOptions: 0
+  - time: 1.8333329
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 783
+    messageOptions: 0
+  - time: 1.8666662
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 784
+    messageOptions: 0
+  - time: 1.8999995
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 785
+    messageOptions: 0
+  - time: 1.9333328
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 786
+    messageOptions: 0
+  - time: 1.9666661
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 787
+    messageOptions: 0
+  - time: 1.9999994
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 788
+    messageOptions: 0
+  - time: 2.0333328
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 789
+    messageOptions: 0
+  - time: 2.0666661
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 790
+    messageOptions: 0
+  - time: 2.0999994
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 791
+    messageOptions: 0
+  - time: 2.1333327
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 792
+    messageOptions: 0
+  - time: 2.166666
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 793
+    messageOptions: 0
+  - time: 2.1999993
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 794
+    messageOptions: 0
+  - time: 2.2333326
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 795
+    messageOptions: 0
+  - time: 2.266666
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 796
+    messageOptions: 0
+  - time: 2.2999992
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 797
+    messageOptions: 0
+  - time: 2.3333325
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 798
+    messageOptions: 0
+  - time: 2.3666658
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 799
+    messageOptions: 0
+  - time: 2.3999991
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 800
+    messageOptions: 0
+  - time: 2.4333324
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 801
+    messageOptions: 0
+  - time: 2.4666657
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 802
+    messageOptions: 0
+  - time: 2.499999
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 803
+    messageOptions: 0
+  - time: 2.5333323
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 804
+    messageOptions: 0
+  - time: 2.5666656
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 805
+    messageOptions: 0
+  - time: 2.599999
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 806
+    messageOptions: 0
+  - time: 2.6333323
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 807
+    messageOptions: 0
+  - time: 2.6666656
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 808
+    messageOptions: 0
+  - time: 2.6999989
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 809
+    messageOptions: 0
+  - time: 2.7333322
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 810
+    messageOptions: 0
+  - time: 2.7666655
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 811
+    messageOptions: 0
+  - time: 2.7999988
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 812
+    messageOptions: 0
+  - time: 2.833332
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 813
+    messageOptions: 0
+  - time: 2.8666654
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 814
+    messageOptions: 0
+  - time: 2.8999987
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 815
+    messageOptions: 0
+  - time: 2.933332
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 816
+    messageOptions: 0
+  - time: 2.9666653
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 817
+    messageOptions: 0
+  - time: 2.9999986
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 818
+    messageOptions: 0
+  - time: 3.0333319
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 819
+    messageOptions: 0
+  - time: 3.0666652
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 820
+    messageOptions: 0
+  - time: 3.0999985
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 821
+    messageOptions: 0
+  - time: 3.1333318
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 822
+    messageOptions: 0
+  - time: 3.166665
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 823
+    messageOptions: 0
+  - time: 3.1999984
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 824
+    messageOptions: 0
+  - time: 3.2333317
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 825
+    messageOptions: 0
+  - time: 3.266665
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 826
+    messageOptions: 0
+  - time: 3.2999983
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 827
+    messageOptions: 0
+  - time: 3.3333316
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 828
+    messageOptions: 0

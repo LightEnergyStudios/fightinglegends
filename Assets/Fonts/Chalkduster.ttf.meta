@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 77a11b92e067e40e196a2f76b792263d
+timeCreated: 1490497409
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Chalkduster
+  fontNames:
+  - Chalkduster
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

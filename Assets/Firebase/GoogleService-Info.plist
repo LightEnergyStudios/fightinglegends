@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>1050376626273-evkhco2cd31pb08d28f6p7v88ilnlhqo.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1050376626273-evkhco2cd31pb08d28f6p7v88ilnlhqo</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDhnlWIcwLm2nF3F4R0sn5vND7K_JyqMTI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1050376626273</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.BurningHeart.FightingLegends</string>
+	<key>PROJECT_ID</key>
+	<string>fighting-legends</string>
+	<key>STORAGE_BUCKET</key>
+	<string>fighting-legends.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1050376626273:ios:ea39d010ff8c2460</string>
+	<key>DATABASE_URL</key>
+	<string>https://fighting-legends.firebaseio.com</string>
+</dict>
+</plist>
