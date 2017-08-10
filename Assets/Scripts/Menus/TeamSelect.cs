@@ -982,7 +982,7 @@ namespace FightingLegends
 
 				// currently clicking a fighter button has the same effect as clicking the challenge button
 				fighterCard.CardButton.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });
-				fighterCard.CardButton.interactable = challengeButton.Challenge.UserId != FightManager.SavedGameStatus.UserId; 	// can't fight own challenge!
+				fighterCard.CardButton.interactable = CanAcceptChallenge(challengeButton.Challenge); // challengeButton.Challenge.UserId != "" && challengeButton.Challenge.UserId != FightManager.SavedGameStatus.UserId; 	// can't fight own challenge!
 
 				// set fighter button position within container challenge button viewport
 				var yOffset = fighterCardYOffset - (IsOdd(fighterIndex) ? fighterCardOddOffset : 0);
@@ -1037,7 +1037,7 @@ namespace FightingLegends
 
 		private void FillChallengeButtons(ChallengeCategory category, List<TeamChallenge> challenges) //, bool playerCreated)
 		{
-//			Debug.Log("GetChallenges " + category);
+//			Debug.Log("FillChallengeButtons " + category);
 
 			EmptyChallengeButtons(category);
 
@@ -1129,13 +1129,18 @@ namespace FightingLegends
 
 				var button = challengeButtonObject.GetComponent<Button>();
 				button.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });		// ref to challenge data, not data in this loop
-				button.interactable = challenge.UserId != FightManager.SavedGameStatus.UserId; 	// can't fight own challenge!
+				button.interactable = CanAcceptChallenge(challenge); // challenge.UserId != "" && challenge.UserId != FightManager.SavedGameStatus.UserId; 	// can't fight own challenge!
 
 				// populate challenge button fighters viewport by instantiating fighter buttons	
 				FillChallengeFighterButtons(challengeButton);		
 
 				counter++;
 			}
+		}
+
+		private bool CanAcceptChallenge(TeamChallenge challenge)
+		{
+			return challenge.UserId == "" || (challenge.UserId != FightManager.SavedGameStatus.UserId); 	// can't fight own challenge!
 		}
 			
 

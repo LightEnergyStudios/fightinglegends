@@ -4311,6 +4311,12 @@ Mesh:
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshOptimized: 0
+--- !u!114 &229380093 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114000014061346144, guid: 484b20bbec9304c318c7ece8ef46250e,
+    type: 2}
+  m_PrefabInternal: {fileID: 579213947}
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!114 &321230135 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114213616560112670, guid: 7cef9bf142eac4f02b6ef2918ec93173,
@@ -4584,6 +4590,11 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114000013964128764, guid: 484b20bbec9304c318c7ece8ef46250e,
+        type: 2}
+      propertyPath: coin
+      value: 
+      objectReference: {fileID: 229380093}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 484b20bbec9304c318c7ece8ef46250e, type: 2}
   m_IsPrefabParent: 0
@@ -6349,20 +6360,9 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1314}
-    - target: {fileID: 224778255799576274, guid: 47ae9ee17ea9b48eab256a598ae71320,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: -254
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000014110607722, guid: 47ae9ee17ea9b48eab256a598ae71320,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: -112
-      objectReference: {fileID: 0}
-    - target: {fileID: 224306743603353346, guid: 47ae9ee17ea9b48eab256a598ae71320,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 180
+    - target: {fileID: 1000011598281824, guid: 47ae9ee17ea9b48eab256a598ae71320, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 47ae9ee17ea9b48eab256a598ae71320, type: 2}

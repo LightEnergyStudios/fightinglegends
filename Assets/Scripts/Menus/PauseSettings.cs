@@ -11,8 +11,8 @@ namespace FightingLegends
 		public Text difficultyHeading;
 		public Text volumeHeading;
 		public Text themeHeading;
-		public Text captionsHeading;
-		public Text hintsHeading;
+//		public Text captionsHeading;
+//		public Text hintsHeading;
 		public Text resetHintsLabel;
 		public Text resetGameLabel;
 		public Text newUserLabel;
@@ -132,8 +132,8 @@ namespace FightingLegends
 			difficultyHeading.text = FightManager.Translate("arcadeModeDifficulty");
 			volumeHeading.text = FightManager.Translate("volume");
 			themeHeading.text = FightManager.Translate("theme");
-			captionsHeading.text = FightManager.Translate("captions");
-			hintsHeading.text = FightManager.Translate("hints");
+//			captionsHeading.text = FightManager.Translate("captions");
+//			hintsHeading.text = FightManager.Translate("hints");
 			resetHintsLabel.text = FightManager.Translate("resetHits", true);
 			resetGameLabel.text = FightManager.Translate("resetGame", true);
 			newUserLabel.text = FightManager.Translate("newUser", true);

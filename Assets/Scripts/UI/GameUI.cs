@@ -458,9 +458,11 @@ namespace FightingLegends
 				player2.CurrentState == State.Special || player2.CurrentState == State.Special_Start || player2.CurrentState == State.Special_Opportunity ||
 				player2.CurrentState == State.Special_Extra || player2.CurrentState == State.Vengeance;
 
-			bool AIvulnerable = player2.CurrentState == State.Light_Cutoff || player2.CurrentState == State.Medium_Cutoff ||
-			                    player2.CurrentState == State.Heavy_Cutoff || player2.CurrentState == State.Counter_Recovery ||
-			                    player2.CurrentState == State.Special_Opportunity;
+//			bool AIvulnerable = player2.CurrentState == State.Light_Cutoff || player2.CurrentState == State.Medium_Cutoff ||
+//			                    player2.CurrentState == State.Heavy_Cutoff || player2.CurrentState == State.Counter_Recovery ||
+//			                    player2.CurrentState == State.Special_Opportunity;
+
+			bool AIvulnerable = player2.CurrentState == State.Counter_Recovery || player2.CurrentState == State.Special_Opportunity;
 			
 			bool AIvulnerableOnLastHit = lastHit && (player2.CurrentState == State.Counter_Attack || player2.CurrentState == State.Special_Extra || player2.CurrentState == State.Vengeance);
 

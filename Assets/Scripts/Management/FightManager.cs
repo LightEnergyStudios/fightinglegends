@@ -518,7 +518,7 @@ namespace FightingLegends
 		public const int MediumStrikeXP = 2;
 		public const int HeavyStrikeXP = 5;
 		public const int SpecialXP = 5;
-		public const int SpecialExtraXP = 10;
+		public const int SpecialExtraXP = 5;
 		public const int CounterAttackXP = 5;
 		public const int CounterTriggerXP = 10;
 		public const int BlockXP = 1;
@@ -1849,7 +1849,7 @@ namespace FightingLegends
 
 		private void ConfirmQuitFight()
 		{
-			if (CurrentMenuCanvas != MenuType.Combat)
+			if (! (CurrentMenuCanvas == MenuType.Combat || CurrentMenuCanvas == MenuType.WorldMap))
 				return;
 			
 			FreezeFight();
@@ -1878,7 +1878,9 @@ namespace FightingLegends
 
 			SaveStatus();
 
-			ActivatePreviousMenu(true, true);
+			ActivateMenu(MenuType.ModeSelect);
+//			StartCoroutine(ShowModeSelectCanvas());
+//			ActivatePreviousMenu(true, true);
 
 			if (OnQuitFight != null)
 				OnQuitFight();
@@ -2106,8 +2108,8 @@ namespace FightingLegends
 			if (CombatMode != FightMode.Challenge)
 				return;
 
-			if (challengeInProgress == null)
-				return;
+//			if (challengeInProgress == null)
+//				return;
 			
 			if (!winner.UnderAI)
 			{
@@ -3497,9 +3499,13 @@ namespace FightingLegends
 		{
 			if (CanGoBack)
 			{
-				if (CurrentMenuCanvas == MenuType.PauseSettings || CurrentMenuCanvas == MenuType.WorldMap)		// not pushed onto menu stack
+				if (CurrentMenuCanvas == MenuType.PauseSettings)	// not pushed onto menu stack
 				{
 					ActivatePreviousMenu(true, false);
+				}
+				else if (CurrentMenuCanvas == MenuType.WorldMap)		// not pushed onto menu stack
+				{
+					ConfirmQuitFight();
 				}
 				else
 				{
@@ -3516,7 +3522,7 @@ namespace FightingLegends
 
 		public void PauseClicked()
 		{
-			if (CanPause)	
+			if (CanSettings)	
 				ActivateMenu(MenuType.PauseSettings);
 				
 			SaveStatus();
@@ -3610,9 +3616,9 @@ namespace FightingLegends
 			get { return (!IsFirstMenu && CurrentMenu.CanNavigateBack); }
 		}
 
-		private bool CanPause
+		private bool CanSettings
 		{
-			get { return ! (CurrentMenuCanvas == MenuType.MatchStats || CurrentMenuCanvas == MenuType.PauseSettings); }
+			get { return ! (CurrentMenuCanvas == MenuType.MatchStats || CurrentMenuCanvas == MenuType.PauseSettings || CurrentMenuCanvas == MenuType.WorldMap); }
 		}
 
 		private bool CoinsVisible
@@ -3856,7 +3862,7 @@ namespace FightingLegends
 			
 			// broadcast menu changed event
 			if (OnMenuChanged != null)
-				OnMenuChanged(CurrentMenuCanvas, CanGoBack, CanPause, CoinsVisible, KudosVisible);
+				OnMenuChanged(CurrentMenuCanvas, CanGoBack, CanSettings, CoinsVisible, KudosVisible);
 
 			return true;
 		}
@@ -4005,9 +4011,9 @@ namespace FightingLegends
 			challengeUpload.Confirm(challenge, actionOnYes);
 		}
 
-		public static void ShowChallengeResult(int challengePot, bool AIWon, string challengerId, Action actionOnOk)
+		public static void ShowChallengeResult(int challengePot, bool defenderWon, string challengerId, Action actionOnOk)
 		{
-			challengeResult.Notify(challengePot, AIWon, challengerId, actionOnOk);
+			challengeResult.Notify(challengePot, defenderWon, challengerId, actionOnOk);
 		}
 
 		#endregion 		// menus

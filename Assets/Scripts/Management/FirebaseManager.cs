@@ -399,17 +399,16 @@ namespace FightingLegends
 //		}
 
 
-		public static void PostLeaderboardScore(Leaderboard leaderboard, float score, string userId = null)
+		public static void PostLeaderboardScore(Leaderboard leaderboard, float score) //, string userId = null)
 		{
-			if (userId == null && string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
+			if (string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
 				return;
 			
 			if (leaderboard == Leaderboard.None || score <= 0)
 				return;
 			
 			string leaderboardName = leaderboard.ToString();
-			if (userId == null)
-				userId = FightManager.SavedGameStatus.UserId;
+			string userId = FightManager.SavedGameStatus.UserId;
 
 			score = Mathf.Round(score);		// float rounded to nearest int (as float)
 

@@ -16,7 +16,7 @@ namespace FightingLegends
 		public Button challengeLeaderboardButton;	
 
 		public Button refreshButton;		
-		public Button postTestButton;		
+//		public Button postTestButton;		
 		public Button newUserButton;		
 
 		public Text titleLabel;		
@@ -47,7 +47,7 @@ namespace FightingLegends
 				damageLeaderboardButton.interactable = !gettingScores;	
 				survivalLeaderboardButton.interactable = !gettingScores;	
 				challengeLeaderboardButton.interactable = !gettingScores;	
-				postTestButton.interactable = !gettingScores;	
+//				postTestButton.interactable = !gettingScores;	
 			}
 		}
 
@@ -93,10 +93,11 @@ namespace FightingLegends
 			challengeLeaderboardButton.onClick.AddListener(delegate { GetLeaderboard(Leaderboard.ChallengeWinnings); });
 
 			newUserButton.onClick.AddListener(delegate { RegisterNewUser(); });
-			postTestButton.onClick.AddListener(delegate { PostTest(); });
+//			postTestButton.onClick.AddListener(delegate { PostTest(); });
 
 			FirebaseManager.OnPostScore += OnPostScore;
 			FirebaseManager.OnGetLeaderboard += OnGetLeaderboard;
+			FirebaseManager.OnUserProfileUploaded += OnNewUserRegistered;
 
 			SetCurrentLeaderboard(Leaderboard.None);
 			GetLeaderboard(Leaderboard.Kudos);
@@ -114,57 +115,58 @@ namespace FightingLegends
 			challengeLeaderboardButton.onClick.RemoveListener(delegate { GetLeaderboard(Leaderboard.ChallengeWinnings); });
 
 			newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
-			postTestButton.onClick.RemoveListener(delegate { PostTest(); });
+//			postTestButton.onClick.RemoveListener(delegate { PostTest(); });
 
 			FirebaseManager.OnPostScore -= OnPostScore;
 			FirebaseManager.OnGetLeaderboard -= OnGetLeaderboard;
+			FirebaseManager.OnUserProfileUploaded -= OnNewUserRegistered;
 
 			DestroyScoreEntries();
 		}
 			
-		private void PostTest()
-		{
-			if (currentLeaderboard != Leaderboard.None)
-			{
-				string userId = currentLeaderboard.ToString() + "Champ" + UnityEngine.Random.Range(1, 99);
-				int score = 0;
-
-				switch (currentLeaderboard)
-				{
-					case Leaderboard.Kudos:
-						score = UnityEngine.Random.Range(1, 100000);
-						break;
-
-					case Leaderboard.SurvivalRounds:
-						score = UnityEngine.Random.Range(1, 500);
-						break;
-
-					case Leaderboard.ChallengeWinnings:
-						score = UnityEngine.Random.Range(1, 50000);
-						break;
-
-					case Leaderboard.DojoDamage:
-						score = UnityEngine.Random.Range(1, 1000);
-						break;
-
-					default:
-						score = UnityEngine.Random.Range(1, 100);
-						break;
-				}
-
-//				Debug.Log("PostTest: " + ", userId = " + userId + ", score = " + score);
-
-				FirebaseManager.PostLeaderboardScore(currentLeaderboard, score, userId);
-				postTestButton.interactable = false;		
-			}
-		}
+//		private void PostTest()
+//		{
+//			if (currentLeaderboard != Leaderboard.None)
+//			{
+//				string userId = currentLeaderboard.ToString() + "Champ" + UnityEngine.Random.Range(1, 99);
+//				int score = 0;
+//
+//				switch (currentLeaderboard)
+//				{
+//					case Leaderboard.Kudos:
+//						score = UnityEngine.Random.Range(1, 100000);
+//						break;
+//
+//					case Leaderboard.SurvivalRounds:
+//						score = UnityEngine.Random.Range(1, 500);
+//						break;
+//
+//					case Leaderboard.ChallengeWinnings:
+//						score = UnityEngine.Random.Range(1, 50000);
+//						break;
+//
+//					case Leaderboard.DojoDamage:
+//						score = UnityEngine.Random.Range(1, 1000);
+//						break;
+//
+//					default:
+//						score = UnityEngine.Random.Range(1, 100);
+//						break;
+//				}
+//
+////				Debug.Log("PostTest: " + ", userId = " + userId + ", score = " + score);
+//
+//				FirebaseManager.PostLeaderboardScore(currentLeaderboard, score, userId);
+//				postTestButton.interactable = false;		
+//			}
+//		}
 
 		private void OnPostScore(Leaderboard leaderboard, LeaderboardScore score, bool success)
 		{
 			if (success && leaderboard == currentLeaderboard)
 				RefreshScores();
 
-			postTestButton.interactable = true;		
+//			postTestButton.interactable = true;		
 			Debug.Log("OnPostScore: " + ", userId = " + score.UserId + ", score = " + score.Score + ", success = " + success);
 		}
 
@@ -183,6 +185,19 @@ namespace FightingLegends
 		{
 			if (string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
 				FightManager.RegisterNewUser();
+		}
+
+		private void OnNewUserRegistered(string userId, UserProfile profile, bool success)
+		{
+			if (success)
+			{
+				newUserButton.gameObject.SetActive(false);
+
+				FirebaseManager.PostLeaderboardScore(Leaderboard.Kudos, FightManager.SavedGameStatus.Kudos);
+				FirebaseManager.PostLeaderboardScore(Leaderboard.SurvivalRounds, FightManager.SavedGameStatus.BestSurvivalEndurance);
+				FirebaseManager.PostLeaderboardScore(Leaderboard.ChallengeWinnings, FightManager.SavedGameStatus.TotalChallengeWinnings);
+				FirebaseManager.PostLeaderboardScore(Leaderboard.DojoDamage, FightManager.SavedGameStatus.BestDojoDamage);
+			}
 		}
 
 		private void GetLeaderboard(Leaderboard leaderboard)

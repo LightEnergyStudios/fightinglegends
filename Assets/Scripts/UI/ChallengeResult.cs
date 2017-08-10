@@ -86,14 +86,14 @@ namespace FightingLegends
 		}
 			
 		// public entry point 
-		public void Notify(int pot, bool wonChallenge, string challengerId, Action onOk)
+		public void Notify(int pot, bool defenderWon, string challengerId, Action onOk)
 		{
 			challengePot = pot;
-			challengeWon = wonChallenge;
+			challengeWon = defenderWon;
 			actionOnOk = onOk;
 
-			Congratuations.text = wonChallenge ? FightManager.Translate("congratulations", false, true) : FightManager.Translate("betterLuckNextTime", false, true);
-			WinMessage.text = wonChallenge ? FightManager.Translate("yourTeamWon", false, true) : FightManager.Translate("yourTeamLost", false, true);
+			Congratuations.text = defenderWon ? FightManager.Translate("congratulations", false, true) : FightManager.Translate("betterLuckNextTime", false, true);
+			WinMessage.text = defenderWon ? FightManager.Translate("yourTeamWon", false, true) : FightManager.Translate("yourTeamLost", false, true);
 //			ChallengeName.text = challenge.Name;
 			ChallengeUserId.text = challengerId;
 

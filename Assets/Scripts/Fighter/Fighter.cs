@@ -3019,7 +3019,7 @@ namespace FightingLegends
 					CompleteMove();
 //					Debug.Log(FullName + ": END RomanCancel freeze - State = " + CurrentState + " [" + AnimationFrameCount + "]");
 					if (Opponent != null)
-						Opponent.ResetStunDuration(Opponent.RomanCancelStunFrames);	// if opponent is stunned
+						Opponent.ResetStunDuration(Opponent.RomanCancelStunFrames);		// if opponent is stunned
 
 					if (OnEndRomanCancelFreeze != null)
 						OnEndRomanCancelFreeze(this);
@@ -5440,7 +5440,7 @@ namespace FightingLegends
 							return 12;
 
 						case FighterClass.Boss:
-							return 18;
+							return 12;
 					}
 				}
 
@@ -5455,7 +5455,7 @@ namespace FightingLegends
 							return 4;
 
 						case FighterClass.Boss:
-							return 6;
+							return 4;
 					}
 				}
 
@@ -5599,12 +5599,12 @@ namespace FightingLegends
 						if (endOfMatch && survivalEndurance > FightManager.SavedGameStatus.BestSurvivalEndurance)
 						{
 							FightManager.SavedGameStatus.BestSurvivalEndurance = survivalEndurance;
-							FirebaseManager.PostLeaderboardScore(Leaderboard.SurvivalRounds,survivalEndurance);
+							FirebaseManager.PostLeaderboardScore(Leaderboard.SurvivalRounds, survivalEndurance);
 						}
 
 						if (! endOfMatch)
 							winner.ReturnToIdle();
-						break;
+						break; 
 
 					case FightMode.Challenge:
 						endOfMatch = fightManager.ChallengeLastInTeam(winner.UnderAI);		// when one team defeated
