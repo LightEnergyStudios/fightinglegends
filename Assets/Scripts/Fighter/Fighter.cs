@@ -578,7 +578,7 @@ namespace FightingLegends
 				SetToPreviewLayer();
 			}
 
-			CurrentState = StartState;
+			CurrentState = StartingState;
 			CurrentPriority = Default_Priority;
 			CanContinue = false;
 		}
@@ -694,9 +694,9 @@ namespace FightingLegends
 		protected override string CurrentFrameLabel { get { return CurrentState.ToString().ToUpper(); } } 	// to match movieclip frame labels
 
 		[HideInInspector]
-		public State StartState = State.Idle;
+		public State StartingState = State.Idle;
 
-//		private State nextFrameState = State.Void;
+		protected bool nextHitWillKO = false;		// skeletron ready to die state while health == 0
 
 		private State currentState = State.Idle;
 		public State CurrentState
@@ -1128,6 +1128,8 @@ namespace FightingLegends
 		}
 
 		public virtual bool ExpiredHealth { get { return ProfileData.SavedData.Health <= 0; } }
+
+		protected virtual bool TravelOnExpiry { get { return true; } }
 			
 		#endregion 		// moves
 
@@ -1782,7 +1784,7 @@ namespace FightingLegends
 			}
 				
 			// in the dojo, the shadow fighter constantly regenerates health
-			bool dojoRegenerate = FightManager.CombatMode == FightMode.Dojo && IsDojoShadow && !ExpiredHealth && !fightManager.FightFrozen;
+			bool dojoRegenerate = FightManager.CombatMode == FightMode.Dojo && IsDojoShadow && !ExpiredHealth && !ExpiredState && !fightManager.FightFrozen;
 
 			// constantly increase health if fighter has the regenerator power-up
 			bool powerUpRegenerate = FightManager.CombatMode != FightMode.Arcade && StaticPowerUp == FightingLegends.PowerUp.Regenerator &&
@@ -1810,12 +1812,6 @@ namespace FightingLegends
 		{
 			if (PreviewIdle) 			// eg. for fighter select scene preview idle (not driven by FightManager)
 				NextAnimationFrame();
-
-//			if (nextFrameState != State.Void)
-//			{
-//				CurrentState = nextFrameState;
-//				nextFrameState = State.Void;
-//			}
 		}
 
 		public void SetPreview(uint idleFrameNumber) //, bool previewMoves, bool previewUseGauge) 		// for preview in fighter select scenes
@@ -4465,11 +4461,12 @@ namespace FightingLegends
 							StartHitStun(hitData);		// TODO: is this correct?
 						}
 
-						KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+						if (! nextHitWillKO)
+							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
 			}
-			else if (CurrentState == State.Ready_To_Die)		// one last hit to FINISH HIM
+			else if (CurrentState == State.Ready_To_Die && nextHitWillKO)		// one last hit to FINISH HIM
 			{
 				KnockOut(); 	// virtual
 			}
@@ -4541,8 +4538,9 @@ namespace FightingLegends
 							ReadyToKO(hitData);	// start appropriate expiry animation according to type of hit
 						else
 							StartHitStun(hitData);	// start appropriate hit stun animation according to type of hit
-						
-						KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+
+						if (! nextHitWillKO)
+							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
 			}
@@ -5536,32 +5534,39 @@ namespace FightingLegends
 						winner.OnScoreChanged(winner.ProfileData.SavedData.MatchRoundsWon);
 				}
 			}
-
+				
 			// scale travelTime according to animation speed
 			var travelTime = ProfileData.ExpiryTime;
 
 			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
 				travelTime *= fastExpiryFactor;	
-			
+
 			travelTime /= fightManager.AnimationSpeed;
 
-			var	expiryDistance = IsPlayer1 ? -ProfileData.ExpiryDistance : ProfileData.ExpiryDistance;
-			var startPosition = transform.position;
-			var targetPosition = new Vector3(startPosition.x + expiryDistance, startPosition.y, startPosition.z);
-			var winnerStartPosition = winner.transform.position;
-			var winnerTargetPosition = new Vector3(winnerStartPosition.x - expiryDistance, winnerStartPosition.y, winnerStartPosition.z);
-			float t = 0.0f;
-
-			while (t < 1.0f)
+			if (TravelOnExpiry)
 			{
-				t += Time.deltaTime * (Time.timeScale / travelTime); 
-				transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+				var	expiryDistance = IsPlayer1 ? -ProfileData.ExpiryDistance : ProfileData.ExpiryDistance;
+				var startPosition = transform.position;
+				var targetPosition = new Vector3(startPosition.x + expiryDistance, startPosition.y, startPosition.z);
+				var winnerStartPosition = winner.transform.position;
+				var winnerTargetPosition = new Vector3(winnerStartPosition.x - expiryDistance, winnerStartPosition.y, winnerStartPosition.z);
+				float t = 0.0f;
 
-				// winner also moves back in arcade mode (camera tracks the loser)
-				if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Dojo)
-					winner.transform.position = Vector3.Lerp(winnerStartPosition, winnerTargetPosition, t);
+				while (t < 1.0f)
+				{
+					t += Time.deltaTime * (Time.timeScale / travelTime); 
+					transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+
+					// winner also moves back in arcade mode (camera tracks the loser)
+					if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Dojo)
+						winner.transform.position = Vector3.Lerp(winnerStartPosition, winnerTargetPosition, t);
 				
-				yield return null;
+					yield return null;
+				}
+			}
+			else
+			{
+				yield return new WaitForSeconds(travelTime);
 			}
 				
 			if (UnderAI && winner.InTraining) 					// AI KO'd in training
@@ -5742,9 +5747,15 @@ namespace FightingLegends
 				fightManager.GaugeFeedback(IsPlayer1, FightManager.Translate("needs") + " " + required + " " + (required == 1 ? FightManager.Translate("crystal") : FightManager.Translate("crystals")));
 		}
 
-		private void KnockOutFreeze()
+		protected void KnockOutFreeze()
 		{
 //			Debug.Log(FullName + ": KnockOutFreeze!");
+//			if (nextHitWillKO)				// skeletron ready to die state while health == 0
+//			{
+//				Debug.Log(FullName + ": KnockOutFreeze - nextHitWillKO");
+//				nextHitWillKO = false;
+//				return;
+//			}
 
 			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
 			fightManager.TriggerFeedbackFX(FeedbackFXType.KO);

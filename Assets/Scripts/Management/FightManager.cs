@@ -1260,11 +1260,11 @@ namespace FightingLegends
 //				Debug.Log("KO FeedbackStateEnd: Player1.CurrentState = " + Player1.CurrentState + ", Player1.aboutToExpire = " + Player1.aboutToExpire + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.aboutToExpire = " + Player2.aboutToExpire);
 				UnfreezeFight();
 
-//				if (Player1.ExpiredState || Player1.aboutToExpire)
-				if (Player1.ExpiredHealth)
+//				if (Player1.ExpiredHealth)
+				if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
 					Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-				else if (Player2.ExpiredHealth)
-//				else if (Player2.ExpiredState || Player2.aboutToExpire)
+//				else if (Player2.ExpiredHealth)
+				else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
 					Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
 			}
 
@@ -2391,7 +2391,7 @@ namespace FightingLegends
 
 			if (nextFighter != null)
 			{
-				nextFighter.StartState = State.Dash;
+				nextFighter.StartingState = State.Dash;
 
 				if (existingFighter == null)
 					yield return StartCoroutine(nextFighter.Slide(dashInTime, GetFighterPosition(player1, false, true)));

@@ -94,6 +94,8 @@ namespace FightingLegends
 			CurrentState = State.Ready_To_Die;
 			ReturnToDefaultDistance();		// default fighting distance
 
+			nextHitWillKO = true;
+
 //			fightManager.TextFeedback(IsPlayer1, "FINISH HIM!!!");		// TODO: remove
 
 //			LastMoveUI = "READY TO DIE... [ " + fightManager.AnimationFrameCount + " ]";
@@ -107,8 +109,16 @@ namespace FightingLegends
 //			LastMoveUI = "K.O... [ " + fightManager.AnimationFrameCount + " ]";
 
 			CurrentState = State.Die;
+
+			if (nextHitWillKO)
+			{
+				nextHitWillKO = false;
+				KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+			}
 		}
 
+
+		protected override bool TravelOnExpiry { get { return false; } }
 
 		public override bool ExpiredHealth
 		{ 

@@ -192,7 +192,7 @@ namespace FightingLegends
 				}
 				else
 				{
-					feedbackMessage.text = "Sorry - '" + userId + "' has been taken";
+					feedbackMessage.text = "Sorry - '" + userId + "' is already in use";
 				}
 			}
 			else
