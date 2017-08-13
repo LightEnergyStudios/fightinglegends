@@ -70,18 +70,18 @@ namespace FightingLegends
 		public Sprite mashSprite;
 		public Sprite resetSprite;
 
-		public AudioClip ComboStepAudio;				// bling
+//		public AudioClip ComboStepAudio;				// bling
 
-		public Color StepWaitingColour;					// white
-		public Color StepSetupColour;					// semi-transparent (when first set up)
-		public Color StepCompletedColour;				// semi-transparent (tick enabled)
-		public Color StepDefaultColour;					// semi-transparent
-
-		private const float comboSetupPause = 0.1f;		// as each step set up
-		private const float comboStepWidth = 64;		// image
-		private const float comboStepSpace = 6;			// between images
-		private const float comboStepGrowTime = 0.2f; 	// when waiting for input (activated)
-		private const float comboStepGrowScale = 2.0f; 	// when waiting for input (activated)
+//		public Color StepWaitingColour;					// white
+//		public Color StepSetupColour;					// semi-transparent (when first set up)
+//		public Color StepCompletedColour;				// semi-transparent (tick enabled)
+//		public Color StepDefaultColour;					// semi-transparent
+//
+//		private const float comboSetupPause = 0.1f;		// as each step set up
+//		private const float comboStepWidth = 64;		// image
+//		private const float comboStepSpace = 6;			// between images
+//		private const float comboStepGrowTime = 0.2f; 	// when waiting for input (activated)
+//		private const float comboStepGrowScale = 2.0f; 	// when waiting for input (activated)
 
 		// power-up sprites (for HealthUI level buttons) - set in Inspector
 		public Sprite ArmourPiercing;

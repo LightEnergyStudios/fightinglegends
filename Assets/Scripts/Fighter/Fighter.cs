@@ -122,7 +122,7 @@ namespace FightingLegends
 
 		private const float feedbackOffsetX = -260;			// for positioning next to fighters
 		private const float feedbackSwipeOffsetX = 70;		// nearer to centre
-		private const float feedbackOffsetY = -20;			// armour up/down, on fire, etc
+		private const float feedbackOffsetY = 20; //-20;	// armour up/down, on fire, health up
 
 		#region camera tracking
 
@@ -197,7 +197,6 @@ namespace FightingLegends
 
 		private bool counterTriggerStun = false;	// for deferral of stun till following frame
 
-		public bool aboutToExpire { get; private set; }	// taken last of fatal sequence of blows
 		private const int expiryFreezeFrames = 10;		// will unfreeze at end of KO feedback
 
 		private int hitComboCount = 0;
@@ -246,6 +245,7 @@ namespace FightingLegends
 		private int lastHitFrameCount = 0;					// frames since a last hit - reset to zero at end of state
 
 		private bool takenLastHit = false;					// from last hit frame to end of state
+		public bool takenLastFatalHit { get; protected set; }	// taken last of fatal sequence of blows
 
 		public AIController AIController { get; private set; }	
 		public Trainer Trainer { get; private set; }	
@@ -280,6 +280,7 @@ namespace FightingLegends
 		public const int Power_Attack_Priority = 25;		// triggered by power-up
 		public const int Tutorial_Punch_Start_Priority = 13; // 8;	// punch start and punch. punch end returns to default
 		public const int Tutorial_Punch_Priority = 12; // 9;		// first and only hit frame
+//		public const int Falling_Priority = 20;				// skeletron -> ready_to_die (kneeling) - miss during this brief state?
 
 		#region event delegates
 
@@ -696,7 +697,7 @@ namespace FightingLegends
 		[HideInInspector]
 		public State StartingState = State.Idle;
 
-		protected bool nextHitWillKO = false;		// skeletron ready to die state while health == 0
+//		protected bool nextHitWillKO = false;		// skeletron ready to die state while health == 0
 
 		private State currentState = State.Idle;
 		public State CurrentState
@@ -2627,15 +2628,16 @@ namespace FightingLegends
 					EndIdleDamaged();
 					break;
 
-				case State.Falling:
+				case State.Fall:			// skeletron
 					EndFalling();
 					break;
 
-				case State.Ready_To_Die:
+				case State.Ready_To_Die:	// skeletron
 					EndReadyToDie();
 					break;
 
 				case State.Die:
+					Debug.Log(FullName + ": UnfreezeEndState State.Die!");
 					break;
 
 				case State.Dash:
@@ -2889,8 +2891,7 @@ namespace FightingLegends
 			if (UnderAI || (InTraining && Trainer.CurrentStepIsCombo))
 				return;
 
-
-//			if (! UnderAI && (!InTraining && Trainer.CurrentStepIsCombo))
+			if (! Opponent.ExpiredState)
 			{
 				SpecialOpportunityFeedbackFX();		// mash (fire) or swipe forward (water)
 				specialOpportunityTapCount = 0;
@@ -2921,7 +2922,8 @@ namespace FightingLegends
 				
 			// cancel special opportunity feedback (sets to void state)
 //			Debug.Log(FullName + "Cancel feedback: EndSpecialOpportunity");
-			TriggerFeedbackFX(FeedbackFXType.None);		
+			if (! Opponent.ExpiredState)
+				TriggerFeedbackFX(FeedbackFXType.None);		
 		}
 
 		protected virtual void EndSpecialExtra()	
@@ -3009,11 +3011,11 @@ namespace FightingLegends
 				Unfreeze();
 //				Debug.Log(FullName + ": Unfreeze: State = " + CurrentState + " [" + AnimationFrameCount + "]");
 
-				// execute the move continuation if present
 				if (CurrentMove == Move.Roman_Cancel)
 				{
-					CompleteMove();
+					CompleteMove();				// execute the move continuation if present
 //					Debug.Log(FullName + ": END RomanCancel freeze - State = " + CurrentState + " [" + AnimationFrameCount + "]");
+
 					if (Opponent != null)
 						Opponent.ResetStunDuration(Opponent.RomanCancelStunFrames);		// if opponent is stunned
 
@@ -3026,8 +3028,6 @@ namespace FightingLegends
 //				Debug.Log(FullName + ": frozen " + freezeFramesRemaining + " frames remaining" + " [" + AnimationFrameCount + "]");
 				StateUI = "[ Frozen... " + freezeFramesRemaining + " ]";
 				freezeFramesRemaining--;
-
-//				Debug.Log(FullName + ": freezeFramesRemaining = " + freezeFramesRemaining + " [" + AnimationFrameCount + "]");
 			}
 		}
 
@@ -3587,7 +3587,7 @@ namespace FightingLegends
 
 			freezeFramesRemaining = 0;
 			isFrozen = false;
-			aboutToExpire = false;	
+			takenLastFatalHit = false;	
 
 			ClearCuedMoves();
 
@@ -4383,7 +4383,30 @@ namespace FightingLegends
 			bool survivedHit = true;
 			bool hitBlocked = false;
 
-			if (CurrentState == State.Counter_Taunt && Opponent.CurrentMove != Move.Power_Attack)			// struck during taunt (not shove)
+			if (CurrentState == State.Fall) 	// skeletron -> ready to die
+			{
+				if (hitData.SoundEffect != null)
+					AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
+
+				Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
+			}
+			else if (CurrentState == State.Ready_To_Die) // && nextHitWillKO)		// one last hit to FINISH HIM
+			{
+				takenLastFatalHit = lastHit;
+
+//				Debug.Log(FullName + " Ready_To_Die: takenLastFatalHit = " + takenLastFatalHit);
+
+				if (takenLastFatalHit)
+					KnockOut(); 	// virtual
+				else
+				{
+					if (hitData.SoundEffect != null)
+						AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
+
+					Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
+				}
+			}
+			else if (CurrentState == State.Counter_Taunt && Opponent.CurrentMove != Move.Power_Attack)			// struck during taunt (not shove)
 			{
 //				Debug.Log(FighterFullName + " hit while counter taunting (" + stateData.HitDamage + ") [ " + fightManager.AnimationFrameCount + " ]");
 
@@ -4445,12 +4468,12 @@ namespace FightingLegends
 					}
 					else			// this is the fatal blow (while blocking)
 					{		
-						aboutToExpire = lastHit;	// expire after freeze if last hit
+						takenLastFatalHit = lastHit;	// expire after freeze if last hit
 
 						Opponent.TriggerSpotEffect(SpotFXType.Guard_Crush);
 						AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
 
-						if (aboutToExpire)
+						if (takenLastFatalHit)
 						{
 							ReadyToKO(hitData);	// start appropriate expiry animation according to type of hit
 						}
@@ -4461,14 +4484,10 @@ namespace FightingLegends
 							StartHitStun(hitData);		// TODO: is this correct?
 						}
 
-						if (! nextHitWillKO)
+						if (ExpiredState)				// eg. not when skeletron falling
 							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
-			}
-			else if (CurrentState == State.Ready_To_Die && nextHitWillKO)		// one last hit to FINISH HIM
-			{
-				KnockOut(); 	// virtual
 			}
 			else		// hit not blocked - sustain hit damage and go into hit stun
 			{
@@ -4532,14 +4551,14 @@ namespace FightingLegends
 					}
 					else			// this is the fatal blow
 					{		
-						aboutToExpire = lastHit;	// expire after freeze if last hit
+						takenLastFatalHit = lastHit;	// expire after freeze if last hit
 
-						if (aboutToExpire)
+						if (takenLastFatalHit)
 							ReadyToKO(hitData);	// start appropriate expiry animation according to type of hit
 						else
 							StartHitStun(hitData);	// start appropriate hit stun animation according to type of hit
 
-						if (! nextHitWillKO)
+						if (ExpiredState)				// eg. not when skeletron falling
 							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
@@ -4556,7 +4575,7 @@ namespace FightingLegends
 				if (lastHit)
 					IncreaseXP(FightManager.BlockXP);
 			}
-			else
+			else if (CurrentState != State.Fall && CurrentState != State.Ready_To_Die)
 			{
 				// attacker gets XP for successful hit
 				if (lastHit)
@@ -5477,7 +5496,7 @@ namespace FightingLegends
 		// loser departs ...
 		private IEnumerator ExpireToNextRound()
 		{	
-//			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
+			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
 			if (PreviewMoves)
 				yield break;
 			
@@ -5535,13 +5554,13 @@ namespace FightingLegends
 				}
 			}
 				
-			// scale travelTime according to animation speed
+
 			var travelTime = ProfileData.ExpiryTime;
 
 			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
 				travelTime *= fastExpiryFactor;	
 
-			travelTime /= fightManager.AnimationSpeed;
+			travelTime /= fightManager.AnimationSpeed; 			// scale travelTime according to animation speed
 
 			if (TravelOnExpiry)
 			{
@@ -5666,7 +5685,7 @@ namespace FightingLegends
 		protected virtual void ReadyToKO(HitFrameData hitData)
 		{
 //			Debug.Log(FullName + ": ReadyToKO - State = " + CurrentState + ", CanContinue = " + CanContinue);
-			Expire(hitData);				// expire immediately by default - boss falls to his knees to take one final blow
+			Expire(hitData);				// expire immediately by default - skeletron falls to his knees to take one final blow
 		}
 
 		private void Expire(HitFrameData hitData)
@@ -5697,7 +5716,7 @@ namespace FightingLegends
 				default:
 					break;
 			}
-
+					
 			KnockOut();		// virtual
 		}
 
@@ -5749,13 +5768,7 @@ namespace FightingLegends
 
 		protected void KnockOutFreeze()
 		{
-//			Debug.Log(FullName + ": KnockOutFreeze!");
-//			if (nextHitWillKO)				// skeletron ready to die state while health == 0
-//			{
-//				Debug.Log(FullName + ": KnockOutFreeze - nextHitWillKO");
-//				nextHitWillKO = false;
-//				return;
-//			}
+			Debug.Log(FullName + ": KnockOutFreeze!");
 
 			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
 			fightManager.TriggerFeedbackFX(FeedbackFXType.KO);
@@ -5772,19 +5785,21 @@ namespace FightingLegends
 		// called at end of KO feedback / freeze
 		public void EndKnockOutFreeze()
 		{
-			if (! ExpiredState && ! aboutToExpire)
+//			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
+
+			if (! ExpiredState && ! takenLastFatalHit)
 				return;
 
 			secondLifeOpportunity = false;
 
-			if (aboutToExpire)		// taken last of fatal blows
+			if (takenLastFatalHit)		// taken last of fatal blows
 			{
 				if (! FightManager.SavedGameStatus.CompletedBasicTraining)
 					Trainer.TrainingComplete();				// clear prompt / feedback etc.
 
 //				Debug.Log(FullName + ": EndKnockOutFreeze -> ExpireToNextRound");
 				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match
-				aboutToExpire = false;
+				takenLastFatalHit = false;
 
 				if (OnKnockOut != null)
 					OnKnockOut(this);

@@ -35,6 +35,9 @@ namespace FightingLegends
 		public delegate void ChallengeCompletedDelegate(TeamChallenge challenge, bool success);
 		public static ChallengeCompletedDelegate OnChallengeCompleted;
 
+		public delegate void ChallengeRemovedDelegate(string category, string challengeKey, bool success);
+		public static ChallengeRemovedDelegate OnChallengeRemoved;
+
 		public delegate void PostLeaderboardScoreDelegate(Leaderboard leaderboard, LeaderboardScore score, bool success);
 		public static PostLeaderboardScoreDelegate OnPostScore;
 
@@ -217,10 +220,16 @@ namespace FightingLegends
 				if (task.IsCompleted)
 				{
 					Debug.Log("RemoveChallenge: success!" + challengeKey);
+
+					if (OnChallengeRemoved != null)
+						OnChallengeRemoved(category, challengeKey, true);	
 				}
 				else
 				{
 					Debug.Log("RemoveChallenge: error = " + task.Exception.Message);
+
+					if (OnChallengeRemoved != null)
+						OnChallengeRemoved(category, challengeKey, false);	
 				}
 			});
 		}

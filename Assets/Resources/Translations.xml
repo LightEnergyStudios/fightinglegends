@@ -322,8 +322,9 @@
 		<string name="youWon">YOU WON</string>
 		<string name="youLost">YOU LOST</string>
 		<string name="challengeExpires">Challenge expires</string>
-		<string name="confirmUploadChallenge">Upload your challenge to the Challenge Arena?</string>
-		<string name="confirmFightChallenge">Accept this challenge? There's no going back!</string>
+		<string name="confirmUploadChallenge">UPLOAD your challenge to the Challenge Arena?</string>
+		<string name="confirmFightChallenge">ACCEPT this challenge? There's no going back!</string>
+		<string name="confirmRemoveChallenge">REMOVE your challenge and forfeit your coins?</string>
 		<string name="uploadingChallenge">Uploading challenge</string>
 		<string name="congratulations">CONGRATULATIONS</string>
 		<string name="betterLuckNextTime">BETTER LUCK NEXT TIME</string>

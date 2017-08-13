@@ -64,12 +64,14 @@ namespace FightingLegends
 
 		protected override void EndIdleDamaged()
 		{
-			CurrentState = State.Falling;
+			CurrentState = State.Fall;
+//			CurrentPriority = Falling_Priority;		// miss during this state?
 		}
 
 		protected override void EndFalling()
 		{
 			CurrentState = State.Ready_To_Die;
+			CurrentPriority = Default_Priority;
 		}
 
 		protected override void EndReadyToDie()
@@ -77,53 +79,36 @@ namespace FightingLegends
 			CurrentState = State.Die;
 		}
 
-//		// returns false if damage was fatal
-//		public override void CompleteMove()
-//		{
-//			base.CompleteMove();
-//			
-//			if (ProfileData.SavedData.Health < IdleDamagedHealth)
-//				CurrentState = State.Idle_Damaged;
-//		}
 			
 		protected override void ReadyToKO(HitFrameData hitData)
 		{
 			TriggerFeedbackFX(FeedbackFXType.None);				// eg. to cancel special extra prompt in case end of special opportunity not reached
 
-			// doesn't die immediately - needs one final strike to finish him
-			CurrentState = State.Ready_To_Die;
-			ReturnToDefaultDistance();		// default fighting distance
+			// doesn't die immediately
+			UpdateHealth(-1, false);		// barely alive! needs one more hit to finish him (while ready to die)
+			takenLastFatalHit = false;
 
-			nextHitWillKO = true;
+			CurrentState = State.Fall;	// then ready to die
+//			CurrentPriority = Falling_Priority;		// to force miss during this state??
 
-//			fightManager.TextFeedback(IsPlayer1, "FINISH HIM!!!");		// TODO: remove
-
-//			LastMoveUI = "READY TO DIE... [ " + fightManager.AnimationFrameCount + " ]";
-//			Debug.Log(FighterFullName + ": READY TO DIE at [ " + fightManager.AnimationFrameCount + " ]");
+			Opponent.ReturnToDefaultDistance();		// default fighting distance
 		}
 			
 		protected override void KnockOut()
 		{
 			base.KnockOut();		// feedback FX + expiry countdown + profile data
 
-//			LastMoveUI = "K.O... [ " + fightManager.AnimationFrameCount + " ]";
-
 			CurrentState = State.Die;
-
-			if (nextHitWillKO)
-			{
-				nextHitWillKO = false;
-				KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
-			}
+			KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 		}
 
 
 		protected override bool TravelOnExpiry { get { return false; } }
 
-		public override bool ExpiredHealth
-		{ 
-			get { return base.ExpiredHealth && CurrentState != State.Ready_To_Die; }
-		}
+//		public override bool ExpiredHealth
+//		{ 
+//			get { return base.ExpiredHealth && CurrentState != State.Fall && CurrentState != State.Ready_To_Die; }
+//		}
 
 		public override bool ExpiredState
 		{

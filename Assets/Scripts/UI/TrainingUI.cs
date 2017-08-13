@@ -35,6 +35,9 @@ namespace FightingLegends
 		public Color StepCompletedColour;			// semi-transparent (tick enabled)
 		public Color StepDefaultColour;				// semi-transparent
 
+		public Color ComboStepStepTickColour;			// when combo step completed
+		private const float comboStepCompletedTickAlpha = 0.75f;
+
 		private const float comboSetupPause = 0.075f;	// as each step set up
 		private const float comboStepWidth = 64;		// image
 		private const float comboStepSpace = 6;			// between images
@@ -376,7 +379,6 @@ namespace FightingLegends
 			if (!fightManager.TrainingInProgress) // || syncingComboUI)
 				yield break;
 
-
 			ComboText.text = "";
 
 			if (setup)
@@ -393,8 +395,8 @@ namespace FightingLegends
 //			Debug.Log("SyncComboUI: " + combo.ComboName + " ComboSteps: " + combo.ComboSteps.Count + " comboUISteps: " + comboUISteps.Count);
 			bool firstStep = true;
 
-			ComboStepUI previousStepUI = null;			// previous step synced
-			ComboStep previousStep = null;
+//			ComboStepUI previousStepUI = null;			// previous step synced
+//			ComboStep previousStep = null;
 
 			// there may be fewer UI steps (images) than steps in the combo because of 'invisible' AI steps
 			// so we have to keep a separate index
@@ -416,12 +418,12 @@ namespace FightingLegends
 
 				//				ComboVerticalFlash.gameObject.SetActive(false);
 
+				stepTick.enabled = comboStep.Completed;
+
 				if (comboStep.WaitingForInput)
 				{
 					stepUI.gameObject.SetActive(true);
 					stepImage.color = StepWaitingColour;
-
-//					var pulseTo = new Vector3(stepImage.transform.localPosition.x - 75, stepImage.transform.localPosition.y, stepImage.transform.localPosition.z);
 
 //					// animated vertical flash
 //					ComboVerticalFlash.transform.localPosition = stepUI.transform.localPosition;
@@ -432,12 +434,15 @@ namespace FightingLegends
 				else if (comboStep.Completed)
 				{
 					stepImage.color = StepCompletedColour;
-					StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
+
+					stepTick.enabled = true;
+
+					yield return StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
 				}
 				else
 				{
 					stepImage.color = StepDefaultColour;
-					StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
+					yield return StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
 
 //					// show if previous step is waiting
 //					if (!setup && previousStepUI != null && previousStep != null && previousStep.WaitingForInput)
@@ -446,11 +451,11 @@ namespace FightingLegends
 //						stepUI.gameObject.SetActive(false);
 				}
 
-				if (stepTick != null)
-					stepTick.enabled = comboStep.Completed;
+//				if (stepTick != null)
+//					stepTick.enabled = comboStep.Completed;
 
-				previousStepUI = stepUI;
-				previousStep = comboStep;
+//				previousStepUI = stepUI;
+//				previousStep = comboStep;
 
 				firstStep = false;
 				UIindex++;

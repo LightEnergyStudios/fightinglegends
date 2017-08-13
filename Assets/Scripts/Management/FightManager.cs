@@ -1257,7 +1257,7 @@ namespace FightingLegends
 			{
 				expiryCameraPosition = CameraPosition;
 
-//				Debug.Log("KO FeedbackStateEnd: Player1.CurrentState = " + Player1.CurrentState + ", Player1.aboutToExpire = " + Player1.aboutToExpire + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.aboutToExpire = " + Player2.aboutToExpire);
+//				Debug.Log("KO FeedbackStateEnd: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
 				UnfreezeFight();
 
 //				if (Player1.ExpiredHealth)

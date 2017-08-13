@@ -90,7 +90,7 @@ namespace FightingLegends
 		Hit_Hook_Die = 34000,	
 
 		Idle_Damaged = 35000,			// skeletron only
-		Falling = 36000,				// skeletron only		
+		Fall = 36000,					// skeletron only		
 		Ready_To_Die = 37000,			// skeletron only
 		Die = 38000,					// skeletron only
 

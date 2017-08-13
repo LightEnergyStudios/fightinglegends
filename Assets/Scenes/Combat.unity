@@ -5749,12 +5749,32 @@ Prefab:
     - target: {fileID: 114138573786082208, guid: f33e0cef5246b464e85394fc7c5ffe20,
         type: 2}
       propertyPath: StepCompletedColour.a
-      value: 0.39215687
+      value: 0.43
       objectReference: {fileID: 0}
     - target: {fileID: 114138573786082208, guid: f33e0cef5246b464e85394fc7c5ffe20,
         type: 2}
       propertyPath: StepDefaultColour.a
-      value: 0.11764706
+      value: 0.15686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 114138573786082208, guid: f33e0cef5246b464e85394fc7c5ffe20,
+        type: 2}
+      propertyPath: ComboStepStepTickColour.g
+      value: 0.6102941
+      objectReference: {fileID: 0}
+    - target: {fileID: 114138573786082208, guid: f33e0cef5246b464e85394fc7c5ffe20,
+        type: 2}
+      propertyPath: ComboStepStepTickColour.b
+      value: 0.15238759
+      objectReference: {fileID: 0}
+    - target: {fileID: 114138573786082208, guid: f33e0cef5246b464e85394fc7c5ffe20,
+        type: 2}
+      propertyPath: ComboStepStepTickColour.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114138573786082208, guid: f33e0cef5246b464e85394fc7c5ffe20,
+        type: 2}
+      propertyPath: ComboStepStepTickColour.r
+      value: -0.004487461
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f33e0cef5246b464e85394fc7c5ffe20, type: 2}
@@ -7151,20 +7171,20 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 22399890, guid: 804b3ecbd423047d8a74fb44d6595731, type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1321}
-    - target: {fileID: 33761670993866926, guid: 804b3ecbd423047d8a74fb44d6595731,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 169604707}
     - target: {fileID: 33899679674450816, guid: 804b3ecbd423047d8a74fb44d6595731,
         type: 2}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 33846636}
+    - target: {fileID: 33761670993866926, guid: 804b3ecbd423047d8a74fb44d6595731,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 169604707}
+    - target: {fileID: 22399890, guid: 804b3ecbd423047d8a74fb44d6595731, type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1321}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 804b3ecbd423047d8a74fb44d6595731, type: 2}
   m_IsPrefabParent: 0

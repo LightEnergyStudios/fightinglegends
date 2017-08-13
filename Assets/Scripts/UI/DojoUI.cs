@@ -695,7 +695,7 @@ namespace FightingLegends
 				moveOk = true;
 			}
 			// fall through if above triggers fail because of immediate shadow state change caused by EndState() (eg. skeletron has single frame light strike states)
-			else if ((shadow.CanContinue || shadow.IsBlocking) && nextMove != Move.Roman_Cancel)	
+			else if ((shadow.CanContinue || shadow.IsBlocking) && nextMove != Move.Roman_Cancel && nextMove != Move.Power_Up)	
 			{
 //				Debug.Log("ShadowExecuteNextMove: CueContinuation " + nextMove + ", frame = " + playbackFrameCount);
 				shadow.CueContinuation(nextMove);		// to be triggered on completion of current move (instead of returning to idle)
@@ -1194,7 +1194,7 @@ namespace FightingLegends
 //			Color startColour = Color.white;
 //			Color targetColour = new Color(moveImage.color.r, moveImage.color.g, moveImage.color.b, moveImage.color.a * playbackMoveAlpha);
 //
-//			ScrollViewportIfFull();
+			ScrollViewportIfFull();
 //
 //			while (t < 1.0f)
 //			{
@@ -1215,7 +1215,7 @@ namespace FightingLegends
 			moveImage.transform.localPosition = Vector3.zero;	
 //			moveImage.color = startColour;
 
-			AdjustChainAlpha(reverse);
+//			AdjustChainAlpha(reverse);
 
 			recordingMove = false;
 			yield return null;

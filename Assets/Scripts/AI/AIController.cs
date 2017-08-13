@@ -1347,10 +1347,10 @@ namespace FightingLegends
 			if (strategy == null)		// null == 'do nothing'
 				return false;
 
-			if (fighter.ExpiredHealth || fighter.ExpiredState || fighter.aboutToExpire)
+			if (fighter.ExpiredHealth || fighter.ExpiredState || fighter.takenLastFatalHit)
 				return false;
 
-			if (fighter.Opponent.ExpiredHealth || fighter.Opponent.ExpiredState || fighter.Opponent.aboutToExpire)
+			if (fighter.Opponent.ExpiredHealth || fighter.Opponent.ExpiredState || fighter.Opponent.takenLastFatalHit)
 				return false;
 
 			var behaviour = strategy.Behaviour;

@@ -715,7 +715,7 @@ namespace FightingLegends
 			}
 			else if (stateStartData.NewState == currentStep.NextStepOnState)
 			{
-//				Debug.Log(fighter.FullName + ": NextStepOnState = " + currentStep.NextStepOnState);
+				Debug.Log(fighter.FullName + ": NextStepOnState = " + currentStep.NextStepOnState);
 				StartCoroutine(StartNextStep());
 			}
 		}
@@ -779,7 +779,7 @@ namespace FightingLegends
 			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
 			{
 //				Debug.Log("FeedbackStateEnd: " + FeedbackFXType.Success.ToString());
-				if (CurrentStep != null && !CurrentStepIsCombo) // ) // TODO: check this!! 
+				if (CurrentStep != null) // && !CurrentStepIsCombo) // ) // TODO: check this!! 
 					StartCoroutine(StartNextStep());	// next step in queue (or completion if this is the last step)
 			}
 			else if (PromptingForInput)
@@ -1010,15 +1010,24 @@ namespace FightingLegends
 			if (! fighter.InTraining)
 				return;
 
-			StartCoroutine(StartNextStep());		// no more steps, so training complete
+			// TODO: check this!!!
+//			StartCoroutine(StartNextStep());		// no more steps, so training complete
 
+			// success!
+			if (success)
+				fightManager.Success(successOffset); 		// next step at end of feedback
+			else
+				StartCoroutine(StartNextStep());
+			
 			// relay event to listeners to this fighter trainer (eg UI)
 			if (OnComboCompleted != null)
 				OnComboCompleted(combo);
-			
-			// success!
-			if (success)
-				fightManager.Success(successOffset); 
+//			
+//			// success!
+//			if (success)
+//				fightManager.Success(successOffset); 		// next step at end of feedback
+//			else
+//				StartCoroutine(StartNextStep());
 		}
 
 
@@ -1263,7 +1272,7 @@ namespace FightingLegends
 				Title = "Special Extra Combo",
 				Narrative = FightManager.Translate("specialExtraComboNarrative"),
 				TrafficLightColour = TrafficLight.None,
-//				SuccessOnFreeze = true,
+				SuccessOnFreeze = true, 		// TODO: check this!!!
 
 				Combo = new TrainingCombo {
 					ComboName = LMHComboName,
@@ -1329,6 +1338,7 @@ namespace FightingLegends
 				Narrative = FightManager.Translate("resetCounterComboNarrative"),
 //				NarrativeSprite = feedbackUI.SwipeLeftSprite,
 				TrafficLightColour = TrafficLight.None,
+//				SuccessOnFreeze = true, 		// TODO: check this!!!
 
 				Combo = new TrainingCombo {
 					ComboName = ResetComboName,

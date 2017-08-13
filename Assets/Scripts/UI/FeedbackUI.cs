@@ -130,6 +130,7 @@ namespace FightingLegends
 		{
 			if (feedbackFX != null)
 			{
+//				Debug.Log("TriggerFeedbackFX: " + feedback);
 				feedbackFX.gameObject.SetActive(true);
 				feedbackFX.gameObject.layer = LayerMask.NameToLayer((layer != null) ? layer : fxLayer);
 
@@ -159,6 +160,8 @@ namespace FightingLegends
 
 		public void CancelFeedbackFX()
 		{
+//			Debug.Log("CancelFeedbackFX");
+
 			if (feedbackFX != null)
 				feedbackFX.VoidState();
 		}
