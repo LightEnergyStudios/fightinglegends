@@ -637,6 +637,7 @@ namespace FightingLegends
 			if (successFX) 		// starts next step at end of success FX
 			{
 				ClearPrompt();
+//				CancelPrompt();
 				fightManager.Success(successOffset); 	// next step at end of success fx
 			}
 			else 				// next step immediately
@@ -1012,25 +1013,17 @@ namespace FightingLegends
 			if (! fighter.InTraining)
 				return;
 
-			// relay event to listeners to this fighter trainer (eg UI)
+			// relay event to listeners to this fighter trainer (eg clear UI)
 			if (OnComboCompleted != null)
 				OnComboCompleted(combo);
 
-			// success!
 			if (success)
+			{
+				CancelPrompt();
 				fightManager.Success(successOffset); 	// StartNextStep at end of success feedback
+			}
 			else
-				StartCoroutine(StartNextStep());		// no more steps, so training complete
-
-//			CancelPrompt();
-
-//			// relay event to listeners to this fighter trainer (eg UI)
-//			if (OnComboCompleted != null)
-//				OnComboCompleted(combo);
-
-//			// success!
-//			if (success)
-//				fightManager.Success(successOffset); 
+				StartCoroutine(StartNextStep());
 		}
 			
 //		private void ComboCompleted(TrainingCombo combo, bool success = true)
