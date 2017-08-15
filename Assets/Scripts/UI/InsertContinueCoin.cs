@@ -38,7 +38,7 @@ namespace FightingLegends
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
 
-			continueLabel.text = FightManager.Translate("continue", false, true);
+			continueLabel.text = FightManager.Translate("continue"); //, false, true);
 		}
 
 

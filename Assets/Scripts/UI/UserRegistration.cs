@@ -205,20 +205,23 @@ namespace FightingLegends
 
 		private void OnUserUploaded(string userId, UserProfile profile, bool success)
 		{
-			if (success)
+			if (!string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId) && userId == FightManager.SavedGameStatus.UserId)
 			{
-				feedbackMessage.text = "'" + userId + "' registered!";
-				userIdInput.text = userId + "!";
-				userIdInput.interactable = false;
+				if (success)
+				{
+					feedbackMessage.text = "'" + userId + "' registered!";
+					userIdInput.text = userId + "!";
+					userIdInput.interactable = false;
 
-				FightManager.SavedGameStatus.UserId = userId;
+					FightManager.SavedGameStatus.UserId = userId;
 
-				StartCoroutine(Hide());
-			}
-			else
-			{
-				feedbackMessage.text = "Unable to register new user - please try again later!";
-				AllowInput(true);
+					StartCoroutine(Hide());
+				}
+				else
+				{
+					feedbackMessage.text = "Unable to register new user - please try again later!";
+					AllowInput(true);
+				}
 			}
 		}
 

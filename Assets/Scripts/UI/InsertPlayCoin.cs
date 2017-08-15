@@ -90,7 +90,7 @@ namespace FightingLegends
 
 			SetWalletValue(FightManager.Coins, false);				// set current value
 
-			animator.enabled = true;
+//			animator.enabled = true;
 			StartCoroutine(Show(message, coins));
 		}
 			

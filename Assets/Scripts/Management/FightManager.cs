@@ -769,7 +769,7 @@ namespace FightingLegends
 			{
 //				else if (! Player1.IsIdle && ! Player2.IsIdle)
 //				if (! (Player1.IsIdle && Player2.IsIdle))
-//					Debug.Log(Player1.CurrentState + " // " + Player2.CurrentState + " [" + AnimationFrameCount + "]");
+//					Debug.Log(Player1.CurrentState + (Player1.isFrozen ? "(frozen)" : "") + " // " + Player2.CurrentState + (Player2.isFrozen ? "(frozen)" : "") + " [" + AnimationFrameCount + "]");
 			}
 		}
 

@@ -122,7 +122,7 @@ namespace FightingLegends
 
 		private const float feedbackOffsetX = -260;			// for positioning next to fighters
 		private const float feedbackSwipeOffsetX = 70;		// nearer to centre
-		private const float feedbackOffsetY = 20; //-20;	// armour up/down, on fire, health up
+		private const float feedbackOffsetY = 20; //-20;	insertcoin// armour up/down, on fire, health up
 
 		#region camera tracking
 
@@ -220,7 +220,8 @@ namespace FightingLegends
 
 		public bool isFrozen { get; private set; }
 		public bool frozenByInfoBubble { get; private set; }
-		public int freezeFramesRemaining { get; private set; }
+		private int romanCancelFreezeFramesRemaining { get; set; }
+		public bool romanCancelFrozen { get { return romanCancelFreezeFramesRemaining > 0; } }
 
 		private int freezeFightFrames = 0;			// for freeze of both fighters, deferred to frame following a hit
 
@@ -280,7 +281,7 @@ namespace FightingLegends
 		public const int Power_Attack_Priority = 25;		// triggered by power-up
 		public const int Tutorial_Punch_Start_Priority = 13; // 8;	// punch start and punch. punch end returns to default
 		public const int Tutorial_Punch_Priority = 12; // 9;		// first and only hit frame
-//		public const int Falling_Priority = 20;				// skeletron -> ready_to_die (kneeling) - miss during this brief state?
+
 
 		#region event delegates
 
@@ -338,8 +339,8 @@ namespace FightingLegends
 		public delegate void RomanCancelDelegate(FighterChangedData newState);
 		public LastHitDelegate OnRomanCancel;
 
-		public delegate void EndRomanCancelFreezeDelegate(Fighter fighter);
-		public EndRomanCancelFreezeDelegate OnEndRomanCancelFreeze;
+//		public delegate void EndRomanCancelFreezeDelegate(Fighter fighter);
+//		public EndRomanCancelFreezeDelegate OnEndRomanCancelFreeze;
 
 //		public delegate void CanRomanCancelDelegate(bool canRomanCancel);
 //		public CanRomanCancelDelegate OnCanRomanCancel;
@@ -952,7 +953,7 @@ namespace FightingLegends
 			{
 				moveCuedOk = true;
 				fightManager.MoveCuedFeedback(moveCuedOk);
-//				Debug.Log(FullName + ": CueContinuation: " + move + ", moveCuedOk = " + moveCuedOk + ", CurrentState = " + CurrentState);
+//				Debug.Log(FullName + ": CueContinuation: " + move + ", CurrentState = " + CurrentState + " [" + AnimationFrameCount + "]");
 
 				if (OnContinuationCued != null)
 					OnContinuationCued(move);
@@ -1127,7 +1128,12 @@ namespace FightingLegends
 			get { return CurrentState == State.Hit_Hook_Die || CurrentState == State.Hit_Mid_Die ||
 				CurrentState == State.Hit_Straight_Die || CurrentState == State.Hit_Uppercut_Die; }
 		}
-
+			
+		private bool FallenState			// skeletron only
+		{
+			get { return CurrentState == State.Fall || CurrentState == State.Ready_To_Die; }
+		}
+			
 		public virtual bool ExpiredHealth { get { return ProfileData.SavedData.Health <= 0; } }
 
 		protected virtual bool TravelOnExpiry { get { return true; } }
@@ -1404,7 +1410,7 @@ namespace FightingLegends
 
 			if (InTraining)
 			{
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 
@@ -1442,7 +1448,7 @@ namespace FightingLegends
 			if (InTraining)
 			{
 //				Debug.Log(FullName + ": TwoFingerTap - CanContinue = " + CanContinue + ", state = " + CurrentState);
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 
@@ -1479,7 +1485,7 @@ namespace FightingLegends
 			if (InTraining)
 			{
 //				Debug.Log(FullName + ": HoldDown - CanContinue = " + CanContinue + ", state = " + CurrentState);
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 
@@ -1529,7 +1535,7 @@ namespace FightingLegends
 			if (InTraining)
 			{
 //				Debug.Log(FullName + ": SwipeLeft - CanContinue = " + CanContinue + ", state = " + CurrentState);
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 
@@ -1572,7 +1578,7 @@ namespace FightingLegends
 			if (InTraining)
 			{
 //				Debug.Log(FullName + ": SwipeRight - CanContinue = " + CanContinue + ", state = " + CurrentState);
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 			
@@ -1613,7 +1619,7 @@ namespace FightingLegends
 			if (InTraining)
 			{
 //				Debug.Log(FullName + ": SwipeLeftRight - CanContinue = " + CanContinue + ", state = " + CurrentState);
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 			
@@ -1646,7 +1652,7 @@ namespace FightingLegends
 			if (InTraining)
 			{
 //				Debug.Log(FullName + ": SwipeDown - CanContinue = " + CanContinue + ", state = " + CurrentState);
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 
@@ -1687,7 +1693,7 @@ namespace FightingLegends
 			if (InTraining)
 			{
 //				Debug.Log(FullName + ": SwipeUp - CanContinue = " + CanContinue + ", state = " + CurrentState);
-				Trainer.UnFreeze();
+				Trainer.UnFreezeTraining();
 			}
 		}
 
@@ -1785,7 +1791,8 @@ namespace FightingLegends
 			}
 				
 			// in the dojo, the shadow fighter constantly regenerates health
-			bool dojoRegenerate = FightManager.CombatMode == FightMode.Dojo && IsDojoShadow && !ExpiredHealth && !ExpiredState && !fightManager.FightFrozen;
+			bool dojoRegenerate = FightManager.CombatMode == FightMode.Dojo && IsDojoShadow
+											&& !ExpiredHealth && !ExpiredState && !FallenState && !fightManager.FightFrozen;
 
 			// constantly increase health if fighter has the regenerator power-up
 			bool powerUpRegenerate = FightManager.CombatMode != FightMode.Arcade && StaticPowerUp == FightingLegends.PowerUp.Regenerator &&
@@ -1979,7 +1986,7 @@ namespace FightingLegends
 			// return if frozen independently..
 			if (isFrozen)
 			{
-				if (freezeFramesRemaining >= 0)
+				if (romanCancelFreezeFramesRemaining >= 0)
 					FreezeCountdown();		// for set number of frames
 				return;
 			}
@@ -2922,7 +2929,7 @@ namespace FightingLegends
 				
 			// cancel special opportunity feedback (sets to void state)
 //			Debug.Log(FullName + "Cancel feedback: EndSpecialOpportunity");
-			if (! Opponent.ExpiredState)
+			if (! Opponent.ExpiredState && !InTraining)
 				TriggerFeedbackFX(FeedbackFXType.None);		
 		}
 
@@ -2992,12 +2999,16 @@ namespace FightingLegends
 		}
 
 		// used for freezing this fighter only - fightManager.FreezeFight() freezes both in sync
-		private void StartFreeze(int numFrames)
+		private void RomanCancelFreeze()
 		{
-			if (numFrames > 0)
+			int freezeFrames = ProfileData.RomanCancelFreezeFrames;
+
+//			Debug.Log(FullName + ": RomanCancelFreeze - state = " + CurrentState + ", RomanCancelFreezeFrames = " + freezeFrames + " [" + AnimationFrameCount + "]");
+
+			if (freezeFrames > 0)
 			{
-				if (numFrames > freezeFramesRemaining)		// this is a new freeze or extending an existing freeze
-					freezeFramesRemaining = numFrames;
+				if (freezeFrames > romanCancelFreezeFramesRemaining)		// this is a new freeze or extending an existing freeze
+					romanCancelFreezeFramesRemaining = freezeFrames;
 				
 				Freeze();
 			}
@@ -3006,28 +3017,31 @@ namespace FightingLegends
 		// used for freezing this fighter only - fightManager.FreezeFight() freezes both in sync
 		private void FreezeCountdown()
 		{
-			if (freezeFramesRemaining == 0)
+			if (romanCancelFreezeFramesRemaining == 0)
 			{
 				Unfreeze();
-//				Debug.Log(FullName + ": Unfreeze: State = " + CurrentState + " [" + AnimationFrameCount + "]");
+
+//				if (! UnderAI)
+//					Debug.Log(FullName + ": Unfreeze: State = " + CurrentState + " CurrentMove = " + CurrentMove);
 
 				if (CurrentMove == Move.Roman_Cancel)
 				{
+//					Debug.Log(FullName + ": END RomanCancel freeze - State = " + CurrentState + " -> " + NextContinuation);
+
 					CompleteMove();				// execute the move continuation if present
-//					Debug.Log(FullName + ": END RomanCancel freeze - State = " + CurrentState + " [" + AnimationFrameCount + "]");
 
 					if (Opponent != null)
 						Opponent.ResetStunDuration(Opponent.RomanCancelStunFrames);		// if opponent is stunned
 
-					if (OnEndRomanCancelFreeze != null)
-						OnEndRomanCancelFreeze(this);
+//					if (OnEndRomanCancelFreeze != null)
+//						OnEndRomanCancelFreeze(this);
 				}
 			}
 			else
 			{
-//				Debug.Log(FullName + ": frozen " + freezeFramesRemaining + " frames remaining" + " [" + AnimationFrameCount + "]");
-				StateUI = "[ Frozen... " + freezeFramesRemaining + " ]";
-				freezeFramesRemaining--;
+//				Debug.Log(FullName + ": frozen " + romanCancelFreezeFramesRemaining + " frames remaining" + " [" + AnimationFrameCount + "]");
+				StateUI = "[ Frozen... " + romanCancelFreezeFramesRemaining + " ]";
+				romanCancelFreezeFramesRemaining--;
 			}
 		}
 
@@ -3433,13 +3447,14 @@ namespace FightingLegends
 
 		private void ContinueOrIdle()
 		{	
-//			Debug.Log(FullName + " ContinueOrIdle  - HasContinuation = " + (HasContinuation && CheckGauge(NextContinuation)) + " [" + AnimationFrameCount + "]");
+//			if (! UnderAI)
+//				Debug.Log(FullName + " ContinueOrIdle  - HasContinuation = " + (HasContinuation && CheckGauge(NextContinuation)) + " [" + NextContinuation + "]");
 
 			if (HasContinuation && CheckGauge(NextContinuation))	 // final check for sufficient gauge (if required)	
 				ExecuteContinuation();
 			else
 			{
-				// if retuning to idle after a roman cancel (Dash state while frozen), then 'step back'
+				// if returning to idle after a roman cancel (Dash state while frozen), then 'step back'
 				if (CurrentMove == Move.Roman_Cancel)
 					ReturnToDefaultDistance();
 				
@@ -3585,7 +3600,7 @@ namespace FightingLegends
 			hitStunFramesRemaining = 0;
 			blockStunFramesRemaining = 0;
 
-			freezeFramesRemaining = 0;
+			romanCancelFreezeFramesRemaining = 0;
 			isFrozen = false;
 			takenLastFatalHit = false;	
 
@@ -3970,11 +3985,10 @@ namespace FightingLegends
 			CurrentState = State.Dash;				// until end of freeze
 			CanContinue = true;						// for follow-up after freeze (eg. counter)
 
-//			Debug.Log(FullName + ": START RomanCancel freeze - state = " + CurrentState + ", RomanCancelFreezeFrames = " + ProfileData.RomanCancelFreezeFrames + " [" + AnimationFrameCount + "]");
-			StartFreeze(ProfileData.RomanCancelFreezeFrames); 	// continue or idle after freeze
+			RomanCancelFreeze(); 	// continue or idle after freeze
 
 			if (Opponent != null)
-				Opponent.StartFreeze(ProfileData.RomanCancelFreezeFrames);
+				Opponent.RomanCancelFreeze();
 
 			return true;
 		}
@@ -4575,7 +4589,7 @@ namespace FightingLegends
 				if (lastHit)
 					IncreaseXP(FightManager.BlockXP);
 			}
-			else if (CurrentState != State.Fall && CurrentState != State.Ready_To_Die)
+			else if (! FallenState)
 			{
 				// attacker gets XP for successful hit
 				if (lastHit)
@@ -4998,6 +5012,9 @@ namespace FightingLegends
 			if (IsDojoShadow)
 				return;
 
+			if (InTraining)
+				return;
+
 //			var xOffset = IsPlayer1 ? feedbackOffsetX : -feedbackOffsetX;
 			var xOffset = -feedbackOffsetX;
 
@@ -5209,7 +5226,7 @@ namespace FightingLegends
 
 		private void StartHitStun(HitFrameData hitData, bool useBlockStunFrames = false)
 		{
-//			Debug.Log(FullName + ": StartHitStun at [" + fightManager.AnimationFrameCount + "]");
+//			Debug.Log(FullName + ": StartHitStun state = " + CurrentState + " at [" + fightManager.AnimationFrameCount + "]");
 
 			if (hitData.TypeOfHit == HitType.Shove)
 				return;
@@ -5346,7 +5363,6 @@ namespace FightingLegends
 			CompleteMove();		// return to idle and execute a queued move if applicable
 
 			CanContinue = false;
-	
 		}
 
 
@@ -5496,7 +5512,7 @@ namespace FightingLegends
 		// loser departs ...
 		private IEnumerator ExpireToNextRound()
 		{	
-			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
+//			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
 			if (PreviewMoves)
 				yield break;
 			
@@ -5768,7 +5784,7 @@ namespace FightingLegends
 
 		protected void KnockOutFreeze()
 		{
-			Debug.Log(FullName + ": KnockOutFreeze!");
+//			Debug.Log(FullName + ": KnockOutFreeze!");
 
 			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
 			fightManager.TriggerFeedbackFX(FeedbackFXType.KO);

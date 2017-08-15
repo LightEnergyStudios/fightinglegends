@@ -52,7 +52,7 @@ namespace FightingLegends
 		public Image PaintStrokeLeft;
 		public Image PaintStrokeRight;
 
-		private const float splatTime = 0.1f;
+		private const float splatTime = 0.15f;
 		private Color splatMinColour = Color.clear;
 		private Color splatMaxColour = Color.white;
 
@@ -237,7 +237,7 @@ namespace FightingLegends
 					player1.Trainer.OnTriggerSplat += DoSplat;
 					player1.Trainer.OnHideSplat += HideSplat;
 					player1.Trainer.OnTriggerPaintStroke += DoPaintStroke;
-					player1.Trainer.OnHidePaintStroke += HidePaintStroke;
+					player1.Trainer.OnHidePaintStroke += HidePaintStrokes;
 				}
 			}
 
@@ -282,7 +282,7 @@ namespace FightingLegends
 					player1.Trainer.OnTriggerSplat -= DoSplat;
 					player1.Trainer.OnHideSplat -= HideSplat;
 					player1.Trainer.OnTriggerPaintStroke -= DoPaintStroke;
-					player1.Trainer.OnHidePaintStroke -= HidePaintStroke;
+					player1.Trainer.OnHidePaintStroke -= HidePaintStrokes;
 				}
 			}
 				
@@ -718,9 +718,9 @@ namespace FightingLegends
 
 		private void DoSplat()
 		{
-			Splat.gameObject.SetActive(true);
+//			Splat.gameObject.SetActive(true);
 
-			HidePaintStroke();
+//			HidePaintStrokes();
 
 			StartCoroutine(TriggerSplat());
 //			var animator = GetComponent<Animator>();
@@ -730,35 +730,40 @@ namespace FightingLegends
 		private void HideSplat()
 		{
 //			Debug.Log("HideSplat");
-			Splat.gameObject.SetActive(false);
+//			Splat.gameObject.SetActive(false);
+
+			StartCoroutine(FadeSplat());
 		}
 
 		private void DoPaintStroke(bool right)
 		{
 //			PaintStroke.transform.localScale = flip ? new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);			// flipped to flow to the right
-			if (right)
-			{
-				PaintStrokeRight.gameObject.SetActive(true);
-				PaintStrokeLeft.gameObject.SetActive(false);
-			}
-			else
-			{
-				PaintStrokeLeft.gameObject.SetActive(true);
-				PaintStrokeRight.gameObject.SetActive(false);
-			}
+//			if (right)
+//			{
+//				PaintStrokeRight.gameObject.SetActive(true);
+//				PaintStrokeLeft.gameObject.SetActive(false);
+//			}
+//			else
+//			{
+//				PaintStrokeLeft.gameObject.SetActive(true);
+//				PaintStrokeRight.gameObject.SetActive(false);
+//			}
 
-			HideSplat();
-			
+//			HideSplat();
 			StartCoroutine(TriggerPaintStroke(right));
+
 //			var animator = GetComponent<Animator>();
 //			animator.SetTrigger("EnterSplat");
 		}
 
-		private void HidePaintStroke()
+		private void HidePaintStrokes()
 		{
 //			Debug.Log("HidePaintStroke");
-			PaintStrokeLeft.gameObject.SetActive(false);
-			PaintStrokeRight.gameObject.SetActive(false);
+//			PaintStrokeLeft.gameObject.SetActive(false);
+//			PaintStrokeRight.gameObject.SetActive(false);
+
+			StartCoroutine(FadePaintStroke(true));
+			StartCoroutine(FadePaintStroke(false));
 		}
 			
 		private IEnumerator TriggerSplat()
@@ -767,6 +772,11 @@ namespace FightingLegends
 
 //			if (splatSound != null)
 //				AudioSource.PlayClipAtPoint(splatSound, Vector3.zero, FightManager.SFXVolume);
+
+			HidePaintStrokes();
+
+			Splat.color = splatMinColour;
+			Splat.gameObject.SetActive(true);
 
 			Splat.transform.localRotation = Quaternion.Euler(0, 0, Random.Range(0.0f, 360.0f));
 				
@@ -786,6 +796,27 @@ namespace FightingLegends
 			yield return null;
 		}
 
+		private IEnumerator FadeSplat()
+		{
+			if (! Splat.gameObject.activeSelf)
+				yield break;
+			
+			float t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / splatTime); 
+
+				Splat.color = Color.Lerp(splatMaxColour, splatMinColour, t);
+				yield return null;
+			}
+
+			Splat.gameObject.SetActive(false);
+			Splat.color = splatMaxColour;
+
+			yield return null;
+		}
+
 		private IEnumerator TriggerPaintStroke(bool right)
 		{
 			float t = 0.0f;
@@ -794,6 +825,13 @@ namespace FightingLegends
 //				AudioSource.PlayClipAtPoint(splatSound, Vector3.zero, FightManager.SFXVolume);
 
 			var paintStroke = right ? PaintStrokeRight : PaintStrokeLeft;
+
+			paintStroke.color = splatMinColour;
+			paintStroke.gameObject.SetActive(true);
+
+			StartCoroutine(FadePaintStroke(!right));
+			HideSplat();
+
 			var startScale = right ? new Vector3(-splatMinScale, splatMinScale, splatMinScale) : new Vector3(splatMinScale, splatMinScale, splatMinScale);			// flipped to flow to the right
 			var finishScale = right ? new Vector3(-splatMaxScale, splatMaxScale, splatMaxScale) : new Vector3(splatMaxScale, splatMaxScale, splatMaxScale);			// flipped to flow to the right
 
@@ -810,53 +848,26 @@ namespace FightingLegends
 			yield return null;
 		}
 
-		private void FeedbackStart(AnimationState endingState)
+		private IEnumerator FadePaintStroke(bool right)
 		{
-			Debug.Log("FeedbackStart: " + endingState.StateLabel);
+			var paintStroke = right ? PaintStrokeRight : PaintStrokeLeft;
 
-//			// left/right swipes use paint stroke, so hide it
-//			if (endingState.StateLabel == FeedbackFXType.Swipe_Back.ToString().ToUpper() ||
-//				endingState.StateLabel == FeedbackFXType.Swipe_Forward.ToString().ToUpper() ||
-//				endingState.StateLabel == FeedbackFXType.Swipe_Vengeance.ToString().ToUpper())
-//			{
-//				DoPaintStroke(endingState.StateLabel == FeedbackFXType.Swipe_Forward.ToString().ToUpper() ||
-//								endingState.StateLabel == FeedbackFXType.Swipe_Vengeance.ToString().ToUpper());
-//				return;
-//			}
-//
-//			// all others use splat, so hide it
-//			if (endingState.StateLabel == FeedbackFXType.Press.ToString().ToUpper() ||
-//				endingState.StateLabel == FeedbackFXType.Press_Both.ToString().ToUpper() ||
-//				endingState.StateLabel == FeedbackFXType.Hold.ToString().ToUpper() ||
-//				endingState.StateLabel == FeedbackFXType.Mash.ToString().ToUpper())
-//			{
-//				DoSplat();
-//				return;
-//			}
-		}
+			if (! paintStroke.gameObject.activeSelf)
+				yield break;
 
-		private void FeedbackEnd(AnimationState endingState)
-		{
-			Debug.Log("FeedbackEnd: " + endingState.StateLabel);
+			float t = 0.0f;
 
-//			// left/right swipes use paint stroke, so hide it
-//			if (endingState.StateLabel == FeedbackFXType.Swipe_Back.ToString().ToUpper() ||
-//			   		endingState.StateLabel == FeedbackFXType.Swipe_Forward.ToString().ToUpper() ||
-//			   		endingState.StateLabel == FeedbackFXType.Swipe_Vengeance.ToString().ToUpper())
-//			{
-//				HidePaintStroke();
-//				return;
-//			}
-//
-//			// all others use splat, so hide it
-//			if (endingState.StateLabel == FeedbackFXType.Press.ToString().ToUpper() ||
-//						endingState.StateLabel == FeedbackFXType.Press_Both.ToString().ToUpper() ||
-//						endingState.StateLabel == FeedbackFXType.Hold.ToString().ToUpper() ||
-//						endingState.StateLabel == FeedbackFXType.Mash.ToString().ToUpper())
-//			{
-//				HideSplat();
-//				return;
-//			}
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / splatTime); 
+
+				paintStroke.color = Color.Lerp(splatMaxColour, splatMinColour, t);
+				yield return null;
+			}
+
+			paintStroke.gameObject.SetActive(false);
+			paintStroke.color = splatMaxColour;
+			yield return null;
 		}
 
 		public void TriggerEntry()

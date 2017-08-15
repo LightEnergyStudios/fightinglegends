@@ -92,12 +92,19 @@ namespace FightingLegends
 			survivalLeaderboardButton.onClick.AddListener(delegate { GetLeaderboard(Leaderboard.SurvivalRounds); });
 			challengeLeaderboardButton.onClick.AddListener(delegate { GetLeaderboard(Leaderboard.ChallengeWinnings); });
 
-			newUserButton.onClick.AddListener(delegate { RegisterNewUser(); });
 //			postTestButton.onClick.AddListener(delegate { PostTest(); });
+
+			bool userRegistered = !string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId);
+			newUserButton.gameObject.SetActive(!userRegistered);
+
+			if (!userRegistered)
+			{
+				newUserButton.onClick.AddListener(delegate { RegisterNewUser(); });
+				FirebaseManager.OnUserProfileUploaded += OnNewUserRegistered;
+			}
 
 			FirebaseManager.OnPostScore += OnPostScore;
 			FirebaseManager.OnGetLeaderboard += OnGetLeaderboard;
-			FirebaseManager.OnUserProfileUploaded += OnNewUserRegistered;
 
 			SetCurrentLeaderboard(Leaderboard.None);
 			GetLeaderboard(Leaderboard.Kudos);
@@ -114,12 +121,20 @@ namespace FightingLegends
 			survivalLeaderboardButton.onClick.RemoveListener(delegate { GetLeaderboard(Leaderboard.SurvivalRounds); });
 			challengeLeaderboardButton.onClick.RemoveListener(delegate { GetLeaderboard(Leaderboard.ChallengeWinnings); });
 
-			newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
+//			newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
 //			postTestButton.onClick.RemoveListener(delegate { PostTest(); });
+
+			bool userRegistered = !string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId);
+
+			if (!userRegistered)
+			{
+				newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
+				FirebaseManager.OnUserProfileUploaded -= OnNewUserRegistered;
+			}
 
 			FirebaseManager.OnPostScore -= OnPostScore;
 			FirebaseManager.OnGetLeaderboard -= OnGetLeaderboard;
-			FirebaseManager.OnUserProfileUploaded -= OnNewUserRegistered;
+//			FirebaseManager.OnUserProfileUploaded -= OnNewUserRegistered;
 
 			DestroyScoreEntries();
 		}
@@ -189,14 +204,19 @@ namespace FightingLegends
 
 		private void OnNewUserRegistered(string userId, UserProfile profile, bool success)
 		{
-			if (success)
+			if (!string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId) && userId == FightManager.SavedGameStatus.UserId)
 			{
-				newUserButton.gameObject.SetActive(false);
+				if (success)
+				{
+					newUserButton.gameObject.SetActive(false);
+					newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
+					FirebaseManager.OnUserProfileUploaded -= OnNewUserRegistered;
 
-				FirebaseManager.PostLeaderboardScore(Leaderboard.Kudos, FightManager.SavedGameStatus.Kudos);
-				FirebaseManager.PostLeaderboardScore(Leaderboard.SurvivalRounds, FightManager.SavedGameStatus.BestSurvivalEndurance);
-				FirebaseManager.PostLeaderboardScore(Leaderboard.ChallengeWinnings, FightManager.SavedGameStatus.TotalChallengeWinnings);
-				FirebaseManager.PostLeaderboardScore(Leaderboard.DojoDamage, FightManager.SavedGameStatus.BestDojoDamage);
+					FirebaseManager.PostLeaderboardScore(Leaderboard.Kudos, FightManager.SavedGameStatus.Kudos);
+					FirebaseManager.PostLeaderboardScore(Leaderboard.SurvivalRounds, FightManager.SavedGameStatus.BestSurvivalEndurance);
+					FirebaseManager.PostLeaderboardScore(Leaderboard.ChallengeWinnings, FightManager.SavedGameStatus.TotalChallengeWinnings);
+					FirebaseManager.PostLeaderboardScore(Leaderboard.DojoDamage, FightManager.SavedGameStatus.BestDojoDamage);
+				}
 			}
 		}
 

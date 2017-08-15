@@ -65,7 +65,6 @@ namespace FightingLegends
 		protected override void EndIdleDamaged()
 		{
 			CurrentState = State.Fall;
-//			CurrentPriority = Falling_Priority;		// miss during this state?
 		}
 
 		protected override void EndFalling()
@@ -89,7 +88,6 @@ namespace FightingLegends
 			takenLastFatalHit = false;
 
 			CurrentState = State.Fall;	// then ready to die
-//			CurrentPriority = Falling_Priority;		// to force miss during this state??
 
 			Opponent.ReturnToDefaultDistance();		// default fighting distance
 		}

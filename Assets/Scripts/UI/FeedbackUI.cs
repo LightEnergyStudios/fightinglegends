@@ -104,25 +104,10 @@ namespace FightingLegends
 			Player2StarsPosition = Player2Stars.transform.localPosition;
 
 			LevelUpStarsPosition = LevelUpStars.transform.localPosition;
-
-//			GameUI.TrafficLightInfoBubble += TrafficLightInfoBubble;
-//			GameUI.OnGaugeIncreased += CrystalInfoBubble;
-//			TrainingUI.ComboFailureInfoBubble += ComboFailureInfoBubble;
-//			FightManager.OnNewFight += CombatModeInfoBubble;
-//			FightManager.OnMenuChanged += MenuInfoBubble;
-//
-//			GameUI.OnInfoBubbleRead += OnInfoBubbleRead;
 		}
 
 		private void OnDestroy()
 		{
-//			GameUI.TrafficLightInfoBubble -= TrafficLightInfoBubble;
-//			GameUI.OnGaugeIncreased -= CrystalInfoBubble;
-//			TrainingUI.ComboFailureInfoBubble -= ComboFailureInfoBubble;
-//			FightManager.OnNewFight -= CombatModeInfoBubble;
-//			FightManager.OnMenuChanged -= MenuInfoBubble;
-//
-//			GameUI.OnInfoBubbleRead -= OnInfoBubbleRead;
 		}
 
 

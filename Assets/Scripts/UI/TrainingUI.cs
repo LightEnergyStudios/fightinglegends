@@ -35,9 +35,6 @@ namespace FightingLegends
 		public Color StepCompletedColour;			// semi-transparent (tick enabled)
 		public Color StepDefaultColour;				// semi-transparent
 
-		public Color ComboStepStepTickColour;			// when combo step completed
-		private const float comboStepCompletedTickAlpha = 0.75f;
-
 		private const float comboSetupPause = 0.075f;	// as each step set up
 		private const float comboStepWidth = 64;		// image
 		private const float comboStepSpace = 6;			// between images
@@ -394,9 +391,7 @@ namespace FightingLegends
 
 //			Debug.Log("SyncComboUI: " + combo.ComboName + " ComboSteps: " + combo.ComboSteps.Count + " comboUISteps: " + comboUISteps.Count);
 			bool firstStep = true;
-
-//			ComboStepUI previousStepUI = null;			// previous step synced
-//			ComboStep previousStep = null;
+			int remainingStepCount = 0;		// steps yet to come - hilight next in line
 
 			// there may be fewer UI steps (images) than steps in the combo because of 'invisible' AI steps
 			// so we have to keep a separate index
@@ -418,44 +413,32 @@ namespace FightingLegends
 
 				//				ComboVerticalFlash.gameObject.SetActive(false);
 
-				stepTick.enabled = comboStep.Completed;
+				if (stepTick != null)
+					stepTick.enabled = comboStep.Completed;
 
 				if (comboStep.WaitingForInput)
 				{
 					stepUI.gameObject.SetActive(true);
 					stepImage.color = StepWaitingColour;
 
-//					// animated vertical flash
-//					ComboVerticalFlash.transform.localPosition = stepUI.transform.localPosition;
-//					ComboVerticalFlash.gameObject.SetActive(true);
-
-					yield return StartCoroutine(stepUI.Pulse(comboStepGrowTime, new Vector3(comboStepGrowScale, comboStepGrowScale, comboStepGrowScale), (firstStep ? null : ComboStepAudio), true, true, null));	// first step silent (at idle - waiting for first input of combo)
+//					yield return StartCoroutine(stepUI.Pulse(comboStepGrowTime, new Vector3(comboStepGrowScale, comboStepGrowScale, comboStepGrowScale), (firstStep ? null : ComboStepAudio), true, true, null));	// first step silent (at idle - waiting for first input of combo)
+					yield return StartCoroutine(stepUI.Pulse(comboStepGrowTime, new Vector3(comboStepGrowScale, comboStepGrowScale, comboStepGrowScale), (firstStep ? null : ComboStepAudio), false, true, null));	// first step silent (at idle - waiting for first input of combo)
 				}
 				else if (comboStep.Completed)
 				{
 					stepImage.color = StepCompletedColour;
-
-					stepTick.enabled = true;
-
-					yield return StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
+					StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
 				}
 				else
 				{
-					stepImage.color = StepDefaultColour;
-					yield return StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
+					stepImage.color = remainingStepCount == 0 ? StepCompletedColour : StepDefaultColour;		// next step more visible
+					StartCoroutine(stepUI.Shrink(comboStepGrowTime, null));				// from current scale back to one
 
-//					// show if previous step is waiting
-//					if (!setup && previousStepUI != null && previousStep != null && previousStep.WaitingForInput)
-//						stepUI.gameObject.SetActive(true);
-//					else
-//						stepUI.gameObject.SetActive(false);
+					remainingStepCount++;
 				}
 
 //				if (stepTick != null)
 //					stepTick.enabled = comboStep.Completed;
-
-//				previousStepUI = stepUI;
-//				previousStep = comboStep;
 
 				firstStep = false;
 				UIindex++;

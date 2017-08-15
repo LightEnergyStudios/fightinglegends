@@ -135,8 +135,6 @@ namespace FightingLegends
 				{
 					stepTrafficLight = CurrentStep.TrafficLightColour;
 				}
-
-
 			}
 		}	
 			
@@ -282,7 +280,7 @@ namespace FightingLegends
 //			if (SetTrafficLightColour != null)
 //				SetTrafficLightColour(TrafficLight.None);			// GameUI
 			
-			UnFreeze();	
+			UnFreezeTraining();	
 			CancelPrompt();
 			fighter.InTraining = false;
 
@@ -402,11 +400,12 @@ namespace FightingLegends
 
 			if (CurrentStep == null)			// no more training steps
 			{
+//				Debug.Log("StartNextStep: no more steps!");
 				ClearPrompt();
 				yield break;
 			}
 
-//			Debug.Log("StartNextStep: " + fighter.FullName + " '" + CurrentStep.Title + "' ActivatesTrafficLights = " + CurrentStep.ActivatesTrafficLights);
+//			Debug.Log("StartNextStep: " + fighter.FullName + " - " + CurrentStep.Title);
 //			Debug.Log("-->>> \nSTART NEXT STEP: " + fighter.FullName + " '" + CurrentStep.Title + "' [" + CurrentStep.GestureFX +
 //				"] CurrentState = " + fighter.CurrentState + ", FreezeState = " + CurrentStep.FreezeOnState +
 //				", FreezeAtEnd = " + CurrentStep.FreezeAtEnd + ", AIStateFreeze = " + CurrentStep.FreezeOnAI);
@@ -416,7 +415,7 @@ namespace FightingLegends
 			yield return StartCoroutine(PromptForInput());
 
 			if (! PromptingForInput)
-				UnFreeze();		// as opposed to on valid input (until next step freeze hit frame / state)
+				UnFreezeTraining();		// as opposed to on valid input (until next step freeze hit frame / state)
 
 			if (CurrentStep.ReleaseBlock)
 			{
@@ -520,7 +519,7 @@ namespace FightingLegends
 			if (CurrentStepIsCombo)
 			{
 				CurrentStep.Combo.StartCombo(false);
-				UnFreeze();						// in case combo has no prompt	
+				UnFreezeTraining();						// in case combo has no prompt	
 			}
 
 			if (CurrentStepIsNarrativeOnly) 				// traffic light steps consist of narrative only
@@ -626,7 +625,7 @@ namespace FightingLegends
 		}
 
 
-		private void Freeze(bool successFX)
+		private void FreezeTraining(bool successFX)
 		{
 			var opponent = fighter.Opponent;
 //			var currentStep = fighter.InTraining ? CurrentStep : opponent.Trainer.CurrentStep;
@@ -650,9 +649,12 @@ namespace FightingLegends
 		}
 			
 			
-		public void UnFreeze()
+		public void UnFreezeTraining()
 		{
 			if (! fighter.InTraining)
+				return;
+
+			if (fighter.romanCancelFrozen)
 				return;
 			
 			if (CurrentStep == null)
@@ -674,7 +676,7 @@ namespace FightingLegends
 			if (CurrentStep == null)
 				return;
 
-//			Debug.Log("UNFREEZE! CurrentStep = '" + CurrentStep.Title + "' CurrentState = " + fighter.CurrentState);
+//			Debug.Log("UnFreezeTraining! CurrentStep = '" + CurrentStep.Title + "' CurrentState = " + fighter.CurrentState + " [" + fighter.AnimationFrameCount + "]");
 
 			if (CurrentStep.AIMove != Move.None)
 			{
@@ -711,11 +713,11 @@ namespace FightingLegends
 			if (stateStartData.NewState == currentStep.FreezeOnState)
 			{
 //				Debug.Log("State START --> SUCCESS + FREEZE! " + fighter.FighterFullName + ", FreezeState = " + currentStep.FreezeOnState + ", AIStateFreeze = " + currentStep.AIStateFreeze + ", success = " + success);
-				Freeze(currentStep.SuccessOnFreeze);
+				FreezeTraining(currentStep.SuccessOnFreeze);
 			}
 			else if (stateStartData.NewState == currentStep.NextStepOnState)
 			{
-				Debug.Log(fighter.FullName + ": NextStepOnState = " + currentStep.NextStepOnState);
+//				Debug.Log(fighter.FullName + ": NextStepOnState = " + currentStep.NextStepOnState);
 				StartCoroutine(StartNextStep());
 			}
 		}
@@ -743,7 +745,7 @@ namespace FightingLegends
 //				Debug.Log("State END: " + fighter.FullName + ", StartState = " + stateEndData.State + ", AIStateFreeze = " + currentStep.FreezeOnAI);
 
 //				Debug.Log("State END --> SUCCESS + FREEZE! " + fighter.FighterFullName + ", FreezeState = " + currentStep.FreezeOnState + ", AIStateFreeze = " + currentStep.AIStateFreeze + ", success = " + success);
-				Freeze(currentStep.SuccessOnFreeze);
+				FreezeTraining(currentStep.SuccessOnFreeze);
 			}
 		}
 	
@@ -766,7 +768,7 @@ namespace FightingLegends
 			if (currentStep.FreezeOnState == lastHitData.NewState)
 			{
 //				Debug.Log("LAST HIT --> SUCCESS + FREEZE! " + fighter.FullName + ", State = " + lastHitData.State);
-				Freeze(currentStep.SuccessOnFreeze);
+				FreezeTraining(currentStep.SuccessOnFreeze);
 			}
 		}
 			
@@ -779,7 +781,7 @@ namespace FightingLegends
 			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
 			{
 //				Debug.Log("FeedbackStateEnd: " + FeedbackFXType.Success.ToString());
-				if (CurrentStep != null) // && !CurrentStepIsCombo) // ) // TODO: check this!! 
+				if (CurrentStep != null && !CurrentStepIsCombo) // ) // TODO: check this!! 
 					StartCoroutine(StartNextStep());	// next step in queue (or completion if this is the last step)
 			}
 			else if (PromptingForInput)
@@ -794,7 +796,6 @@ namespace FightingLegends
 						fighter.TriggerFeedbackFX(stepGestureFX, false, feedbackYOffset);			// loop until valid input
 				}
 				else if (CurrentStep != null)
-//					StartCoroutine(fighter.PauseTriggerFeedbackFX(feedbackPause, CurrentStep.GestureFX, false, feedbackYOffset));		// loop until valid input - after a pause
 					fighter.TriggerFeedbackFX(CurrentStep.GestureFX, false, feedbackYOffset);		// loop until valid input
 			}
 		}
@@ -989,7 +990,8 @@ namespace FightingLegends
 			if (!fighter.InTraining)
 				return;
 			
-			PromptingForInput = false;
+//			PromptingForInput = false;
+			CancelPrompt();
 
 //			// relay event to listeners to this fighter trainer (eg UI)
 //			if (OnComboStepExpired != null)
@@ -1004,31 +1006,48 @@ namespace FightingLegends
 			PromptingForInput = false;
 			ClearPrompt();			// displayed for first step only
 		}
-			
+
 		private void ComboCompleted(TrainingCombo combo, bool success = true)
 		{
 			if (! fighter.InTraining)
 				return;
 
-			// TODO: check this!!!
-//			StartCoroutine(StartNextStep());		// no more steps, so training complete
-
-			// success!
-			if (success)
-				fightManager.Success(successOffset); 		// next step at end of feedback
-			else
-				StartCoroutine(StartNextStep());
-			
 			// relay event to listeners to this fighter trainer (eg UI)
 			if (OnComboCompleted != null)
 				OnComboCompleted(combo);
+
+			// success!
+			if (success)
+				fightManager.Success(successOffset); 	// StartNextStep at end of success feedback
+			else
+				StartCoroutine(StartNextStep());		// no more steps, so training complete
+
+//			CancelPrompt();
+
+//			// relay event to listeners to this fighter trainer (eg UI)
+//			if (OnComboCompleted != null)
+//				OnComboCompleted(combo);
+
+//			// success!
+//			if (success)
+//				fightManager.Success(successOffset); 
+		}
+			
+//		private void ComboCompleted(TrainingCombo combo, bool success = true)
+//		{
+//			if (! fighter.InTraining)
+//				return;
+//
+//			StartCoroutine(StartNextStep());		// no more steps, so training complete
+//
+//			// relay event to listeners to this fighter trainer (eg UI)
+//			if (OnComboCompleted != null)
+//				OnComboCompleted(combo);
 //			
 //			// success!
 //			if (success)
-//				fightManager.Success(successOffset); 		// next step at end of feedback
-//			else
-//				StartCoroutine(StartNextStep());
-		}
+//				fightManager.Success(successOffset); 
+//		}
 
 
 		private void CleanupCombo()
@@ -1272,7 +1291,6 @@ namespace FightingLegends
 				Title = "Special Extra Combo",
 				Narrative = FightManager.Translate("specialExtraComboNarrative"),
 				TrafficLightColour = TrafficLight.None,
-				SuccessOnFreeze = true, 		// TODO: check this!!!
 
 				Combo = new TrainingCombo {
 					ComboName = LMHComboName,
@@ -1338,7 +1356,6 @@ namespace FightingLegends
 				Narrative = FightManager.Translate("resetCounterComboNarrative"),
 //				NarrativeSprite = feedbackUI.SwipeLeftSprite,
 				TrafficLightColour = TrafficLight.None,
-//				SuccessOnFreeze = true, 		// TODO: check this!!!
 
 				Combo = new TrainingCombo {
 					ComboName = ResetComboName,

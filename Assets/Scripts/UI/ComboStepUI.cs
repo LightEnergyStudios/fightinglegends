@@ -32,16 +32,6 @@ namespace FightingLegends
 					return portrait.GetComponent<Image>();
 				
 				return null;
-
-//				var children = transform.chi GetComponentsInChildren<Image>();
-//
-//				foreach (var child in children)
-//				{
-//					if (child.name == "Portrait")
-//						return child;
-//				}
-//
-//				return null;
 			}
 		}
 
@@ -53,15 +43,6 @@ namespace FightingLegends
 				if (background != null)
 					return background.GetComponent<Image>();
 				return null;
-
-//				var children = GetComponentsInChildren<Image>();
-//
-//				foreach (var child in children)
-//				{
-//					if (child.name == "Background")
-//						return child;
-//				}
-//				return null;
 			}
 		}
 
