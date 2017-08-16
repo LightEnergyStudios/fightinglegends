@@ -70,21 +70,22 @@
 
         <string name="dojoMenuInfoMessage">Use the DOJO to spar, power-up and connect to other players! String together long combos to feature on the leader board!</string>
         <string name="arcadeMenuInfoMessage">Choose a fighter and a location on the world map to take on the local champion. Complete a WORLD TOUR for extra rewards!</string>
-        <string name="survivalMenuInfoMessage">Face an endless stream of opponents and SURVIVE as many fights as you can!</string>
+        <string name="survivalMenuInfoMessage">Face an endless stream of opponents and SURVIVE as many fights as you can to feature on the Leader Board!</string>
         <string name="challengeMenuInfoMessage">Pick a team and upload to the ARENA to challenge other players for coins ... or choose a challenge to pit them against!</string>
         <string name="facebookMenuInfoMessage">Check out how your top score compares with your Facebook friends!</string>
         <string name="leaderboardsMenuInfoMessage">Compete on the world stage with your fight statistics!</string>
 
-        <string name="dojoFightInfoMessage">Practice your attack and defence technique. The hilighted moves indicate the choices available at any given time.</string>
+        <string name="dojoFightInfoMessage2">Practice your attack and defence technique. The hilighted moves indicate the choices available at any given time.</string>
+        <string name="dojoFightInfoMessage">Practice your attack and defence technique. Your best combo score will be posted to the Leader Board!</string>
         <string name="trainingFightInfoMessage">Follow the prompts to learn some basic moves and understand the importance of TIMING.</string>
         <string name="arcadeFightInfoMessage">Defeat your chosen opponent to progress on your WORLD TOUR!</string>
         <string name="survivalFightInfoMessage">How long can you SURVIVE an endless onslaught from random opponents? Use power-ups to maximise your chances!</string>
         <string name="challengeFightInfoMessage">Your team against theirs. The victorious team wins the challenge pot!</string>
 
         <string name="crystalInfoHeading">CRYSTALS</string>
-        <string name="crystalInfoMessage">These pink crystals are activated as you sustain damage. Some moves cannot be performed without crystals!</string>
+        <string name="crystalInfoMessage">These pink crystals are activated as you sustain damage. Some moves can only be performed by using crystals!</string>
 
-        <string name="comboTimingInfoHeading">TIMING!</string>
+        <string name="comboTimingInfoHeading">TIMING IS CRITICAL</string>
         <string name="LMHComboTimingMessage">As any Ninja will teach you ... you must master perfect TIMING to string together a long HIT COMBO!</string>
         <string name="ResetComboTimingMessage">When you have enough crystals, RESET to escape and then quickly follow-up with a cool COUNTER ATTACK!</string>
 
@@ -322,7 +323,7 @@
 		<string name="youWon">YOU WON</string>
 		<string name="youLost">YOU LOST</string>
 		<string name="challengeExpires">Challenge expires</string>
-		<string name="confirmUploadChallenge">UPLOAD your challenge to the Challenge Arena?</string>
+		<string name="confirmUploadChallenge">UPLOAD your challenge? One in the Challenge Arena at a time!</string>
 		<string name="confirmFightChallenge">ACCEPT this challenge? There's no going back!</string>
 		<string name="confirmRemoveChallenge">REMOVE your challenge and forfeit your coins?</string>
 		<string name="uploadingChallenge">Uploading challenge</string>

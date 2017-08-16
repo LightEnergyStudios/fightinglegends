@@ -240,7 +240,6 @@ namespace FightingLegends
 			fightText.text = FightManager.Translate("fight", false, true);
 			uploadText.text = FightManager.Translate("upload");
 			resultText.text = FightManager.Translate("result");
-			uploadButton.interactable = true;
 
 			diamondLabel.text = FightManager.Translate("diamond");
 			goldLabel.text = FightManager.Translate("gold");
@@ -387,14 +386,15 @@ namespace FightingLegends
 			FirebaseManager.OnChallengeAccepted += OnChallengeAccepted;
 			FirebaseManager.OnChallengeRemoved += OnChallengeRemoved;
 			FirebaseManager.OnChallengesDownloaded += OnChallengesDownloaded;
-			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
+			FirebaseManager.OnGetUserProfile += OnGetUserProfile;	
+			FirebaseManager.OnUserProfileSaved += OnUserProfileSaved;
 
 //			Debug.Log("TeamSelect.AddListeners");
 			OnOverlayHidden += OverlayHidden;
 
 			fightButton.onClick.AddListener(delegate { ShowChallengesOverlay(); });
 			uploadButton.onClick.AddListener(delegate { ConfirmUploadSelectedTeam(); });
-			resultButton.onClick.AddListener(delegate { ShowChallengeResult(); });
+//			resultButton.onClick.AddListener(delegate { ShowChallengeResult(); });
 //			powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
 
 			ChallengeUpload.OnCancelClicked += OnUploadCancelled;
@@ -427,7 +427,13 @@ namespace FightingLegends
 			EnableActionButtons();
 
 			FightManager.CheckForChallengeResult();		// OnGetUserProfile callback handles result
-			resultButton.interactable = false;
+
+			if (FightManager.SavedGameStatus.UserId == "")		// button will register user if not already registered
+				uploadButton.interactable = true;
+			else
+				uploadButton.interactable = false;				// until user profile retrieved - checks for existing challenge
+
+			resultButton.interactable = false;				// TODO: remove button
 		}
 
 		private void RemoveListeners()
@@ -437,14 +443,15 @@ namespace FightingLegends
 			FirebaseManager.OnChallengeAccepted -= OnChallengeAccepted;
 			FirebaseManager.OnChallengeRemoved -= OnChallengeRemoved;
 			FirebaseManager.OnChallengesDownloaded -= OnChallengesDownloaded;
-			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;		
+			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
+			FirebaseManager.OnUserProfileSaved -= OnUserProfileSaved;
 
 //			Debug.Log("TeamSelect.RemoveListeners");
 			OnOverlayHidden -= OverlayHidden;
 
 			fightButton.onClick.RemoveListener(delegate { ShowChallengesOverlay(); });
 			uploadButton.onClick.RemoveListener(delegate { ConfirmUploadSelectedTeam(); });
-			resultButton.onClick.RemoveListener(delegate { ShowChallengeResult(); });
+//			resultButton.onClick.RemoveListener(delegate { ShowChallengeResult(); });
 
 			ChallengeUpload.OnCancelClicked -= OnUploadCancelled;
 
@@ -1337,24 +1344,53 @@ namespace FightingLegends
 
 		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
 		{
+			if (FightManager.SavedGameStatus.UserId == "")		// not registered
+				return;
+			
 			userProfile = profile;
 
-			if (success && profile != null)	
+			if (success && profile != null && userId == FightManager.SavedGameStatus.UserId)	
 			{
-				if (profile.ChallengeResult == "")
+				if (profile.ChallengeKey == "")			// no challenge uploaded
+				{
+					uploadButton.interactable = true;
+					return;
+				}
+					
+				if (profile.ChallengeResult == "")		// challenge not accepted/completed
+				{
 					resultText.text = "";	
-				else if (profile.ChallengeResult == "Won")
+					uploadButton.interactable = false;
+					return;
+				}
+
+				if (profile.ChallengeResult == "Won")
 					resultText.text = FightManager.Translate("youWon", false, true);
 				else if (profile.ChallengeResult == "Lost")
 					resultText.text = FightManager.Translate("youLost", false, true);
 
-				resultButton.interactable = profile.ChallengeResult != "";
+//				resultButton.interactable = profile.ChallengeResult != "";
 
 				profile.ChallengeResult = "";
 				profile.CoinsToCollect = 0;
 				profile.ChallengeKey = "";
 
+//				uploadButton.interactable = true;
+
 				FirebaseManager.SaveUserProfile(profile);		// no need for a callback - nothing to do
+
+				ShowChallengeResult();
+			}
+		}
+
+		private void OnUserProfileSaved(string userId, UserProfile profile, bool success)
+		{
+			if (FightManager.SavedGameStatus.UserId == "")		// not registered
+				return;
+			
+			if (success && profile != null && userId == FightManager.SavedGameStatus.UserId)
+			{
+				uploadButton.interactable = profile.ChallengeKey == "";		// one at a time
 			}
 		}
 

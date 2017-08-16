@@ -45,7 +45,7 @@ namespace FightingLegends
 		public static GetLeaderboardDelegate OnGetLeaderboard;
 
 		public delegate void UploadUserProfileDelegate(string userId, UserProfile profile, bool success);
-		public static UploadUserProfileDelegate OnUserProfileUploaded;
+		public static UploadUserProfileDelegate OnUserProfileSaved;
 
 		public delegate void GetUserProfileDelegate(string userId, UserProfile profile, bool success);
 		public static GetUserProfileDelegate OnGetUserProfile;
@@ -555,16 +555,16 @@ namespace FightingLegends
 
 				if (task.IsCompleted)
 				{
-					if (OnUserProfileUploaded != null)
-						OnUserProfileUploaded(profile.UserID, profile, true); 
+					if (OnUserProfileSaved != null)
+						OnUserProfileSaved(profile.UserID, profile, true); 
 
 					GetUserProfile(profile.UserID);
 				}
 				else
 				{
 					Debug.Log("SaveUserProfile: error = " + task.Exception.Message);
-					if (OnUserProfileUploaded != null)
-						OnUserProfileUploaded(profile.UserID, profile, false); 
+					if (OnUserProfileSaved != null)
+						OnUserProfileSaved(profile.UserID, profile, false); 
 				}
 			});
 		}

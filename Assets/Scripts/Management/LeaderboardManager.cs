@@ -100,7 +100,7 @@ namespace FightingLegends
 			if (!userRegistered)
 			{
 				newUserButton.onClick.AddListener(delegate { RegisterNewUser(); });
-				FirebaseManager.OnUserProfileUploaded += OnNewUserRegistered;
+				FirebaseManager.OnUserProfileSaved += OnNewUserRegistered;
 			}
 
 			FirebaseManager.OnPostScore += OnPostScore;
@@ -129,7 +129,7 @@ namespace FightingLegends
 			if (!userRegistered)
 			{
 				newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
-				FirebaseManager.OnUserProfileUploaded -= OnNewUserRegistered;
+				FirebaseManager.OnUserProfileSaved -= OnNewUserRegistered;
 			}
 
 			FirebaseManager.OnPostScore -= OnPostScore;
@@ -210,7 +210,7 @@ namespace FightingLegends
 				{
 					newUserButton.gameObject.SetActive(false);
 					newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
-					FirebaseManager.OnUserProfileUploaded -= OnNewUserRegistered;
+					FirebaseManager.OnUserProfileSaved -= OnNewUserRegistered;
 
 					FirebaseManager.PostLeaderboardScore(Leaderboard.Kudos, FightManager.SavedGameStatus.Kudos);
 					FirebaseManager.PostLeaderboardScore(Leaderboard.SurvivalRounds, FightManager.SavedGameStatus.BestSurvivalEndurance);

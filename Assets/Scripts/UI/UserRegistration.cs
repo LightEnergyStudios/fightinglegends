@@ -51,7 +51,7 @@ namespace FightingLegends
 			cancelButton.onClick.AddListener(CancelClicked);
 
 			FirebaseManager.OnGetUserProfile += OnGetUser;					// to check if nickname exists
-			FirebaseManager.OnUserProfileUploaded += OnUserUploaded;	
+			FirebaseManager.OnUserProfileSaved += OnUserUploaded;	
 
 			DefaultPrompt();
 		}
@@ -62,7 +62,7 @@ namespace FightingLegends
 			cancelButton.onClick.RemoveListener(CancelClicked);
 
 			FirebaseManager.OnGetUserProfile -= OnGetUser;
-			FirebaseManager.OnUserProfileUploaded -= OnUserUploaded;
+			FirebaseManager.OnUserProfileSaved -= OnUserUploaded;
 		}
 			
 
