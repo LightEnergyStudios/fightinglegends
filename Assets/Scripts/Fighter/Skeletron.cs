@@ -16,7 +16,7 @@ namespace FightingLegends
 		private const string SkeletronToNinja = "Nuisance creature. I don't hesitate to slaughter dumb animals.";
 		private const string SkeletronToSkeletron = "You may imitate, but you cannot compare to my power!";
 
-		public float IdleDamagedHealth;		// idle damaged state when health falls below this value
+		public float IdleDamagedHealth;		// idle / block idle damaged state when health falls below this value
 
 
 		public override bool HasShove
@@ -28,11 +28,11 @@ namespace FightingLegends
 		{
 			get { return false; }
 		}
-
-		public override bool HasBlock  
-		{
-			get { return false; }
-		}
+//
+//		public override bool HasBlock  
+//		{
+//			get { return false; }
+//		}
 
 		public override bool HasSpecialExtra
 		{
@@ -48,6 +48,16 @@ namespace FightingLegends
 				CurrentState = State.Idle;				// fires state change event
 			else
 				CurrentState = State.Idle_Damaged;		// fires state change event
+		}
+
+		protected override void BlockIdleState()
+		{
+			CurrentMove = Move.Block;
+
+			if (ProfileData.SavedData.Health > IdleDamagedHealth)
+				CurrentState = State.Block_Idle;				// fires state change event
+			else
+				CurrentState = State.Block_Idle_Damaged;		// fires state change event
 		}
 
 

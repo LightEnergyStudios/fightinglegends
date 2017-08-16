@@ -1061,7 +1061,7 @@ namespace FightingLegends
 		}
 
 
-		public virtual bool HasBlock
+		public bool HasBlock
 		{
 			get { return true; }
 		}
@@ -2623,6 +2623,7 @@ namespace FightingLegends
 					break;
 
 				case State.Block_Idle:
+				case State.Block_Idle_Damaged:
 					break;	
 
 				case State.Hit_Straight_Die:
@@ -3482,6 +3483,14 @@ namespace FightingLegends
 			CurrentState = State.Idle;				// fires state change event
 			CurrentPriority = Default_Priority;		// fires state change event
 		}
+
+		protected virtual void BlockIdleState()
+		{
+//			Debug.Log(FullName + " BlockIdleState");
+
+			CurrentMove = Move.Block;
+			CurrentState = State.Block_Idle;		// fires state change event
+		}
 			
 		protected void ResetFrameCounts()
 		{
@@ -3620,7 +3629,7 @@ namespace FightingLegends
 
 			ResetFrameCounts();
 
-			IdleState();
+			IdleState();		// skeletron may be idle_damaged
 
 			returnToDefault = false;
 
@@ -4154,8 +4163,10 @@ namespace FightingLegends
 
 		private void StartBlock()
 		{
-			CurrentMove = Move.Block;		// from idle to idle block
-			CurrentState = State.Block_Idle;
+			BlockIdleState();				// virtual (for skeletron)
+
+//			CurrentMove = Move.Block;		// from idle to idle block
+//			CurrentState = State.Block_Idle;
 
 			ResetFrameCounts();				// reset (start of move)
 

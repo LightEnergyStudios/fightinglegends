@@ -104,11 +104,11 @@ MonoBehaviour:
     type: 2}
   ShiyangP3Prefab: {fileID: 1000010350761864, guid: 66e7b82c56f4c420a803629345167e62,
     type: 2}
-  SkeletronP1Prefab: {fileID: 1581562543976310, guid: 8fea3c4f0f6d142dd918e4a9b24868b5,
+  SkeletronP1Prefab: {fileID: 1761578876371690, guid: 22ae00eda47dc4a83af14a94d799fbee,
     type: 2}
-  SkeletronP2Prefab: {fileID: 1012549100889032, guid: f982357e410824856b792eccc6b7e209,
+  SkeletronP2Prefab: {fileID: 1195873416776202, guid: 7aa72ae402d5b4d2b89585f8f75d66fd,
     type: 2}
-  SkeletronP3Prefab: {fileID: 1236957594757668, guid: 9e04fb9050ca345418f89bb628766d92,
+  SkeletronP3Prefab: {fileID: 1082098103039674, guid: 28297beb7e9764f20bcb5fdbd8c56922,
     type: 2}
   KOSound: {fileID: 8300000, guid: 72640739509dd47c78c5187bc81a3dc6, type: 3}
   SuccessSound: {fileID: 8300000, guid: 9a22579c1e42648719e5e8838683ad2a, type: 3}

@@ -1345,7 +1345,10 @@ namespace FightingLegends
 		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
 		{
 			if (FightManager.SavedGameStatus.UserId == "")		// not registered
+			{
+				uploadButton.interactable = true;				// will prompt for user registration
 				return;
+			}
 			
 			userProfile = profile;
 
@@ -1357,7 +1360,7 @@ namespace FightingLegends
 					return;
 				}
 					
-				if (profile.ChallengeResult == "")		// challenge not accepted/completed
+				if (profile.ChallengeResult == "")		// challenge not yet accepted/completed
 				{
 					resultText.text = "";	
 					uploadButton.interactable = false;
@@ -1375,9 +1378,7 @@ namespace FightingLegends
 				profile.CoinsToCollect = 0;
 				profile.ChallengeKey = "";
 
-//				uploadButton.interactable = true;
-
-				FirebaseManager.SaveUserProfile(profile);		// no need for a callback - nothing to do
+				FirebaseManager.SaveUserProfile(profile);		// callback enables/disables upload button according to challenge status
 
 				ShowChallengeResult();
 			}

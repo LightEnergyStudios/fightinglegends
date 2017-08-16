@@ -44,11 +44,11 @@ namespace FightingLegends
 		public delegate void GetLeaderboardDelegate(Leaderboard leaderboard, List<LeaderboardScore> scores, bool success);
 		public static GetLeaderboardDelegate OnGetLeaderboard;
 
-		public delegate void UploadUserProfileDelegate(string userId, UserProfile profile, bool success);
-		public static UploadUserProfileDelegate OnUserProfileSaved;
-
 		public delegate void GetUserProfileDelegate(string userId, UserProfile profile, bool success);
 		public static GetUserProfileDelegate OnGetUserProfile;
+
+		public delegate void SaveUserProfileDelegate(string userId, UserProfile profile, bool success);
+		public static SaveUserProfileDelegate OnUserProfileSaved;
 
 //		public delegate void UserChallengePotDelegate(string userId, ChallengePot challengePot, bool success);
 //		public static UserChallengePotDelegate OnUserChallengePotUpdated;
