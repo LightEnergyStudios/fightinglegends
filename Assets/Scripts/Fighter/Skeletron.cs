@@ -72,10 +72,10 @@ namespace FightingLegends
 			CompleteMove();	
 		}
 
-		protected override void EndIdleDamaged()
-		{
-			CurrentState = State.Fall;
-		}
+//		protected override void EndIdleDamaged()
+//		{
+//			CurrentState = State.Fall;
+//		}
 
 		protected override void EndFalling()
 		{
@@ -124,13 +124,13 @@ namespace FightingLegends
 		}
 
 
-		public override bool StateLoops(string stateLabel)
-		{
-			if (base.StateLoops(stateLabel))
-				return true;
-			
-			return (stateLabel == "READY_TO_DIE");
-		}
+//		public override bool StateLoops(string stateLabel)
+//		{
+//			if (base.StateLoops(stateLabel))
+//				return true;
+//			
+//			return (stateLabel == "READY_TO_DIE");
+//		}
 
 		public override string WinQuote(string loserName)
 		{
