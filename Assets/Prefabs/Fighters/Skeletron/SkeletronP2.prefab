@@ -261,7 +261,7 @@ MonoBehaviour:
   IsolateStrategy: 0
   StrategyCued: 0
   IterationRepeat: 10
-  fighter: {fileID: 114311979361530690, guid: 8fea3c4f0f6d142dd918e4a9b24868b5, type: 2}
+  fighter: {fileID: 114148974553321274}
 --- !u!114 &114697479068271090
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2189,9 +2189,13 @@ namespace FightingLegends
 			if (Player1.ProfileData.SavedData.CompletedLocations.Count == NumberOfLocations)		// completed world tour
 			{
 				Player1.ProfileData.SavedData.WorldTourCompletions++;
-				Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
+				FightManager.SavedGameStatus.WorldTourCompletions++;		// all fighters
+				FirebaseManager.PostLeaderboardScore(Leaderboard.WorldTours, FightManager.SavedGameStatus.WorldTourCompletions);
+
 				ResetCompletedLocations();
 				worldTourCompleted = true;					// to prevent returning to world map
+
+				Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
 			}
 
 			Player1.SaveProfile();
@@ -2213,6 +2217,49 @@ namespace FightingLegends
 			winner.Hide();
 			winner.ProfileData.SavedData.MatchesWon++;
 			loser.ProfileData.SavedData.MatchesLost++;
+
+			if (CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)
+			{
+				switch (FightManager.SavedGameStatus.Difficulty)
+				{
+					case AIDifficulty.Simple:
+						if (winner.UnderAI)
+							loser.ProfileData.SavedData.SimpleLosses++;
+						else
+							winner.ProfileData.SavedData.SimpleWins++;
+						break;
+
+					case AIDifficulty.Easy:
+						if (winner.UnderAI)
+							loser.ProfileData.SavedData.EasyLosses++;
+						else
+							winner.ProfileData.SavedData.EasyWins++;
+						break;
+
+					case AIDifficulty.Medium:
+						if (winner.UnderAI)
+							loser.ProfileData.SavedData.MediumLosses++;
+						else
+							winner.ProfileData.SavedData.MediumWins++;
+						break;
+
+					case AIDifficulty.Hard:
+						if (winner.UnderAI)
+							loser.ProfileData.SavedData.HardLosses++;
+						else
+							winner.ProfileData.SavedData.HardWins++;
+						break;
+
+					case AIDifficulty.Brutal:
+						if (winner.UnderAI)
+							loser.ProfileData.SavedData.BrutalLosses++;
+						else
+							winner.ProfileData.SavedData.BrutalWins++;
+						break;
+				}
+			}
+
+			// TODO: unlock if defeated enough times
 
 			if (winner.UnderAI)
 			{
@@ -3578,9 +3625,9 @@ namespace FightingLegends
 		{
 			menuStack = new List<MenuType>();
 		
-//			if (!SavedGameStatus.CompletedBasicTraining)
-//				StartCoroutine(FirstPlayerExperience());
-//			else
+			if (!SavedGameStatus.CompletedBasicTraining)
+				StartCoroutine(FirstPlayerExperience());
+			else
 				ActivateMenu(MenuType.ModeSelect);
 		}
 

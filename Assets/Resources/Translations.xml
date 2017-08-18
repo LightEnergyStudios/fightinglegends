@@ -344,10 +344,12 @@
 		<string name="dojoDamage">DOJO DAMAGE</string>
 		<string name="survivalEndurance">SURVIVAL ENDURANCE</string>
 		<string name="challengeWinnings">CHALLENGE WINNINGS</string>
+		<string name="worldTours">WORLD TOURS</string>
 		<string name="topKudos">KUDOS TOP</string>
 		<string name="topDojoDamage">DOJO DAMAGE TOP</string>
 		<string name="topSurvivalEndurance">SURVIVAL ENDURANCE TOP</string>
 		<string name="topChallengeWinnings">CHALLENGE WINNINGS TOP</string>
+		<string name="topWorldTours">WORLD TOUR TOP</string>
 
 		<string name="chooseLocation">CHOOSE FIGHT LOCATION</string>
 

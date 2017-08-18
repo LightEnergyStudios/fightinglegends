@@ -571,6 +571,7 @@ namespace FightingLegends
 		DojoDamage,
 		SurvivalRounds,
 		ChallengeWinnings,
+		WorldTours,
 	}
 }
 

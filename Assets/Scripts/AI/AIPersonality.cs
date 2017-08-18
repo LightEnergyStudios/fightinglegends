@@ -138,7 +138,7 @@ namespace FightingLegends
 		public bool Mistake;											// nobody's perfect!
 		public Move MoveToExecute = Move.None;							// move executed by behaviour
 
-		public AIDifficulty Difficulty = AIDifficulty.Simple;			// move only executed from this difficulty level upwards
+		public AIDifficulty Difficulty = AIDifficulty.Simple;				// move only executed from this difficulty level upwards
 
 		public FighterClass FighterClass = FighterClass.Undefined;		// move executed by fighter of this class only
 	}

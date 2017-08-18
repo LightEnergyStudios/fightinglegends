@@ -46,6 +46,9 @@ namespace FightingLegends
 		{
 			originalPosition = Vector3.zero; // transform.position;
 			trackSpeed = 0.0f;
+
+			// force camera aspect ratio to 16:9
+			Camera.main.aspect = 16.0f / 9.0f;		// as opposed to screen ratio (eg. iPad)
 		}
 			
 

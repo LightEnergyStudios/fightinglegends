@@ -4415,7 +4415,7 @@ namespace FightingLegends
 
 				Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
 			}
-			else if (CurrentState == State.Ready_To_Die) // && nextHitWillKO)		// one last hit to FINISH HIM
+			else if (CurrentState == State.Ready_To_Die)		// one last hit to FINISH HIM
 			{
 				takenLastFatalHit = lastHit;
 

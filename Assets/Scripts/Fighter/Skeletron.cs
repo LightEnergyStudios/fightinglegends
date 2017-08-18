@@ -80,7 +80,6 @@ namespace FightingLegends
 		protected override void EndFalling()
 		{
 			CurrentState = State.Ready_To_Die;
-			CurrentPriority = Default_Priority;
 		}
 
 		protected override void EndReadyToDie()
@@ -106,7 +105,11 @@ namespace FightingLegends
 		{
 			base.KnockOut();		// feedback FX + expiry countdown + profile data
 
+//			ProfileData.SavedData.Health = 0;
+//			UpdateHealth(1, false);		// to zero
+
 			CurrentState = State.Die;
+
 			KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 		}
 

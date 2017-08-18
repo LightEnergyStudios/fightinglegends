@@ -723,8 +723,8 @@ namespace FightingLegends
 			else
 			{
 				shadow.WrongFeedbackFX();		// TODO: remove this!
-				Debug.Log("ShadowExecuteNextMove: NOT EXECUTED nextMove = " + nextMove + ", Continued = " + NextMoveContinued + ", Chained = " + NextMoveChained + ". Comboed = " + NextMoveComboed + ", SpecialExtraTriggered = " + NextMoveSpecialExtra + ", frame = " + playbackFrameCount);
-				Debug.Log(" --- STATE = " + shadow.CurrentState + ", comboTriggered = " + shadow.comboTriggered + ", chainedCounter = " + shadow.chainedCounter + ", chainedSpecial = " + shadow.chainedSpecial + ", specialExtraTriggered = " + shadow.specialExtraTriggered);
+//				Debug.Log("ShadowExecuteNextMove: NOT EXECUTED nextMove = " + nextMove + ", Continued = " + NextMoveContinued + ", Chained = " + NextMoveChained + ". Comboed = " + NextMoveComboed + ", SpecialExtraTriggered = " + NextMoveSpecialExtra + ", frame = " + playbackFrameCount);
+//				Debug.Log(" --- STATE = " + shadow.CurrentState + ", comboTriggered = " + shadow.comboTriggered + ", chainedCounter = " + shadow.chainedCounter + ", chainedSpecial = " + shadow.chainedSpecial + ", specialExtraTriggered = " + shadow.specialExtraTriggered);
 
 				StopPlayback();
 			}

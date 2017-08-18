@@ -177,12 +177,11 @@ namespace FightingLegends
 			
 		private void OnGetUser(string userId, UserProfile profile, bool success)
 		{
-			if (success)
+			if (success && userId == userIdInput.text)
 			{
-				if (profile == null)		// not found!
+				if (profile == null)		// not found .. register!
 				{
-					// register!
-					if (userId == userIdInput.text)
+//					if (userId == userIdInput.text)
 					{
 						userIdInput.interactable = false;
 
@@ -192,7 +191,7 @@ namespace FightingLegends
 				}
 				else
 				{
-					feedbackMessage.text = "Sorry - '" + userId + "' is already in use";
+					feedbackMessage.text = "'" + userId + "' is already in use";
 				}
 			}
 			else
@@ -205,12 +204,14 @@ namespace FightingLegends
 
 		private void OnUserUploaded(string userId, UserProfile profile, bool success)
 		{
-			if (!string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId) && userId == FightManager.SavedGameStatus.UserId)
+//			if (!string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId) && userId == FightManager.SavedGameStatus.UserId)
+//			if (!string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId) && userId == userIdInput.text)
+			if (!string.IsNullOrEmpty(userId) && userId == userIdInput.text)
 			{
 				if (success)
 				{
 					feedbackMessage.text = "'" + userId + "' registered!";
-					userIdInput.text = userId + "!";
+//					userIdInput.text = userId + "!";
 					userIdInput.interactable = false;
 
 					FightManager.SavedGameStatus.UserId = userId;

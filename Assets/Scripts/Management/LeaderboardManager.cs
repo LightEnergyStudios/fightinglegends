@@ -14,6 +14,7 @@ namespace FightingLegends
 		public Button damageLeaderboardButton;	
 		public Button survivalLeaderboardButton;	
 		public Button challengeLeaderboardButton;	
+		public Button worldTourLeaderboardButton;	
 
 		public Button refreshButton;		
 //		public Button postTestButton;		
@@ -27,6 +28,7 @@ namespace FightingLegends
 		public Text damageLeaderboardLabel;	
 		public Text survivalLeaderboardLabel;	
 		public Text challengeLeaderboardLabel;	
+		public Text worldTourLeaderboardLabel;	
 
 		public GameObject ScoresContent;		// content of ScrollRect
 		public GameObject ScoreEntryPrefab;		// panel to be instantiated in OnGetLeaderboard
@@ -47,6 +49,7 @@ namespace FightingLegends
 				damageLeaderboardButton.interactable = !gettingScores;	
 				survivalLeaderboardButton.interactable = !gettingScores;	
 				challengeLeaderboardButton.interactable = !gettingScores;	
+				worldTourLeaderboardButton.interactable = !gettingScores;	
 //				postTestButton.interactable = !gettingScores;	
 			}
 		}
@@ -73,9 +76,10 @@ namespace FightingLegends
 			damageLeaderboardLabel.text = FightManager.Translate("dojoDamage", true);
 			survivalLeaderboardLabel.text = FightManager.Translate("survivalEndurance", true);
 			challengeLeaderboardLabel.text = FightManager.Translate("challengeWinnings", true);
+			worldTourLeaderboardLabel.text = FightManager.Translate("worldTours", true);
 			LoadingScores.text = FightManager.Translate("loadingScores") + " ...";
 
-			UserId.text = FightManager.SavedGameStatus.UserId;
+//			UserId.text = FightManager.SavedGameStatus.UserId;
 		}
 
 		private void OnDestroy()
@@ -91,8 +95,11 @@ namespace FightingLegends
 			damageLeaderboardButton.onClick.AddListener(delegate { GetLeaderboard(Leaderboard.DojoDamage); });
 			survivalLeaderboardButton.onClick.AddListener(delegate { GetLeaderboard(Leaderboard.SurvivalRounds); });
 			challengeLeaderboardButton.onClick.AddListener(delegate { GetLeaderboard(Leaderboard.ChallengeWinnings); });
+			worldTourLeaderboardButton.onClick.AddListener(delegate { GetLeaderboard(Leaderboard.WorldTours); });
 
 //			postTestButton.onClick.AddListener(delegate { PostTest(); });
+
+			UserId.text = FightManager.SavedGameStatus.UserId;
 
 			bool userRegistered = !string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId);
 			newUserButton.gameObject.SetActive(!userRegistered);
@@ -120,6 +127,7 @@ namespace FightingLegends
 			damageLeaderboardButton.onClick.RemoveListener(delegate { GetLeaderboard(Leaderboard.DojoDamage); });
 			survivalLeaderboardButton.onClick.RemoveListener(delegate { GetLeaderboard(Leaderboard.SurvivalRounds); });
 			challengeLeaderboardButton.onClick.RemoveListener(delegate { GetLeaderboard(Leaderboard.ChallengeWinnings); });
+			worldTourLeaderboardButton.onClick.RemoveListener(delegate { GetLeaderboard(Leaderboard.WorldTours); });
 
 //			newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
 //			postTestButton.onClick.RemoveListener(delegate { PostTest(); });
@@ -312,12 +320,17 @@ namespace FightingLegends
 				case Leaderboard.ChallengeWinnings:
 					currentLeaderboardTitle.text = FightManager.Translate("topChallengeWinnings") + " " + FirebaseManager.LeaderboardMax;
 					break;
+
+				case Leaderboard.WorldTours:
+					currentLeaderboardTitle.text = FightManager.Translate("topWorldTours") + " " + FirebaseManager.LeaderboardMax;
+					break;
 			}
 
 			kudosLeaderboardButton.interactable = currentLeaderboard != Leaderboard.Kudos;
 			damageLeaderboardButton.interactable = currentLeaderboard != Leaderboard.DojoDamage;	
 			survivalLeaderboardButton.interactable = currentLeaderboard != Leaderboard.SurvivalRounds;	
 			challengeLeaderboardButton.interactable = currentLeaderboard != Leaderboard.ChallengeWinnings;	
+			worldTourLeaderboardButton.interactable = currentLeaderboard != Leaderboard.WorldTours;	
 		}
 
 

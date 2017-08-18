@@ -244,7 +244,7 @@ namespace FightingLegends
 			CancelPurchaseLabel.text = FightManager.Translate("cancel");
 			TapToConfirmLabel.text = FightManager.Translate("tapToConfirm");
 
-			UserId.text = FightManager.SavedGameStatus.UserId;
+//			UserId.text = FightManager.SavedGameStatus.UserId;
 			
 			if (fighterSelect == null)
 			{
@@ -278,7 +278,8 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{	
-			UserId.text = "[ " + FightManager.Translate("playerId") + ": " + FightManager.SavedGameStatus.UserId + " ]";
+			//			UserId.text = "[ " + FightManager.Translate("playerId") + ": " + FightManager.SavedGameStatus.UserId + " ]";
+			UserId.text = FightManager.SavedGameStatus.UserId;
 
 			SetPreviewFighter();
 			RefreshInventory();		// for all power-ups
@@ -300,6 +301,9 @@ namespace FightingLegends
 			CreatePreview(FightManager.SelectedFighterName);
 			SetSelectedIndex(FightManager.SelectedFighterName);
 			UpdateFighterCard(fighterSelect.previewFighter, true);
+
+			// can only reset level when fighter is at level 100!
+			ResetLevelButton.gameObject.SetActive(fighterSelect.previewFighter.Level == Fighter.maxLevel);
 		}
 
 		private void CreatePreview(string fighterName)

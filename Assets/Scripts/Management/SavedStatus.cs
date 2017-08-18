@@ -26,6 +26,7 @@ namespace FightingLegends
 
 		public int BestSurvivalEndurance = 0;			// PB rounds won in survival mode
 		public int TotalChallengeWinnings = 0;			// total challenge mode coins won 
+		public int WorldTourCompletions = 0;			// for all fighters
 
 		public bool CompletedBasicTraining = false;	
 
