@@ -298,7 +298,7 @@ namespace FightingLegends
 			ninjaCard.SetDifficulty(difficulty);
 		}
 
-		// lookup level, xp and power-ups from fighter profile (saved) data
+		// lookup lock status, level, xp and power-ups from fighter profile (saved) data
 		private void SetDeckProfiles()
 		{
 			foreach (var card in fighterDeck)
@@ -1262,12 +1262,12 @@ namespace FightingLegends
 					return null;
 			}
 		}
-//		private FighterCard CreateChallengeCard(string name, string colour, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
-		private FighterCard CreateChallengeCard(string name, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
+		private FighterCard CreateChallengeCard(string name, string colour, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
+//		private FighterCard CreateChallengeCard(string name, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
 		{
 			// AI fighter colour is determined by Player1, so not relevant here
-//			return new FighterCard(null, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
-			return new FighterCard(null, name, "P1", level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
+			return new FighterCard(null, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
+//			return new FighterCard(null, name, "P1", level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
 		}
 
 
@@ -1508,8 +1508,8 @@ namespace FightingLegends
 				var difficulty = (AIDifficulty) Enum.Parse(typeof(AIDifficulty), teamMember.Difficulty);
 				var staticPowerUp = (PowerUp) Enum.Parse(typeof(PowerUp), teamMember.StaticPowerUp);
 				var triggerPowerUp = (PowerUp) Enum.Parse(typeof(PowerUp), teamMember.TriggerPowerUp);
-				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
-//				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.FighterColour, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
+//				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
+				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.FighterColour, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
 //				Debug.Log("ConvertToTeamChallenge: " + teamMember.FighterName + " Level " + teamMember.Level);
 
 			}
@@ -1545,9 +1545,9 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-							CreateChallengeCard("Shiro", 4, 45.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Leoni", "P1", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", "P1", 4, 45.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
 						},
 					},
 
@@ -1558,12 +1558,12 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Danjuma", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Hoi Lun", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Jackson", 24, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, null, ArmourPiercing),
-							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Danjuma", "P1", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", "P2", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", "P1", 24, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 1, 90.0f, AIDifficulty.Medium, null, ArmourPiercing),
+							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
 						}
 					},
 
@@ -1574,9 +1574,9 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Jackson", 5, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-							CreateChallengeCard("Alazne", 5, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 15, 10.0f, AIDifficulty.Medium, null, null),
+							CreateChallengeCard("Jackson", "P1", 5, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Alazne", "P3", 5, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P1", 15, 10.0f, AIDifficulty.Medium, null, null),
 						}
 					},
 
@@ -1587,14 +1587,14 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Shiro", 7, 75.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Natalya", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Hoi Lun", 11, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Leoni", 16, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", "P3", 7, 75.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", "P1", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", "P2", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", "P3", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Hoi Lun", "P1", 11, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", "P1", 16, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
 						}
 					}, 
 
@@ -1605,10 +1605,10 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Alazne", 31, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Shiro", 1, 50.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 31, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", "P3", 1, 50.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P1", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
 						}
 					},
 				};
@@ -1628,10 +1628,10 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiro", "P1", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", "P2", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", "P1", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
 
 						}
 					}, 
@@ -1643,14 +1643,14 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, null, HealthBooster),
-							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, null, ArmourPiercing),	
-							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Hoi Lun", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Leoni", "P1", 1, 75.0f, AIDifficulty.Medium, null, HealthBooster),
+							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, null, ArmourPiercing),	
+							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Danjuma", "P3", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", "P3", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", "P3", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
 						}
 					},
 
@@ -1661,12 +1661,12 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Hoi Lun", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, null, PoiseWrecker),	
+							CreateChallengeCard("Danjuma", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", "P1", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", "P2", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P3", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, null, PoiseWrecker),	
 						}
 					},
 
@@ -1677,10 +1677,10 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Alazne", 51, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 51, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", "P1", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P1", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
 						}
 					},
 				};
@@ -1700,10 +1700,10 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Alazne", 8, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Shiro", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Shiyang", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P3", 8, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", "P2", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P3", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", "P2", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
 						}
 					},
 
@@ -1714,15 +1714,15 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Shiyang", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Shiro", 42, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, null, Ignite),
-							CreateChallengeCard("Hoi Lun", 41, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 6, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiyang", "P2", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Shiro", "P1", 42, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", "P3", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", "P3", 4, 80.0f, AIDifficulty.Medium, null, Ignite),
+							CreateChallengeCard("Hoi Lun", "P1", 41, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", "P3", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 6, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", "P2", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
 						}
 					}, 
 
@@ -1733,10 +1733,10 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Alazne", 12, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Shiyang", 28, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 31, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Danjuma", 3, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P3", 12, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiyang", "P1", 28, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P2", 31, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Danjuma", "P1", 3, 0.0f, AIDifficulty.Medium, SecondLife, null),
 						}
 					},
 
@@ -1747,9 +1747,9 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", 21, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-							CreateChallengeCard("Shiro", 7, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 9, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Leoni", "P1", 21, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", "P2", 7, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P1", 9, 10.0f, AIDifficulty.Medium, Avenger, null),
 						}
 					},
 
@@ -1760,12 +1760,12 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Danjuma", 28, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Hoi Lun", 18, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Shiyang", 11, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 5, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Shiro", 4, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Danjuma", "P2", 28, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", "P1", 18, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", "P1", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", "P1", 11, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P3", 5, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", "P2", 4, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
 						}
 					},
 				};
@@ -1785,16 +1785,16 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Shiyang", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Shiro", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Jackson", 48, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Natalya", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Danjuma", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Hoi Lun", 9, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Shiyang", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 4, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Leoni", 17, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiyang", "P3", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Shiro", "P2", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Jackson", "P1", 48, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", "P3", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", "P1", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Danjuma", "P2", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", "P1", 9, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", "P3", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P2", 4, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", "P3", 17, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
 						}
 					}, 
 
@@ -1805,9 +1805,9 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", 11, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-							CreateChallengeCard("Shiro", 24, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-							CreateChallengeCard("Natalya", 33, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Leoni", "P1", 11, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", "P1", 24, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Natalya", "P2", 33, 10.0f, AIDifficulty.Medium, Avenger, null),
 						}
 					},
 
@@ -1818,12 +1818,12 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Hoi Lun", 16, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 19, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Shiro", 32, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Danjuma", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", "P3", 16, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Jackson", "P1", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 19, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Shiro", "P3", 32, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
 						}
 					},
 
@@ -1834,10 +1834,10 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Alazne", 15, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Danjuma", 25, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Natalya", 35, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Shiyang", 15, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P1", 15, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Danjuma", "P1", 25, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Natalya", "P1", 35, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", "P2", 15, 0.0f, AIDifficulty.Medium, SecondLife, null),
 						}
 					},
 
@@ -1848,10 +1848,10 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Natalya", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Jackson", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Hoi Lun", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Natalya", "P2", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Jackson", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Hoi Lun", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
 						}
 					},
 				};
@@ -1871,15 +1871,15 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Natalya", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Jackson", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Danjuma", 20, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Hoi Lun", 10, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Shiyang", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
-							CreateChallengeCard("Alazne", 10, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Leoni", 10, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-							CreateChallengeCard("Jackson", 14, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Jackson", "P2", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Natalya", "P1", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Jackson", "P3", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Danjuma", "P1", 20, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Hoi Lun", "P3", 10, 10.0f, AIDifficulty.Medium, Ignite, null),
+							CreateChallengeCard("Shiyang", "P1", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Alazne", "P2", 10, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", "P1", 10, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Jackson", "P3", 14, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
 						}
 					}, 
 
@@ -1890,8 +1890,8 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
+							CreateChallengeCard("Leoni", "P1", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
 						}
 					},
 							
@@ -1902,13 +1902,13 @@ namespace FightingLegends
 
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Jackson", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-							CreateChallengeCard("Alazne", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-							CreateChallengeCard("Leoni", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-							CreateChallengeCard("Shiro", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),
-							CreateChallengeCard("Danjuma", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-							CreateChallengeCard("Natalya", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Shiyang", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Jackson", "P2", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Alazne", "P3", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
+							CreateChallengeCard("Leoni", "P2", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
+							CreateChallengeCard("Shiro", "P1", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),
+							CreateChallengeCard("Danjuma", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
+							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
+							CreateChallengeCard("Shiyang", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
 						}
 					},
 				};

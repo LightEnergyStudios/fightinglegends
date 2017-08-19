@@ -31,7 +31,7 @@ namespace FightingLegends
 
 		public bool InTeam = false;									// challenge mode (during team selection)
 		public bool IsHidden = false;								// challenge mode (secret AI opposition)
-		public bool IsLocked = false;		
+		public bool IsLocked { get; private set; }	
 
 		public Vector3 originalPosition { get; private set; }
 		public Vector3 currentPosition { get { return CardButton != null ? CardButton.transform.localPosition : Vector3.zero; } }
@@ -68,6 +68,12 @@ namespace FightingLegends
 			IsLocked = isLocked;
 
 			SetFighterData();
+		}
+
+		public void SetLock(bool isLocked)
+		{
+			IsLocked = isLocked;
+			SetButtonLocked();
 		}
 
 		public void SetButton(Button button)
@@ -232,7 +238,7 @@ namespace FightingLegends
 					lockImage.enabled = IsLocked;
 				}
 
-				Portrait.enabled = !IsLocked;
+//				Portrait.enabled = !IsLocked;
 			}
 		}
 			

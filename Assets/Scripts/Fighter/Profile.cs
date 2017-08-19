@@ -40,31 +40,56 @@ namespace FightingLegends
 		}
 			
 
-		public void Save(string fighterName, string fighterColour)
+		public void Save(string fighterName, string fighterColour, bool? isLocked = null)
 		{
 //			Debug.Log("Saving: " + fighterName);
 
-			BinaryFormatter bf = new BinaryFormatter();
-			FileStream file = File.Open(FilePath(fighterName), FileMode.OpenOrCreate);
+//			BinaryFormatter bf = new BinaryFormatter();
+//			FileStream file = File.Open(FilePath(fighterName), FileMode.OpenOrCreate);
 
-			ProfileData.SavedData.FighterName = fighterName;			// in case not already set (ie. first save)
-			ProfileData.SavedData.FighterColour = fighterColour;		// in case not already set (ie. first save)
+			ProfileData.SavedData.FighterName = fighterName;					// in case not already set (ie. first save)
+			ProfileData.SavedData.FighterColour = fighterColour;				// in case not already set (ie. first save)
+
+			if (isLocked != null)
+				ProfileData.SavedData.IsLocked = isLocked.GetValueOrDefault();
+			
 			ProfileData.SavedData.SavedTime = DateTime.Now;
+
+			Save(ProfileData.SavedData);
+
+//			try
+//			{
+//				bf.Serialize(file, ProfileData.SavedData);
+//			}
+//			catch (Exception ex)
+//			{
+//				Debug.Log("Save " + fighterName + " failed: " + ex.Message);
+//			}
+//			finally
+//			{
+//				file.Close();
+//			}
+
+//			Debug.Log("Save: " + fighterName + ", Level " + ProfileData.SavedData.Level + ", Trigger Power-up = " + ProfileData.SavedData.TriggerPowerUp + ", Static Power-up = " + ProfileData.SavedData.StaticPowerUp);
+		}
+
+		public static void Save(SavedProfile profile)
+		{
+			BinaryFormatter bf = new BinaryFormatter();
+			FileStream file = File.Open(FilePath(profile.FighterName), FileMode.OpenOrCreate);
 
 			try
 			{
-				bf.Serialize(file, ProfileData.SavedData);
+				bf.Serialize(file, profile);
 			}
 			catch (Exception ex)
 			{
-				Debug.Log("Save " + fighterName + " failed: " + ex.Message);
+				Debug.Log("Save " + profile.FighterName + " failed: " + ex.Message);
 			}
 			finally
 			{
 				file.Close();
 			}
-
-//			Debug.Log("Save: " + fighterName + ", Level " + ProfileData.SavedData.Level + ", Trigger Power-up = " + ProfileData.SavedData.TriggerPowerUp + ", Static Power-up = " + ProfileData.SavedData.StaticPowerUp);
 		}
 			
 
@@ -142,6 +167,18 @@ namespace FightingLegends
 			return Application.persistentDataPath + "/" + fileName;
 		}
 
+
+		public static void InitFighterProfile(string fighterName, bool isLocked)
+		{
+			var profile = new SavedProfile();
+
+			profile.FighterName = fighterName;
+			profile.FighterColour = "P1";
+			profile.SavedTime = DateTime.Now;
+			profile.IsLocked = isLocked;
+
+			Profile.Save(profile);
+		}
 
 		public static void DeleteFighterProfile(string fighterName)
 		{

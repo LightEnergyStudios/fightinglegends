@@ -2738,6 +2738,9 @@ namespace FightingLegends
 
 		public void StateFeedback(bool player1, string feedback, bool stars, bool silent, string layer = null)
 		{
+			if (!SavedGameStatus.ShowStateFeedback)
+				return;
+			
 			if (feedbackUI != null)
 			{
 				// interrupt previous feedback if still running
@@ -3625,9 +3628,10 @@ namespace FightingLegends
 		{
 			menuStack = new List<MenuType>();
 		
-			if (!SavedGameStatus.CompletedBasicTraining)
-				StartCoroutine(FirstPlayerExperience());
-			else
+			// TODO: reinstate!
+//			if (!SavedGameStatus.CompletedBasicTraining)
+//				StartCoroutine(FirstPlayerExperience());
+//			else
 				ActivateMenu(MenuType.ModeSelect);
 		}
 
@@ -4936,15 +4940,28 @@ namespace FightingLegends
 			PlayerPrefs.Save();
 
 			Profile.DeleteFighterProfile("Leoni");	
-			Profile.DeleteFighterProfile("Danjuma");	
-			Profile.DeleteFighterProfile("Hoi Lun");	
 			Profile.DeleteFighterProfile("Shiro");	
+
+			Profile.DeleteFighterProfile("Danjuma");
 			Profile.DeleteFighterProfile("Natalya");	
+			Profile.DeleteFighterProfile("Hoi Lun");	
 			Profile.DeleteFighterProfile("Alazne");	
 			Profile.DeleteFighterProfile("Jackson");
 			Profile.DeleteFighterProfile("Shiyang");	
 			Profile.DeleteFighterProfile("Ninja");	
 			Profile.DeleteFighterProfile("Skeletron");	
+
+			// all but Leoni and Shiro locked
+			Profile.InitFighterProfile("Leoni", false);	
+			Profile.InitFighterProfile("Shiro", false);	
+			Profile.InitFighterProfile("Danjuma", true);	
+			Profile.InitFighterProfile("Natalya", true);	
+			Profile.InitFighterProfile("Hoi Lun", true);	
+			Profile.InitFighterProfile("Alazne", true);	
+			Profile.InitFighterProfile("Jackson", true);
+			Profile.InitFighterProfile("Shiyang", true);	
+			Profile.InitFighterProfile("Ninja", true);	
+			Profile.InitFighterProfile("Skeletron", true);	
 
 			CleanupFighters();
 

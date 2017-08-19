@@ -54,6 +54,7 @@ namespace FightingLegends
 		private int totalRecordedDamage = 0;			// total damage inflicted by recordedMoves
 
 		private const float recordedMoveAlpha = 0.75f;	// decreases along chain
+		private const float minRecordedMoveAlpha = 0.2f;
 		private const float playbackMoveAlpha = 0.5f;	// dimmed when played back
 		private const float dimmedMoveAlpha = 0.25f;	// dimmed to hilight next move
 		private const float recordMoveTime = 0.35f;		// image animation when adding to chain
@@ -1215,7 +1216,7 @@ namespace FightingLegends
 			moveImage.transform.localPosition = Vector3.zero;	
 //			moveImage.color = startColour;
 
-//			AdjustChainAlpha(reverse);
+			AdjustChainAlpha(reverse);
 
 			recordingMove = false;
 			yield return null;
@@ -1450,13 +1451,16 @@ namespace FightingLegends
 
 				reverseCounter++;
 
-				move.color = new Color(moveColour.r, moveColour.g, moveColour.b, 0);		// vanish momentarily!
+//				move.color = new Color(moveColour.r, moveColour.g, moveColour.b, 0);		// vanish momentarily!
 
 				if (reverse)  	// reorder viewport contents (in reverse) so that the latest is top of the list
 					move.transform.SetSiblingIndex(reverseCounter);
 
 				if (reverseCounter > 1)			// first at full alpha
 					alpha *= recordedMoveAlpha;
+
+				if (alpha < minRecordedMoveAlpha)
+					alpha = minRecordedMoveAlpha;
 
 				move.color = new Color(moveColour.r, moveColour.g, moveColour.b, alpha);
 			}

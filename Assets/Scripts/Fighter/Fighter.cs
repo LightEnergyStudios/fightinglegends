@@ -387,7 +387,7 @@ namespace FightingLegends
 		public delegate void XPLevelDelegate(int level);
 		public XPLevelDelegate OnLevelChanged;
 
-		public delegate void LockedDelegate(bool locked);
+		public delegate void LockedDelegate(Fighter fighter, bool locked);
 		public LockedDelegate OnLockedChanged;
 
 		public delegate void TriggerPowerUpChangedDelegate(PowerUp powerUp);
@@ -2357,7 +2357,7 @@ namespace FightingLegends
 				ProfileData.SavedData.IsLocked = value;
 
 				if (OnLockedChanged != null)
-					OnLockedChanged(IsLocked);
+					OnLockedChanged(this, IsLocked);
 			}
 		}
 

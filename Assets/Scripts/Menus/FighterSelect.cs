@@ -156,6 +156,11 @@ namespace FightingLegends
 			
 			FightManager.OnThemeChanged += SetTheme;
 
+			if (fightManager.HasPlayer1)
+				fightManager.Player1.OnLockedChanged += LockChanged;
+			if (fightManager.HasPlayer2)
+				fightManager.Player2.OnLockedChanged += LockChanged;
+			
 			shiroButton.onClick.AddListener(delegate { CreatePreview("Shiro"); });
 			natalyaButton.onClick.AddListener(delegate { CreatePreview("Natalya"); });
 			hoiLunButton.onClick.AddListener(delegate { CreatePreview("Hoi Lun"); });
@@ -184,6 +189,11 @@ namespace FightingLegends
 //			Debug.Log("StopListening: " + fightManager.SelectedFighterName + " " + fightManager.SelectedFighterColour);
 			FightManager.OnThemeChanged -= SetTheme;
 
+			if (fightManager.HasPlayer1)
+				fightManager.Player1.OnLockedChanged -= LockChanged;
+			if (fightManager.HasPlayer2)
+				fightManager.Player2.OnLockedChanged -= LockChanged;
+			
 			DestroyPreview();
 
 			if (fightButton != null)
@@ -217,7 +227,7 @@ namespace FightingLegends
 			StopListening();
 		}
 
-		protected void LoadFighterCards()
+		private void LoadFighterCards()
 		{
 			if (fighterCardsLoaded)
 				return;
@@ -245,6 +255,25 @@ namespace FightingLegends
 		protected virtual void InitFighterCards()
 		{
 			// eg. SurvivalSelect override loads fighter profiles
+
+			// lookup lock status from fighter profile (saved) data (all fighters)
+			SetCardLocks();
+		}
+
+		// lookup lock status from fighter profile (saved) data (all fighters)
+		private void SetCardLocks()
+		{
+			foreach (var card in fighterCards)
+			{
+				var fighterName = card.Key;
+				var fighterCard = card.Value;
+
+				var profile = Profile.GetFighterProfile(fighterName);
+				if (profile != null)
+				{
+					fighterCard.SetLock(profile.IsLocked);
+				}
+			}
 		}
 
 		public FighterCard GetFighterCard(string fighterName)
@@ -493,6 +522,11 @@ namespace FightingLegends
 				default:
 					return null;
 			}
+		}
+
+		private void LockChanged(Fighter fighter, bool isLocked)
+		{
+
 		}
 
 		public void EnableFighterButton(string fighterName, bool enable)
