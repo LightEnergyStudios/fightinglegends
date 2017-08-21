@@ -2361,6 +2361,14 @@ namespace FightingLegends
 			}
 		}
 
+		public bool CanUnlock
+		{
+			get
+			{
+				return ProfileData.SavedData.IsLocked;
+			}
+		}
+
 //		private bool NextLevel()
 //		{
 //			float power = 0.25f; // 0.33f;  0.25f;

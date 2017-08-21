@@ -23,10 +23,7 @@ namespace FightingLegends
 		public Sprite Regenerator;
 		public Sprite SecondLife;
 		public Sprite VengeanceBooster;
-
-//		public Button LevelUpButton;			// shows overlay (store)
-//		public Button PowerUpButton;			// shows overlay (store)
-
+	
 
 		// virtual method called OnEnable
 		protected override void InitFighterCards()
@@ -55,26 +52,6 @@ namespace FightingLegends
 				}
 			}
 		}
-
-//		private void LevelUpFighter()
-//		{
-//			// go to store - direct to spend coins overlay
-//			fightManager.FighterSelectChoice = MenuType.Store;		// triggers fade to black and new menu
-//			fightManager.SelectedMenuOverlay = MenuOverlay.SpendCoins;
-//		}
-
-//		private void PowerUpFighter()
-//		{
-//			if (previewFighter == null)
-//				return;
-
-//			fightManager.FighterSelectChoice = MenuType.Store;		// triggers fade to black and new menu
-//			fightManager.SelectedMenuOverlay = MenuOverlay.PowerUp;
-
-//			fightManager.PowerUpFighter = previewFighter;
-
-			// TODO: need to call Store.ShowPowerUpOverlay ... somehow
-//		}
 			
 		private Sprite PowerUpSprite(PowerUp powerUp)
 		{

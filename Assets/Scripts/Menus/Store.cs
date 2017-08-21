@@ -540,6 +540,11 @@ namespace FightingLegends
 			FighterName.text = fighterName.ToUpper();
 			FighterHealth.text = FightManager.Translate("healthPoints") + ": " + ((int)previewFighter.ProfileData.LevelHealth).ToString();
 			FighterAttackRating.text = FightManager.Translate("attackRating") + ": " + ((int)previewFighter.ProfileData.LevelAR).ToString();
+
+			TrainingButton.interactable = !previewFighter.IsLocked;
+			PowerUpButton.interactable = !previewFighter.IsLocked;
+			LevelUpButton.interactable = !previewFighter.IsLocked;
+			ResetLevelButton.interactable = !previewFighter.IsLocked;
 		}
 			
 		private void OnStaticPowerUpClicked()

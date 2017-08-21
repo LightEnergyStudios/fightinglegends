@@ -15,7 +15,7 @@ namespace FightingLegends
 
 		public DateTime SavedTime;
 
-		public string UserId = "";						// TODO: user registration
+		public string UserId = "";						// via user registration
 
 		// player status
 
@@ -23,7 +23,6 @@ namespace FightingLegends
 		public int Coins = 0;
 
 		public int BestDojoDamage = 0;					// PB damage from chain in Dojo mode
-
 		public int BestSurvivalEndurance = 0;			// PB rounds won in survival mode
 		public int TotalChallengeWinnings = 0;			// total challenge mode coins won 
 		public int WorldTourCompletions = 0;			// for all fighters
@@ -63,10 +62,12 @@ namespace FightingLegends
 		public MiscFlags3 Flags3 = MiscFlags3.None;
 
 		public SavedProfile Player1;
-		public SavedProfile Player2;		// AI - in order to restore fight
+		public SavedProfile Player2;				// AI - in order to restore fight
 
 		public SavedProfile[] playerTeam;
 		public SavedProfile[] AITeam;
+
+		public int FighterUnlockedLevel = 0;		// see UnlockLevel for fighters
 
 		// player stats...
 		public int RoundsWon { get; set; }			// in total

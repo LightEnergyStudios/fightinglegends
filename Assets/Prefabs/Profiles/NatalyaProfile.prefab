@@ -73,6 +73,9 @@ MonoBehaviour:
     FighterClass: 1
     Element1: 1
     Element2: 3
+    UnlockLevel: 1
+    UnlockDefeats: 3
+    UnlockDifficulty: 3
     ArmourDownDamageFactor: 2
     ArmourUpDamageFactor: 0.5
     OnFireDamagePerTick: 0.33

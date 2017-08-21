@@ -358,12 +358,9 @@ namespace FightingLegends
 			
 		public void CreatePreview(string name, string colour = "P1", bool cycleColour = true)
 		{
-			if (! PreviewMoves)
-			{
-				var fighterCard = GetFighterCard(name);
-				if (fighterCard == null || fighterCard.IsLocked)
-					return;
-			}
+			var fighterCard = GetFighterCard(name);
+			if (fighterCard == null)
+				return;
 
 			if (HasActivatedOverlay)
 				return;
@@ -395,7 +392,7 @@ namespace FightingLegends
 
 				previewFighter = newFighter;
 				previewFighter.transform.position = PreviewPosition(); //new Vector3(cameraX - previewX, previewY, previewZ);
-				previewFighter.SetPreview(idleFrameNumber); //, PreviewMoves, PreviewUseGauge);
+				previewFighter.SetPreview(idleFrameNumber);
 
 				FightManager.SelectedFighterName = previewFighter.FighterName; 
 				FightManager.SelectedFighterColour = previewFighter.ColourScheme;
@@ -444,6 +441,15 @@ namespace FightingLegends
 //						fighterClass = FightManager.Translate("na");		// N/A
 					
 					SelectedClass.text = FightManager.Translate(fighterClass.ToLower()); 
+				}
+
+				if (fighterChanged)
+				{
+					if (fightButton != null)
+						fightButton.interactable = !fighterCard.IsLocked;
+
+					if (powerUpButton != null)
+						powerUpButton.interactable = !fighterCard.IsLocked;
 				}
 
 				if (OnPreviewCreated != null)

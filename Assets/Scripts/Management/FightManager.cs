@@ -355,6 +355,7 @@ namespace FightingLegends
 		public static UserRegistration userRegistration;
 		public static ChallengeUpload challengeUpload;
 		public static ChallengeResult challengeResult;
+		public static FighterUnlock fighterUnlock;
 
 		// gesture listener
 		private GestureListener gestureListener;			// for spawning gesture sparks for (feedbackFX)
@@ -647,6 +648,10 @@ namespace FightingLegends
 			var challengeResultObject = GameObject.Find("ChallengeResult");
 			if (challengeResultObject != null)
 				challengeResult = challengeResultObject.GetComponent<ChallengeResult>();
+		
+			var fighterUnlockObject = GameObject.Find("FighterUnlock");
+			if (fighterUnlockObject != null)
+				fighterUnlock = fighterUnlockObject.GetComponent<FighterUnlock>();
 			
 			cameraController = Camera.main.GetComponent<CameraController>();
 
@@ -4065,6 +4070,11 @@ namespace FightingLegends
 		public static void ShowChallengeResult(int challengePot, bool defenderWon, string challengerId, Action actionOnOk)
 		{
 			challengeResult.Notify(challengePot, defenderWon, challengerId, actionOnOk);
+		}
+
+		public static void ShowFighterUnlock(Fighter fighter, Action actionOnOk)
+		{
+			fighterUnlock.FighterUnlockStatus(fighter, actionOnOk);
 		}
 
 		#endregion 		// menus
