@@ -23,7 +23,15 @@ namespace FightingLegends
 		public Text DefeatCount;
 		public Text UnlockCoins;
 
-		public Button BuyButton;
+		public ParticleSystem FighterStars;		// when unlocked
+		public ParticleSystem LockStars;		// when unlocked
+		public ParticleSystem Fireworks;		// when unlocked
+
+		public Image Lock;
+
+		public Button UnlockButton;			// with coins
+		public Image CoinPanel;
+
 		public Button OkButton;
 
 		public Sprite leoniPortrait;
@@ -38,13 +46,19 @@ namespace FightingLegends
 		public Sprite skeletronPortrait;
 
 		public AudioClip ShowSound;
+		public AudioClip UnlockSound;
 		public AudioClip OkSound;
 
 		public float fadeTime;
 
-		private Fighter unlockFighter;
-		private Action actionOnBuy;
-		private Action actionOnOk;
+		private const float unlockPauseTime = 0.75f;
+
+		private Fighter unlockedFighter;
+		private FighterCard fighterCard;
+		bool unlocked = false;
+
+//		private Action actionOnBuy;
+//		private Action actionOnOk;
 
 
 		void Awake()
@@ -60,7 +74,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			BuyButton.onClick.AddListener(BuyClicked);
+			UnlockButton.onClick.AddListener(UnlockClicked);
 			OkButton.onClick.AddListener(OkClicked);
 
 			//			SetWalletValue(FightManager.Coins, false);				// set current value
@@ -68,19 +82,41 @@ namespace FightingLegends
 
 		private void OnDestroy()
 		{
-			BuyButton.onClick.RemoveListener(BuyClicked);
+			UnlockButton.onClick.RemoveListener(UnlockClicked);
 			OkButton.onClick.RemoveListener(OkClicked);
 		}
 
-		// public entry point
-		public void FighterUnlockStatus(Fighter fighter, Action onOk)
+		public bool CanUnlock(bool isLocked, int unlockOrder)
 		{
-			actionOnOk = onOk;
-			unlockFighter = fighter;
+			return isLocked && unlockOrder == FightManager.SavedGameStatus.FighterUnlockedLevel+1;
+		}
 
-			FighterName.text = fighter.FighterName.ToUpper();
+		// public entry points
+		public void UnlockFighter(Fighter fighter)
+		{
+			unlockedFighter = fighter;
+			unlocked = true;
 
-			switch (fighter.FighterName)
+			ShowLockedFighter(unlockedFighter.FighterName.ToUpper(), true, true, true);
+		}
+			
+		public void ShowLockedFighter(FighterCard fighter)
+		{
+			fighterCard = fighter;
+			unlocked = false;
+
+			ShowLockedFighter(fighterCard.FighterName.ToUpper(), fighterCard.IsLocked,
+									CanUnlock(fighterCard.IsLocked, fighterCard.UnlockOrder), false);
+		}
+
+		private void ShowLockedFighter(string fighterName, bool isLocked, bool canUnlock, bool unlock)
+		{
+			FighterName.text = fighterName;
+
+			if (unlock)
+				FighterName.text += (" " + FightManager.Translate("unlocked", false, true));
+
+			switch (fighterName)
 			{
 				case "Shiro":
 					FighterPortrait.sprite = shiroPortrait;
@@ -125,6 +161,12 @@ namespace FightingLegends
 				default:
 					break;
 			}
+					
+			// can't (pay to) unlock some fighters until others have been unlocked (UnlockLevel)
+			UnlockButton.gameObject.SetActive(! unlocked && canUnlock);
+			CoinPanel.gameObject.SetActive(! unlocked && canUnlock);
+
+			Lock.gameObject.SetActive(fighterCard.IsLocked);		// should always be locked - wouldn't be here otherwise!
 
 			StartCoroutine(Show());
 		}
@@ -148,10 +190,27 @@ namespace FightingLegends
 				background.color = Color.Lerp(Color.clear, backgroundColour, t);
 				yield return null;
 			}
+				
+			if (unlocked)
+			{
+				yield return new WaitForSeconds(unlockPauseTime);
 
-			if (ShowSound != null)
-				AudioSource.PlayClipAtPoint(ShowSound, Vector3.zero, FightManager.SFXVolume);
+				Lock.gameObject.SetActive(false);
+				LockStars.Play();
 
+				FighterStars.Play();
+
+				Fireworks.Play();
+
+				if (UnlockSound != null)
+					AudioSource.PlayClipAtPoint(UnlockSound, Vector3.zero, FightManager.SFXVolume);
+			}
+			else
+			{
+				if (ShowSound != null)
+					AudioSource.PlayClipAtPoint(ShowSound, Vector3.zero, FightManager.SFXVolume);
+			}
+				
 			yield return null;
 		}
 
@@ -178,16 +237,17 @@ namespace FightingLegends
 			yield return null;
 		}
 
-		private void BuyClicked()
+		private void UnlockClicked()
 		{
-			// call the passed-in delegate
-			if (actionOnBuy != null)
-			{
-				actionOnBuy();
-			}
+//			// call the passed-in delegate
+//			if (actionOnBuy != null)
+//			{
+//				actionOnBuy();
+//			}
 
 			//			if (BuySound != null)
 			//				AudioSource.PlayClipAtPoint(BuySound, Vector3.zero, FightManager.SFXVolume);
+
 
 			StartCoroutine(Hide());
 		}

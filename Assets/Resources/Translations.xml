@@ -187,6 +187,7 @@
 		<string name="vengeanceBoost">VENGEANCE BOOST</string>
 
 		<string name="equip">EQUIP</string>
+		<string name="unlocked">UNLOCKED</string>
 
 		<string name="armourPiercingDesc">Hits impart extra damage through opponent's block</string>
 		<string name="avengerDesc">Vengeance gauge fills faster when taking damage</string>

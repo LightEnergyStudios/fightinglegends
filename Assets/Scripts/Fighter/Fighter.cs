@@ -2363,10 +2363,7 @@ namespace FightingLegends
 
 		public bool CanUnlock
 		{
-			get
-			{
-				return ProfileData.SavedData.IsLocked;
-			}
+			get { return IsLocked && ProfileData.UnlockLevel == FightManager.SavedGameStatus.FighterUnlockedLevel+1; }
 		}
 
 //		private bool NextLevel()

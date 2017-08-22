@@ -4072,9 +4072,16 @@ namespace FightingLegends
 			challengeResult.Notify(challengePot, defenderWon, challengerId, actionOnOk);
 		}
 
-		public static void ShowFighterUnlock(Fighter fighter, Action actionOnOk)
+		public static void ShowLockedFighter(FighterCard fighterCard)
 		{
-			fighterUnlock.FighterUnlockStatus(fighter, actionOnOk);
+			Debug.Log("ShowLockedFighter");
+			fighterUnlock.ShowLockedFighter(fighterCard);
+		}
+
+		public static void UnlockFighter(Fighter fighter)
+		{
+			Debug.Log("UnlockFighter");
+			fighterUnlock.UnlockFighter(fighter);
 		}
 
 		#endregion 		// menus

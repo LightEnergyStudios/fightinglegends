@@ -16,6 +16,7 @@ namespace FightingLegends
 		public string FighterName { get; private set; }
 		public string FighterColour { get; private set; }
 
+		public int UnlockOrder { get; private set; }
 		public int Level { get; private set; }
 		public bool ExpandedLevel = false;							// show Level as opposed to Lv
 		public float XP { get; private set; }
@@ -38,10 +39,11 @@ namespace FightingLegends
 
 		private Image Portrait { get { return CardButton != null ? CardButton.transform.Find("Image").GetComponent<Image>() : null; }}
 
-		public FighterCard(Button button, string name, string colour, int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, AIDifficulty difficulty = AIDifficulty.Medium, bool isLocked = false )
+		public FighterCard(Button button, string name, string colour, int unlockOrder, int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, AIDifficulty difficulty = AIDifficulty.Medium, bool isLocked = false)
 		{
 			FighterName = name;
 			FighterColour = colour;
+			UnlockOrder = unlockOrder;
 			Difficulty = difficulty;
 			InTeam = false;
 
