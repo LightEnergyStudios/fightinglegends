@@ -21,6 +21,7 @@ namespace FightingLegends
 
 		public Text UnlockStatus;
 		public Text DefeatCount;
+		public Text DefeatDifficulty;
 		public Text UnlockCoins;
 
 		public ParticleSystem FighterStars;		// when unlocked
@@ -86,10 +87,10 @@ namespace FightingLegends
 			OkButton.onClick.RemoveListener(OkClicked);
 		}
 
-		public bool CanUnlock(bool isLocked, int unlockOrder)
-		{
-			return isLocked && unlockOrder == FightManager.SavedGameStatus.FighterUnlockedLevel+1;
-		}
+//		public bool CanUnlock(bool isLocked, int unlockOrder)
+//		{
+//			return isLocked && unlockOrder == FightManager.SavedGameStatus.FighterUnlockedLevel+1;
+//		}
 
 		// public entry points
 		public void UnlockFighter(Fighter fighter)
@@ -97,7 +98,7 @@ namespace FightingLegends
 			unlockedFighter = fighter;
 			unlocked = true;
 
-			ShowLockedFighter(unlockedFighter.FighterName.ToUpper(), true, true, true);
+			ShowLockedFighter(unlockedFighter.FighterName, true, true);
 		}
 			
 		public void ShowLockedFighter(FighterCard fighter)
@@ -105,16 +106,35 @@ namespace FightingLegends
 			fighterCard = fighter;
 			unlocked = false;
 
-			ShowLockedFighter(fighterCard.FighterName.ToUpper(), fighterCard.IsLocked,
-									CanUnlock(fighterCard.IsLocked, fighterCard.UnlockOrder), false);
+			ShowLockedFighter(fighterCard.FighterName, fighterCard.IsLocked,
+				fighterCard.CanUnlock, fighterCard.UnlockDefeats, fighterCard.UnlockDifficulty);
 		}
 
-		private void ShowLockedFighter(string fighterName, bool isLocked, bool canUnlock, bool unlock)
+		private void ShowLockedFighter(string fighterName, bool isLocked, bool canUnlock, int defeatCount = 0, AIDifficulty difficulty = AIDifficulty.Simple)
 		{
-			FighterName.text = fighterName;
+			FighterName.text = fighterName.ToUpper();
 
-			if (unlock)
+			if (unlocked)
+			{
 				FighterName.text += (" " + FightManager.Translate("unlocked", false, true));
+				UnlockStatus.text = FightManager.Translate("congratulations", false, true, true);
+
+				DefeatCount.text = "";
+				DefeatDifficulty.text = "";
+			}
+			else if (canUnlock)
+			{
+				UnlockStatus.text = "";
+
+				DefeatCount.text = FightManager.Translate("defeat") + " x" + defeatCount;
+				DefeatDifficulty.text = FightManager.Translate(difficulty.ToString().ToLower());
+			}
+			else
+			{
+				UnlockStatus.text = "???";
+				DefeatCount.text = "";
+				DefeatDifficulty.text = "";
+			}
 
 			switch (fighterName)
 			{
@@ -164,7 +184,7 @@ namespace FightingLegends
 					
 			// can't (pay to) unlock some fighters until others have been unlocked (UnlockLevel)
 			UnlockButton.gameObject.SetActive(! unlocked && canUnlock);
-			CoinPanel.gameObject.SetActive(! unlocked && canUnlock);
+			CoinPanel.gameObject.SetActive(!unlocked && canUnlock);
 
 			Lock.gameObject.SetActive(fighterCard.IsLocked);		// should always be locked - wouldn't be here otherwise!
 
@@ -200,7 +220,7 @@ namespace FightingLegends
 
 				FighterStars.Play();
 
-				Fireworks.Play();
+//				Fireworks.Play();
 
 				if (UnlockSound != null)
 					AudioSource.PlayClipAtPoint(UnlockSound, Vector3.zero, FightManager.SFXVolume);

@@ -25,17 +25,17 @@ namespace FightingLegends
 		public Sprite VengeanceBooster;
 	
 
-		// virtual method called OnEnable
-		protected override void InitFighterCards()
-		{
-			base.InitFighterCards();
-
-			// lookup level, xp and power-ups from fighter profile (saved) data (all fighters)
-			SetCardProfiles();
-		}
+//		// virtual method called OnEnable
+//		protected override void InitFighterCards()
+//		{
+//			base.InitFighterCards();
+//
+//			// lookup level, xp and power-ups from fighter profile (saved) data (all fighters)
+//			SetCardProfiles();
+//		}
 
 		// lookup level, xp and power-ups from each fighter profile (saved) data
-		private void SetCardProfiles()
+		protected override void SetCardProfiles()
 		{
 //			Debug.Log("SetCardProfiles");
 
@@ -47,7 +47,9 @@ namespace FightingLegends
 				var profile = Profile.GetFighterProfile(fighterName);
 				if (profile != null)
 				{
-					fighterCard.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(fighterName), profile.IsLocked);
+//					fighterCard.SetProfileData(fighterCard.Level, fighterCard.XP, PowerUpSprite(fighterCard.StaticPowerUp), PowerUpSprite(fighterCard.TriggerPowerUp), CardFrame(fighterName));
+					fighterCard.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(fighterName),
+										profile.IsLocked, profile.CanUnlock, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 //					Debug.Log("SetProfileData: " + fighterName + " - static = " + profile.StaticPowerUp + ", trigger = " + profile.TriggerPowerUp);
 				}
 			}

@@ -16,7 +16,6 @@ namespace FightingLegends
 		public string FighterName { get; private set; }
 		public string FighterColour { get; private set; }
 
-		public int UnlockOrder { get; private set; }
 		public int Level { get; private set; }
 		public bool ExpandedLevel = false;							// show Level as opposed to Lv
 		public float XP { get; private set; }
@@ -32,29 +31,32 @@ namespace FightingLegends
 
 		public bool InTeam = false;									// challenge mode (during team selection)
 		public bool IsHidden = false;								// challenge mode (secret AI opposition)
+
 		public bool IsLocked { get; private set; }	
+		public bool CanUnlock{ get; private set; }	
+		public int UnlockOrder { get; private set; }	
+		public int UnlockDefeats{ get; private set; }	
+		public AIDifficulty UnlockDifficulty{ get; private set; }	
 
 		public Vector3 originalPosition { get; private set; }
 		public Vector3 currentPosition { get { return CardButton != null ? CardButton.transform.localPosition : Vector3.zero; } }
 
 		private Image Portrait { get { return CardButton != null ? CardButton.transform.Find("Image").GetComponent<Image>() : null; }}
 
-		public FighterCard(Button button, string name, string colour, int unlockOrder, int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, AIDifficulty difficulty = AIDifficulty.Medium, bool isLocked = false)
+
+		public FighterCard(Button button, string name, string colour, int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, AIDifficulty difficulty = AIDifficulty.Medium)
 		{
 			FighterName = name;
 			FighterColour = colour;
-			UnlockOrder = unlockOrder;
 			Difficulty = difficulty;
 			InTeam = false;
-
+		
 			SetButton(button);
-			SetProfileData(level, xpPercent, staticPowerUp, triggerPowerUp, frame, isLocked);	// shows level, power-ups and xp
+			SetProfileData(level, xpPercent, staticPowerUp, triggerPowerUp, frame, false, false, 0, 0, AIDifficulty.Simple);	// shows level, power-ups and xp
 		}
 
-
-		public void SetProfileData(int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, bool isLocked)
+		public void SetProfileData(int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, bool isLocked, bool canUnlock, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty)
 		{
-//			Debug.Log("SetProfileData: level = " + level + ", xpPercent = " + xpPercent + ", staticPowerUp = " + staticPowerUp + ", triggerPowerUp = " + triggerPowerUp + ", isLocked = " + isLocked);
 			Level = level;
 			StaticPowerUpSprite = staticPowerUp;
 			TriggerPowerUpSprite = triggerPowerUp;
@@ -68,15 +70,25 @@ namespace FightingLegends
 				XP = 0;
 
 			IsLocked = isLocked;
+			CanUnlock = canUnlock;
+			UnlockOrder = unlockOrder;
+			UnlockDefeats = unlockDefeats;
+			UnlockDifficulty = unlockDifficulty;
 
-			SetFighterData();
+			SetButtonData();
 		}
 
-		public void SetLock(bool isLocked)
+		public void SetPowerUps(Sprite staticPowerUp, Sprite triggerPowerUp)
 		{
-			IsLocked = isLocked;
-			SetButtonLocked();
+			StaticPowerUpSprite = staticPowerUp;
+			TriggerPowerUpSprite = triggerPowerUp;
 		}
+
+//		public void SetLock(bool isLocked)
+//		{
+//			IsLocked = isLocked;
+//			SetButtonLocked();
+//		}
 
 		public void SetButton(Button button)
 		{
@@ -86,7 +98,7 @@ namespace FightingLegends
 				originalPosition = CardButton.transform.localPosition;
 		}
 
-		public void SetFighterData()
+		public void SetButtonData()
 		{
 			SetButtonPowerUps();
 			SetButtonLevel();
@@ -94,18 +106,6 @@ namespace FightingLegends
 			SetButtonFrame();
 			SetButtonLocked();
 		}
-
-
-//		public void SetButtonPortrait(Sprite portrait, bool canLock)
-//		{
-//			if (Portrait != null)
-//				Portrait.sprite = portrait;
-//
-//			if (!canLock)
-//				Portrait.enabled = true;
-//			else
-//				SetButtonLocked();		// portrait disabled if locked
-//		}
 
 		private void SetButtonLevel()
 		{
@@ -164,38 +164,7 @@ namespace FightingLegends
 		{
 			Difficulty = difficulty;
 		}
-
-//		public Button StaticPowerUpButton
-//		{
-//			get
-//			{ 
-//				if (CardButton == null)
-//					return null;
-//
-//				var staticPowerUp = CardButton.transform.Find("StaticButton");
-//
-//				if (staticPowerUp != null)
-//					return staticPowerUp.GetComponent<Button>();
-//
-//				return null;
-//			}
-//		}
-//
-//		public Button TriggerPowerUpButton
-//		{
-//			get
-//			{ 
-//				if (CardButton == null)
-//					return null;
-//
-//				var triggerPowerUp = CardButton.transform.Find("TriggerButton");
-//
-//				if (triggerPowerUp != null)
-//					return triggerPowerUp.GetComponent<Button>();
-//
-//				return null;
-//			}
-//		}
+			
 
 		private void SetButtonXPBar()
 		{

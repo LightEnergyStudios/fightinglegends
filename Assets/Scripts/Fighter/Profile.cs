@@ -168,7 +168,7 @@ namespace FightingLegends
 		}
 
 
-		public static void InitFighterProfile(string fighterName, bool isLocked)
+		public static void InitFighterProfile(string fighterName, bool isLocked, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty)
 		{
 			var profile = new SavedProfile();
 
@@ -176,6 +176,10 @@ namespace FightingLegends
 			profile.FighterColour = "P1";
 			profile.SavedTime = DateTime.Now;
 			profile.IsLocked = isLocked;
+
+			profile.UnlockOrder = unlockOrder;
+			profile.UnlockDefeats = unlockDefeats;
+			profile.UnlockDifficulty = unlockDifficulty;
 
 			Profile.Save(profile);
 		}

@@ -2229,42 +2229,95 @@ namespace FightingLegends
 				{
 					case AIDifficulty.Simple:
 						if (winner.UnderAI)
-							loser.ProfileData.SavedData.SimpleLosses++;
-						else
-							winner.ProfileData.SavedData.SimpleWins++;
+						{
+							winner.ProfileData.SavedData.SimpleLosses++;
+						}
+						else  // loser is AI - unlock if defeated enough times
+						{
+							// TODO: look at logic for updating wins/losses
+							if (loser.CanUnlock && loser.ProfileData.SavedData.UnlockDifficulty == FightManager.SavedGameStatus.Difficulty)
+							{
+								loser.ProfileData.SavedData.SimpleWins++;
+
+								if (loser.ProfileData.SavedData.SimpleWins >= loser.ProfileData.SavedData.UnlockDefeats)
+									FightManager.UnlockFighter(loser);
+							}
+						}
 						break;
 
 					case AIDifficulty.Easy:
 						if (winner.UnderAI)
-							loser.ProfileData.SavedData.EasyLosses++;
-						else
-							winner.ProfileData.SavedData.EasyWins++;
+						{
+							winner.ProfileData.SavedData.EasyLosses++;
+						}
+						else  // loser is AI - unlock if defeated enough times
+						{
+							// TODO: look at logic for updating wins/losses
+							if (loser.CanUnlock && loser.ProfileData.SavedData.UnlockDifficulty == FightManager.SavedGameStatus.Difficulty)
+							{
+								loser.ProfileData.SavedData.EasyWins++;
+
+								if (loser.ProfileData.SavedData.EasyWins >= loser.ProfileData.SavedData.UnlockDefeats)
+									FightManager.UnlockFighter(loser);
+							}
+						}
 						break;
 
 					case AIDifficulty.Medium:
 						if (winner.UnderAI)
-							loser.ProfileData.SavedData.MediumLosses++;
-						else
-							winner.ProfileData.SavedData.MediumWins++;
+						{
+							winner.ProfileData.SavedData.MediumLosses++;
+						}
+						else  // loser is AI - unlock if defeated enough times
+						{
+							// TODO: look at logic for updating wins/losses
+							if (loser.CanUnlock && loser.ProfileData.SavedData.UnlockDifficulty == FightManager.SavedGameStatus.Difficulty)
+							{
+								loser.ProfileData.SavedData.MediumWins++;
+
+								if (loser.ProfileData.SavedData.MediumWins >= loser.ProfileData.SavedData.UnlockDefeats)
+									FightManager.UnlockFighter(loser);
+							}
+						}
 						break;
 
 					case AIDifficulty.Hard:
 						if (winner.UnderAI)
-							loser.ProfileData.SavedData.HardLosses++;
-						else
-							winner.ProfileData.SavedData.HardWins++;
+						{
+							winner.ProfileData.SavedData.HardLosses++;
+						}
+						else  // loser is AI - unlock if defeated enough times
+						{
+							// TODO: look at logic for updating wins/losses
+							if (loser.CanUnlock && loser.ProfileData.SavedData.UnlockDifficulty == FightManager.SavedGameStatus.Difficulty)
+							{
+								loser.ProfileData.SavedData.HardWins++;
+
+								if (loser.ProfileData.SavedData.HardWins >= loser.ProfileData.SavedData.UnlockDefeats)
+									FightManager.UnlockFighter(loser);
+							}
+						}
 						break;
 
 					case AIDifficulty.Brutal:
 						if (winner.UnderAI)
-							loser.ProfileData.SavedData.BrutalLosses++;
-						else
-							winner.ProfileData.SavedData.BrutalWins++;
+						{
+							winner.ProfileData.SavedData.BrutalLosses++;
+						}
+						else  // loser is AI - unlock if defeated enough times
+						{
+							// TODO: look at logic for updating wins/losses
+							if (loser.CanUnlock && loser.ProfileData.SavedData.UnlockDifficulty == FightManager.SavedGameStatus.Difficulty)
+							{
+								loser.ProfileData.SavedData.BrutalWins++;
+
+								if (loser.ProfileData.SavedData.BrutalWins >= loser.ProfileData.SavedData.UnlockDefeats)
+									FightManager.UnlockFighter(loser);
+							}
+						}
 						break;
 				}
 			}
-
-			// TODO: unlock if defeated enough times
 
 			if (winner.UnderAI)
 			{
@@ -3590,7 +3643,11 @@ namespace FightingLegends
 			FightPaused = true;
 
 			LoadSavedData();
-//			CheckForChallengeResult();
+
+			if (SavedGameStatus.PlayCount == 0)
+				InitGame(false);
+
+			SavedGameStatus.PlayCount++;
 
 			GameUIVisible(true);
 			InitMenus();
@@ -4074,13 +4131,11 @@ namespace FightingLegends
 
 		public static void ShowLockedFighter(FighterCard fighterCard)
 		{
-			Debug.Log("ShowLockedFighter");
 			fighterUnlock.ShowLockedFighter(fighterCard);
 		}
 
 		public static void UnlockFighter(Fighter fighter)
 		{
-			Debug.Log("UnlockFighter");
 			fighterUnlock.UnlockFighter(fighter);
 		}
 
@@ -4846,6 +4901,7 @@ namespace FightingLegends
 			PlayerPrefs.SetInt("FL_BestDojoDamage", SavedGameStatus.BestDojoDamage);
 			PlayerPrefs.SetInt("FL_BestSurvivalEndurance", SavedGameStatus.BestSurvivalEndurance);
 			PlayerPrefs.SetInt("FL_TotalChallengeWinnings", SavedGameStatus.TotalChallengeWinnings);
+			PlayerPrefs.SetInt("FL_WorldTourCompletions", SavedGameStatus.WorldTourCompletions);
 			PlayerPrefs.SetInt("FL_CompletedTraining", SavedGameStatus.CompletedBasicTraining ? 1 : 0);
 			PlayerPrefs.SetString("FL_SelectedFighter", SelectedFighterName);
 			PlayerPrefs.SetString("FL_SelectedColour", SelectedFighterColour);
@@ -4862,6 +4918,7 @@ namespace FightingLegends
 			SavedGameStatus.BestDojoDamage = PlayerPrefs.GetInt("FL_BestDojoDamage", 0);
 			SavedGameStatus.BestSurvivalEndurance = PlayerPrefs.GetInt("FL_BestSurvivalEndurance", 0);
 			SavedGameStatus.TotalChallengeWinnings = PlayerPrefs.GetInt("FL_TotalChallengeWinnings", 0);
+			SavedGameStatus.TotalChallengeWinnings = PlayerPrefs.GetInt("FL_WorldTourCompletions", 0);
 			SavedGameStatus.CompletedBasicTraining = PlayerPrefs.GetInt("FL_CompletedTraining", 0) != 0;
 			SelectedFighterName = PlayerPrefs.GetString("FL_SelectedFighter", "Leoni");
 			SelectedFighterColour = PlayerPrefs.GetString("FL_SelectedColour", "P1");
@@ -4924,7 +4981,7 @@ namespace FightingLegends
 		}
 
 
-		public void ResetGame()
+		public void InitGame(bool restart)
 		{
 			if (curtain != null)
 			{
@@ -4951,6 +5008,7 @@ namespace FightingLegends
 			PlayerPrefs.SetInt("FL_BestDojoDamage", 0);
 			PlayerPrefs.SetInt("FL_BestSurvivalEndurance", 0);
 			PlayerPrefs.SetInt("FL_TotalChallengeWinnings", 0);
+			PlayerPrefs.SetInt("FL_WorldTourCompletions", 0);
 			PlayerPrefs.SetInt("FL_CompletedTraining", 0);
 			PlayerPrefs.SetString("FL_SelectedFighter", "Leoni");
 			PlayerPrefs.SetString("FL_SelectedColour", "P1");
@@ -4969,21 +5027,25 @@ namespace FightingLegends
 			Profile.DeleteFighterProfile("Skeletron");	
 
 			// all but Leoni and Shiro locked
-			Profile.InitFighterProfile("Leoni", false);	
-			Profile.InitFighterProfile("Shiro", false);	
-			Profile.InitFighterProfile("Danjuma", true);	
-			Profile.InitFighterProfile("Natalya", true);	
-			Profile.InitFighterProfile("Hoi Lun", true);	
-			Profile.InitFighterProfile("Alazne", true);	
-			Profile.InitFighterProfile("Jackson", true);
-			Profile.InitFighterProfile("Shiyang", true);	
-			Profile.InitFighterProfile("Ninja", true);	
-			Profile.InitFighterProfile("Skeletron", true);	
+			Profile.InitFighterProfile("Leoni", false, 0, 0, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Shiro", false, 0, 0, AIDifficulty.Easy);	
 
-			CleanupFighters();
+			Profile.InitFighterProfile("Danjuma", true, 1, 3, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Natalya", true, 1, 3, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Hoi Lun", true, 2, 5, AIDifficulty.Medium);	
+			Profile.InitFighterProfile("Jackson", true, 2, 5, AIDifficulty.Medium);
 
-			StartGame();
-//			StartCoroutine(FirstPlayerExperience());
+			Profile.InitFighterProfile("Alazne", true, 3, 7, AIDifficulty.Hard);	
+			Profile.InitFighterProfile("Shiyang", true, 3, 7, AIDifficulty.Hard);	
+
+			Profile.InitFighterProfile("Ninja", true, 4, 9, AIDifficulty.Brutal);	
+			Profile.InitFighterProfile("Skeletron", true, 5, 11, AIDifficulty.Brutal);	
+
+			if (restart)
+			{
+				CleanupFighters();
+				StartGame();
+			}
 		}
 
 		private SavedProfile ProfileFromCard(FighterCard card)

@@ -41,9 +41,14 @@ namespace FightingLegends
 		public FighterElement Element1 = FighterElement.Undefined;
 		public FighterElement Element2 = FighterElement.Undefined;
 
-		public int UnlockLevel = 0;				// to denote order in which fighters are unlocked (see SavedStatus.FighterUnlockedLevel)
-		public int UnlockDefeats = 3;			// number of defeats required to unlock
-		public AIDifficulty UnlockDifficulty = AIDifficulty.Easy;	// difficulty level for unlock defeats
+//		public int UnlockLevel = 0;				// to denote order in which fighters are unlocked (see SavedStatus.FighterUnlockedLevel)
+//		public int UnlockDefeats = 3;			// number of defeats required to unlock
+//		public AIDifficulty UnlockDifficulty = AIDifficulty.Easy;	// difficulty level for unlock defeats
+//
+//		public bool CanUnlock
+//		{
+//			get { return UnlockLevel == FightManager.SavedGameStatus.FighterUnlockedLevel+1; }
+//		}
 
 		public float ArmourDownDamageFactor;	// air - increased damage
 		public float ArmourUpDamageFactor;		// earth - reduced damage

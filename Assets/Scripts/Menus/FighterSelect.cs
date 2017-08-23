@@ -125,8 +125,9 @@ namespace FightingLegends
 		{
 			if (previewFighter == null || previewFighter.FighterName != FightManager.SelectedFighterName)
 			{
-				CreatePreview(FightManager.SelectedFighterName, FightManager.SelectedFighterColour, false);
-				previewFighter.ResetHealth();
+				CreatePreview(FightManager.SelectedFighterName, FightManager.SelectedFighterColour, false, true);
+				if (previewFighter != null)
+					previewFighter.ResetHealth();
 			}
 			else
 				RevealFighter();
@@ -161,19 +162,19 @@ namespace FightingLegends
 			if (fightManager.HasPlayer2)
 				fightManager.Player2.OnLockedChanged += LockChanged;
 			
-			shiroButton.onClick.AddListener(delegate { CreatePreview("Shiro"); });
-			natalyaButton.onClick.AddListener(delegate { CreatePreview("Natalya"); });
-			hoiLunButton.onClick.AddListener(delegate { CreatePreview("Hoi Lun"); });
-			leoniButton.onClick.AddListener(delegate { CreatePreview("Leoni"); });
-			danjumaButton.onClick.AddListener(delegate { CreatePreview("Danjuma"); });
-			jacksonButton.onClick.AddListener(delegate { CreatePreview("Jackson"); });
-			alazneButton.onClick.AddListener(delegate { CreatePreview("Alazne"); });
-			shiyangButton.onClick.AddListener(delegate { CreatePreview("Shiyang"); });
+			shiroButton.onClick.AddListener(delegate { CreatePreview("Shiro", "P1", true, true); });
+			natalyaButton.onClick.AddListener(delegate { CreatePreview("Natalya", "P1", true, true); });
+			hoiLunButton.onClick.AddListener(delegate { CreatePreview("Hoi Lun", "P1", true, true); });
+			leoniButton.onClick.AddListener(delegate { CreatePreview("Leoni", "P1", true, true); });
+			danjumaButton.onClick.AddListener(delegate { CreatePreview("Danjuma", "P1", true, true); });
+			jacksonButton.onClick.AddListener(delegate { CreatePreview("Jackson", "P1", true, true); });
+			alazneButton.onClick.AddListener(delegate { CreatePreview("Alazne", "P1", true, true); });
+			shiyangButton.onClick.AddListener(delegate { CreatePreview("Shiyang", "P1", true, true); });
 
 			if (skeletronButton != null)
-				skeletronButton.onClick.AddListener(delegate { CreatePreview("Skeletron"); });
+				skeletronButton.onClick.AddListener(delegate { CreatePreview("Skeletron", "P1", true, true); });
 			if (ninjaButton != null)
-				ninjaButton.onClick.AddListener(delegate { CreatePreview("Ninja"); });
+				ninjaButton.onClick.AddListener(delegate { CreatePreview("Ninja", "P1", true, true); });
 
 			listening = true;
 		}
@@ -202,22 +203,20 @@ namespace FightingLegends
 				storeButton.onClick.RemoveListener(delegate { ShowStore(); });
 			if (powerUpButton != null)
 				powerUpButton.onClick.RemoveListener(delegate { PowerUpFighter(); });
-//			if (movesButton != null)
-//				movesButton.onClick.RemoveListener(delegate { FighterMoves(); });
 			
-			shiroButton.onClick.RemoveListener(delegate { CreatePreview("Shiro"); });
-			natalyaButton.onClick.RemoveListener(delegate { CreatePreview("Natalya"); });
-			hoiLunButton.onClick.RemoveListener(delegate { CreatePreview("Hoi Lun"); });
-			leoniButton.onClick.RemoveListener(delegate { CreatePreview("Leoni"); });
-			danjumaButton.onClick.RemoveListener(delegate { CreatePreview("Danjuma"); });
-			jacksonButton.onClick.RemoveListener(delegate { CreatePreview("Jackson"); });
-			alazneButton.onClick.RemoveListener(delegate { CreatePreview("Alazne"); });
-			shiyangButton.onClick.RemoveListener(delegate { CreatePreview("Shiyang"); });
+			shiroButton.onClick.RemoveListener(delegate { CreatePreview("Shiro", "P1", true, true); });
+			natalyaButton.onClick.RemoveListener(delegate { CreatePreview("Natalya", "P1", true, true); });
+			hoiLunButton.onClick.RemoveListener(delegate { CreatePreview("Hoi Lun", "P1", true, true); });
+			leoniButton.onClick.RemoveListener(delegate { CreatePreview("Leoni", "P1", true, true); });
+			danjumaButton.onClick.RemoveListener(delegate { CreatePreview("Danjuma", "P1", true, true); });
+			jacksonButton.onClick.RemoveListener(delegate { CreatePreview("Jackson", "P1", true, true); });
+			alazneButton.onClick.RemoveListener(delegate { CreatePreview("Alazne", "P1", true, true); });
+			shiyangButton.onClick.RemoveListener(delegate { CreatePreview("Shiyang", "P1", true, true); });
 
 			if (skeletronButton != null)
-				skeletronButton.onClick.RemoveListener(delegate { CreatePreview("Skeletron"); });
+				skeletronButton.onClick.RemoveListener(delegate { CreatePreview("Skeletron", "P1", true, true); });
 			if (ninjaButton != null)
-				ninjaButton.onClick.RemoveListener(delegate { CreatePreview("Ninja"); });
+				ninjaButton.onClick.RemoveListener(delegate { CreatePreview("Ninja", "P1", true, true); });
 
 			listening = false;
 		}
@@ -235,33 +234,34 @@ namespace FightingLegends
 			if (PreviewMoves)
 				return;
 
-			fighterCards.Add("Leoni", new FighterCard(leoniButton, "Leoni", "P1", 0, 1, 0, null, null, CardFrame("Leoni")));
-			fighterCards.Add("Shiro", new FighterCard(shiroButton, "Shiro", "P1", 0, 1, 0, null, null, CardFrame("Shiro")));	
-			fighterCards.Add("Natalya", new FighterCard(natalyaButton, "Natalya", "P1", 1, 1, 0, null, null, CardFrame("Natalya")));
-			fighterCards.Add("Danjuma", new FighterCard(danjumaButton, "Danjuma", "P1", 1, 1, 0, null, null, CardFrame("Danjuma")));
-			fighterCards.Add("Hoi Lun", new FighterCard(hoiLunButton, "Hoi Lun", "P1", 2, 1, 0, null, null, CardFrame("Hoi Lun")));
-			fighterCards.Add("Jackson", new FighterCard(jacksonButton, "Jackson", "P1", 2, 1, 0, null, null, CardFrame("Jackson")));
-			fighterCards.Add("Shiyang", new FighterCard(shiyangButton, "Shiyang", "P1", 2, 1, 0, null, null, CardFrame("Shiyang")));
-			fighterCards.Add("Alazne", new FighterCard(alazneButton, "Alazne", "P1", 3, 1, 0, null, null, CardFrame("Alazne")));
+			fighterCards.Add("Leoni", new FighterCard(leoniButton, "Leoni", "P1", 1, 0, null, null, CardFrame("Leoni")));
+			fighterCards.Add("Shiro", new FighterCard(shiroButton, "Shiro", "P1", 1, 0, null, null, CardFrame("Shiro")));	
+			fighterCards.Add("Natalya", new FighterCard(natalyaButton, "Natalya", "P1", 1, 0, null, null, CardFrame("Natalya")));
+			fighterCards.Add("Danjuma", new FighterCard(danjumaButton, "Danjuma", "P1", 1, 0, null, null, CardFrame("Danjuma")));
+			fighterCards.Add("Hoi Lun", new FighterCard(hoiLunButton, "Hoi Lun", "P1", 1, 0, null, null, CardFrame("Hoi Lun")));
+			fighterCards.Add("Jackson", new FighterCard(jacksonButton, "Jackson", "P1", 1, 0, null, null, CardFrame("Jackson")));
+			fighterCards.Add("Shiyang", new FighterCard(shiyangButton, "Shiyang", "P1", 1, 0, null, null, CardFrame("Shiyang")));
+			fighterCards.Add("Alazne", new FighterCard(alazneButton, "Alazne", "P1", 1, 0, null, null, CardFrame("Alazne")));
 
 			if (ninjaButton != null)
-				fighterCards.Add("Ninja", new FighterCard(ninjaButton, "Ninja", "P1", 4, 1, 0f, null, null, CardFrame("Ninja")));
+				fighterCards.Add("Ninja", new FighterCard(ninjaButton, "Ninja", "P1", 1, 0f, null, null, CardFrame("Ninja")));
 			if (skeletronButton != null)
-				fighterCards.Add("Skeletron", new FighterCard(skeletronButton, "Skeletron", "P1", 5, 1, 0f, null, null, CardFrame("Skeletron")));
+				fighterCards.Add("Skeletron", new FighterCard(skeletronButton, "Skeletron", "P1", 1, 0f, null, null, CardFrame("Skeletron")));
 			
 			fighterCardsLoaded = true;
 		}
 
-		protected virtual void InitFighterCards()
+		private void InitFighterCards()
 		{
 			// eg. SurvivalSelect override loads fighter profiles
 
 			// lookup lock status from fighter profile (saved) data (all fighters)
-			SetCardLocks();
+			// lookup level, xp and power-ups from fighter profile (saved) data (all fighters)
+			SetCardProfiles();
 		}
 
-		// lookup lock status from fighter profile (saved) data (all fighters)
-		private void SetCardLocks()
+		// lookup level, xp and power-ups from each fighter profile (saved) data
+		protected virtual void SetCardProfiles()
 		{
 			foreach (var card in fighterCards)
 			{
@@ -271,10 +271,12 @@ namespace FightingLegends
 				var profile = Profile.GetFighterProfile(fighterName);
 				if (profile != null)
 				{
-					fighterCard.SetLock(profile.IsLocked);
+					fighterCard.SetProfileData(1, 0, null, null, CardFrame(fighterName),
+						profile.IsLocked, profile.CanUnlock, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
 			}
 		}
+	
 
 		public FighterCard GetFighterCard(string fighterName)
 		{
@@ -356,7 +358,7 @@ namespace FightingLegends
 			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
 		}
 			
-		public void CreatePreview(string name, string colour = "P1", bool cycleColour = true)
+		public void CreatePreview(string name, string colour, bool cycleColour, bool showLocked)
 		{
 			var fighterCard = GetFighterCard(name);
 			if (fighterCard == null)
@@ -365,7 +367,7 @@ namespace FightingLegends
 			if (HasActivatedOverlay)
 				return;
 
-			if (fighterCard.IsLocked)
+			if (showLocked && fighterCard.IsLocked)
 			{
 				FightManager.ShowLockedFighter(fighterCard);
 				return;

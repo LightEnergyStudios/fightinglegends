@@ -19,7 +19,7 @@ namespace FightingLegends
 				fighterCard = card;
 
 				fighterCard.SetButton(GetComponent<Button>());
-				fighterCard.SetFighterData();				// setup button with level, xp, power-ups etc as per FighterCard
+				fighterCard.SetButtonData();				// setup button with level, xp, power-ups etc as per FighterCard
 			}
 				
 			// button has no OnClick handler (container challenge button starts fight), but could if required (eg. to view profile?)

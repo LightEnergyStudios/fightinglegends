@@ -264,16 +264,16 @@ namespace FightingLegends
 
 		private void PopulateFighterCards()
 		{
-			fighterDeck.Add(ninjaCard = new FighterCard(ninjaButton, "Ninja", "P1", 4, 1, 0, null, null, null));
-			fighterDeck.Add(leoniCard = new FighterCard(leoniButton, "Leoni", "P1", 0, 1, 0, null, null, null));
-			fighterDeck.Add(shiroCard = new FighterCard(shiroButton, "Shiro", "P1", 0, 1, 0, null, null, null));
-			fighterDeck.Add(danjumaCard = new FighterCard(danjumaButton, "Danjuma", "P1", 1, 1, 0, null, null, null));
-			fighterDeck.Add(natalyaCard = new FighterCard(natalyaButton, "Natalya", "P1", 1, 1, 0, null, null, null));
-			fighterDeck.Add(hoiLunCard = new FighterCard(hoiLunButton, "Hoi Lun", "P1", 2, 1, 0, null, null, null));
-			fighterDeck.Add(jacksonCard = new FighterCard(jacksonButton, "Jackson", "P1", 2, 1, 0, null, null, null));
-			fighterDeck.Add(alazneCard = new FighterCard(alazneButton, "Alazne", "P1", 3, 1, 0, null, null, null));
-			fighterDeck.Add(shiyangCard = new FighterCard(shiyangButton, "Shiyang", "P1", 3, 1, 0, null, null, null));
-			fighterDeck.Add(skeletronCard = new FighterCard(skeletronButton, "Skeletron", "P1", 5, 1, 0, null, null, null));
+			fighterDeck.Add(ninjaCard = new FighterCard(ninjaButton, "Ninja", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(leoniCard = new FighterCard(leoniButton, "Leoni", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(shiroCard = new FighterCard(shiroButton, "Shiro", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(danjumaCard = new FighterCard(danjumaButton, "Danjuma", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(natalyaCard = new FighterCard(natalyaButton, "Natalya", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(hoiLunCard = new FighterCard(hoiLunButton, "Hoi Lun", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(jacksonCard = new FighterCard(jacksonButton, "Jackson", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(alazneCard = new FighterCard(alazneButton, "Alazne", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(shiyangCard = new FighterCard(shiyangButton, "Shiyang", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(skeletronCard = new FighterCard(skeletronButton, "Skeletron", "P1", 1, 0, null, null, null));
 
 			firstCardIndex = leoniCard.CardButton.transform.GetSiblingIndex();
 
@@ -305,7 +305,11 @@ namespace FightingLegends
 			{
 				var profile = Profile.GetFighterProfile(card.FighterName);
 				if (profile != null)
-					card.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(card.FighterName), profile.IsLocked);
+				{
+//					Debug.Log("SetDeckProfiles: " + card.FighterName + ", StaticPowerUp = " + profile.StaticPowerUp + ", TriggerPowerUp = " + profile.TriggerPowerUp);
+					card.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(card.FighterName),
+								profile.IsLocked, profile.CanUnlock, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
+				}
 			}
 		}
 
@@ -1267,7 +1271,7 @@ namespace FightingLegends
 //		private FighterCard CreateChallengeCard(string name, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
 		{
 			// AI fighter colour is determined by Player1, so not relevant here
-			return new FighterCard(null, name, colour, 0, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
+			return new FighterCard(null, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
 //			return new FighterCard(null, name, "P1", level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
 		}
 

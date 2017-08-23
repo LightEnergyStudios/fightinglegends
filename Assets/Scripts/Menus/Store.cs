@@ -308,7 +308,7 @@ namespace FightingLegends
 
 		private void CreatePreview(string fighterName)
 		{
-			fighterSelect.CreatePreview(fighterName, FightManager.SelectedFighterColour, false);
+			fighterSelect.CreatePreview(fighterName, FightManager.SelectedFighterColour, false, false); // don't show FighterUnlock
 			SetFighterElements(fighterSelect.previewFighter);
 		}
 
@@ -327,8 +327,8 @@ namespace FightingLegends
 
 			fighterSelect.OnPreviewCreated += UpdateFighterCard;
 
-			GestureListener.OnSwipeLeft += PreviewNextFighter;
-			GestureListener.OnSwipeRight += PreviewPreviousFighter;
+			GestureListener.OnSwipeLeft += PreviewPreviousFighter;
+			GestureListener.OnSwipeRight += PreviewNextFighter;
 
 			FightManager.OnPowerUpInventoryChanged += PowerUpInventoryChanged;
 			FightManager.OnFeedbackStateEnd += FeedbackEnd;
@@ -385,8 +385,8 @@ namespace FightingLegends
 
 			fighterSelect.OnPreviewCreated -= UpdateFighterCard;
 
-			GestureListener.OnSwipeLeft -= PreviewNextFighter;	
-			GestureListener.OnSwipeRight -= PreviewPreviousFighter;	
+			GestureListener.OnSwipeLeft -= PreviewPreviousFighter;	
+			GestureListener.OnSwipeRight -= PreviewNextFighter;	
 
 			BuyCoinsButton.onClick.RemoveListener(delegate { ShowBuyOverlay(); });
 			ResetLevelButton.onClick.RemoveListener(delegate { ConfirmResetLevel(); });
@@ -534,7 +534,8 @@ namespace FightingLegends
 
 			var fighterName = previewFighter.FighterName;
 		
-			fighterCard.SetProfileData(previewFighter.Level, previewFighter.XP, PowerUpSprite(previewFighter.StaticPowerUp), PowerUpSprite(previewFighter.TriggerPowerUp), null, previewFighter.IsLocked);
+			fighterCard.SetProfileData(previewFighter.Level, previewFighter.XP, PowerUpSprite(previewFighter.StaticPowerUp), PowerUpSprite(previewFighter.TriggerPowerUp), null,
+								previewFighter.IsLocked, previewFighter.CanUnlock, previewFighter.UnlockOrder, previewFighter.UnlockDefeats, previewFighter.UnlockDifficulty);
 			fighterSelect.EnableFighterButton(fighterName, true);
 
 			FighterName.text = fighterName.ToUpper();
@@ -1011,7 +1012,7 @@ namespace FightingLegends
 			{
 				var fighterCard = fighterSelect.GetFighterCard(PowerUpFighter.FighterName);
 				if (fighterCard != null)
-					fighterCard.SetProfileData(PowerUpFighter.Level, PowerUpFighter.XP, PowerUpSprite(PowerUpFighter.StaticPowerUp), PowerUpSprite(PowerUpFighter.TriggerPowerUp), null, PowerUpFighter.IsLocked);
+					fighterCard.SetPowerUps(PowerUpSprite(PowerUpFighter.StaticPowerUp), PowerUpSprite(PowerUpFighter.TriggerPowerUp));
 			}
 		}
 

@@ -13,6 +13,8 @@ namespace FightingLegends
 		public string VersionNumber = "1.0";
 		public int LimitedVersion = 0;					// without extra assets? free version?
 
+		public int PlayCount = 0;						// times game started
+
 		public DateTime SavedTime;
 
 		public string UserId = "";						// via user registration
