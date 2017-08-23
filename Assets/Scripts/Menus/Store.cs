@@ -334,7 +334,7 @@ namespace FightingLegends
 			FightManager.OnFeedbackStateEnd += FeedbackEnd;
 
 			TrainingButton.onClick.AddListener(delegate { Train(); });
-			BuyCoinsButton.onClick.AddListener(delegate { ShowBuyOverlay(); });
+			BuyCoinsButton.onClick.AddListener(delegate { PurchaseCoins(); });
 			ResetLevelButton.onClick.AddListener(delegate { ConfirmResetLevel(); });
 			LevelUpButton.onClick.AddListener(delegate { ConfirmLevelUp(); });
 			FriendsButton.onClick.AddListener(delegate { Facebook(); });
@@ -388,7 +388,7 @@ namespace FightingLegends
 			GestureListener.OnSwipeLeft -= PreviewPreviousFighter;	
 			GestureListener.OnSwipeRight -= PreviewNextFighter;	
 
-			BuyCoinsButton.onClick.RemoveListener(delegate { ShowBuyOverlay(); });
+			BuyCoinsButton.onClick.RemoveListener(delegate { PurchaseCoins(); });
 			ResetLevelButton.onClick.RemoveListener(delegate { ConfirmResetLevel(); });
 			LevelUpButton.onClick.RemoveListener(delegate { ConfirmLevelUp(); });
 			FriendsButton.onClick.RemoveListener(delegate { Facebook(); });
@@ -646,7 +646,7 @@ namespace FightingLegends
 			if (CanAfford(LevelUpCoins))			// confirm spend of coins
 				FightManager.GetConfirmation(string.Format(FightManager.Translate("confirmLevelUp"), fighter.FighterName), LevelUpCoins, UseCoinsForLevelUp);
 			else  									// offer option to purchase more coins
-				FightManager.GetConfirmation(string.Format(FightManager.Translate("confirmBuyLevelUpCoins"), fighter.FighterName), LevelUpCoins, ShowBuyOverlay);
+				FightManager.GetConfirmation(string.Format(FightManager.Translate("confirmBuyLevelUpCoins"), fighter.FighterName), LevelUpCoins, PurchaseCoins);
 		}
 
 		private void UseCoinsForLevelUp()
@@ -742,10 +742,17 @@ namespace FightingLegends
 //			StartCoroutine(FadeOverlay(PowerUpOverlay))
 		}
 			
+		//TODO: remove this (replace with PurchaseCoins)
 		public void ShowBuyOverlay()
 		{
 			fighterSelect.HideFighter();
 			StartCoroutine(RevealOverlay(PurchaseOverlay));
+		}
+
+		public void PurchaseCoins()
+		{
+			// offer option to buy more coins (store)
+			FightManager.RequestPurchase();
 		}
 
 
@@ -900,7 +907,7 @@ namespace FightingLegends
 				if (CanAffordSelectedPowerUp)		// confirm spend of coins
 					FightManager.GetPowerUpConfirmation(selectedPowerUp, UseCoinsForSelectedPowerUp);
 				else 								// offer option to purchase more coins
-					FightManager.GetPowerUpConfirmation(selectedPowerUp, ShowBuyOverlay);
+					FightManager.GetPowerUpConfirmation(selectedPowerUp, PurchaseCoins);
 			}
 		}
 

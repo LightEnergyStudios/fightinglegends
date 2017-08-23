@@ -60,8 +60,6 @@ namespace FightingLegends
 
 		private int CoinsToUnlock = 0;
 
-//		private Action actionOnBuy;
-//		private Action actionOnOk;
 
 
 		void Awake()
@@ -88,11 +86,7 @@ namespace FightingLegends
 			UnlockButton.onClick.RemoveListener(CoinUnlockClicked);
 			OkButton.onClick.RemoveListener(OkClicked);
 		}
-
-//		public bool CanUnlock(bool isLocked, int unlockOrder)
-//		{
-//			return isLocked && unlockOrder == FightManager.SavedGameStatus.FighterUnlockedLevel+1;
-//		}
+			
 
 		// public entry points
 		public void UnlockFighter(Fighter fighter)

@@ -354,8 +354,9 @@ namespace FightingLegends
 
 		private void BuyCoins()
 		{
-			fightManager.SelectedMenuOverlay = MenuOverlay.BuyCoins;
-			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
+			FightManager.RequestPurchase();
+//			fightManager.SelectedMenuOverlay = MenuOverlay.BuyCoins;
+//			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
 		}
 			
 		public void CreatePreview(string name, string colour, bool cycleColour, bool showLocked)

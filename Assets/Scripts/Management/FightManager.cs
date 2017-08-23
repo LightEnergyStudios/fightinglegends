@@ -4674,13 +4674,13 @@ namespace FightingLegends
 				case MenuOverlay.None:
 					break;
 
-				case MenuOverlay.SpendCoins:
-					DojoSpendOverlay(true);
-					break;
-
-				case MenuOverlay.BuyCoins:
-					DojoBuyOverlay(true);
-					break;
+//				case MenuOverlay.SpendCoins:
+//					DojoSpendOverlay(true);
+//					break;
+//
+//				case MenuOverlay.BuyCoins:
+//					DojoBuyOverlay(true);
+//					break;
 
 				case MenuOverlay.PowerUp:
 					DojoPowerUpOverlay(SelectedFighterName, SelectedFighterColour, true);
@@ -4725,17 +4725,17 @@ namespace FightingLegends
 			storeManager.Hide();
 		}
 
-		private void DojoSpendOverlay(bool direct)
-		{
-			storeManager.DirectToOverlay = direct;
-			storeManager.ShowSpendOverlay();
-		}
-
-		private void DojoBuyOverlay(bool direct)
-		{
-			storeManager.DirectToOverlay = direct;
-			storeManager.ShowBuyOverlay();
-		}
+//		private void DojoSpendOverlay(bool direct)
+//		{
+//			storeManager.DirectToOverlay = direct;
+//			storeManager.ShowSpendOverlay();
+//		}
+//
+//		private void DojoBuyOverlay(bool direct)
+//		{
+//			storeManager.DirectToOverlay = direct;
+//			storeManager.ShowBuyOverlay();
+//		}
 
 		private void DojoPowerUpOverlay(string fighterName, string fighterColour, bool direct)
 		{
