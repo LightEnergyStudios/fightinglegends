@@ -308,7 +308,7 @@ namespace FightingLegends
 				{
 //					Debug.Log("SetDeckProfiles: " + card.FighterName + ", StaticPowerUp = " + profile.StaticPowerUp + ", TriggerPowerUp = " + profile.TriggerPowerUp);
 					card.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(card.FighterName),
-								profile.IsLocked, profile.CanUnlock, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
+								profile.IsLocked, profile.CanUnlock, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
 			}
 		}

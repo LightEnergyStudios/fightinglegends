@@ -17,9 +17,9 @@ namespace FightingLegends
 
 		// general product identifiers for the consumable, non-consumable, and subscription products.
 		// used in code to reference which product to purchase and when defining the Product Identifiers in the store.
-		public const string coins100Consumable = "com.burningheart.fightinglegends.100coins";   
-		public const string coins1000Consumable = "com.burningheart.fightinglegends.1000coins";   
-		public const string coins10000Consumable = "com.burningheart.fightinglegends.10000coins";   
+		public const string Coins100ProductID = "com.burningheart.fightinglegends.100coins";   
+		public const string Coins1000ProductID = "com.burningheart.fightinglegends.1000coins";   
+		public const string Coins10000ProductID = "com.burningheart.fightinglegends.10000coins";   
 
 		private FightManager fightManager;
 		private SurvivalSelect fighterSelect;		// includes level, xp, power-ups etc
@@ -69,7 +69,7 @@ namespace FightingLegends
 		public Button Buy10000Button;
 		public Text BuyFeedback;
 
-		private Product productToPurchase = null;
+		private static Product productToPurchase = null;
 
 		// coin spend overlay
 		public Text spendTitleText;
@@ -535,7 +535,7 @@ namespace FightingLegends
 			var fighterName = previewFighter.FighterName;
 		
 			fighterCard.SetProfileData(previewFighter.Level, previewFighter.XP, PowerUpSprite(previewFighter.StaticPowerUp), PowerUpSprite(previewFighter.TriggerPowerUp), null,
-								previewFighter.IsLocked, previewFighter.CanUnlock, previewFighter.UnlockOrder, previewFighter.UnlockDefeats, previewFighter.UnlockDifficulty);
+				previewFighter.IsLocked, previewFighter.CanUnlock, previewFighter.UnlockCoins, previewFighter.UnlockOrder, previewFighter.UnlockDefeats, previewFighter.UnlockDifficulty);
 			fighterSelect.EnableFighterButton(fighterName, true);
 
 			FighterName.text = fighterName.ToUpper();
@@ -1509,9 +1509,9 @@ namespace FightingLegends
 
 			// Add a product to sell / restore by way of its identifier, associating the general identifier
 			// with its store-specific identifiers
-			builder.AddProduct(coins100Consumable, ProductType.Consumable);
-			builder.AddProduct(coins1000Consumable, ProductType.Consumable);
-			builder.AddProduct(coins10000Consumable, ProductType.Consumable);
+			builder.AddProduct(Coins100ProductID, ProductType.Consumable);
+			builder.AddProduct(Coins1000ProductID, ProductType.Consumable);
+			builder.AddProduct(Coins10000ProductID, ProductType.Consumable);
 
 			productToPurchase = null;
 
@@ -1521,13 +1521,13 @@ namespace FightingLegends
 		}
 
 
-		private bool IsInitialised
+		private static bool IsInitialised
 		{
 			get { return storeController != null && storeExtensionProvider != null; }
 		}
 
 
-		private void ConfirmBuyProductID(string productId)
+		public static void PurchaseProductID(string productId)
 		{
 //			switch (productId)
 //			{
@@ -1566,29 +1566,29 @@ namespace FightingLegends
 //					BuyFeedback.text = string.Format("BuyProductID: '{0}'", productToPurchase.definition.id);
 
 //					// ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed asynchronously
-//					storeController.InitiatePurchase(productToPurchase);
+					storeController.InitiatePurchase(productToPurchase);
 				}
 				else
 				{
 					Debug.Log("BuyProductID FAILED: Product not found or is not available for purchase");
-					BuyFeedback.text = string.Format("BuyProductID:'{0}' not available for purchase", productToPurchase.definition.id);
+//					BuyFeedback.text = string.Format("BuyProductID:'{0}' not available for purchase", productToPurchase.definition.id);
 				}
 			}
 			else
 			{
 				// ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or retrying initialization
 				Debug.Log("BuyProductID FAILED: Not initialized.");
-				BuyFeedback.text = "BuyProductID: Not initialized";
+//				BuyFeedback.text = "BuyProductID: Not initialized";
 			}
 		}
 
-		private void InitiatePurchase()
+		private static void InitiatePurchase()
 		{
 			// buy the product - expect a response either through ProcessPurchase or OnPurchaseFailed asynchronously
 			if (productToPurchase != null)
 			{
 				Debug.Log(string.Format("Purchasing product asychronously: '{0}'", productToPurchase.definition.id));
-				BuyFeedback.text = string.Format("InitiatePurchase: '{0}'", productToPurchase.definition.id);
+//				BuyFeedback.text = string.Format("InitiatePurchase: '{0}'", productToPurchase.definition.id);
 
 				storeController.InitiatePurchase(productToPurchase);
 			}
@@ -1663,17 +1663,17 @@ namespace FightingLegends
 			BuyFeedback.text = string.Format("ProcessPurchase: '{0}' SUCCESS!", args.purchasedProduct.definition.id);
 
 			// The consumable item has been successfully purchased, add coins to the player's in-game coins.
-			if (String.Equals(args.purchasedProduct.definition.id, coins100Consumable, StringComparison.Ordinal))
+			if (String.Equals(args.purchasedProduct.definition.id, Coins100ProductID, StringComparison.Ordinal))
 			{
 				Debug.Log(string.Format("ProcessPurchase: SUCCESS - Product: '{0}'", args.purchasedProduct.definition.id));
 				FightManager.Coins += 100;
 			}
-			else if (String.Equals(args.purchasedProduct.definition.id, coins1000Consumable, StringComparison.Ordinal))
+			else if (String.Equals(args.purchasedProduct.definition.id, Coins1000ProductID, StringComparison.Ordinal))
 			{
 				Debug.Log(string.Format("ProcessPurchase: SUCCESS - Product: '{0}'", args.purchasedProduct.definition.id));
 				FightManager.Coins += 1000;
 			}
-			else if (String.Equals(args.purchasedProduct.definition.id, coins10000Consumable, StringComparison.Ordinal))
+			else if (String.Equals(args.purchasedProduct.definition.id, Coins10000ProductID, StringComparison.Ordinal))
 			{
 				Debug.Log(string.Format("ProcessPurchase: SUCCESS - Product: '{0}'", args.purchasedProduct.definition.id));
 				FightManager.Coins += 10000;

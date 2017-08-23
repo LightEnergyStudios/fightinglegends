@@ -168,7 +168,7 @@ namespace FightingLegends
 		}
 
 
-		public static void InitFighterProfile(string fighterName, bool isLocked, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty)
+		public static void InitFighterProfile(string fighterName, bool isLocked, int unlockOrder, int unlockCoins, int unlockDefeats, AIDifficulty unlockDifficulty)
 		{
 			var profile = new SavedProfile();
 
@@ -178,6 +178,7 @@ namespace FightingLegends
 			profile.IsLocked = isLocked;
 
 			profile.UnlockOrder = unlockOrder;
+			profile.UnlockCoins = unlockCoins;
 			profile.UnlockDefeats = unlockDefeats;
 			profile.UnlockDifficulty = unlockDifficulty;
 

@@ -255,7 +255,8 @@
 		<string name="confirmExitDojo">Exit the Dojo?</string>
 		<string name="confirmExitDojo2">Are you sure you want to \n exit the Dojo?</string>
 		<string name="confirmExitTraining">Quit Ninja School?</string>
-		
+		<string name="confirmUseUnlockCoins">Use coins to unlock this fighter?</string> 
+
 		<string name="confirmChangeDifficulty">Change Arcade Mode difficulty to \n {0}?</string> 
 		<string name="confirmChangeDifficulty2">Are you sure you want to change \n Arcade Mode difficulty to \n {0}?</string> 
 		<string name="confirmResetHints">Are you sure you want to read all hint bubble messages again?</string> 

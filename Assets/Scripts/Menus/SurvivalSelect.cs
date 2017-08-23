@@ -49,7 +49,7 @@ namespace FightingLegends
 				{
 //					fighterCard.SetProfileData(fighterCard.Level, fighterCard.XP, PowerUpSprite(fighterCard.StaticPowerUp), PowerUpSprite(fighterCard.TriggerPowerUp), CardFrame(fighterName));
 					fighterCard.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(fighterName),
-										profile.IsLocked, profile.CanUnlock, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
+										profile.IsLocked, profile.CanUnlock, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 //					Debug.Log("SetProfileData: " + fighterName + " - static = " + profile.StaticPowerUp + ", trigger = " + profile.TriggerPowerUp);
 				}
 			}

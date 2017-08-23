@@ -34,6 +34,7 @@ namespace FightingLegends
 
 		public bool IsLocked { get; private set; }	
 		public bool CanUnlock{ get; private set; }	
+		public int UnlockCoins{ get; private set; }	
 		public int UnlockOrder { get; private set; }	
 		public int UnlockDefeats{ get; private set; }	
 		public AIDifficulty UnlockDifficulty{ get; private set; }	
@@ -52,10 +53,10 @@ namespace FightingLegends
 			InTeam = false;
 		
 			SetButton(button);
-			SetProfileData(level, xpPercent, staticPowerUp, triggerPowerUp, frame, false, false, 0, 0, AIDifficulty.Simple);	// shows level, power-ups and xp
+			SetProfileData(level, xpPercent, staticPowerUp, triggerPowerUp, frame, false, false, 0, 0, 0, AIDifficulty.Simple);	// shows level, power-ups and xp
 		}
 
-		public void SetProfileData(int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, bool isLocked, bool canUnlock, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty)
+		public void SetProfileData(int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, bool isLocked, bool canUnlock, int unlockCoins, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty)
 		{
 			Level = level;
 			StaticPowerUpSprite = staticPowerUp;
@@ -71,6 +72,7 @@ namespace FightingLegends
 
 			IsLocked = isLocked;
 			CanUnlock = canUnlock;
+			UnlockCoins = unlockCoins;
 			UnlockOrder = unlockOrder;
 			UnlockDefeats = unlockDefeats;
 			UnlockDifficulty = unlockDifficulty;

@@ -58,6 +58,8 @@ namespace FightingLegends
 		private FighterCard fighterCard;
 		bool unlocked = false;
 
+		private int CoinsToUnlock = 0;
+
 //		private Action actionOnBuy;
 //		private Action actionOnOk;
 
@@ -75,7 +77,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			UnlockButton.onClick.AddListener(UnlockClicked);
+			UnlockButton.onClick.AddListener(CoinUnlockClicked);
 			OkButton.onClick.AddListener(OkClicked);
 
 			//			SetWalletValue(FightManager.Coins, false);				// set current value
@@ -83,7 +85,7 @@ namespace FightingLegends
 
 		private void OnDestroy()
 		{
-			UnlockButton.onClick.RemoveListener(UnlockClicked);
+			UnlockButton.onClick.RemoveListener(CoinUnlockClicked);
 			OkButton.onClick.RemoveListener(OkClicked);
 		}
 
@@ -98,7 +100,9 @@ namespace FightingLegends
 			unlockedFighter = fighter;
 			unlocked = true;
 
-			ShowLockedFighter(unlockedFighter.FighterName, true, true);
+			fighter.ProfileData.SavedData.IsLocked = false;
+
+			ShowLockedFighter(unlockedFighter.FighterName, true, true, 0);
 		}
 			
 		public void ShowLockedFighter(FighterCard fighter)
@@ -107,17 +111,24 @@ namespace FightingLegends
 			unlocked = false;
 
 			ShowLockedFighter(fighterCard.FighterName, fighterCard.IsLocked,
-				fighterCard.CanUnlock, fighterCard.UnlockDefeats, fighterCard.UnlockDifficulty);
+				fighterCard.CanUnlock, fighterCard.UnlockCoins, fighterCard.UnlockDefeats, fighterCard.UnlockDifficulty);
 		}
 
-		private void ShowLockedFighter(string fighterName, bool isLocked, bool canUnlock, int defeatCount = 0, AIDifficulty difficulty = AIDifficulty.Simple)
+		private void ShowLockedFighter(string fighterName, bool isLocked, bool canUnlock, int unlockCoins, int unlockDefeats = 0, AIDifficulty unlockDifficulty = AIDifficulty.Simple)
 		{
 			FighterName.text = fighterName.ToUpper();
+
+			// can't (pay to) unlock some fighters until others have been unlocked (UnlockLevel)
+			UnlockButton.gameObject.SetActive(! unlocked && canUnlock);
+			CoinPanel.gameObject.SetActive(!unlocked && canUnlock);
+
+			Lock.gameObject.SetActive(fighterCard.IsLocked);		// should always be locked - wouldn't be here otherwise!
 
 			if (unlocked)
 			{
 				FighterName.text += (" " + FightManager.Translate("unlocked", false, true));
 				UnlockStatus.text = FightManager.Translate("congratulations", false, true, true);
+				UnlockCoins.text = "";
 
 				DefeatCount.text = "";
 				DefeatDifficulty.text = "";
@@ -126,8 +137,11 @@ namespace FightingLegends
 			{
 				UnlockStatus.text = "";
 
-				DefeatCount.text = FightManager.Translate("defeat") + " x" + defeatCount;
-				DefeatDifficulty.text = FightManager.Translate(difficulty.ToString().ToLower());
+				DefeatCount.text = FightManager.Translate("defeat") + " x" + unlockDefeats;
+				DefeatDifficulty.text = FightManager.Translate(unlockDifficulty.ToString().ToLower());
+				UnlockCoins.text = string.Format("{0:N0}", unlockCoins);
+
+				CoinsToUnlock = unlockCoins;
 			}
 			else
 			{
@@ -181,12 +195,6 @@ namespace FightingLegends
 				default:
 					break;
 			}
-					
-			// can't (pay to) unlock some fighters until others have been unlocked (UnlockLevel)
-			UnlockButton.gameObject.SetActive(! unlocked && canUnlock);
-			CoinPanel.gameObject.SetActive(!unlocked && canUnlock);
-
-			Lock.gameObject.SetActive(fighterCard.IsLocked);		// should always be locked - wouldn't be here otherwise!
 
 			StartCoroutine(Show());
 		}
@@ -257,19 +265,26 @@ namespace FightingLegends
 			yield return null;
 		}
 
-		private void UnlockClicked()
+		private void CoinUnlockClicked()
 		{
-//			// call the passed-in delegate
-//			if (actionOnBuy != null)
-//			{
-//				actionOnBuy();
-//			}
+			if (CoinsToUnlock > 0 && Store.CanAfford(CoinsToUnlock))
+			{
+				FightManager.GetConfirmation(FightManager.Translate("confirmUseUnlockCoins"), CoinsToUnlock, DeductUnlockCoins);
+				StartCoroutine(Hide());
+			}
+			else
+			{
+				// offer option to buy more coins (store)
+				FightManager.RequestPurchase();
 
-			//			if (BuySound != null)
-			//				AudioSource.PlayClipAtPoint(BuySound, Vector3.zero, FightManager.SFXVolume);
+				// don't hide so user can unlock with new coins
+			}
+		}
 
-
-			StartCoroutine(Hide());
+		private void DeductUnlockCoins()
+		{
+			FightManager.Coins -= CoinsToUnlock;
+			UnlockFighter(unlockedFighter);			// TODO: no congratulations
 		}
 
 		private void OkClicked()

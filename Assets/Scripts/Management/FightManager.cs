@@ -352,6 +352,7 @@ namespace FightingLegends
 
 		public static AreYouSure areYouSure;
 		public static InsertPlayCoin insertCoinToPlay;
+		public static PurchaseCoins purchaseCoins;
 		public static UserRegistration userRegistration;
 		public static ChallengeUpload challengeUpload;
 		public static ChallengeResult challengeResult;
@@ -636,6 +637,10 @@ namespace FightingLegends
 			var insertCoinToPlayObject = GameObject.Find("InsertCoinToPlay");
 			if (insertCoinToPlayObject != null)
 				insertCoinToPlay = insertCoinToPlayObject.GetComponent<InsertPlayCoin>();
+
+			var purchaseCoinsObject = GameObject.Find("PurchaseCoins");
+			if (purchaseCoinsObject != null)
+				purchaseCoins = purchaseCoinsObject.GetComponent<PurchaseCoins>();
 
 			var userRegistrationObject = GameObject.Find("UserRegistration");
 			if (userRegistrationObject != null)
@@ -2062,12 +2067,13 @@ namespace FightingLegends
 
 			if (CombatMode != FightMode.Training && CombatMode != FightMode.Dojo)
 			{
-				UpdateMatchStats(winner);
+				bool fighterUnlocked = UpdateMatchStats(winner);			// announces an unlocked fighter (arcade mode only)
 
 				if (CombatMode == FightMode.Challenge)
 					PayoutChallengePot(winner);
 
-				yield return StartCoroutine(ShowMatchStatsCanvas(winner));			// winner image + fight stats - until user taps
+				if (! fighterUnlocked)
+					yield return StartCoroutine(ShowMatchStatsCanvas(winner));		// winner image + fight stats - until user taps
 			}
 
 			if (CombatMode == FightMode.Arcade && winner.UnderAI)			// player lost - MatchStats offers option to insert coin to continue...
@@ -2215,9 +2221,10 @@ namespace FightingLegends
 		}
 
 
-		private void UpdateMatchStats(Fighter winner)
+		private bool UpdateMatchStats(Fighter winner)
 		{
 			var loser = winner.Opponent;
+			bool fighterUnlocked = false;
 
 			winner.Hide();
 			winner.ProfileData.SavedData.MatchesWon++;
@@ -2240,7 +2247,10 @@ namespace FightingLegends
 								loser.ProfileData.SavedData.SimpleWins++;
 
 								if (loser.ProfileData.SavedData.SimpleWins >= loser.ProfileData.SavedData.UnlockDefeats)
+								{
+									fighterUnlocked = true;
 									FightManager.UnlockFighter(loser);
+								}
 							}
 						}
 						break;
@@ -2258,7 +2268,10 @@ namespace FightingLegends
 								loser.ProfileData.SavedData.EasyWins++;
 
 								if (loser.ProfileData.SavedData.EasyWins >= loser.ProfileData.SavedData.UnlockDefeats)
+								{
+									fighterUnlocked = true;
 									FightManager.UnlockFighter(loser);
+								}
 							}
 						}
 						break;
@@ -2276,7 +2289,10 @@ namespace FightingLegends
 								loser.ProfileData.SavedData.MediumWins++;
 
 								if (loser.ProfileData.SavedData.MediumWins >= loser.ProfileData.SavedData.UnlockDefeats)
+								{
+									fighterUnlocked = true;
 									FightManager.UnlockFighter(loser);
+								}
 							}
 						}
 						break;
@@ -2294,7 +2310,10 @@ namespace FightingLegends
 								loser.ProfileData.SavedData.HardWins++;
 
 								if (loser.ProfileData.SavedData.HardWins >= loser.ProfileData.SavedData.UnlockDefeats)
+								{
+									fighterUnlocked = true;
 									FightManager.UnlockFighter(loser);
+								}
 							}
 						}
 						break;
@@ -2312,7 +2331,10 @@ namespace FightingLegends
 								loser.ProfileData.SavedData.BrutalWins++;
 
 								if (loser.ProfileData.SavedData.BrutalWins >= loser.ProfileData.SavedData.UnlockDefeats)
+								{
+									fighterUnlocked = true;
 									FightManager.UnlockFighter(loser);
+								}
 							}
 						}
 						break;
@@ -2347,6 +2369,8 @@ namespace FightingLegends
 			ReadyToFight = false;
 			RoundNumber = 1;
 			MatchCount++;		// TODO: not sure what this will be used for
+
+			return fighterUnlocked;
 		}
 
 
@@ -4107,6 +4131,11 @@ namespace FightingLegends
 		{
 			insertCoinToPlay.ConfirmInsertCoin(actionOnYes, message, coins);
 		}
+
+		public static void RequestPurchase()
+		{
+			purchaseCoins.RequestPurchase();
+		}
 			
 		public static void BuyCoinsToPlay(Action actionOnYes)
 		{
@@ -5027,19 +5056,19 @@ namespace FightingLegends
 			Profile.DeleteFighterProfile("Skeletron");	
 
 			// all but Leoni and Shiro locked
-			Profile.InitFighterProfile("Leoni", false, 0, 0, AIDifficulty.Easy);	
-			Profile.InitFighterProfile("Shiro", false, 0, 0, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Leoni", false, 0, 0, 0, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Shiro", false, 0, 0, 0, AIDifficulty.Easy);	
 
-			Profile.InitFighterProfile("Danjuma", true, 1, 3, AIDifficulty.Easy);	
-			Profile.InitFighterProfile("Natalya", true, 1, 3, AIDifficulty.Easy);	
-			Profile.InitFighterProfile("Hoi Lun", true, 2, 5, AIDifficulty.Medium);	
-			Profile.InitFighterProfile("Jackson", true, 2, 5, AIDifficulty.Medium);
+			Profile.InitFighterProfile("Danjuma", true, 1, 200, 3, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Natalya", true, 1, 200, 3, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Hoi Lun", true, 2, 500, 5, AIDifficulty.Medium);	
+			Profile.InitFighterProfile("Jackson", true, 2, 500, 5, AIDifficulty.Medium);
 
-			Profile.InitFighterProfile("Alazne", true, 3, 7, AIDifficulty.Hard);	
-			Profile.InitFighterProfile("Shiyang", true, 3, 7, AIDifficulty.Hard);	
+			Profile.InitFighterProfile("Alazne", true, 3, 700, 7, AIDifficulty.Hard);	
+			Profile.InitFighterProfile("Shiyang", true, 3, 700, 7, AIDifficulty.Hard);	
 
-			Profile.InitFighterProfile("Ninja", true, 4, 9, AIDifficulty.Brutal);	
-			Profile.InitFighterProfile("Skeletron", true, 5, 11, AIDifficulty.Brutal);	
+			Profile.InitFighterProfile("Ninja", true, 4, 900, 9, AIDifficulty.Brutal);	
+			Profile.InitFighterProfile("Skeletron", true, 5, 1100, 11, AIDifficulty.Brutal);	
 
 			if (restart)
 			{

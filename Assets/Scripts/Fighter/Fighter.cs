@@ -2366,6 +2366,11 @@ namespace FightingLegends
 			get { return IsLocked && UnlockOrder == FightManager.SavedGameStatus.FighterUnlockedLevel+1; }
 		}
 
+		public int UnlockCoins
+		{
+			get { return ProfileData.SavedData.UnlockCoins; }
+		}
+
 		public int UnlockOrder
 		{
 			get { return ProfileData.SavedData.UnlockOrder; }

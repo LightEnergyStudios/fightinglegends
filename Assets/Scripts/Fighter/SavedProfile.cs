@@ -59,6 +59,7 @@ namespace FightingLegends
 		public int BrutalLosses { get; set; }		// losses to AI fighter in arcade mode
 
 		public int UnlockOrder { get; set; }		// to denote order in which fighters are unlocked (see SavedStatus.FighterUnlockedLevel)
+		public int UnlockCoins { get; set; }			// required to unlock
 		public int UnlockDefeats { get; set; }			// number of defeats required to unlock
 		public AIDifficulty UnlockDifficulty { get; set; }	// difficulty level for unlock defeats
 

@@ -272,7 +272,7 @@ namespace FightingLegends
 				if (profile != null)
 				{
 					fighterCard.SetProfileData(1, 0, null, null, CardFrame(fighterName),
-						profile.IsLocked, profile.CanUnlock, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
+						profile.IsLocked, profile.CanUnlock, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
 			}
 		}
