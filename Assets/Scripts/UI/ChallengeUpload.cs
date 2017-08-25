@@ -360,9 +360,9 @@ namespace FightingLegends
 
 			walletCoins.text = string.Format("{0:N0}", FightManager.Coins);
 
-			var created = Convert.ToDateTime(uploadChallenge.DateCreated);
-			var expiry = Convert.ToDateTime(uploadChallenge.ExpiryDate);
-			expiryDate.text = FightManager.Translate("challengeExpires") + ":\n" + expiry.ToShortDateString() + " " + expiry.ToShortTimeString();
+//			var created = Convert.ToDateTime(uploadChallenge.DateCreated);
+//			var expiry = Convert.ToDateTime(uploadChallenge.ExpiryDate);
+//			expiryDate.text = FightManager.Translate("challengeExpires") + ":\n" + expiry.ToShortDateString() + " " + expiry.ToShortTimeString();
 
 			if (string.IsNullOrEmpty(uploadChallenge.Location))
 				uploadChallenge.Location = FightManager.dojo;

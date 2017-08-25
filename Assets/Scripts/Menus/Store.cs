@@ -24,6 +24,8 @@ namespace FightingLegends
 		private FightManager fightManager;
 		private SurvivalSelect fighterSelect;		// includes level, xp, power-ups etc
 
+		private bool internetReachable = false;
+
 		public Text titleText;
 	
 		public Button BuyCoinsButton;			// shows overlay
@@ -189,6 +191,9 @@ namespace FightingLegends
 
 		private List<InventoryPowerUp> PowerUpInventory { get { return FightManager.SavedGameStatus.PowerUpInventory; } }
 
+		private static List<PowerUp> StaticPowerUps = new List<PowerUp>();
+		private static List<PowerUp> TriggerPowerUps = new List<PowerUp>();
+
 		private const float swipePause = 1.0f;			// before swipe forward / back feedback shown
 		private const float feedbackOffsetX = -260;		// swipe forward / back to switch fighter
 		private const float feedbackOffsetY = -135; 	
@@ -262,7 +267,6 @@ namespace FightingLegends
 			InitFighterNames();
 		}
 
-
 		private void Start()
 		{
 			if (! IsInitialised)
@@ -278,6 +282,8 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{	
+			internetReachable = (NetworkReachability.ReachableViaLocalAreaNetwork != NetworkReachability.NotReachable);
+
 			//			UserId.text = "[ " + FightManager.Translate("playerId") + ": " + FightManager.SavedGameStatus.UserId + " ]";
 			UserId.text = FightManager.SavedGameStatus.UserId;
 
@@ -287,8 +293,12 @@ namespace FightingLegends
 			if (ActivatedOverlayCount == 0)
 				StartSwipeFeedback();
 
+			ChallengesButton.gameObject.SetActive(internetReachable);
+			FriendsButton.gameObject.SetActive(internetReachable);
+			LeaderboardsButton.gameObject.SetActive(internetReachable);
+
 			// hide if already registered!
-//			NewUserButton.gameObject.SetActive(string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId));
+			NewUserButton.gameObject.SetActive(string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId));
 		}
 
 		private void OnDisable()
@@ -1086,6 +1096,42 @@ namespace FightingLegends
 				case PowerUp.None:
 				default:
 					break;
+			}
+		}
+			
+		public static PowerUp RandomStaticPowerUp
+		{
+			get
+			{
+				if (StaticPowerUps.Count == 0)
+				{
+					StaticPowerUps.Add(PowerUp.ArmourPiercing);
+					StaticPowerUps.Add(PowerUp.Avenger);
+					StaticPowerUps.Add(PowerUp.PoiseMaster);
+					StaticPowerUps.Add(PowerUp.PoiseWrecker);
+					StaticPowerUps.Add(PowerUp.Regenerator);
+					StaticPowerUps.Add(PowerUp.None);
+				}
+
+				return StaticPowerUps [ UnityEngine.Random.Range(0, StaticPowerUps.Count-1) ];
+			}
+		}
+
+		public static PowerUp RandomTriggerPowerUp
+		{
+			get
+			{
+				if (TriggerPowerUps.Count == 0)
+				{
+					TriggerPowerUps.Add(PowerUp.VengeanceBooster);
+					TriggerPowerUps.Add(PowerUp.Ignite);
+					TriggerPowerUps.Add(PowerUp.HealthBooster);
+					TriggerPowerUps.Add(PowerUp.PowerAttack);
+					TriggerPowerUps.Add(PowerUp.SecondLife);
+					TriggerPowerUps.Add(PowerUp.None);
+				}
+
+				return TriggerPowerUps [ UnityEngine.Random.Range(0, TriggerPowerUps.Count-1) ];
 			}
 		}
 			

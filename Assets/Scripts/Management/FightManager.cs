@@ -2001,8 +2001,11 @@ namespace FightingLegends
 
 				// survival AI opponent starts fight at same level as Player1
 				if (CombatMode == FightMode.Survival)
+				{
 					SetSurvivalAILevel(false);				// AI same as fighter
-				
+					SetAIRandomPowerUps();
+				}
+
 				Player2.StartWatching();
 			}
 
@@ -2544,6 +2547,7 @@ namespace FightingLegends
 			var loser = Player1.ExpiredHealth ? Player1 : Player2;
 
 			yield return StartCoroutine(NextFighterDashIn(loser.IsPlayer1, false));
+
 			Player2.StartWatching();
 			ReadyToFight = true;
 			yield return null;
@@ -2561,6 +2565,8 @@ namespace FightingLegends
 			// each new AI fighter increases in level (based on Player1 level)
 			SetSurvivalAILevel(true);
 
+			SetAIRandomPowerUps();
+
 			Player2.StartWatching();
 
 			ReadyToFight = true;
@@ -2574,6 +2580,12 @@ namespace FightingLegends
 			
 			Player2.Level = Player1.Level + (addRoundsWon ? Player1.ProfileData.SavedData.MatchRoundsWon : 0);		// not saved
 			Player2.ResetHealth();					// according to level
+		}
+
+		private void SetAIRandomPowerUps()
+		{
+			Player2.StaticPowerUp = Store.RandomStaticPowerUp;
+			Player2.TriggerPowerUp = Store.RandomTriggerPowerUp;
 		}
 			
 

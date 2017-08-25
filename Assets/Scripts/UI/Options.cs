@@ -24,9 +24,9 @@ namespace FightingLegends
 
 		private const float starSweepDistance = 100.0f;
 
-		private const int numCoinSpins = 5;
+		private const int numCoinSpins = 3;
 		private const float coinSpinTime = 0.1f;
-		private const float coinSlowdown = 1.2f;	// increases coinSpinTime on each spin
+		private const float coinSlowdown = 1.3f;	// increases coinSpinTime on each spin
 		private bool coinSpinning = false;
 		private IEnumerator coinSpinCoroutine;		// so it can be interrupted
 

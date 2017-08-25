@@ -52,17 +52,19 @@ namespace FightingLegends
 		private const float cardMoveTime = 0.15f;		// in/out of team
 		private const float cardGatherTime = 0.04f;		// each card
 
-		// power-up sprites for card inlays
+		// power-up sprites for card inlay
+		// static
 		public Sprite ArmourPiercing;		// set in Inspector
 		public Sprite Avenger;
-		public Sprite Ignite;
-		public Sprite HealthBooster;
 		public Sprite PoiseMaster;
 		public Sprite PoiseWrecker;
-		public Sprite PowerAttack;
 		public Sprite Regenerator;
-		public Sprite SecondLife;
+		// trigger
 		public Sprite VengeanceBooster;
+		public Sprite Ignite;
+		public Sprite HealthBooster;
+		public Sprite PowerAttack;
+		public Sprite SecondLife;
 
 		public AudioClip moveAudio;
 		public AudioClip shuffleAudio;
@@ -95,6 +97,8 @@ namespace FightingLegends
 				}
 			}
 		}
+
+		private bool internetReachable = false;
 
 		private ChallengeData ChallengeUploading = null;
 		private ChallengeCategory CategoryUploading = ChallengeCategory.None;
@@ -424,6 +428,8 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
+			internetReachable = (NetworkReachability.ReachableViaLocalAreaNetwork != NetworkReachability.NotReachable);
+
 			LayerTeam();
 
 			uploadText.text = FightManager.Translate("upload");
@@ -748,7 +754,7 @@ namespace FightingLegends
 		{
 			bool fightersInTeam = selectedTeam.Count > 0;
 			fightButton.interactable = fightersInTeam;
-			uploadButton.interactable = fightersInTeam;
+			uploadButton.interactable = internetReachable && fightersInTeam;
 //			powerUpButton.interactable = fightersInTeam;
 		}
 

@@ -1452,7 +1452,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000011600005350
 GameObject:
   m_ObjectHideFlags: 1
@@ -13355,12 +13355,12 @@ MonoBehaviour:
   jacksonSprite: {fileID: 21300000, guid: 10cc5a896efb24f2dbc964fef351d32c, type: 3}
   skeletronSprite: {fileID: 21300000, guid: 92e33f03e62ec4961b067e8c14821060, type: 3}
   ninjaSprite: {fileID: 21300000, guid: fc40d1d1ac7844825bc39ca0d7022161, type: 3}
-  hawaiiSprite: {fileID: 21300000, guid: 9e66d292ddd7b464ba8b8b0529cde215, type: 3}
+  hawaiiSprite: {fileID: 21300000, guid: fc233caf8335b48a1bb25311d990fefa, type: 3}
   chinaSprite: {fileID: 21300000, guid: ee753f25293eb4885b8c2e20039cac21, type: 3}
   tokyoSprite: {fileID: 21300000, guid: fb7fd42d17fd34859afa02a014145fc6, type: 3}
   ghettoSprite: {fileID: 21300000, guid: 63f32fe4dc0504cae92945f5c7f0b9f6, type: 3}
   cubaSprite: {fileID: 21300000, guid: 9e66d292ddd7b464ba8b8b0529cde215, type: 3}
-  nigeriaSprite: {fileID: 21300000, guid: fb7fd42d17fd34859afa02a014145fc6, type: 3}
+  nigeriaSprite: {fileID: 21300000, guid: 2c70c674174734f3b9282939ef6364f2, type: 3}
   sovietSprite: {fileID: 21300000, guid: 2eb9b4fff6f37453a9d2c802d3dd0771, type: 3}
   hongKongSprite: {fileID: 21300000, guid: 8dea37351179d43d68086767e9dfc9bd, type: 3}
   dojoSprite: {fileID: 21300000, guid: e3ed558a12260426da0d19ee31512c4c, type: 3}
