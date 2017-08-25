@@ -390,7 +390,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1669241351900806}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 202, y: 0, z: -10}
+  m_LocalPosition: {x: 225, y: -14, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 224587552312106826}
@@ -566,8 +566,8 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 6443d26d5fce046efa1055b2b4df6bb3, type: 3}
-    m_FontSize: 28
+    m_Font: {fileID: 12800000, guid: 9e50ec85f7d6541ff968b53f381b9e0d, type: 3}
+    m_FontSize: 36
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1117,7 +1117,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 6443d26d5fce046efa1055b2b4df6bb3, type: 3}
-    m_FontSize: 20
+    m_FontSize: 36
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -1127,7 +1127,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
-    m_LineSpacing: 1.25
+    m_LineSpacing: 1
   m_Text: NATALYA UNLOCKED!
 --- !u!114 &114657075315857672
 MonoBehaviour:
@@ -1149,19 +1149,19 @@ MonoBehaviour:
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 9e50ec85f7d6541ff968b53f381b9e0d, type: 3}
-    m_FontSize: 40
+    m_Font: {fileID: 12800000, guid: 6443d26d5fce046efa1055b2b4df6bb3, type: 3}
+    m_FontSize: 60
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
-    m_MaxSize: 40
+    m_MaxSize: 72
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1.25
-  m_Text: CONGRATULATIONS!
+  m_Text: ???
 --- !u!114 &114665076271190548
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9419,9 +9419,9 @@ ParticleSystem:
     radius: 20
     angle: 25
     length: 5
-    boxX: 297.61957
+    boxX: 240.61276
     boxY: 1
-    boxZ: 389.6587
+    boxZ: 356.05676
     arc: 360
     placementMode: 0
     m_Mesh: {fileID: 0}
@@ -12044,8 +12044,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -144.93011, y: 1}
-  m_SizeDelta: {x: 390.85, y: 54}
+  m_AnchoredPosition: {x: -144.93011, y: -4}
+  m_SizeDelta: {x: 391, y: 44}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224722356137086128
 RectTransform:
@@ -12062,8 +12062,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -144, y: 153}
-  m_SizeDelta: {x: 406, y: 68}
+  m_AnchoredPosition: {x: -144.93, y: 117}
+  m_SizeDelta: {x: 391.01, y: 82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224916591245699228
 RectTransform:
@@ -12080,8 +12080,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -144, y: 89}
-  m_SizeDelta: {x: 406, y: 81.8}
+  m_AnchoredPosition: {x: -144.93, y: -23}
+  m_SizeDelta: {x: 391.02, y: 82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224972910025507134
 RectTransform:

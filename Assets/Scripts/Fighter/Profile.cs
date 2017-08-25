@@ -18,8 +18,8 @@ namespace FightingLegends
 		public GameObject ElementsFXPrefab;			// triggers elements effects animations (set in Inspector)
 		public GameObject SmokeFXPrefab;			// triggers elements effects animations (set in Inspector)
 		public GameObject DustPrefab;				// triggers dust when travelling (set in Inspector)
-		public GameObject FirePrefab;				// triggers when on fire
-		public GameObject WaterPrefab;				// not yet implemented
+//		public GameObject FirePrefab;				// triggers when on fire
+//		public GameObject WaterPrefab;				// not yet implemented
 
 		// values set in Inspector for each fighter
 		public ProfileData ProfileData;  			// serializable - contains SavedProfile to save/load (filePath)
@@ -168,7 +168,7 @@ namespace FightingLegends
 		}
 
 
-		public static void InitFighterProfile(string fighterName, bool isLocked, int unlockOrder, int unlockCoins, int unlockDefeats, AIDifficulty unlockDifficulty)
+		public static void InitFighterProfile(string fighterName, bool isLocked, int unlockOrder, int unlockCoins, int unlockDefeats, AIDifficulty unlockDifficulty, int Level, float XP)
 		{
 			var profile = new SavedProfile();
 
@@ -181,6 +181,9 @@ namespace FightingLegends
 			profile.UnlockCoins = unlockCoins;
 			profile.UnlockDefeats = unlockDefeats;
 			profile.UnlockDifficulty = unlockDifficulty;
+
+			profile.Level = Level;
+			profile.XP = profile.TotalXP = XP;
 
 			Profile.Save(profile);
 		}

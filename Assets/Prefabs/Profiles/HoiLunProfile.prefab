@@ -44,11 +44,9 @@ MonoBehaviour:
   SpotFXPrefab: {fileID: 117072, guid: 1213e66111dee43fbb8bf6e07778c016, type: 2}
   ElementsFXPrefab: {fileID: 1976077684887768, guid: ca979ec03bf8b43af812445dfab209af,
     type: 2}
-  SmokeFXPrefab: {fileID: 1666175661137048, guid: f23a282ce668f498ab1fcf88dc62a2e1,
+  SmokeFXPrefab: {fileID: 1042451426250106, guid: de67fa9b37b214a36a9981df6bed3daa,
     type: 2}
   DustPrefab: {fileID: 1723952538234936, guid: 0dce63d3f965942c9af456a9ea0d9820, type: 2}
-  FirePrefab: {fileID: 1000012818959194, guid: a93f850e8002e4e3c8294dfb3a61af77, type: 2}
-  WaterPrefab: {fileID: 0}
   ProfileData:
     SavedData:
       FighterName: 
@@ -73,9 +71,6 @@ MonoBehaviour:
     FighterClass: 1
     Element1: 4
     Element2: 3
-    UnlockLevel: 2
-    UnlockDefeats: 3
-    UnlockDifficulty: 4
     ArmourDownDamageFactor: 2
     ArmourUpDamageFactor: 0.5
     OnFireDamagePerTick: 0.33

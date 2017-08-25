@@ -1559,7 +1559,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Diamond,
-						Location = FightManager.china,
+						Location = FightManager.hongKong,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1575,7 +1575,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Diamond,
-						Location = FightManager.china,
+						Location = FightManager.dojo,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1588,7 +1588,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Diamond,
-						Location = FightManager.china,
+						Location = FightManager.ghetto,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1606,7 +1606,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Diamond,
-						Location = FightManager.china,
+						Location = FightManager.soviet,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1629,7 +1629,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Gold,
-						Location = FightManager.china,
+						Location = FightManager.soviet,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1662,7 +1662,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Gold,
-						Location = FightManager.china,
+						Location = FightManager.spaceStation,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1678,7 +1678,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Gold,
-						Location = FightManager.china,
+						Location = FightManager.tokyo,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1701,7 +1701,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Silver,
-						Location = FightManager.china,
+						Location = FightManager.tokyo,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1715,7 +1715,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Silver,
-						Location = FightManager.china,
+						Location = FightManager.ghetto,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1748,7 +1748,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Silver,
-						Location = FightManager.china,
+						Location = FightManager.dojo,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1761,7 +1761,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Silver,
-						Location = FightManager.china,
+						Location = FightManager.soviet,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1786,7 +1786,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Bronze,
-						Location = FightManager.china,
+						Location = FightManager.dojo,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1819,7 +1819,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Bronze,
-						Location = FightManager.china,
+						Location = FightManager.soviet,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1849,7 +1849,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Bronze,
-						Location = FightManager.china,
+						Location = FightManager.tokyo,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1872,7 +1872,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Iron,
-						Location = FightManager.china,
+						Location = FightManager.cuba,
 
 						AITeam = new List<FighterCard>
 						{
@@ -1903,7 +1903,7 @@ namespace FightingLegends
 					new TeamChallenge
 					{
 						ChallengeCategory = ChallengeCategory.Iron,
-						Location = FightManager.china,
+						Location = FightManager.cuba,
 
 						AITeam = new List<FighterCard>
 						{

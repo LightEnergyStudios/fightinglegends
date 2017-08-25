@@ -120,8 +120,9 @@ namespace FightingLegends
 
 			if (unlocked)
 			{
-				FighterName.text += (" " + FightManager.Translate("unlocked", false, true));
-				UnlockStatus.text = FightManager.Translate("congratulations", false, true, true);
+				FighterName.text += ("\n" + FightManager.Translate("unlocked", false, true));
+//				UnlockStatus.text = FightManager.Translate("congratulations", false, true, true);
+				UnlockStatus.text = "";
 				UnlockCoins.text = "";
 
 				DefeatCount.text = "";
@@ -137,11 +138,12 @@ namespace FightingLegends
 
 				CoinsToUnlock = unlockCoins;
 			}
-			else
+			else 			// can't unlock yet
 			{
 				UnlockStatus.text = "???";
 				DefeatCount.text = "";
 				DefeatDifficulty.text = "";
+				UnlockCoins.text = "";
 			}
 
 			switch (fighterName)
@@ -261,17 +263,18 @@ namespace FightingLegends
 
 		private void CoinUnlockClicked()
 		{
-			if (CoinsToUnlock > 0 && Store.CanAfford(CoinsToUnlock))
+			if (CoinsToUnlock > 0)
 			{
-				FightManager.GetConfirmation(FightManager.Translate("confirmUseUnlockCoins"), CoinsToUnlock, DeductUnlockCoins);
-				StartCoroutine(Hide());
-			}
-			else
-			{
-				// offer option to buy more coins (store)
-				FightManager.RequestPurchase();
-
-				// don't hide so user can unlock with new coins
+				if (Store.CanAfford(CoinsToUnlock))
+				{
+					FightManager.GetConfirmation(FightManager.Translate("confirmUseUnlockCoins"), CoinsToUnlock, DeductUnlockCoins);
+					StartCoroutine(Hide());
+				}
+				else
+				{
+					FightManager.GetConfirmation(FightManager.Translate("confirmBuyUnlockCoins"), CoinsToUnlock, PurchaseCoins);
+					// don't hide, so user can unlock with new coins
+				}
 			}
 		}
 
@@ -279,6 +282,12 @@ namespace FightingLegends
 		{
 			FightManager.Coins -= CoinsToUnlock;
 			UnlockFighter(unlockedFighter);			// TODO: no congratulations
+		}
+
+		private void PurchaseCoins()
+		{
+			// offer option to buy a coin pack (store)
+			FightManager.RequestPurchase();
 		}
 
 		private void OkClicked()

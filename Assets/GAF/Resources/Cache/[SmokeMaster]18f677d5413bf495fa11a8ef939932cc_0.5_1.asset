@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f0b625614a406468ee087f147489e7, type: 3}
+  m_Name: '[SmokeMaster]18f677d5413bf495fa11a8ef939932cc_0.5_1'
+  m_EditorClassIdentifier: 
+  m_Asset: {fileID: 11400000, guid: 18f677d5413bf495fa11a8ef939932cc, type: 2}
+  m_Scale: 0.5
+  m_CSF: 1
+  m_CurrentDataPath: Assets/Artwork/FX/
+  m_Data:
+  - m_SearchName: SmokeMaster
+    m_SharedTexture: {fileID: 2800000, guid: d2931b402dbd54ff692e02c1b9cc6019, type: 3}
+    m_SharedMaterial: {fileID: 2100000, guid: 8dbabefae6e534bff9efbb04b51b9159, type: 2}

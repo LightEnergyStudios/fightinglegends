@@ -3668,8 +3668,8 @@ namespace FightingLegends
 
 			LoadSavedData();
 
-			if (SavedGameStatus.PlayCount == 0)
-				InitGame(false);
+//			if (SavedGameStatus.PlayCount == 0)
+//				InitGame(false);
 
 			SavedGameStatus.PlayCount++;
 
@@ -3715,9 +3715,9 @@ namespace FightingLegends
 			menuStack = new List<MenuType>();
 		
 			// TODO: reinstate!
-//			if (!SavedGameStatus.CompletedBasicTraining)
-//				StartCoroutine(FirstPlayerExperience());
-//			else
+			if (! SavedGameStatus.CompletedBasicTraining)
+				StartCoroutine(FirstPlayerExperience());
+			else
 				ActivateMenu(MenuType.ModeSelect);
 		}
 
@@ -5056,19 +5056,19 @@ namespace FightingLegends
 			Profile.DeleteFighterProfile("Skeletron");	
 
 			// all but Leoni and Shiro locked
-			Profile.InitFighterProfile("Leoni", false, 0, 0, 0, AIDifficulty.Easy);	
-			Profile.InitFighterProfile("Shiro", false, 0, 0, 0, AIDifficulty.Easy);	
+			Profile.InitFighterProfile("Leoni", false, 0, 0, 0, AIDifficulty.Easy, 12, 80.0f);	
+			Profile.InitFighterProfile("Shiro", false, 0, 0, 0, AIDifficulty.Easy, 6, 30.0f);	
 
-			Profile.InitFighterProfile("Danjuma", true, 1, 200, 3, AIDifficulty.Easy);	
-			Profile.InitFighterProfile("Natalya", true, 1, 200, 3, AIDifficulty.Easy);	
-			Profile.InitFighterProfile("Hoi Lun", true, 2, 500, 5, AIDifficulty.Medium);	
-			Profile.InitFighterProfile("Jackson", true, 2, 500, 5, AIDifficulty.Medium);
+			Profile.InitFighterProfile("Danjuma", false, 1, 200, 3, AIDifficulty.Easy, 1, 16.0f);	
+			Profile.InitFighterProfile("Natalya", false, 1, 200, 3, AIDifficulty.Easy, 4, 75.0f);	
+			Profile.InitFighterProfile("Hoi Lun", false, 2, 500, 5, AIDifficulty.Medium, 1, 4.0f);	
+			Profile.InitFighterProfile("Jackson", false, 2, 500, 5, AIDifficulty.Medium, 8, 42.0f);
 
-			Profile.InitFighterProfile("Alazne", true, 3, 700, 7, AIDifficulty.Hard);	
-			Profile.InitFighterProfile("Shiyang", true, 3, 700, 7, AIDifficulty.Hard);	
+			Profile.InitFighterProfile("Alazne", false, 3, 700, 7, AIDifficulty.Hard, 2, 62.0f);	
+			Profile.InitFighterProfile("Shiyang", false, 3, 700, 7, AIDifficulty.Hard, 3, 12.0f);	
 
-			Profile.InitFighterProfile("Ninja", true, 4, 900, 9, AIDifficulty.Brutal);	
-			Profile.InitFighterProfile("Skeletron", true, 5, 1100, 11, AIDifficulty.Brutal);	
+			Profile.InitFighterProfile("Ninja", false, 4, 900, 9, AIDifficulty.Brutal, 1, 0);	
+			Profile.InitFighterProfile("Skeletron", false, 5, 1100, 11, AIDifficulty.Brutal, 1, 0);	
 
 			if (restart)
 			{

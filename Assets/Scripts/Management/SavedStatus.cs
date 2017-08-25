@@ -37,6 +37,7 @@ namespace FightingLegends
 
 		public bool ShowTrainingNarrative = false;			// show narrative panel during training
 		public bool ShowStateFeedback = true;				// show state feedback + fireworks
+		public bool ShowInfoBubbles = true;					// once only - uness reset
 
 		public AIDifficulty Difficulty = AIDifficulty.Easy;
 		public UITheme Theme = UITheme.Water;

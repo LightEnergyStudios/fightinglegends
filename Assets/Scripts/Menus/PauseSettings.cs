@@ -50,10 +50,6 @@ namespace FightingLegends
 
 		public DifficultySelector difficultySelector;
 
-
-		public Button movesButton;		// current fighter
-		public Text movesLabel;		
-
 		// theme 
 		public Button waterButton;
 		public Button fireButton;
@@ -95,6 +91,7 @@ namespace FightingLegends
 
 		public Toggle trainingNarrativeToggle;
 		public Toggle stateFeedbackToggle;		// captions
+		public Toggle hintsToggle;				// info bubble
 		public Button resetHintsButton;
 		public Button resetGameButton;
 		public Button newUserButton;
@@ -199,8 +196,10 @@ namespace FightingLegends
 
 			trainingNarrativeToggle.isOn = FightManager.SavedGameStatus.ShowTrainingNarrative;
 			stateFeedbackToggle.isOn = FightManager.SavedGameStatus.ShowStateFeedback;
+			hintsToggle.isOn = FightManager.SavedGameStatus.ShowInfoBubbles;
 
 			SetFightCaptionsLabel(stateFeedbackToggle.isOn);
+			SetHintsLabel(hintsToggle.isOn);
 			SetTrainingNarrativeLabel(trainingNarrativeToggle.isOn);
 
 			bool fromFight = NavigatedFrom == MenuType.Combat || NavigatedFrom == MenuType.WorldMap || NavigatedFrom == MenuType.MatchStats;
@@ -250,6 +249,7 @@ namespace FightingLegends
 
 			trainingNarrativeToggle.onValueChanged.AddListener(TrainingNarrativeToggled);
 			stateFeedbackToggle.onValueChanged.AddListener(StateFeedbackToggled);
+			hintsToggle.onValueChanged.AddListener(HintsToggled);
 
 			smartAIToggle.onValueChanged.AddListener(SmartAIToggled);
 			proactiveToggle.onValueChanged.AddListener(ProactiveToggled);
@@ -310,6 +310,7 @@ namespace FightingLegends
 
 			trainingNarrativeToggle.onValueChanged.RemoveListener(TrainingNarrativeToggled);
 			stateFeedbackToggle.onValueChanged.RemoveListener(StateFeedbackToggled);
+			hintsToggle.onValueChanged.RemoveListener(HintsToggled);
 
 			smartAIToggle.onValueChanged.RemoveListener(SmartAIToggled);
 			reactiveToggle.onValueChanged.RemoveListener(ReactiveToggled);
@@ -668,9 +669,22 @@ namespace FightingLegends
 		{
 			var label = stateFeedbackToggle.transform.Find("Label").GetComponent<Text>();
 			label.text = isOn ? FightManager.Translate("captionsOn", true) : FightManager.Translate("captionsOff", true);
-//			label.text = FightManager.Translate("captions") + "\n" + (isOn ? FightManager.Translate("on") : FightManager.Translate("off"));
 
 			stateFeedbackToggle.GetComponent<Image>().color = isOn ? OnColour : OffColour;
+		}
+
+		private void HintsToggled(bool isOn)
+		{
+			FightManager.SavedGameStatus.ShowInfoBubbles = isOn;
+			SetHintsLabel(isOn);
+		}
+
+		private void SetHintsLabel(bool isOn)
+		{
+			var label = hintsToggle.transform.Find("Label").GetComponent<Text>();
+			label.text = isOn ? FightManager.Translate("hintsOn", true) : FightManager.Translate("hintsOff", true);
+
+			hintsToggle.GetComponent<Image>().color = isOn ? OnColour : OffColour;
 		}
 
 		private void SetTrainingNarrativeLabel(bool isOn)

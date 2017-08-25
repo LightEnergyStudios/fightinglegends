@@ -831,6 +831,9 @@ namespace FightingLegends
 
 		private IEnumerator ShowInfoBubble(Vector3 position, InfoBubbleMessage message, string bubbleHeading, string bubbleText, Sprite bubbleSprite, bool freezeFight, float delayTime = 0)
 		{
+			if (!FightManager.SavedGameStatus.ShowInfoBubbles)
+				yield break;
+
 			if (message != InfoBubbleMessage.None && message == CurrentInfoBubbleMessage)		// no change
 				yield break;
 

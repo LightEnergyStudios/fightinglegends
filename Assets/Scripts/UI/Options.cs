@@ -24,8 +24,9 @@ namespace FightingLegends
 
 		private const float starSweepDistance = 100.0f;
 
-		private const int numCoinSpins = 3;
-		private const float coinSpinTime = 0.85f;
+		private const int numCoinSpins = 5;
+		private const float coinSpinTime = 0.1f;
+		private const float coinSlowdown = 1.2f;	// increases coinSpinTime on each spin
 		private bool coinSpinning = false;
 		private IEnumerator coinSpinCoroutine;		// so it can be interrupted
 
@@ -169,7 +170,7 @@ namespace FightingLegends
 			var targetRotation = new Vector3(0, 180, 0);
 
 			numSpins *= 2; 		// 180 deg each
-			var spinTime = coinSpinTime / (float)numSpins;
+			var spinTime = coinSpinTime; // / (float)numSpins;
 
 			while (numSpins > 0)
 			{
@@ -184,6 +185,7 @@ namespace FightingLegends
 				}
 
 				numSpins--;
+				spinTime *= coinSlowdown;
 			}
 
 			// reset rotation

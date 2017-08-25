@@ -306,7 +306,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000012348748302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1713,7 +1713,7 @@ MonoBehaviour:
   DirectToOverlay: 0
   NavigatedFrom: 0
   ParentCanvas: {fileID: 0}
-  MusicTrack: {fileID: 8300000, guid: 3db49433dbf5a46348772463dbecfcab, type: 3}
+  MusicTrack: {fileID: 8300000, guid: b0546c545b1a84c1f96e1cf832aa31e8, type: 3}
   FadeSound: {fileID: 0}
   titleLabel: {fileID: 114000011850785172}
   tokyoButton: {fileID: 114000011189858076}
@@ -5806,7 +5806,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 108.4, y: -207.1}
+  m_AnchoredPosition: {x: 108.4, y: -188}
   m_SizeDelta: {x: 183, y: 22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000011466346864
@@ -6184,7 +6184,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 58, y: -207.1}
+  m_AnchoredPosition: {x: 58, y: -188}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000013992090782
@@ -6258,7 +6258,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.12098042, y: 179.61273}
+  m_AnchoredPosition: {x: 0.12098042, y: 164.5}
   m_SizeDelta: {x: 799.32, y: 799}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224129512105890176
@@ -6494,6 +6494,6 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -214.2369}
+  m_AnchoredPosition: {x: 0, y: -197.5}
   m_SizeDelta: {x: 801, y: 780}
   m_Pivot: {x: 0.5, y: 0.5}

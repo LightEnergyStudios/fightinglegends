@@ -242,23 +242,19 @@
 		<string name="playerId">Player ID</string>
 
 		<string name="confirmPurchase">Purchase {0} \n for {1} {2}?</string> 
-		<string name="confirmPurchase2">Are you sure you want to purchase \n {0} \n for {1} {2}?</string> 
-		<string name="confirmBuyCoins">You need more coins! \n Would you like to buy some?</string> 
+		<string name="confirmBuyCoins">Buy more coins?</string> 
 		<string name="confirmUsePowerUpCoins">Use coins to equip this power-up?</string> 
-		<string name="confirmBuyPowerUpCoins">You need more coins \n to equip this power-up. \n Would you like to buy some?</string> 
+		<string name="confirmBuyPowerUpCoins">Buy coins to equip this power-up?</string> 
 		<string name="confirmLevelUp">Use coins to level-up {0}?</string> 
-		<string name="confirmLevelUp2">Are you sure you want to level-up {0}?</string> 
-		<string name="confirmBuyLevelUpCoins">You need more coins \n to level-up {0}. \n Would you like to buy some?</string> 
-		<string name="confirmLevelReset">Are you sure you want to reset \n {0} to Level 1 ? \n Kudos reward: {1} !!</string> 
+		<string name="confirmBuyLevelUpCoins">Buy coins to level-up {0}?</string> 
+		<string name="confirmLevelReset">RESET \n {0} to Level 1 ?? \n Kudos reward: {1} !!</string> 
 		<string name="confirmQuitFight">Quit this fight?</string>
-		<string name="confirmQuitFight2">Are you sure you want to \n quit this fight?</string>
 		<string name="confirmExitDojo">Exit the Dojo?</string>
-		<string name="confirmExitDojo2">Are you sure you want to \n exit the Dojo?</string>
 		<string name="confirmExitTraining">Quit Ninja School?</string>
 		<string name="confirmUseUnlockCoins">Use coins to unlock this fighter?</string> 
+		<string name="confirmBuyUnlockCoins">Buy coins to unlock this fighter?</string> 
 
 		<string name="confirmChangeDifficulty">Change Arcade Mode difficulty to \n {0}?</string> 
-		<string name="confirmChangeDifficulty2">Are you sure you want to change \n Arcade Mode difficulty to \n {0}?</string> 
 		<string name="confirmResetHints">Are you sure you want to read all hint bubble messages again?</string> 
 		<string name="confirmResetGame">Are you really sure you want to completely RESET the game? All saved data will be deleted.</string> 
 		<string name="confirmAgainResetGame">Are you really sure you want to RESET? All saved data will be deleted.</string> 
@@ -273,6 +269,8 @@
 		<string name="quitFight">QUIT FIGHT</string>
 		<string name="captionsOn">CAPTIONS ON</string>
 		<string name="captionsOff">CAPTIONS OFF</string>
+		<string name="hintsOn">HINTS ON</string>
+		<string name="hintsOff">HINTS OFF</string>
 		<string name="narrative">NARRATIVE</string>
 		<string name="resetHits">RESET HINTS</string>
 		<string name="on">ON</string>
