@@ -282,7 +282,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{	
-			internetReachable = (NetworkReachability.ReachableViaLocalAreaNetwork != NetworkReachability.NotReachable);
+			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
 
 			//			UserId.text = "[ " + FightManager.Translate("playerId") + ": " + FightManager.SavedGameStatus.UserId + " ]";
 			UserId.text = FightManager.SavedGameStatus.UserId;
@@ -298,7 +298,7 @@ namespace FightingLegends
 			LeaderboardsButton.gameObject.SetActive(internetReachable);
 
 			// hide if already registered!
-			NewUserButton.gameObject.SetActive(string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId));
+			NewUserButton.gameObject.SetActive(false); // string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId));
 		}
 
 		private void OnDisable()
@@ -310,16 +310,21 @@ namespace FightingLegends
 		{
 			CreatePreview(FightManager.SelectedFighterName);
 			SetSelectedIndex(FightManager.SelectedFighterName);
-			UpdateFighterCard(fighterSelect.previewFighter, true);
 
-			// can only reset level when fighter is at level 100!
-			ResetLevelButton.gameObject.SetActive(fighterSelect.previewFighter.Level == Fighter.maxLevel);
+			if (fighterSelect.previewFighter != null)
+			{
+				UpdateFighterCard(fighterSelect.previewFighter, true);
+
+				// can only reset level when fighter is at level 100!
+				ResetLevelButton.gameObject.SetActive(fighterSelect.previewFighter.Level == Fighter.maxLevel);
+			}
 		}
 
 		private void CreatePreview(string fighterName)
 		{
 			fighterSelect.CreatePreview(fighterName, FightManager.SelectedFighterColour, false, false); // don't show FighterUnlock
-			SetFighterElements(fighterSelect.previewFighter);
+			if (fighterSelect.previewFighter != null)
+				SetFighterElements(fighterSelect.previewFighter);
 		}
 
 		public void DestroyPreviewFighter()
@@ -715,16 +720,25 @@ namespace FightingLegends
 		{
 			if (overlay == PowerUpOverlay)
 				PowerUpController.TriggerExitAnimation();		// event fired by animator on completion - see OnPowerUpExitComplete
-//			else
-				StartCoroutine(FadeOverlay(overlay));
+
+			StartCoroutine(FadeOverlay(overlay));
 		}
 			
 		private void OverlayHidden(Image overlay, int overlayCount)
 		{
+//			Debug.Log("OverlayHidden: overlayCount = " + overlayCount);
 			if (overlayCount == 0) 		// last one hidden
 			{
-				fighterSelect.RevealFighter();			// preview idle
-				UpdateFighterCard(fighterSelect.previewFighter, true);
+				if (fighterSelect.previewFighter == null)
+				{
+					SetPreviewFighter();
+				}
+				else
+				{
+					fighterSelect.RevealFighter();			// preview idle
+					UpdateFighterCard(fighterSelect.previewFighter, true);
+				}
+
 				DojoButtons.SetActive(true);
 				StartSwipeFeedback();
 			}

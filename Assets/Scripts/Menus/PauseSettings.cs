@@ -438,7 +438,7 @@ namespace FightingLegends
 		private void ResetGame()
 		{
 			Hide();
-			fightManager.InitGame(true);
+			fightManager.ResetGame();
 		}
 
 		private void RegisterNewUser()

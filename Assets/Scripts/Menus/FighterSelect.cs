@@ -16,13 +16,7 @@ namespace FightingLegends
 		public Text storeLabel;	
 
 		public Button powerUpButton;			// not always used (eg. arcade mode, store)
-		public Text powerUpLabel;	
-
-//		public Button movesButton;	
-//		public Text movesLabel;	
-
-		public bool PreviewMoves = false;		// set in inspector
-		public bool PreviewUseGauge = true;		// set in inspector
+		public Text powerUpLabel;
 
 		public Text titleText;
 
@@ -91,12 +85,6 @@ namespace FightingLegends
 
 			if (powerUpLabel != null)
 				powerUpLabel.text = FightManager.Translate("powerUp"); //, true, false);
-
-//			if (movesLabel != null)
-//				movesLabel.text = FightManager.Translate("moves");
-
-//			if (movesButton != null)
-//				movesButton.gameObject.SetActive(!PreviewMoves);
 		}
 
 		public void Init()
@@ -142,9 +130,6 @@ namespace FightingLegends
 		{
 			if (listening)
 				return;
-
-			if (PreviewMoves)
-				return;
 			
 			if (fightButton != null)
 				fightButton.onClick.AddListener(delegate { CombatInsertCoin(); });
@@ -152,8 +137,6 @@ namespace FightingLegends
 				storeButton.onClick.AddListener(delegate { ShowStore(); });
 			if (powerUpButton != null)
 				powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
-//			if (movesButton != null)
-//				movesButton.onClick.AddListener(delegate { FighterMoves(); });
 			
 			FightManager.OnThemeChanged += SetTheme;
 
@@ -182,9 +165,6 @@ namespace FightingLegends
 		private void StopListening()
 		{
 			if (! listening)
-				return;
-
-			if (PreviewMoves)
 				return;
 			
 //			Debug.Log("StopListening: " + fightManager.SelectedFighterName + " " + fightManager.SelectedFighterColour);
@@ -229,9 +209,6 @@ namespace FightingLegends
 		private void LoadFighterCards()
 		{
 			if (fighterCardsLoaded)
-				return;
-
-			if (PreviewMoves)
 				return;
 
 			fighterCards.Add("Leoni", new FighterCard(leoniButton, "Leoni", "P1", 1, 0, null, null, CardFrame("Leoni")));
@@ -279,10 +256,7 @@ namespace FightingLegends
 	
 
 		public FighterCard GetFighterCard(string fighterName)
-		{
-			if (PreviewMoves)
-				return null;
-			
+		{			
 //			Debug.Log("GetFighterCard: " + fighterName);
 			LoadFighterCards();		// in case not already loaded
 
@@ -393,7 +367,7 @@ namespace FightingLegends
 			}
 
 			bool fighterChanged = false;
-			var newFighter = fightManager.CreateFighter(name, nextColour, false, false, PreviewMoves); //false);
+			var newFighter = fightManager.CreateFighter(name, nextColour, false, false, false);
 			if (newFighter != null)
 			{
 				fighterChanged = previewFighter == null || (newFighter.FighterName != previewFighter.FighterName);

@@ -428,7 +428,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			internetReachable = (NetworkReachability.ReachableViaLocalAreaNetwork != NetworkReachability.NotReachable);
+			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
 
 			LayerTeam();
 

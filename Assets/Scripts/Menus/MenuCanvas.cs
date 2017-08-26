@@ -45,9 +45,11 @@ namespace FightingLegends
 		public virtual bool CanNavigateBack { get { return NavigatedFrom != MenuType.None; } }
 
 
+			
 		public void Show()
 		{
 			FightManager.OnThemeChanged += SetTheme;
+			FightManager.OnGameReset += OnGameReset;
 
 			SetTheme(FightManager.SavedGameStatus.Theme, FightManager.ThemeHeader, FightManager.ThemeFooter);
 
@@ -60,13 +62,14 @@ namespace FightingLegends
 		public void Hide()
 		{
 			FightManager.OnThemeChanged -= SetTheme;
+			FightManager.OnGameReset -= OnGameReset;
 
 			gameObject.SetActive(false);
 
 			if (OnHidden != null)
 				OnHidden();
 		}
-
+			
 			
 		protected int ActivatedOverlayCount
 		{
@@ -213,6 +216,14 @@ namespace FightingLegends
 			var footerObject = overlay.transform.Find("Footer");
 			if (footerObject != null)
 				footerObject.GetComponent<Image>().sprite = footer;
+		}
+
+		private void OnGameReset()
+		{
+			Debug.Log("MenuCanvas.OnGameReset");
+			HideAllOverlays();
+			DirectToOverlay = false;
+			Hide();
 		}
 
 			

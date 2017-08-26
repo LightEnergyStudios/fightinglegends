@@ -293,6 +293,7 @@
 		<string name="play">PLAY!</string>
 		<string name="train">TRAIN</string>
 		<string name="defeat">DEFEAT</string>
+		<string name="arcadeDifficulty">ARCADE DIFFICULTY</string>
 
 		<string name="air">AIR</string>
 		<string name="fire">FIRE</string>

@@ -412,23 +412,8 @@ namespace FightingLegends
 		public delegate void HideInfoBubbleDelegate();
 		public static HideInfoBubbleDelegate OnInfoBubbleRead;
 
-//		public delegate void SplatDelegate();
-//		public static SplatDelegate OnTriggerSplat;
-//
-//		public delegate void HideSplatDelegate();
-//		public static HideSplatDelegate OnHideSplat;
-//
-//		public delegate void PaintStrokeDelegate(bool flip);
-//		public static PaintStrokeDelegate OnTriggerPaintStroke;
-//
-//		public delegate void HidePaintStrokeDelegate();
-//		public static HidePaintStrokeDelegate OnHidePaintStroke;
-
-//		public delegate void BackClickedDelegate(MenuType fromMenu);
-//		public static BackClickedDelegate OnBackClicked;
-
-//		public delegate void CleanupFightDelegate();
-//		public static CleanupFightDelegate OnCleanupFight;
+		public delegate void GameResetDelegate();
+		public static GameResetDelegate OnGameReset;
 
 
 		public int InitialCoins;
@@ -660,6 +645,21 @@ namespace FightingLegends
 			
 			cameraController = Camera.main.GetComponent<CameraController>();
 
+			HideAllMenus();
+			
+//			sceneryNames = new Queue<string>();
+			fighterNames = new Queue<string>();
+			fighterColours = new Queue<string>();
+			AINames = new Queue<string>();
+//			AIColours = new Queue<string>();
+//			TrainingAINames = new Queue<string>();
+//			TrainingAIColours = new Queue<string>();
+			BossNames = new Queue<string>();
+			BossColours = new Queue<string>();
+		}
+
+		private void HideAllMenus()
+		{
 			HideDojoUI();
 
 			if (worldMap != null)
@@ -676,22 +676,12 @@ namespace FightingLegends
 
 			if (teamSelect != null)
 				teamSelect.Hide();
-			
+
 			if (storeManager != null)
 				storeManager.Hide();
 
 //			if (adManager != null)
 //				adManager.Hide();
-			
-//			sceneryNames = new Queue<string>();
-			fighterNames = new Queue<string>();
-			fighterColours = new Queue<string>();
-			AINames = new Queue<string>();
-//			AIColours = new Queue<string>();
-//			TrainingAINames = new Queue<string>();
-//			TrainingAIColours = new Queue<string>();
-			BossNames = new Queue<string>();
-			BossColours = new Queue<string>();
 		}
 
 
@@ -3726,7 +3716,6 @@ namespace FightingLegends
 		{
 			menuStack = new List<MenuType>();
 		
-			// TODO: reinstate!
 			if (! SavedGameStatus.CompletedBasicTraining)
 				StartCoroutine(FirstPlayerExperience());
 			else
@@ -3852,6 +3841,8 @@ namespace FightingLegends
 
 			if (backClicked)		// if the current menu has an active overlay, simply hide it
 			{
+//				Debug.Log("ActivatePreviousMenu: backClicked = " + backClicked + ", pop = " + pop);
+
 				switch (CurrentMenuCanvas)
 				{
 					case MenuType.ModeSelect:
@@ -5022,7 +5013,7 @@ namespace FightingLegends
 		}
 
 
-		public void InitGame(bool restart)
+		public void ResetGame()
 		{
 			if (curtain != null)
 			{
@@ -5036,12 +5027,15 @@ namespace FightingLegends
 					OnInfoBubbleRead();				// hides bubble and marks message as read
 			}
 				
+			HideAllMenus();
+				
 			var filePath = FilePath();
 
 			if (File.Exists(filePath))
 				File.Delete(filePath);
 
 			SavedGameStatus = new SavedStatus();
+			SaveStatus();
 
 			PlayerPrefs.SetString("FL_UserId", "");
 			PlayerPrefs.SetFloat("FL_Kudos", 0);
@@ -5082,11 +5076,11 @@ namespace FightingLegends
 			Profile.InitFighterProfile("Ninja", false, 4, 900, 9, AIDifficulty.Brutal, 1, 0);	
 			Profile.InitFighterProfile("Skeletron", false, 5, 1100, 11, AIDifficulty.Brutal, 1, 0);	
 
-			if (restart)
-			{
-				CleanupFighters();
-				StartGame();
-			}
+			CleanupFighters();
+			StartGame();
+
+			if (OnGameReset != null)
+				OnGameReset();
 		}
 
 		private SavedProfile ProfileFromCard(FighterCard card)

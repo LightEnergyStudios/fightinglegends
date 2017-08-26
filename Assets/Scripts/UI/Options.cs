@@ -24,9 +24,9 @@ namespace FightingLegends
 
 		private const float starSweepDistance = 100.0f;
 
-		private const int numCoinSpins = 3;
-		private const float coinSpinTime = 0.1f;
-		private const float coinSlowdown = 1.3f;	// increases coinSpinTime on each spin
+		private const int numCoinSpins = 4;			// full 360 turns
+		private const float coinSpinTime = 0.05f;	// first half-turn
+		private const float coinSlowdown = 1.5f;	// increases coinSpinTime on each half-turn
 		private bool coinSpinning = false;
 		private IEnumerator coinSpinCoroutine;		// so it can be interrupted
 
@@ -146,7 +146,7 @@ namespace FightingLegends
 
 		private void SpinCoin(int numSpins)
 		{
-			coin.rectTransform.rotation = Quaternion.Euler(Vector3.zero);
+			coin.rectTransform.localRotation = Quaternion.Euler(Vector3.zero);
 
 			if (coinSpinCoroutine != null)
 				StopCoroutine(coinSpinCoroutine);
@@ -167,10 +167,11 @@ namespace FightingLegends
 			coinSpinning = true;
 
 			var startRotation = Vector3.zero;
-			var targetRotation = new Vector3(0, 180, 0);
+			var targetRotation1 = new Vector3(0, 180, 0);
+			var targetRotation2 = new Vector3(0, 359, 0);
 
 			numSpins *= 2; 		// 180 deg each
-			var spinTime = coinSpinTime; // / (float)numSpins;
+			var spinTime = coinSpinTime;
 
 			while (numSpins > 0)
 			{
@@ -180,7 +181,11 @@ namespace FightingLegends
 				{
 					t += Time.deltaTime * (Time.timeScale / spinTime); 
 
-					coin.rectTransform.localRotation = Quaternion.Lerp(Quaternion.Euler(startRotation), Quaternion.Euler(targetRotation), t);
+					if (numSpins % 2 != 0)			// return to zero on even
+						coin.rectTransform.localRotation = Quaternion.Lerp(Quaternion.Euler(targetRotation1), Quaternion.Euler(targetRotation2), t);
+					else
+						coin.rectTransform.localRotation = Quaternion.Lerp(Quaternion.Euler(startRotation), Quaternion.Euler(targetRotation1), t);
+
 					yield return null;
 				}
 
@@ -189,7 +194,7 @@ namespace FightingLegends
 			}
 
 			// reset rotation
-			coin.rectTransform.rotation = Quaternion.Euler(Vector3.zero);
+			coin.rectTransform.localRotation = Quaternion.Euler(Vector3.zero);
 
 			coinSpinning = false;
 			yield return null;

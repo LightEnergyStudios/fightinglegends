@@ -21,6 +21,7 @@ namespace FightingLegends
 
 		public Text UnlockStatus;
 		public Text DefeatCount;
+		public Text ArcadeDifficulty;
 		public Text DefeatDifficulty;
 		public Text UnlockCoins;
 
@@ -126,6 +127,7 @@ namespace FightingLegends
 				UnlockCoins.text = "";
 
 				DefeatCount.text = "";
+				ArcadeDifficulty.text = "";
 				DefeatDifficulty.text = "";
 			}
 			else if (canUnlock)
@@ -133,6 +135,7 @@ namespace FightingLegends
 				UnlockStatus.text = "";
 
 				DefeatCount.text = FightManager.Translate("defeat") + " x" + unlockDefeats;
+				ArcadeDifficulty.text = FightManager.Translate("arcadeDifficulty") + ":";
 				DefeatDifficulty.text = FightManager.Translate(unlockDifficulty.ToString().ToLower());
 				UnlockCoins.text = string.Format("{0:N0}", unlockCoins);
 
