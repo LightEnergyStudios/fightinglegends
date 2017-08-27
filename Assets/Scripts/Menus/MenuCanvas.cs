@@ -49,7 +49,7 @@ namespace FightingLegends
 		public void Show()
 		{
 			FightManager.OnThemeChanged += SetTheme;
-			FightManager.OnGameReset += OnGameReset;
+//			FightManager.OnGameReset += OnGameReset;
 
 			SetTheme(FightManager.SavedGameStatus.Theme, FightManager.ThemeHeader, FightManager.ThemeFooter);
 
@@ -62,7 +62,7 @@ namespace FightingLegends
 		public void Hide()
 		{
 			FightManager.OnThemeChanged -= SetTheme;
-			FightManager.OnGameReset -= OnGameReset;
+//			FightManager.OnGameReset -= OnGameReset;
 
 			gameObject.SetActive(false);
 
@@ -218,13 +218,13 @@ namespace FightingLegends
 				footerObject.GetComponent<Image>().sprite = footer;
 		}
 
-		private void OnGameReset()
-		{
-			Debug.Log("MenuCanvas.OnGameReset");
-			HideAllOverlays();
-			DirectToOverlay = false;
-			Hide();
-		}
+//		private void OnGameReset()
+//		{
+//			Debug.Log("MenuCanvas.OnGameReset");
+//			HideAllOverlays();
+//			DirectToOverlay = false;
+//			Hide();
+//		}
 
 			
 		#region music 
