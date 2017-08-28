@@ -28,11 +28,6 @@ namespace FightingLegends
 		{
 			get { return false; }
 		}
-//
-//		public override bool HasBlock  
-//		{
-//			get { return false; }
-//		}
 
 		public override bool HasSpecialExtra
 		{
@@ -82,10 +77,10 @@ namespace FightingLegends
 			CurrentState = State.Ready_To_Die;
 		}
 
-		protected override void EndReadyToDie()
-		{
-			CurrentState = State.Die;
-		}
+//		protected override void EndReadyToDie()
+//		{
+//			CurrentState = State.Die;
+//		}
 
 			
 		protected override void ReadyToKO(HitFrameData hitData)
@@ -104,10 +99,6 @@ namespace FightingLegends
 		protected override void KnockOut()
 		{
 			base.KnockOut();		// feedback FX + expiry countdown + profile data
-
-//			ProfileData.SavedData.Health = 0;
-//			UpdateHealth(1, false);		// to zero
-
 			CurrentState = State.Die;
 
 			KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
@@ -116,24 +107,17 @@ namespace FightingLegends
 
 		protected override bool TravelOnExpiry { get { return false; } }
 
-//		public override bool ExpiredHealth
-//		{ 
-//			get { return base.ExpiredHealth && CurrentState != State.Fall && CurrentState != State.Ready_To_Die; }
-//		}
+
+		protected override bool FallenState	
+		{
+			get { return CurrentState == State.Fall || CurrentState == State.Ready_To_Die; }
+		}
 
 		public override bool ExpiredState
 		{
 			get { return CurrentState == State.Die; }
 		}
-
-
-//		public override bool StateLoops(string stateLabel)
-//		{
-//			if (base.StateLoops(stateLabel))
-//				return true;
-//			
-//			return (stateLabel == "READY_TO_DIE");
-//		}
+			
 
 		public override string WinQuote(string loserName)
 		{

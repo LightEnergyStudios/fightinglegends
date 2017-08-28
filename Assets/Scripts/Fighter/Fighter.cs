@@ -1129,12 +1129,12 @@ namespace FightingLegends
 				CurrentState == State.Hit_Straight_Die || CurrentState == State.Hit_Uppercut_Die; }
 		}
 			
-		private bool FallenState			// skeletron only
+		protected virtual bool FallenState	
 		{
-			get { return CurrentState == State.Fall || CurrentState == State.Ready_To_Die; }
+			get { return false; }		// skeletron only
 		}
 			
-		public virtual bool ExpiredHealth { get { return ProfileData.SavedData.Health <= 0; } }
+		public bool ExpiredHealth { get { return ProfileData.SavedData.Health <= 0; } }
 
 		protected virtual bool TravelOnExpiry { get { return true; } }
 			
@@ -2661,16 +2661,15 @@ namespace FightingLegends
 					EndIdleDamaged();
 					break;
 
-				case State.Fall:			// skeletron
+				case State.Fall:			// skeletron -> ready to die
 					EndFalling();
 					break;
 
-				case State.Ready_To_Die:	// skeletron
-					EndReadyToDie();
+				case State.Ready_To_Die:	// skeletron (loops)
+//					EndReadyToDie();
 					break;
 
 				case State.Die:
-					Debug.Log(FullName + ": UnfreezeEndState State.Die!");
 					break;
 
 				case State.Dash:
@@ -2986,10 +2985,10 @@ namespace FightingLegends
 			
 		}
 
-		protected virtual void EndReadyToDie()
-		{
-			
-		}
+//		protected virtual void EndReadyToDie()
+//		{
+//			
+//		}
 
 		// tutorial punch (AI only)
 
@@ -4529,12 +4528,11 @@ namespace FightingLegends
 						}
 						else
 						{
-//							StartBlockStun(hitData);
 							ReleaseBlock(true);
-							StartHitStun(hitData);		// TODO: is this correct?
+							StartHitStun(hitData);
 						}
 
-						if (ExpiredState)				// eg. not when skeletron falling
+						if (! FallenState)				// skeletron only
 							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
@@ -4608,7 +4606,7 @@ namespace FightingLegends
 						else
 							StartHitStun(hitData);	// start appropriate hit stun animation according to type of hit
 
-						if (ExpiredState)				// eg. not when skeletron falling
+						if (! FallenState)				// skeletron only
 							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
@@ -5311,26 +5309,30 @@ namespace FightingLegends
 			}
 			else 		// special / counter / vengeance
 			{
-				hitStunFramesRemaining =
-					useBlockStunFrames ? hitData.BlockStunFrames : hitData.HitStunFrames;
+				hitStunFramesRemaining = useBlockStunFrames ? hitData.BlockStunFrames : hitData.HitStunFrames;
 
-				if (Opponent != null && Opponent.StaticPowerUp == FightingLegends.PowerUp.PoiseWrecker)
+				if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
 				{
-					hitStunFramesRemaining = (int)((float)hitStunFramesRemaining * ProfileData.PoiseWreckerFactor);
+					if (Opponent != null && Opponent.StaticPowerUp == FightingLegends.PowerUp.PoiseWrecker)
+					{
+						hitStunFramesRemaining = (int)((float)hitStunFramesRemaining * ProfileData.PoiseWreckerFactor);
 
-					if (Opponent.OnStaticPowerUpApplied != null)
-						Opponent.OnStaticPowerUpApplied(FightingLegends.PowerUp.PoiseWrecker);
-				}
+						if (Opponent.OnStaticPowerUpApplied != null)
+							Opponent.OnStaticPowerUpApplied(FightingLegends.PowerUp.PoiseWrecker);
+					}
 				
-				if (StaticPowerUp == FightingLegends.PowerUp.PoiseMaster)
-				{
-					hitStunFramesRemaining = (int)((float)hitStunFramesRemaining * ProfileData.PoiseMasterFactor);
+					if (StaticPowerUp == FightingLegends.PowerUp.PoiseMaster)
+					{
+						hitStunFramesRemaining = (int)((float)hitStunFramesRemaining * ProfileData.PoiseMasterFactor);
 
-					if (OnStaticPowerUpApplied != null)
-						OnStaticPowerUpApplied(FightingLegends.PowerUp.PoiseMaster);
+						if (OnStaticPowerUpApplied != null)
+							OnStaticPowerUpApplied(FightingLegends.PowerUp.PoiseMaster);
+					}
 				}
-			}
 
+//				Debug.Log(FullName + ": StartHitStun state = " + CurrentState + ", hitStunFramesRemaining = " + hitStunFramesRemaining);
+			}
+				
 			if (OnHitStun != null)
 			{
 				var newState = new FighterChangedData(this);

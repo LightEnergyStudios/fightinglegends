@@ -349,8 +349,8 @@ MonoBehaviour:
       FrameNumber: 19
       Actions: 01000000
       TypeOfHit: 4
-      HitStunFrames: 18
-      BlockStunFrames: 6
+      HitStunFrames: 24
+      BlockStunFrames: 8
       HitDamage: 32
       BlockDamage: 8
       FreezeFrames: 3
@@ -361,8 +361,8 @@ MonoBehaviour:
       FrameNumber: 39
       Actions: 01000000
       TypeOfHit: 3
-      HitStunFrames: 18
-      BlockStunFrames: 6
+      HitStunFrames: 24
+      BlockStunFrames: 8
       HitDamage: 32
       BlockDamage: 8
       FreezeFrames: 3
@@ -373,8 +373,8 @@ MonoBehaviour:
       FrameNumber: 46
       Actions: 01000000
       TypeOfHit: 3
-      HitStunFrames: 18
-      BlockStunFrames: 6
+      HitStunFrames: 24
+      BlockStunFrames: 8
       HitDamage: 32
       BlockDamage: 8
       FreezeFrames: 2
@@ -385,8 +385,8 @@ MonoBehaviour:
       FrameNumber: 53
       Actions: 01000000
       TypeOfHit: 3
-      HitStunFrames: 18
-      BlockStunFrames: 6
+      HitStunFrames: 24
+      BlockStunFrames: 8
       HitDamage: 32
       BlockDamage: 8
       FreezeFrames: 3
@@ -397,8 +397,8 @@ MonoBehaviour:
       FrameNumber: 62
       Actions: 02000000
       TypeOfHit: 2
-      HitStunFrames: 18
-      BlockStunFrames: 6
+      HitStunFrames: 24
+      BlockStunFrames: 8
       HitDamage: 32
       BlockDamage: 8
       FreezeFrames: 0

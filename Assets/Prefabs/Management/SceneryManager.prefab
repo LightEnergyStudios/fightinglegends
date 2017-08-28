@@ -26,7 +26,9 @@ GameObject:
   - component: {fileID: 114000014108974914}
   - component: {fileID: 114000012487930316}
   - component: {fileID: 114000011551915190}
+  - component: {fileID: 114611839013486422}
   - component: {fileID: 114000011781721104}
+  - component: {fileID: 114852977058046116}
   - component: {fileID: 114000011710535278}
   - component: {fileID: 114000013339910076}
   - component: {fileID: 114000010147997924}
@@ -423,6 +425,52 @@ MonoBehaviour:
   fogDensity: 0
   MusicTrack: {fileID: 8300000, guid: e9937d1b5939b43b98c802afac08f5c0, type: 3}
   PinToCamera: 0
+--- !u!114 &114611839013486422
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1402432694293116, guid: cdde40a3f66a54f39916dac0e5b74f4b, type: 2}
+  sceneryName: Nigerian Fight Club
+  width: 560
+  replications: 0
+  fogEnabled: 0
+  fogMode: 1
+  fogColour: {r: 1, g: 1, b: 1, a: 1}
+  fogStart: 100
+  fogEnd: 1000
+  fogDensity: 0
+  MusicTrack: {fileID: 0}
+  PinToCamera: 1
+--- !u!114 &114852977058046116
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013338303472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f09d65e5fa842c8b6dbfb4815e574d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1810305331596960, guid: d4a09f178cdaa4aacba25d522cb87987, type: 2}
+  sceneryName: Hawaii Beach
+  width: 1920
+  replications: 0
+  fogEnabled: 0
+  fogMode: 1
+  fogColour: {r: 1, g: 1, b: 1, a: 1}
+  fogStart: 200
+  fogEnd: 1500
+  fogDensity: 0
+  MusicTrack: {fileID: 0}
+  PinToCamera: 1
 --- !u!114 &114930434734715112
 MonoBehaviour:
   m_ObjectHideFlags: 1
