@@ -683,7 +683,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1293173890505044
 GameObject:
   m_ObjectHideFlags: 1
@@ -3221,6 +3221,7 @@ MonoBehaviour:
   spaceStationStars: {fileID: 198342903201268376}
   locationHeading: {fileID: 114235045284645246}
   locationLabel: {fileID: 114592306186243484}
+  lolightColour: {r: 1.0367647, g: 1.0748811, b: 1.0748811, a: 0.78431374}
   coinStars: {fileID: 198336013522745354}
 --- !u!114 &114059284566147280
 MonoBehaviour:
@@ -40165,7 +40166,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -0.000080109, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1745, y: -22}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224256004305417338
 RectTransform:

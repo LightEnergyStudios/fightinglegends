@@ -119,7 +119,7 @@ namespace FightingLegends
 		public Text locationHeading;
 		public Text locationLabel;	// as selected
 
-		private const float lolightAlpha = 200.0f;				// when not hilighted
+		public Color lolightColour;				// when location not hilighted
 
 		public ParticleSystem coinStars;
 		private const float starSweepX = 250.0f;				// lerp target position
@@ -356,8 +356,6 @@ namespace FightingLegends
 
 		private void ResetLocationHilights()
 		{
-			var lolightColour = new Color(255.0f, 255.0f, 255.0f, lolightAlpha);
-
 			dojoImage.transform.SetSiblingIndex(dojoIndex);
 			hawaiiImage.transform.SetSiblingIndex(hawaiiIndex);
 			sovietImage.transform.SetSiblingIndex(sovietIndex);
