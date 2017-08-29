@@ -1126,7 +1126,7 @@ namespace FightingLegends
 		public virtual bool ExpiredState
 		{
 			get { return CurrentState == State.Hit_Hook_Die || CurrentState == State.Hit_Mid_Die ||
-				CurrentState == State.Hit_Straight_Die || CurrentState == State.Hit_Uppercut_Die; }
+							CurrentState == State.Hit_Straight_Die || CurrentState == State.Hit_Uppercut_Die; }
 		}
 			
 		protected virtual bool FallenState	

@@ -49,7 +49,6 @@ namespace FightingLegends
 
 		public ScrollRect locationViewport;
 		public GameObject locationContent;				// horizontal viewport content
-//		private List<string> locationList = new List<string>();
 
 		public Button dojoButton;
 		public Button hawaiiButton;
@@ -62,19 +61,65 @@ namespace FightingLegends
 		public Button nigeriaButton;
 		public Button spaceStationButton;
 
-		public Image dojoGlow;
-		public Image hawaiiGlow;
-		public Image sovietGlow;
-		public Image ghettoGlow;
-		public Image chinaGlow;
-		public Image hongKongGlow;
-		public Image tokyoGlow;
-		public Image cubaGlow;
-		public Image nigeriaGlow;
-		public Image spaceStationGlow;
+		public Image dojoImage;
+		public Image hawaiiImage;
+		public Image sovietImage;
+		public Image ghettoImage;
+		public Image chinaImage;
+		public Image hongKongImage;
+		public Image tokyoImage;
+		public Image cubaImage;
+		public Image nigeriaImage;
+		public Image spaceStationImage;
+
+		public Image dojoFilmStrip;
+		public Image hawaiiFilmStrip;
+		public Image sovietFilmStrip;
+		public Image ghettoFilmStrip;
+		public Image chinaFilmStrip;
+		public Image hongKongFilmStrip;
+		public Image tokyoFilmStrip;
+		public Image cubaFilmStrip;
+		public Image nigeriaFilmStrip;
+		public Image spaceStationFilmStrip;
+
+		public ParticleSystem dojoStars;
+		public ParticleSystem hawaiiStars;
+		public ParticleSystem sovietStars;
+		public ParticleSystem ghettoStars;
+		public ParticleSystem chinaStars;
+		public ParticleSystem hongKongStars;
+		public ParticleSystem tokyoStars;
+		public ParticleSystem cubaStars;
+		public ParticleSystem nigeriaStars;
+		public ParticleSystem spaceStationStars;
+
+		private int dojoIndex; 			// image behind film strip unless hilighted
+		private int hawaiiIndex;
+		private int sovietIndex;
+		private int ghettoIndex;
+		private int chinaIndex;
+		private int hongKongIndex;
+		private int tokyoIndex;
+		private int cubaIndex;
+		private int nigeriaIndex;
+		private int spaceStationIndex;
+
+		private int dojoStripIndex;		// film strip on top of image unless hilighted
+		private int hawaiiStripIndex;
+		private int sovietStripIndex;
+		private int ghettoStripIndex;
+		private int chinaStripIndex;
+		private int hongKongStripIndex;
+		private int tokyoStripIndex;
+		private int cubaStripIndex;
+		private int nigeriaStripIndex;
+		private int spaceStationStripIndex;
 
 		public Text locationHeading;
 		public Text locationLabel;	// as selected
+
+		private const float lolightAlpha = 200.0f;				// when not hilighted
 
 		public ParticleSystem coinStars;
 		private const float starSweepX = 250.0f;				// lerp target position
@@ -97,6 +142,8 @@ namespace FightingLegends
 
 			yesText.text = FightManager.Translate("upload", false, true);
 			noText.text = FightManager.Translate("cancel");
+
+			InitLocationSiblings();
 		}
 
 		private void OnEnable()
@@ -150,6 +197,8 @@ namespace FightingLegends
 
 			if (difficultySelector != null)
 				difficultySelector.OnDifficultySelected -= SetTeamDifficulty;
+
+			ResetLocationHilights();
 		}
 
 		public void Confirm(ChallengeData challenge, Action onConfirm)
@@ -225,11 +274,13 @@ namespace FightingLegends
 			uploadChallenge.Location = location;
 			locationLabel.text = location.ToUpper();
 
-			ResetLocationGlows();
+//			ResetLocationGlows();
 
-			var glow = GetLocationGlow(location);
-			if (glow != null)
-				ActivateGlow(glow, true);
+			HilightLocation(location);
+
+//			var glow = GetLocationImage(location);
+//			if (glow != null)
+//				ActivateGlow(glow, true);
 		}
 
 		private void ScrollToLocation(string location)
@@ -257,66 +308,260 @@ namespace FightingLegends
 
 		private void ResetLocationGlows()
 		{
-			ActivateGlow(dojoGlow, false);
-			ActivateGlow(hawaiiGlow, false);
-			ActivateGlow(sovietGlow, false);
-			ActivateGlow(ghettoGlow, false);
-			ActivateGlow(chinaGlow, false);
-			ActivateGlow(hongKongGlow, false);
-			ActivateGlow(tokyoGlow, false);
-			ActivateGlow(cubaGlow, false);
-			ActivateGlow(nigeriaGlow, false);
-			ActivateGlow(spaceStationGlow, false);
+//			ActivateGlow(dojoGlow, false);
+//			ActivateGlow(hawaiiGlow, false);
+//			ActivateGlow(sovietGlow, false);
+//			ActivateGlow(ghettoGlow, false);
+//			ActivateGlow(chinaGlow, false);
+//			ActivateGlow(hongKongGlow, false);
+//			ActivateGlow(tokyoGlow, false);
+//			ActivateGlow(cubaGlow, false);
+//			ActivateGlow(nigeriaGlow, false);
+//			ActivateGlow(spaceStationGlow, false);
 		}
 
 		private void ActivateGlow(Image glow, bool activate)
 		{
-			if (glow == null)
-				return;
-			
-			glow.GetComponent<Image>().enabled = activate;
-			glow.GetComponent<Animator>().enabled = activate;
+//			if (glow == null)
+//				return;
+//			
+//			glow.GetComponent<Image>().enabled = activate;
+//			glow.GetComponent<Animator>().enabled = activate;
 		}
 			
-
-		private Image GetLocationGlow(string location)
+		private void InitLocationSiblings()
 		{
+			dojoIndex = dojoImage.transform.GetSiblingIndex();
+			hawaiiIndex = hawaiiImage.transform.GetSiblingIndex();
+			sovietIndex = sovietImage.transform.GetSiblingIndex();
+			ghettoIndex = ghettoImage.transform.GetSiblingIndex();
+			chinaIndex = chinaImage.transform.GetSiblingIndex();
+			hongKongIndex = hongKongImage.transform.GetSiblingIndex();
+			tokyoIndex = tokyoImage.transform.GetSiblingIndex();
+			cubaIndex = cubaImage.transform.GetSiblingIndex();
+			nigeriaIndex = nigeriaImage.transform.GetSiblingIndex();
+			spaceStationIndex = spaceStationImage.transform.GetSiblingIndex();
+
+			dojoStripIndex = dojoFilmStrip.transform.GetSiblingIndex();
+			hawaiiStripIndex = hawaiiFilmStrip.transform.GetSiblingIndex();
+			sovietStripIndex = sovietFilmStrip.transform.GetSiblingIndex();
+			ghettoStripIndex = ghettoFilmStrip.transform.GetSiblingIndex();
+			chinaStripIndex = chinaFilmStrip.transform.GetSiblingIndex();
+			hongKongStripIndex = hongKongFilmStrip.transform.GetSiblingIndex();
+			tokyoStripIndex = tokyoFilmStrip.transform.GetSiblingIndex();
+			cubaStripIndex = cubaFilmStrip.transform.GetSiblingIndex();
+			nigeriaStripIndex = nigeriaFilmStrip.transform.GetSiblingIndex();
+			spaceStationStripIndex = spaceStationFilmStrip.transform.GetSiblingIndex();
+		}
+
+		private void ResetLocationHilights()
+		{
+			var lolightColour = new Color(255.0f, 255.0f, 255.0f, lolightAlpha);
+
+			dojoImage.transform.SetSiblingIndex(dojoIndex);
+			hawaiiImage.transform.SetSiblingIndex(hawaiiIndex);
+			sovietImage.transform.SetSiblingIndex(sovietIndex);
+			ghettoImage.transform.SetSiblingIndex(ghettoIndex);
+			chinaImage.transform.SetSiblingIndex(chinaIndex);
+			hongKongImage.transform.SetSiblingIndex(hongKongIndex);
+			tokyoImage.transform.SetSiblingIndex(tokyoIndex);
+			cubaImage.transform.SetSiblingIndex(cubaIndex);
+			nigeriaImage.transform.SetSiblingIndex(nigeriaIndex);
+			spaceStationImage.transform.SetSiblingIndex(spaceStationIndex);
+
+			dojoFilmStrip.transform.SetSiblingIndex(dojoStripIndex);
+			hawaiiFilmStrip.transform.SetSiblingIndex(hawaiiStripIndex);
+			sovietFilmStrip.transform.SetSiblingIndex(sovietStripIndex);
+			ghettoFilmStrip.transform.SetSiblingIndex(ghettoStripIndex);
+			chinaFilmStrip.transform.SetSiblingIndex(chinaStripIndex);
+			hongKongFilmStrip.transform.SetSiblingIndex(hongKongStripIndex);
+			tokyoFilmStrip.transform.SetSiblingIndex(tokyoStripIndex);
+			cubaFilmStrip.transform.SetSiblingIndex(cubaStripIndex);
+			nigeriaFilmStrip.transform.SetSiblingIndex(nigeriaStripIndex);
+			spaceStationFilmStrip.transform.SetSiblingIndex(spaceStationStripIndex);
+
+			dojoImage.color = lolightColour;
+			hawaiiImage.color = lolightColour;
+			sovietImage.color = lolightColour;
+			ghettoImage.color = lolightColour;
+			chinaImage.color = lolightColour;
+			hongKongImage.color = lolightColour;
+			tokyoImage.color = lolightColour;
+			cubaImage.color = lolightColour;
+			nigeriaImage.color = lolightColour;
+			spaceStationImage.color = lolightColour;
+
+			dojoStars.Stop();
+			hawaiiStars.Stop();
+			sovietStars.Stop();
+			ghettoStars.Stop();
+			chinaStars.Stop();
+			hongKongStars.Stop();
+			tokyoStars.Stop();
+			cubaStars.Stop();
+			nigeriaStars.Stop();
+			spaceStationStars.Stop();
+		}
+			
+		// pop location image on top of film strip to hilight
+		private void HilightLocation(string location)
+		{
+			ResetLocationHilights();
+
 			switch (location)
 			{
 				case FightManager.dojo:
-					return dojoGlow;
+					dojoImage.transform.SetSiblingIndex(dojoStripIndex);		// image on top
+					dojoFilmStrip.transform.SetSiblingIndex(dojoIndex);			// film strip behind
+					dojoStars.Play();
+					dojoImage.color = Color.white;
+					break;
 
 				case FightManager.hawaii:
-					return hawaiiGlow;
+					hawaiiImage.transform.SetSiblingIndex(hawaiiStripIndex);		// image on top
+					hawaiiFilmStrip.transform.SetSiblingIndex(hawaiiIndex);			// film strip behind
+					hawaiiStars.Play();
+					hawaiiImage.color = Color.white;
+					break;
 
 				case FightManager.soviet:
-					return sovietGlow;
+					sovietImage.transform.SetSiblingIndex(sovietStripIndex);		// image on top
+					sovietFilmStrip.transform.SetSiblingIndex(sovietIndex);			// film strip behind
+					sovietStars.Play();
+					sovietImage.color = Color.white;
+					break;
 
 				case FightManager.ghetto:
-					return ghettoGlow;
+					ghettoImage.transform.SetSiblingIndex(ghettoStripIndex);		// image on top
+					ghettoFilmStrip.transform.SetSiblingIndex(ghettoIndex);			// film strip behind
+					ghettoStars.Play();
+					ghettoImage.color = Color.white;
+					break;
 
 				case FightManager.china:
-					return chinaGlow;
+					chinaImage.transform.SetSiblingIndex(chinaStripIndex);		// image on top
+					chinaFilmStrip.transform.SetSiblingIndex(chinaIndex);			// film strip behind
+					chinaStars.Play();
+					chinaImage.color = Color.white;
+					break;
 
 				case FightManager.hongKong:
-					return hongKongGlow;
+					hongKongImage.transform.SetSiblingIndex(hongKongStripIndex);		// image on top
+					hongKongFilmStrip.transform.SetSiblingIndex(hongKongIndex);			// film strip behind
+					hongKongStars.Play();
+					hongKongImage.color = Color.white;
+					break;
 
 				case FightManager.tokyo:
-					return tokyoGlow;
+					tokyoImage.transform.SetSiblingIndex(tokyoStripIndex);		// image on top
+					tokyoFilmStrip.transform.SetSiblingIndex(tokyoIndex);			// film strip behind
+					tokyoStars.Play();
+					tokyoImage.color = Color.white;
+					break;
 
 				case FightManager.cuba:
-					return cubaGlow;
+					cubaImage.transform.SetSiblingIndex(cubaStripIndex);		// image on top
+					cubaFilmStrip.transform.SetSiblingIndex(cubaIndex);			// film strip behind
+					cubaStars.Play();
+					cubaImage.color = Color.white;
+					break;
 
 				case FightManager.nigeria:
-					return nigeriaGlow;
+					nigeriaImage.transform.SetSiblingIndex(nigeriaStripIndex);		// image on top
+					nigeriaFilmStrip.transform.SetSiblingIndex(nigeriaIndex);			// film strip behind
+					nigeriaStars.Play();
+					nigeriaImage.color = Color.white;
+					break;
 
 				case FightManager.spaceStation:
-					return spaceStationGlow;
+					spaceStationImage.transform.SetSiblingIndex(spaceStationStripIndex);		// image on top
+					spaceStationFilmStrip.transform.SetSiblingIndex(spaceStationIndex);			// film strip behind
+					spaceStationStars.Play();
+					spaceStationImage.color = Color.white;
+					break;
 
 				default:
-					return null;
+					break;
 			}
 		}
+
+//		private Image GetLocationImage(string location)
+//		{
+//			switch (location)
+//			{
+//				case FightManager.dojo:
+//					return dojoImage;
+//
+//				case FightManager.hawaii:
+//					return hawaiiImage;
+//
+//				case FightManager.soviet:
+//					return sovietImage;
+//
+//				case FightManager.ghetto:
+//					return ghettoImage;
+//
+//				case FightManager.china:
+//					return chinaImage;
+//
+//				case FightManager.hongKong:
+//					return hongKongImage;
+//
+//				case FightManager.tokyo:
+//					return tokyoImage;
+//
+//				case FightManager.cuba:
+//					return cubaImage;
+//
+//				case FightManager.nigeria:
+//					return nigeriaImage;
+//
+//				case FightManager.spaceStation:
+//					return spaceStationImage;
+//
+//				default:
+//					return null;
+//			}
+//		}
+//
+//		private Image GetLocationFilmStrip(string location)
+//		{
+//			switch (location)
+//			{
+//				case FightManager.dojo:
+//					return dojoFilmStrip;
+//
+//				case FightManager.hawaii:
+//					return hawaiiFilmStrip;
+//
+//				case FightManager.soviet:
+//					return sovietFilmStrip;
+//
+//				case FightManager.ghetto:
+//					return ghettoFilmStrip;
+//
+//				case FightManager.china:
+//					return chinaFilmStrip;
+//
+//				case FightManager.hongKong:
+//					return hongKongFilmStrip;
+//
+//				case FightManager.tokyo:
+//					return tokyoFilmStrip;
+//
+//				case FightManager.cuba:
+//					return cubaFilmStrip;
+//
+//				case FightManager.nigeria:
+//					return nigeriaFilmStrip;
+//
+//				case FightManager.spaceStation:
+//					return spaceStationFilmStrip;
+//
+//				default:
+//					return null;
+//			}
+//		}
 
 		// set all memebers of the challenge team to the selected difficulty
 		private void SetTeamDifficulty(AIDifficulty difficulty)

@@ -109,7 +109,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0.16666667
-        value: -1093
+        value: -1109
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -131,13 +131,13 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0.16666667
-        value: -109
+        value: -113
         inSlope: 0
         outSlope: 0
         tangentMode: 136
       - serializedVersion: 2
         time: 0.33333334
-        value: -109
+        value: -113
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -152,52 +152,8 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 2
-        time: 0.33333334
-        value: -676
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 0.5
-        value: -120
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_AnchoredPosition.x
-    path: Panel/Buttons/UploadButton
-    classID: 224
-    script: {fileID: 0}
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 2
-        time: 0.33333334
-        value: -3.9
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 0.5
-        value: -3.9
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_AnchoredPosition.y
-    path: Panel/Buttons/UploadButton
-    classID: 224
-    script: {fileID: 0}
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 2
-        time: 0.33333334
-        value: 678
+        time: 0
+        value: 656
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -218,14 +174,14 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 2
-        time: 0.33333334
-        value: -3.9
+        time: 0
+        value: -8
         inSlope: 0
         outSlope: 0
         tangentMode: 136
       - serializedVersion: 2
         time: 0.5
-        value: -3.9
+        value: -8
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -234,6 +190,50 @@ AnimationClip:
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.y
     path: Panel/Buttons/CancelButton
+    classID: 224
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -673
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.5
+        value: -120
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_AnchoredPosition.x
+    path: Panel/Buttons/UploadButton
+    classID: 224
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -8
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.5
+        value: -8
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_AnchoredPosition.y
+    path: Panel/Buttons/UploadButton
     classID: 224
     script: {fileID: 0}
   m_PPtrCurves: []
@@ -262,13 +262,13 @@ AnimationClip:
       classID: 224
       customType: 0
       isPPtrCurve: 0
-    - path: 3204163568
+    - path: 1740805971
       attribute: 1460864421
       script: {fileID: 0}
       classID: 224
       customType: 0
       isPPtrCurve: 0
-    - path: 1740805971
+    - path: 3204163568
       attribute: 1460864421
       script: {fileID: 0}
       classID: 224
@@ -292,13 +292,13 @@ AnimationClip:
       classID: 224
       customType: 0
       isPPtrCurve: 0
-    - path: 3204163568
+    - path: 1740805971
       attribute: 538195251
       script: {fileID: 0}
       classID: 224
       customType: 0
       isPPtrCurve: 0
-    - path: 1740805971
+    - path: 3204163568
       attribute: 538195251
       script: {fileID: 0}
       classID: 224
@@ -419,7 +419,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0.16666667
-        value: -1093
+        value: -1109
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -441,13 +441,13 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 2
         time: 0.16666667
-        value: -109
+        value: -113
         inSlope: 0
         outSlope: 0
         tangentMode: 136
       - serializedVersion: 2
         time: 0.33333334
-        value: -109
+        value: -113
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -462,52 +462,8 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 2
-        time: 0.33333334
-        value: -676
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 0.5
-        value: -120
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_AnchoredPosition.x
-    path: Panel/Buttons/UploadButton
-    classID: 224
-    script: {fileID: 0}
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 2
-        time: 0.33333334
-        value: -3.9
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      - serializedVersion: 2
-        time: 0.5
-        value: -3.9
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    attribute: m_AnchoredPosition.y
-    path: Panel/Buttons/UploadButton
-    classID: 224
-    script: {fileID: 0}
-  - curve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 2
-        time: 0.33333334
-        value: 678
+        time: 0
+        value: 656
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -528,14 +484,14 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 2
-        time: 0.33333334
-        value: -3.9
+        time: 0
+        value: -8
         inSlope: 0
         outSlope: 0
         tangentMode: 136
       - serializedVersion: 2
         time: 0.5
-        value: -3.9
+        value: -8
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -544,6 +500,50 @@ AnimationClip:
       m_RotationOrder: 4
     attribute: m_AnchoredPosition.y
     path: Panel/Buttons/CancelButton
+    classID: 224
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -673
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.5
+        value: -120
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_AnchoredPosition.x
+    path: Panel/Buttons/UploadButton
+    classID: 224
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 2
+        time: 0
+        value: -8
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.5
+        value: -8
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_AnchoredPosition.y
+    path: Panel/Buttons/UploadButton
     classID: 224
     script: {fileID: 0}
   m_EulerEditorCurves: []
