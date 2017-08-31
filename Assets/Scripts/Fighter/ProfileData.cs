@@ -61,6 +61,7 @@ namespace FightingLegends
 		public float AttackDistance;			// same for all hits - enough movement to 'make contact'
 
 		public int RomanCancelFreezeFrames;		// both fighters
+		public int PowerUpFreezeFrames;			// both fighters
 
 		public float ExpiryTime;				// seconds until next round
 		public float ExpiryDistance;			// travel distance over ExpiryTime

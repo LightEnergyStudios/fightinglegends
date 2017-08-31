@@ -64,7 +64,9 @@ namespace FightingLegends
 		private string TrainingAIName = "Ninja";		// only Ninja has tutorial punch
 
 		private float textFeedbackTime = 2.5f;			// seconds text feedback stays visible
-		private float stateFeedbackTime = 2.5f;			// seconds state feedback stays visible
+		private float stateFeedbackTime = 2.0f;			// seconds state feedback stays visible
+		private float powerUpFeedbackTime = 1.0f;		// seconds state feedback stays visible
+
 		private float newRoundTime = 1.0f;				// pauses between feedback FX
 		private float roundNumberOffset = 230.0f;		// x offset for round number FX
 
@@ -315,7 +317,7 @@ namespace FightingLegends
 
 		private bool powerUpFrozen = false;			// true while frozen for power-up
 		private IEnumerator powerUpWhiteOut = null;
-
+		public bool PowerUpFeedbackActive { get; private set; } 		// true while powerup feedback playing
 //		public float switchPositionTime = 0.5f;		// time to lerp scale switch
 
 		private const float pulseTextTime = 0.1f;	// default value for PulseText
@@ -2901,15 +2903,13 @@ namespace FightingLegends
 		}
 
 
-		public void PowerUpFeedback(PowerUp powerUp, bool stars, bool silent)
+		public IEnumerator PowerUpFeedback(PowerUp powerUp, bool stars, bool silent)
 		{
 			if (CombatMode == FightMode.Arcade || CombatMode == FightMode.Training)
-				return;
-
-			if (feedbackUI != null)
-				StartCoroutine(feedbackUI.PowerUpFeedback(powerUp, stateFeedbackTime, stars, silent));
+				yield break;
 
 			powerUpFrozen = true;
+			PowerUpFeedbackActive = true;
 
 			if (hitFlash != null)
 			{
@@ -2917,9 +2917,17 @@ namespace FightingLegends
 				StartCoroutine(powerUpWhiteOut);
 			}
 
+			if (feedbackUI != null)
+				yield return StartCoroutine(feedbackUI.PowerUpFeedback(powerUp, powerUpFeedbackTime, stars, silent));
+
+			PowerUpFeedbackActive = false;
+			yield return null;
+
+//			powerUpFrozen = true;
+//
 //			if (hitFlash != null)
 //			{
-//				powerUpWhiteOut = hitFlash.PlayColourFlash(Color.white, 2.0f);
+//				powerUpWhiteOut = hitFlash.WhiteOut(2.0f);
 //				StartCoroutine(powerUpWhiteOut);
 //			}
 		}

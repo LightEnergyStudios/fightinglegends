@@ -220,8 +220,14 @@ namespace FightingLegends
 
 		public bool isFrozen { get; private set; }
 		public bool frozenByInfoBubble { get; private set; }
-		private int romanCancelFreezeFramesRemaining { get; set; }
-		public bool romanCancelFrozen { get { return romanCancelFreezeFramesRemaining > 0; } }
+
+		private int romanCancelFreezeFramesRemaining = 0;
+//		public bool romanCancelFrozen { get { return romanCancelFreezeFramesRemaining > 0; } }
+		public bool romanCancelFrozen { get; private set; }
+
+		private int powerUpFreezeFramesRemaining = 0;
+//		public bool powerUpFrozen { get { return powerUpFreezeFramesRemaining > 0; } }
+		public bool powerUpFrozen { get; private set; }
 
 		private int freezeFightFrames = 0;			// for freeze of both fighters, deferred to frame following a hit
 
@@ -339,8 +345,11 @@ namespace FightingLegends
 		public delegate void RomanCancelDelegate(FighterChangedData newState);
 		public LastHitDelegate OnRomanCancel;
 
-//		public delegate void EndRomanCancelFreezeDelegate(Fighter fighter);
-//		public EndRomanCancelFreezeDelegate OnEndRomanCancelFreeze;
+		public delegate void EndRomanCancelFreezeDelegate(Fighter fighter);
+		public EndRomanCancelFreezeDelegate OnEndRomanCancelFreeze;
+
+		public delegate void EndPowerUpFreezeDelegate(Fighter fighter, bool fromIdle);
+		public EndPowerUpFreezeDelegate OnEndPowerUpFreeze;
 
 //		public delegate void CanRomanCancelDelegate(bool canRomanCancel);
 //		public CanRomanCancelDelegate OnCanRomanCancel;
@@ -1986,8 +1995,14 @@ namespace FightingLegends
 			// return if frozen independently..
 			if (isFrozen)
 			{
-				if (romanCancelFreezeFramesRemaining >= 0)
-					FreezeCountdown();		// for set number of frames
+				if (romanCancelFrozen && romanCancelFreezeFramesRemaining >= 0)
+					RomanCancelFreezeCountdown();		// for set number of frames
+
+				else if (powerUpFrozen && powerUpFreezeFramesRemaining >= 0)
+				{
+//					Debug.Log(FullName + ": powerUpFreezeFramesRemaining = " + powerUpFreezeFramesRemaining);
+					PowerUpFreezeCountdown();		// for set number of frames
+				}
 				return;
 			}
 
@@ -2460,7 +2475,19 @@ namespace FightingLegends
 				
 				fightManager.PowerUpAudio();
 				fightManager.StateFeedback(IsPlayer1, FightManager.Translate("powerUp", false, true), !IsDojoShadow, IsDojoShadow);
-				fightManager.PowerUpFeedback(FightManager.CombatMode == FightMode.Dojo ? FightingLegends.PowerUp.None : TriggerPowerUp, true, false);
+
+//				if (FightManager.CombatMode != FightMode.Dojo)
+				{
+					PowerUpFreeze();
+					if (Opponent != null)
+						Opponent.PowerUpFreeze();
+
+//					fightManager.PowerUpFeedback(TriggerPowerUp, true, false);
+				}
+					
+				// TODO: reinstate
+//				fightManager.PowerUpFeedback(FightManager.CombatMode == FightMode.Dojo ? FightingLegends.PowerUp.None : TriggerPowerUp, true, false);
+				StartCoroutine(fightManager.PowerUpFeedback(FightManager.CombatMode == FightMode.Dojo ? FightingLegends.PowerUp.Ignite : TriggerPowerUp, true, false));
 
 				if (hitFlash != null)
 				{
@@ -3023,6 +3050,7 @@ namespace FightingLegends
 				freezeFightFrames = freezeFrames;	
 		}
 
+
 		// used for freezing this fighter only - fightManager.FreezeFight() freezes both in sync
 		private void RomanCancelFreeze()
 		{
@@ -3033,21 +3061,22 @@ namespace FightingLegends
 			if (freezeFrames > 0)
 			{
 				if (freezeFrames > romanCancelFreezeFramesRemaining)		// this is a new freeze or extending an existing freeze
+				{
 					romanCancelFreezeFramesRemaining = freezeFrames;
+					romanCancelFrozen = true;
+				}
 				
 				Freeze();
 			}
 		}
-
+			
 		// used for freezing this fighter only - fightManager.FreezeFight() freezes both in sync
-		private void FreezeCountdown()
+		private void RomanCancelFreezeCountdown()
 		{
 			if (romanCancelFreezeFramesRemaining == 0)
 			{
 				Unfreeze();
-
-//				if (! UnderAI)
-//					Debug.Log(FullName + ": Unfreeze: State = " + CurrentState + " CurrentMove = " + CurrentMove);
+				romanCancelFrozen = false;
 
 				if (CurrentMove == Move.Roman_Cancel)
 				{
@@ -3058,8 +3087,8 @@ namespace FightingLegends
 					if (Opponent != null)
 						Opponent.ResetStunDuration(Opponent.RomanCancelStunFrames);		// if opponent is stunned
 
-//					if (OnEndRomanCancelFreeze != null)
-//						OnEndRomanCancelFreeze(this);
+					if (OnEndRomanCancelFreeze != null)
+						OnEndRomanCancelFreeze(this);
 				}
 			}
 			else
@@ -3067,6 +3096,42 @@ namespace FightingLegends
 //				Debug.Log(FullName + ": frozen " + romanCancelFreezeFramesRemaining + " frames remaining" + " [" + AnimationFrameCount + "]");
 				StateUI = "[ Frozen... " + romanCancelFreezeFramesRemaining + " ]";
 				romanCancelFreezeFramesRemaining--;
+			}
+		}
+
+
+		// used for freezing this fighter only - fightManager.FreezeFight() freezes both in sync
+		private void PowerUpFreeze()
+		{
+			int freezeFrames = ProfileData.PowerUpFreezeFrames;
+
+			if (freezeFrames > 0)
+			{
+				if (freezeFrames > powerUpFreezeFramesRemaining)		// this is a new freeze or extending an existing freeze
+				{
+					powerUpFreezeFramesRemaining = freezeFrames;
+					powerUpFrozen = true;
+				}
+
+				Freeze();
+			}
+		}
+
+		private void PowerUpFreezeCountdown()
+		{
+			if (powerUpFreezeFramesRemaining == 0)
+			{
+				Unfreeze();
+				powerUpFrozen = false;
+
+				if (OnEndPowerUpFreeze != null)
+					OnEndPowerUpFreeze(this, CurrentState == State.Idle);
+			}
+			else
+			{
+//				Debug.Log(FullName + ": PowerUpFreezeCountdown " + powerUpFreezeFramesRemaining + " frames remaining" + " [" + AnimationFrameCount + "]");
+				StateUI = "[ Frozen... " + powerUpFreezeFramesRemaining + " ]";
+				powerUpFreezeFramesRemaining--;
 			}
 		}
 
@@ -3614,7 +3679,7 @@ namespace FightingLegends
 
 		public void ResetMove(bool resetTraining)
 		{
-//			Debug.Log(FullName + ": ResetMove" + " [" + AnimationFrameCount + "]");
+			Debug.Log(FullName + ": ResetMove" + " [" + AnimationFrameCount + "]");
 
 			// combos and chaining
 			comboTriggered = false; 
@@ -3634,7 +3699,11 @@ namespace FightingLegends
 			blockStunFramesRemaining = 0;
 
 			romanCancelFreezeFramesRemaining = 0;
+			powerUpFreezeFramesRemaining = 0;
 			isFrozen = false;
+			romanCancelFrozen = false;
+			powerUpFrozen = false;
+
 			takenLastFatalHit = false;	
 
 			ClearCuedMoves();

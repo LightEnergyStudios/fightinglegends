@@ -189,6 +189,7 @@ namespace FightingLegends
 			fighter.OnCanContinue += OnCanContinue;
 			fighter.OnRomanCancel += OnRomanCancel;
 			fighter.OnPowerUpTriggered += OnPowerUp;
+			fighter.OnEndPowerUpFreeze += OnEndPowerUpFreeze;
 			fighter.OnKnockOut += OnKnockOut;
 
 			if (! shadow.UnderAI)
@@ -224,6 +225,7 @@ namespace FightingLegends
 			fighter.OnCanContinue -= OnCanContinue;
 			fighter.OnRomanCancel -= OnRomanCancel;
 			fighter.OnPowerUpTriggered -= OnPowerUp;
+			fighter.OnEndPowerUpFreeze -= OnEndPowerUpFreeze;
 
 			fighter.OnKnockOut -= OnKnockOut;
 
@@ -723,7 +725,7 @@ namespace FightingLegends
 			}
 			else
 			{
-				shadow.WrongFeedbackFX();		// TODO: remove this!
+//				shadow.WrongFeedbackFX();		// TODO: remove this!
 //				Debug.Log("ShadowExecuteNextMove: NOT EXECUTED nextMove = " + nextMove + ", Continued = " + NextMoveContinued + ", Chained = " + NextMoveChained + ". Comboed = " + NextMoveComboed + ", SpecialExtraTriggered = " + NextMoveSpecialExtra + ", frame = " + playbackFrameCount);
 //				Debug.Log(" --- STATE = " + shadow.CurrentState + ", comboTriggered = " + shadow.comboTriggered + ", chainedCounter = " + shadow.chainedCounter + ", chainedSpecial = " + shadow.chainedSpecial + ", specialExtraTriggered = " + shadow.specialExtraTriggered);
 
@@ -958,15 +960,31 @@ namespace FightingLegends
 				StartCoroutine(RecordPowerUp(powerUpFighter, fromIdle));
 		}
 
-		private IEnumerator RecordPowerUp(Fighter powerUpFighter, bool fromIdle)
+		// record move
+		private void OnEndPowerUpFreeze(Fighter powerUpFighter, bool fromIdle)
 		{
-			yield return StartCoroutine(RecordMove(SwipeUpMove, powerUpFighter.CurrentState, fromIdle, !fromIdle, false, false, false));
+			if (powerUpFighter != fighter)
+				return;
 
 			if (fromIdle)
 			{
 				StopRecording();
 				StartPlayback();				// waits for shadow to return to idle
 			}
+
+//			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
+//				StartCoroutine(RecordPowerUp(powerUpFighter, fromIdle));
+		}
+
+		private IEnumerator RecordPowerUp(Fighter powerUpFighter, bool fromIdle)
+		{
+			yield return StartCoroutine(RecordMove(SwipeUpMove, powerUpFighter.CurrentState, fromIdle, !fromIdle, false, false, false));
+
+//			if (fromIdle)
+//			{
+//				StopRecording();
+//				StartPlayback();				// waits for shadow to return to idle
+//			}
 		}
 			
 		// follow-up feedback
@@ -1049,7 +1067,7 @@ namespace FightingLegends
 			if (playbackInProgress && NextMoveIsLast)		// stop playback if power-up is last move - hasn't stepped on after move execution yet
 			{
 				ResetRecordedMoves();
-				shadow.ResetMove(false);		// resets powerUpTriggered flag, clears cued moves, returns to idle, etc
+//				shadow.ResetMove(false);		// resets powerUpTriggered flag, clears cued moves, returns to idle, etc
 			}
 			else 
 				shadow.ResetPowerUpTrigger();	// resets powerUpTriggered flag

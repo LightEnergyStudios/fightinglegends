@@ -56,8 +56,17 @@ namespace FightingLegends
 		public AudioClip powerUpSweepAudio;
 		public AudioClip powerUpFireworksAudio;
 
+		// trigger power-ups
+		public Image TriggerPowerUp;				// displayed with feedback
+		public Sprite VengeanceBooster;
+		public Sprite Ignite;
+		public Sprite HealthBooster;
+		public Sprite PowerAttack;
+		public Sprite SecondLife;
+
 //		private const float powerUpTime = 0.25f;			// pulse level number
-		private const float powerUpEntryTime = 0.1f;		// entry / exit of power-up panel
+		private const float powerUpEntryTime = 0.15f;		// entry / exit of power-up panel
+		private const float powerUpImageTime = 0.3f;		// entry / exit of power-up panel
 
 		private const float stateCharWidth = 20.0f;			// approx width of each char in state feedback text (for star sweep)
 
@@ -482,6 +491,8 @@ namespace FightingLegends
 
 		public IEnumerator PowerUpFeedback(PowerUp powerUp, float displayTime, bool stars, bool silent)
 		{
+			SetPowerUpImage(powerUp);
+
 			PowerUpText.text = TriggerPowerUpText(powerUp);
 
 			var powerUpStartScale = new Vector3(0, 1, 1);				// expands along y
@@ -491,7 +502,7 @@ namespace FightingLegends
 
 			float t = 0;
 
-			// scale in  - expand along y
+			// scale in panel - expand along y
 			while (t < 1.0f)
 			{
 				t += Time.deltaTime * (Time.timeScale / powerUpEntryTime);
@@ -509,16 +520,70 @@ namespace FightingLegends
 				yield return null;
 			}
 				
+			// power-up image animation
+			t = 0;
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / powerUpImageTime);
+
+				TriggerPowerUp.transform.localScale = Vector3.Lerp(Vector3.zero, powerUpLargeScale, t);
+				yield return null;
+			}
+
 			// stars and fireworks
 			if (stars)
 			{
 				float textWidth =  (float)PowerUpText.text.Length * stateCharWidth;
-				yield return StartCoroutine(PowerUpStarSweep(textWidth, silent));
+				StartCoroutine(PowerUpStarSweep(textWidth, silent));
+//				yield return StartCoroutine(PowerUpStarSweep(textWidth, silent));
+			}
+
+			t = 0;
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / (powerUpImageTime / 2.0f));
+
+				TriggerPowerUp.transform.localScale = Vector3.Lerp(powerUpLargeScale, Vector3.one, t);
+				yield return null;
 			}
 				
 			yield return new WaitForSeconds(displayTime);
 			StartCoroutine(ClearPowerUpFeedback());
 		}
+
+		private void SetPowerUpImage(PowerUp powerUp)
+		{
+			switch (powerUp)
+			{
+				case PowerUp.VengeanceBooster:
+					TriggerPowerUp.sprite = VengeanceBooster;
+					break;
+
+				case PowerUp.Ignite:
+					TriggerPowerUp.sprite = Ignite;
+					break;
+
+				case PowerUp.HealthBooster:
+					TriggerPowerUp.sprite = HealthBooster;
+					break;
+
+				case PowerUp.PowerAttack:
+					TriggerPowerUp.sprite = PowerAttack;
+					break;
+
+				case PowerUp.SecondLife:
+					TriggerPowerUp.sprite = SecondLife;
+					break;
+
+				default:
+					TriggerPowerUp.sprite = null;
+					break;
+			}
+
+			TriggerPowerUp.gameObject.SetActive(TriggerPowerUp.sprite != null);
+			TriggerPowerUp.transform.localScale = Vector3.zero;
+		}
+
 			
 		public IEnumerator ClearPowerUpFeedback()
 		{
@@ -533,6 +598,7 @@ namespace FightingLegends
 				t += Time.deltaTime * (Time.timeScale / powerUpEntryTime);
 
 				PowerUpPanel.transform.localScale = Vector3.Lerp(Vector3.one, targetScale, t);
+				TriggerPowerUp.transform.localScale = Vector3.Lerp(Vector3.one, targetScale, t);
 				yield return null;
 			}
 
