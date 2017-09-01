@@ -818,6 +818,9 @@ namespace FightingLegends
 
 				if (ExpiredHealth)
 					return false;
+
+				if (fightManager.PowerUpFeedbackActive)
+					return false;
 				
 				if (powerUpTriggered)
 					return false;
@@ -1697,6 +1700,9 @@ namespace FightingLegends
 				return;
 			}
 
+			if (fightManager.PowerUpFeedbackActive)
+				return;
+
 			PowerUp();
 
 			if (InTraining)
@@ -2419,6 +2425,9 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": PowerUp " + TriggerPowerUp + ", CanTriggerPowerUp = " + CanTriggerPowerUp + ", FightPaused = " + fightManager.FightPaused);
 
+			if (fightManager.PowerUpFeedbackActive)
+				return false;
+			
 			if (FightManager.CombatMode != FightMode.Dojo)
 			{
 				if (fightManager.FightPaused)

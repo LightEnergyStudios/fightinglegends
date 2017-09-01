@@ -980,7 +980,7 @@ GameObject:
   - component: {fileID: 114000013163237350}
   - component: {fileID: 114000010213895824}
   m_Layer: 14
-  m_Name: PlayButton
+  m_Name: FightButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1865,7 +1865,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000014166953112
 GameObject:
   m_ObjectHideFlags: 1
@@ -1912,6 +1912,7 @@ GameObject:
   - component: {fileID: 114000011270774058}
   - component: {fileID: 114000010140489784}
   - component: {fileID: 114000010521164958}
+  - component: {fileID: 95680044544947238}
   m_Layer: 14
   m_Name: SurvivalSelect
   m_TagString: Untagged
@@ -2461,6 +2462,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!95 &95680044544947238
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000014241969818}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 159eaa124d9ee4d90ac2a5eecf288da0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114000010003096162
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3119,8 +3137,6 @@ MonoBehaviour:
   storeLabel: {fileID: 114204738292100990}
   powerUpButton: {fileID: 114000010206458396}
   powerUpLabel: {fileID: 114000013376186464}
-  PreviewMoves: 0
-  PreviewUseGauge: 0
   titleText: {fileID: 114000012899816910}
   shiroButton: {fileID: 114000012079165674}
   natalyaButton: {fileID: 114000013664770626}
@@ -5924,7 +5940,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 98d0880982e9c40e4a767f96c18c26eb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0ce0555def57a49c59bb4f70ec36d036, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -11288,7 +11304,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 302, y: 35.3}
+  m_AnchoredPosition: {x: 253, y: 73}
   m_SizeDelta: {x: 227.6, y: 57.882}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224000014146530858

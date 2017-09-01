@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 114000014025633866}
   - component: {fileID: 114000013612037760}
   - component: {fileID: 114000013057863834}
+  - component: {fileID: 95591960205451038}
   m_Layer: 14
   m_Name: ArcadeSelect
   m_TagString: Untagged
@@ -1221,6 +1222,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &95591960205451038
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010615494674}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f940862f1dce5496fa812414b35be3a5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114000010117086194
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2848,8 +2866,6 @@ MonoBehaviour:
   storeLabel: {fileID: 0}
   powerUpButton: {fileID: 0}
   powerUpLabel: {fileID: 0}
-  PreviewMoves: 0
-  PreviewUseGauge: 0
   titleText: {fileID: 114000013600869230}
   shiroButton: {fileID: 114000010282408662}
   natalyaButton: {fileID: 114000010419443642}
@@ -4008,7 +4024,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 98d0880982e9c40e4a767f96c18c26eb, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0ce0555def57a49c59bb4f70ec36d036, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -5067,7 +5083,7 @@ RectTransform:
   - {fileID: 224000012671452974}
   - {fileID: 224951452691804848}
   m_Father: {fileID: 224000011262675410}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5143,7 +5159,7 @@ RectTransform:
   - {fileID: 224000010779598042}
   - {fileID: 224445035581973056}
   m_Father: {fileID: 224000011262675410}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5209,12 +5225,12 @@ RectTransform:
   - {fileID: 224000011460526150}
   - {fileID: 224000011563294980}
   - {fileID: 224000013826870248}
+  - {fileID: 224000012211331684}
   - {fileID: 224000010941746838}
   - {fileID: 224000013986505804}
   - {fileID: 224000012213163868}
   - {fileID: 224000010678142462}
   - {fileID: 224539686818545456}
-  - {fileID: 224000012211331684}
   - {fileID: 224000012692651158}
   - {fileID: 224000013110625268}
   - {fileID: 224000011264944162}
@@ -5377,7 +5393,7 @@ RectTransform:
   - {fileID: 224000011001656318}
   - {fileID: 224227914293284536}
   m_Father: {fileID: 224000011262675410}
-  m_RootOrder: 14
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5399,7 +5415,7 @@ RectTransform:
   - {fileID: 224000010251492306}
   - {fileID: 224444116519254172}
   m_Father: {fileID: 224000011262675410}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5807,7 +5823,7 @@ RectTransform:
   - {fileID: 224000010357650356}
   - {fileID: 224869459247016606}
   m_Father: {fileID: 224000011262675410}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6082,7 +6098,7 @@ RectTransform:
   - {fileID: 224196895023684574}
   - {fileID: 224054958935688358}
   m_Father: {fileID: 224000011262675410}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
