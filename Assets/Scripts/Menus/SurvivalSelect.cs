@@ -25,15 +25,6 @@ namespace FightingLegends
 		public Sprite VengeanceBooster;
 	
 
-//		// virtual method called OnEnable
-//		protected override void InitFighterCards()
-//		{
-//			base.InitFighterCards();
-//
-//			// lookup level, xp and power-ups from fighter profile (saved) data (all fighters)
-//			SetCardProfiles();
-//		}
-
 		// lookup level, xp and power-ups from each fighter profile (saved) data
 		protected override void SetCardProfiles()
 		{

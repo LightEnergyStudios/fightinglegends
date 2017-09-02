@@ -3638,7 +3638,7 @@ MonoBehaviour:
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114000013057863834, guid: d05b67c8f928a41549f88821f74d3402,
     type: 2}
-  m_PrefabInternal: {fileID: 442223980}
+  m_PrefabInternal: {fileID: 250187716}
   m_Script: {fileID: 11500000, guid: 978e272fc6d764401a5e22805c07a9fe, type: 3}
 --- !u!114 &4858 stripped
 MonoBehaviour:
@@ -4330,13 +4330,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
---- !u!114 &321230135 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114213616560112670, guid: 7cef9bf142eac4f02b6ef2918ec93173,
-    type: 2}
-  m_PrefabInternal: {fileID: 1663668377}
-  m_Script: {fileID: 11500000, guid: 283e2b50383854b79aa0d986a5d99786, type: 3}
---- !u!1001 &442223980
+--- !u!1001 &250187716
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -4438,13 +4432,15 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1314}
-    - target: {fileID: 1000010615494674, guid: d05b67c8f928a41549f88821f74d3402, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d05b67c8f928a41549f88821f74d3402, type: 2}
   m_IsPrefabParent: 0
+--- !u!114 &321230135 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114213616560112670, guid: 7cef9bf142eac4f02b6ef2918ec93173,
+    type: 2}
+  m_PrefabInternal: {fileID: 1663668377}
+  m_Script: {fileID: 11500000, guid: 283e2b50383854b79aa0d986a5d99786, type: 3}
 --- !u!1001 &563913035
 Prefab:
   m_ObjectHideFlags: 0
@@ -4877,6 +4873,14 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1319}
+    - target: {fileID: 1607783455346714, guid: d0f0200743b564a16bc6d83ccfc0df1b, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1681906461785646, guid: d0f0200743b564a16bc6d83ccfc0df1b, type: 2}
+      propertyPath: m_Name
+      value: Coins
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d0f0200743b564a16bc6d83ccfc0df1b, type: 2}
   m_IsPrefabParent: 0
@@ -5853,16 +5857,6 @@ Prefab:
     - target: {fileID: 1000014241969818, guid: e4abcb3d3a0ae4fca9f80f8a9ee3bd3e, type: 2}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000014138923648, guid: e4abcb3d3a0ae4fca9f80f8a9ee3bd3e,
-        type: 2}
-      propertyPath: m_AnchoredPosition.x
-      value: 255
-      objectReference: {fileID: 0}
-    - target: {fileID: 224000014138923648, guid: e4abcb3d3a0ae4fca9f80f8a9ee3bd3e,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 68
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e4abcb3d3a0ae4fca9f80f8a9ee3bd3e, type: 2}

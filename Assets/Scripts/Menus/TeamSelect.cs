@@ -22,6 +22,7 @@ namespace FightingLegends
 		public Text fightText;
 		public Text uploadText;
 		public Text resultText;
+		public Text statusText;
 
 		public Button leoniButton;		// set in Inspector
 		public Button shiroButton;			
@@ -389,12 +390,12 @@ namespace FightingLegends
 		private void AddListeners()
 		{
 			FightManager.OnThemeChanged += SetTheme;
+			FightManager.OnUserProfileChanged += CheckChallengeStatus;			// check for challenge result
 
 			FirebaseManager.OnChallengeSaved += OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted += OnChallengeAccepted;
 			FirebaseManager.OnChallengeRemoved += OnChallengeRemoved;
 			FirebaseManager.OnChallengesDownloaded += OnChallengesDownloaded;
-			FirebaseManager.OnGetUserProfile += OnGetUserProfile;	
 			FirebaseManager.OnUserProfileSaved += OnUserProfileSaved;
 
 //			Debug.Log("TeamSelect.AddListeners");
@@ -428,7 +429,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
+			CheckInternet();
 
 			LayerTeam();
 
@@ -449,11 +450,13 @@ namespace FightingLegends
 		private void RemoveListeners()
 		{
 			FightManager.OnThemeChanged -= SetTheme;
+			FightManager.OnUserProfileChanged -= CheckChallengeStatus;	
+
 			FirebaseManager.OnChallengeSaved -= OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted -= OnChallengeAccepted;
 			FirebaseManager.OnChallengeRemoved -= OnChallengeRemoved;
 			FirebaseManager.OnChallengesDownloaded -= OnChallengesDownloaded;
-			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
+//			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
 			FirebaseManager.OnUserProfileSaved -= OnUserProfileSaved;
 
 //			Debug.Log("TeamSelect.RemoveListeners");
@@ -510,6 +513,14 @@ namespace FightingLegends
 			}
 		}
 
+
+		private void CheckInternet()
+		{
+			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
+
+			if (!internetReachable)
+				statusText.text = FightManager.Translate("noInternet");
+		}
 
 		private IEnumerator MoveCardTo(FighterCard card, Vector3 targetPosition, float moveTime, AudioClip audio)
 		{
@@ -1353,8 +1364,11 @@ namespace FightingLegends
 		}
 
 
-		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
+		private void CheckChallengeStatus(string userId, UserProfile profile)
 		{
+			if (!internetReachable)
+				return;
+			
 			if (FightManager.SavedGameStatus.UserId == "")		// not registered
 			{
 				uploadButton.interactable = true;				// will prompt for user registration
@@ -1363,18 +1377,21 @@ namespace FightingLegends
 			
 			userProfile = profile;
 
-			if (success && profile != null && userId == FightManager.SavedGameStatus.UserId)	
+			if (profile != null && userId == FightManager.SavedGameStatus.UserId)	
 			{
 				if (profile.ChallengeKey == "")			// no challenge uploaded
 				{
 					uploadButton.interactable = true;
+					statusText.text = "";
 					return;
 				}
+					
+				uploadButton.interactable = false; 
+				statusText.text = FightManager.Translate("challengeUploaded");
 					
 				if (profile.ChallengeResult == "")		// challenge not yet accepted/completed
 				{
 					resultText.text = "";	
-					uploadButton.interactable = false;
 					return;
 				}
 
@@ -1403,6 +1420,11 @@ namespace FightingLegends
 			if (success && profile != null && userId == FightManager.SavedGameStatus.UserId)
 			{
 				uploadButton.interactable = profile.ChallengeKey == "";		// one at a time
+
+				if (profile.ChallengeKey != "")
+					statusText.text = FightManager.Translate("challengeUploaded");
+				else
+					statusText.text = "";
 			}
 		}
 

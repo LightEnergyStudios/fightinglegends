@@ -11,19 +11,8 @@
 		<string name="survivalTitle">FIGHT ENDLESS OPPONENTS AND LEVEL-UP!</string>
 		<string name="challengeMode">CHALLENGE MODE</string>
 		<string name="challengeTitle">LEAD A TEAM OF CHAMPIONS TO VICTORY!</string>
-		<string name="dojoTitle2">TRAIN WITH AND ENHANCE YOUR FIGHTERS</string>
 		<string name="dojoTitle">TRAINING, POWER-UP AND COMMUNITY HUB</string>
 		<string name="trainingTitle">LEARN BASIC TIMING AND TECHNIQUE</string>
-
-        <string name="redLightHeader2">RED = MOVE NOT POSSIBLE</string>
-        <string name="greenLightHeader2">GREEN = EXECUTE A MOVE!</string>
-        <string name="yellowLightHeader2">YELLOW = RESET AVAILABLE!</string>
-        <string name="leftArrowHeader2">LEFT ARROW = COUNTER ATTACK!</string>
-
-        <string name="redLightNarrative2">Whilst you are under attack \n or already executing a move</string>
-        <string name="greenLightNarrative2">Your opportunity to attack or block! \n A green flash indicates successful input!</string>
-        <string name="yellowLightNarrative2">Escape an attack to retaliate, or cut-off \n the end of a move to follow-up for a combo!</string>
-        <string name="leftArrowNarrative2">Your chance to counter attack \n before your opponent strikes!</string>
 
         <string name="redLightHeading">RED = BLOCK</string>
         <string name="greenLightHeading">GREEN = FIGHT</string>
@@ -75,7 +64,6 @@
         <string name="facebookMenuInfoMessage">Check out how your top score compares with your Facebook friends!</string>
         <string name="leaderboardsMenuInfoMessage">Compete on the world stage with your fight statistics!</string>
 
-        <string name="dojoFightInfoMessage2">Practice your attack and defence technique. The hilighted moves indicate the choices available at any given time.</string>
         <string name="dojoFightInfoMessage">Practice your attack and defence technique. Your best combo score will be posted to the Leader Board!</string>
         <string name="trainingFightInfoMessage">Follow the prompts to learn some basic moves and understand the importance of TIMING.</string>
         <string name="arcadeFightInfoMessage">Defeat your chosen opponent to progress on your WORLD TOUR!</string>
@@ -210,6 +198,7 @@
 		<string name="no">NO</string>
 		<string name="yesPlease">YES PLEASE</string>
 		<string name="noThanks">NO THANKS</string>
+		<string name="noInternet">NO INTERNET</string>
 		
 		<string name="buyCoins">BUY MORE COINS!</string>
 		<string name="spendCoins">SPEND SOME COINS!</string>
@@ -317,7 +306,6 @@
 		<string name="noTeamMembers">NO TEAM MEMBERS</string>
 		<string name="costToFieldTeam">COST TO FIELD TEAM</string>
 		<string name="teamValue">TEAM VALUE</string>
-		<string name="chooseChallenge2">CHOOSE A CHALLENGE!</string>
 		<string name="chooseCategory">CHOOSE A CATEGORY!</string>
 		<string name="upload">UPLOAD</string>
 		<string name="uploaded">UPLOADED</string>
@@ -325,10 +313,11 @@
 		<string name="youWon">YOU WON</string>
 		<string name="youLost">YOU LOST</string>
 		<string name="challengeExpires">Challenge expires</string>
-		<string name="confirmUploadChallenge">UPLOAD your challenge? One in the Challenge Arena at a time!</string>
+		<string name="confirmUploadChallenge">UPLOAD your challenge? Only one at a time!</string>
 		<string name="confirmFightChallenge">ACCEPT this challenge? There's no going back!</string>
 		<string name="confirmRemoveChallenge">REMOVE your challenge and forfeit your coins?</string>
 		<string name="uploadingChallenge">Uploading challenge</string>
+		<string name="challengeUploaded">CHALLENGE UPLOADED</string>
 		<string name="congratulations">CONGRATULATIONS</string>
 		<string name="betterLuckNextTime">BETTER LUCK NEXT TIME</string>
 		<string name="yourTeamWon">YOUR TEAM WON THE CHALLENGE</string>

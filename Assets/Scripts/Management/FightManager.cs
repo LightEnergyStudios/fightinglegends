@@ -366,6 +366,9 @@ namespace FightingLegends
 //		public bool ShowTrainingNarrative = false;			// show narrative panel during training
 //		public bool ShowStateFeedback = true;				// show state feedback + fireworks
 
+		public delegate void UserProfileDelegate(string userId, UserProfile profile);
+		public static UserProfileDelegate OnUserProfileChanged;
+
 		public delegate void SavedStatusLoadedDelegate(SavedStatus status);
 		public static SavedStatusLoadedDelegate OnLoadSavedStatus;
 
@@ -487,12 +490,44 @@ namespace FightingLegends
 				SavedGameStatus.SelectedFighterColour = value;
 			}
 		}
+
+		private static UserProfile userLoginProfile;
+		public static UserProfile UserLoginProfile
+		{
+			get
+			{
+				if (userLoginProfile != null)
+					return userLoginProfile;
+
+				if (SavedGameStatus.UserId != "")
+					FirebaseManager.GetUserProfile(SavedGameStatus.UserId);		// callback below
+
+				return null;
+			}
+			private set
+			{
+				userLoginProfile = value;
+
+				if (OnUserProfileChanged != null)
+					OnUserProfileChanged(userLoginProfile.UserID, userLoginProfile);
+			}
+		}
+
+		// callback from Firebase
+		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
+		{
+			if (success && profile != null && userId == SavedGameStatus.UserId)	
+			{
+				UserLoginProfile = profile;			// broadcasts
+			}
+		}
 				
 		public delegate void CoinsDelegate(int coins);
 		public static CoinsDelegate OnCoinsChanged;
 
 		public delegate void KudosDelegate(float kudos);
 		public static KudosDelegate OnKudosChanged;
+
 
 		#region fighter selection
 
@@ -823,7 +858,7 @@ namespace FightingLegends
 			}
 		}
 
-
+	
 		public static void CheckForChallengeResult()
 		{
 			if (SavedGameStatus.UserId != "")
@@ -864,7 +899,7 @@ namespace FightingLegends
 
 			AreYouSure.OnCancelConfirm += OnConfirmNo;			// don't quit fight
 //			FirebaseManager.OnUserChallengePotUpdated += OnUserChallengePotUpdated;
-//			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
+			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
 
 //			FBManager.OnLoginFail += FBLoginFail;
 //			FBManager.OnLoginSuccess += FBLoginSuccess;
@@ -882,7 +917,7 @@ namespace FightingLegends
 			}
 				
 			AreYouSure.OnCancelConfirm -= OnConfirmNo;
-//			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
+			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
 //			FirebaseManager.OnUserChallengePotUpdated -= OnUserChallengePotUpdated;
 
 //			FBManager.OnLoginFail -= FBLoginFail;
@@ -2583,9 +2618,7 @@ namespace FightingLegends
 
 		// challenge mode
 
-//		public void SetupChallenge(ChallengePot challengePot, List<FighterCard> selectedTeam,  List<FighterCard> selectedAITeam)
 		public void SetupChallenge(TeamChallenge challenge, List<FighterCard> selectedTeam, int selectedTeamPrizeCoins, List<FighterCard> selectedAITeam)
-//		public void SetupChallenge(ChallengePot challengePot, ChallengeCategory category, string challengeLocation, List<FighterCard> selectedTeam,  List<FighterCard> selectedAITeam)
 		{
 //			if (CombatMode != FightMode.Challenge)
 //				return;
@@ -2600,7 +2633,6 @@ namespace FightingLegends
 
 			ChallengePot = (challenge.PrizeCoins + selectedTeamPrizeCoins) - (int)((float)ChallengePot * ChallengeFee / 100.0f);
 
-//			ChosenCategory = (ChallengeCategory)Enum.Parse(typeof(ChallengeCategory), challenge.ParentCategory);
 			ChosenCategory = challenge.ChallengeCategory;
 			SelectedLocation = challenge.Location; //AcceptedChallenge.Location;
 			gameUI.SetupCombatMode();							// update 'title'
@@ -3775,7 +3807,8 @@ namespace FightingLegends
 
 		private bool KudosVisible
 		{
-			get { return ((CurrentMenuCanvas == MenuType.Combat && CombatMode != FightMode.Training) || CurrentMenuCanvas == MenuType.PauseSettings || CurrentMenuCanvas == MenuType.Facebook || CurrentMenuCanvas == MenuType.Leaderboards); }
+			get { return ((CurrentMenuCanvas == MenuType.Combat && CombatMode != FightMode.Training) || CurrentMenuCanvas == MenuType.PauseSettings
+								|| CurrentMenuCanvas == MenuType.Dojo || CurrentMenuCanvas == MenuType.Facebook || CurrentMenuCanvas == MenuType.Leaderboards); }
 		}
 
 		private void MenuPop()

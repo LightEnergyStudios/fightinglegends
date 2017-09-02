@@ -12,11 +12,11 @@ namespace FightingLegends
 		public Button fightButton;				// not always used (eg. store)
 		public Text fightLabel;
 
-		public Button storeButton;				// not always used (eg. arcade mode, store)
-		public Text storeLabel;	
-
-		public Button powerUpButton;			// not always used (eg. arcade mode, store)
-		public Text powerUpLabel;
+//		public Button storeButton;				// not always used (eg. arcade mode, store)
+//		public Text storeLabel;	
+//
+//		public Button powerUpButton;			// not always used (eg. arcade mode, store)
+//		public Text powerUpLabel;
 
 		public Text titleText;
 
@@ -63,6 +63,16 @@ namespace FightingLegends
 		public Sprite skeletronFrame;
 		public Sprite ninjaFrame;
 
+		public Image Coin;
+		private bool animateInsertCoin = false;
+		private float insertCoinTime = 1.5f;
+		private float insertCoinOffset = 200.0f;			// entry from right
+
+		private Animator animator;
+		private bool animatingEntry = false;
+		private bool animatedEntry = false;
+		private const float animatePauseTime = 0.5f;		// pause before animated card entry
+
 		public delegate void PreviewCreatedDelegate(Fighter previewFighter, bool fighterChanged);
 		public PreviewCreatedDelegate OnPreviewCreated;
 
@@ -80,11 +90,13 @@ namespace FightingLegends
 			if (fightLabel != null)
 				fightLabel.text = FightManager.Translate("fight", false, true);
 
-			if (storeLabel != null)
-				storeLabel.text = FightManager.Translate("dojo");
+//			if (storeLabel != null)
+//				storeLabel.text = FightManager.Translate("dojo");
+//
+//			if (powerUpLabel != null)
+//				powerUpLabel.text = FightManager.Translate("powerUp"); //, true, false);
 
-			if (powerUpLabel != null)
-				powerUpLabel.text = FightManager.Translate("powerUp"); //, true, false);
+			animatedEntry = false;
 		}
 
 		public void Init()
@@ -107,6 +119,11 @@ namespace FightingLegends
 				SetPreviewFighter();
 
 			InitFighterCards();		// virtual
+
+			if (! animatedEntry)
+				StartCoroutine(AnimateCardEntry());			// virtual (different animators)
+			else
+				AnimateCoin();
 		}
 
 		protected void SetPreviewFighter()
@@ -124,6 +141,7 @@ namespace FightingLegends
 		private void OnDisable()
 		{
 			HideFighter();
+			animateInsertCoin = false;
 		}
 
 		private void StartListening()
@@ -132,11 +150,13 @@ namespace FightingLegends
 				return;
 			
 			if (fightButton != null)
-				fightButton.onClick.AddListener(delegate { CombatInsertCoin(); });
-			if (storeButton != null)
-				storeButton.onClick.AddListener(delegate { ShowStore(); });
-			if (powerUpButton != null)
-				powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
+				fightButton.onClick.AddListener(delegate { ShowCombat(); });
+
+//				fightButton.onClick.AddListener(delegate { CombatInsertCoin(); });
+//			if (storeButton != null)
+//				storeButton.onClick.AddListener(delegate { ShowStore(); });
+//			if (powerUpButton != null)
+//				powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
 			
 			FightManager.OnThemeChanged += SetTheme;
 
@@ -179,10 +199,10 @@ namespace FightingLegends
 
 			if (fightButton != null)
 				fightButton.onClick.RemoveListener(delegate { ShowCombat(); });
-			if (storeButton != null)
-				storeButton.onClick.RemoveListener(delegate { ShowStore(); });
-			if (powerUpButton != null)
-				powerUpButton.onClick.RemoveListener(delegate { PowerUpFighter(); });
+//			if (storeButton != null)
+//				storeButton.onClick.RemoveListener(delegate { ShowStore(); });
+//			if (powerUpButton != null)
+//				powerUpButton.onClick.RemoveListener(delegate { PowerUpFighter(); });
 			
 			shiroButton.onClick.RemoveListener(delegate { CreatePreview("Shiro", "P1", true, true); });
 			natalyaButton.onClick.RemoveListener(delegate { CreatePreview("Natalya", "P1", true, true); });
@@ -301,40 +321,50 @@ namespace FightingLegends
 			}
 		}
 
-		private void CombatInsertCoin()
-		{
-			if (! Store.CanAfford(1))
-				FightManager.BuyCoinsToPlay(BuyCoins);
-			else
-				FightManager.InsertCoinToPlay(ShowCombat);
-		}
+//		private void CombatInsertCoin()
+//		{
+//			if (! Store.CanAfford(1))
+//				FightManager.BuyCoinsToPlay(BuyCoins);
+//			else
+//				FightManager.InsertCoinToPlay(ShowCombat);
+//		}
 			
 		private void ShowCombat()
 		{
-			// fightManager.CombatMode already set
-			fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
+			if (animatingEntry)
+				return;
+			
+			animateInsertCoin = false;
+
+			if (! Store.CanAfford(1))
+				FightManager.BuyCoinsToPlay(BuyCoins);
+			else
+			{
+				FightManager.Coins--;
+
+				// fightManager.CombatMode already set
+				fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
+			}
 		}
 			
-		private void ShowStore()
-		{
-			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
-		}
-
-		private void PowerUpFighter()
-		{
-			fightManager.SelectedMenuOverlay = MenuOverlay.PowerUp;
-			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
-		}
-
+//		private void ShowStore()
+//		{
+//			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
+//		}
+//
+//		private void PowerUpFighter()
+//		{
+//			fightManager.SelectedMenuOverlay = MenuOverlay.PowerUp;
+//			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
+//		}
+//
 		private void BuyCoins()
 		{
 			FightManager.RequestPurchase();
-//			fightManager.SelectedMenuOverlay = MenuOverlay.BuyCoins;
-//			fightManager.FighterSelectChoice = MenuType.Dojo;		// triggers fade to black and new menu
 		}
 			
 		public void CreatePreview(string name, string colour, bool cycleColour, bool showLocked)
-		{
+		{			
 			var fighterCard = GetFighterCard(name);
 			if (fighterCard == null)
 				return;
@@ -431,8 +461,8 @@ namespace FightingLegends
 					if (fightButton != null)
 						fightButton.interactable = !fighterCard.IsLocked;
 
-					if (powerUpButton != null)
-						powerUpButton.interactable = !fighterCard.IsLocked;
+//					if (powerUpButton != null)
+//						powerUpButton.interactable = !fighterCard.IsLocked;
 				}
 
 				if (OnPreviewCreated != null)
@@ -516,6 +546,59 @@ namespace FightingLegends
 		private void LockChanged(Fighter fighter, bool isLocked)
 		{
 
+		}
+			
+
+		private IEnumerator AnimateCardEntry()
+		{
+			animator = GetComponent<Animator>();
+			animatingEntry = true;
+
+//			yield return new WaitForSeconds(animatePauseTime);
+
+			animator.enabled = true;
+			animator.SetTrigger("SelectEntry");
+			yield return null;
+		}
+
+		public void EntryComplete()
+		{
+			animatingEntry = false;
+			animatedEntry = true;
+
+			AnimateCoin();
+		}
+
+		private void AnimateCoin()
+		{
+			if (! animateInsertCoin)
+			{
+				animateInsertCoin = true;
+				StartCoroutine(InsertCoin());
+			}
+		}
+
+		protected IEnumerator InsertCoin()
+		{
+			if (! animateInsertCoin)
+				yield break;
+			
+			float t = 0;
+
+			var targetPosition = fightButton.transform.localPosition;
+			var startPosition = new Vector3(targetPosition.x + insertCoinOffset, targetPosition.y, targetPosition.z);
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / insertCoinTime); 
+				Coin.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+				yield return null;
+			}
+
+			fightManager.CoinAudio();
+
+			if (animateInsertCoin)
+				yield return StartCoroutine(InsertCoin());		// keep repeating
 		}
 
 		public void EnableFighterButton(string fighterName, bool enable)
