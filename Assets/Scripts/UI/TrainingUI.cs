@@ -114,10 +114,10 @@ namespace FightingLegends
 		public void SetTrainer()
 		{
 //			Debug.Log("SetTrainer: HasPlayer1 = " + fightManager.HasPlayer1 + ", InTraining = " + fightManager.Player1.InTraining);
-			if (fightManager != null && fightManager.HasPlayer1 && fightManager.Player1.InTraining)
+			if (fightManager != null && FightManager.HasPlayer1 && FightManager.Player1.InTraining)
 			{
 				StopListening();		// detach from current trainer, if any
-				trainer = fightManager.Player1.Trainer;
+				trainer = FightManager.Player1.Trainer;
 				StartListening();
 			}
 		}

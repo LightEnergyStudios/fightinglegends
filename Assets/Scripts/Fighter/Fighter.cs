@@ -1160,12 +1160,12 @@ namespace FightingLegends
 //				if (PreviewMoves)
 //					return true;
 				
-				if (! fightManager.HasPlayer1)
+				if (! FightManager.HasPlayer1)
 					return false;
 
 				try
 				{
-					return gameObject.GetInstanceID() == fightManager.Player1.gameObject.GetInstanceID();
+					return gameObject.GetInstanceID() == FightManager.Player1.gameObject.GetInstanceID();
 				}
 				catch (Exception ex)
 				{
@@ -1182,10 +1182,10 @@ namespace FightingLegends
 //				if (PreviewMoves && ! PreviewUseGauge)
 //					return false;
 				
-				if (! fightManager.HasPlayer2)
+				if (! FightManager.HasPlayer2)
 					return false;
 				
-				return gameObject.GetInstanceID() == fightManager.Player2.gameObject.GetInstanceID();
+				return gameObject.GetInstanceID() == FightManager.Player2.gameObject.GetInstanceID();
 			}
 		}
 
@@ -1206,7 +1206,7 @@ namespace FightingLegends
 //					return null;
 //				}
 				
-				return IsPlayer1 ? fightManager.Player2 : fightManager.Player1;
+				return IsPlayer1 ? FightManager.Player2 : FightManager.Player1;
 			} 
 		}
 
@@ -1501,7 +1501,7 @@ namespace FightingLegends
 			}
 		}
 
-		private void HoldRelease()		// same signature as GestureListener.HeldUpAction delegate
+		public void HoldRelease()		// same signature as GestureListener.HeldUpAction delegate
 		{
 			if (fightManager.FightPaused && !PreviewMoves)
 				return;
@@ -1513,7 +1513,7 @@ namespace FightingLegends
 		}
 
 
-		private void SwipeLeft()	// same signature as GestureListener.SwipeLeftAction delegate
+		public void SwipeLeft()	// same signature as GestureListener.SwipeLeftAction delegate
 		{
 //			if (FeedbackUI.InfoBubbleShowing)
 //				return;
@@ -1551,7 +1551,7 @@ namespace FightingLegends
 			}
 		}
 
-		private void SwipeRight()	// same signature as GestureListener.SwipeRightAction delegate
+		public void SwipeRight()	// same signature as GestureListener.SwipeRightAction delegate
 		{
 //			if (FeedbackUI.InfoBubbleShowing)
 //				return;
@@ -1595,7 +1595,7 @@ namespace FightingLegends
 		}
 			
 			
-		private void SwipeLeftRight()	// same signature as GestureListener.SwipeLeftRightAction delegate
+		public void SwipeLeftRight()	// same signature as GestureListener.SwipeLeftRightAction delegate
 		{
 //			if (FeedbackUI.InfoBubbleShowing)
 //				return;
@@ -1636,7 +1636,7 @@ namespace FightingLegends
 		}
 			
 		// shove
-		private void SwipeDown()	// same signature as GestureListener.SwipeDownAction delegate
+		public void SwipeDown()	// same signature as GestureListener.SwipeDownAction delegate
 		{
 //			if (FeedbackUI.InfoBubbleShowing)
 //				return;
@@ -1669,7 +1669,7 @@ namespace FightingLegends
 		}
 
 		// powerup
-		private void SwipeUp()	// same signature as GestureListener.SwipeUpAction delegate
+		public void SwipeUp()	// same signature as GestureListener.SwipeUpAction delegate
 		{
 //			if (FeedbackUI.InfoBubbleShowing)
 //				return;
@@ -1713,13 +1713,13 @@ namespace FightingLegends
 		}
 
 
-		private void FingerTouch(Vector3 position)
+		public void FingerTouch(Vector3 position)
 		{
 			if (FightManager.SavedGameStatus.FightInProgress && ! fightManager.FightPaused)
 				moveCuedOk = false;
 		}
 
-		private void FingerRelease(Vector3 position)  		// same signature as GestureListener.FingerReleaseAction delegate
+		public void FingerRelease(Vector3 position)  		// same signature as GestureListener.FingerReleaseAction delegate
 		{
 			if (UnderAI)  		// listening but not interested in this
 				return;
@@ -5797,6 +5797,7 @@ namespace FightingLegends
 							break;
 
 						case FightMode.Challenge:
+							fightManager.RecordChallengeResult(winner.UnderAI);				// record result of final round in challenge
 							yield return StartCoroutine(fightManager.NextMatch(winner)); 	// show winner/stats then back to mode select
 							break;
 

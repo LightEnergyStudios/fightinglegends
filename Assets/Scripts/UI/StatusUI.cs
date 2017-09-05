@@ -35,10 +35,10 @@ namespace FightingLegends
 			if (fightManager != null)
 			{
 				if (Player1Profile != null)
-					Player1Profile.Fighter = fightManager.Player1;
+					Player1Profile.Fighter = FightManager.Player1;
 
 				if (Player2Profile != null)
-					Player2Profile.Fighter = fightManager.Player2;
+					Player2Profile.Fighter = FightManager.Player2;
 			}
 		}
 

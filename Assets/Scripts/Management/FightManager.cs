@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+
+//using UnityEngine.Networking;
  
 
 namespace FightingLegends
@@ -134,12 +136,12 @@ namespace FightingLegends
 
 		// fighters currently in play
 		[HideInInspector]
-		public Fighter Player1;	 
+		public static Fighter Player1;	 
 		[HideInInspector]
-		public Fighter Player2;
+		public static Fighter Player2;
 
-		public bool HasPlayer1 { get { return Player1 != null; } }
-		public bool HasPlayer2 { get { return Player2 != null; } }
+		public static bool HasPlayer1 { get { return Player1 != null; } }
+		public static bool HasPlayer2 { get { return Player2 != null; } }
 
 		public bool TrainingInProgress { get { return HasPlayer1 && Player1.InTraining; } }
 
@@ -336,6 +338,9 @@ namespace FightingLegends
 		private TeamChallenge challengeInProgress = null;	
 		public int ChallengePot { get; private set; }
 		public const float ChallengeFee = 0.0f; // 10.0f;
+
+		private List<ChallengeRoundResult> ChallengeRoundResults = new List<ChallengeRoundResult>();
+
 
 		// scenery
 
@@ -796,22 +801,19 @@ namespace FightingLegends
 		// 0.0666667 = 1/15 sec
 		private void FixedUpdate()
 		{
-//			if (PreviewMode || (HasPlayer1 && Player1.PreviewMoves && !Player1.PreviewUseGauge))
-//				return;
-
 			if (! PreviewMode)
 				UpdateAnimation();
 
-			if (HasPlayer1 && HasPlayer2)
-			{
+//			if (HasPlayer1 && HasPlayer2)
+//			{
 //				else if (! Player1.IsIdle && ! Player2.IsIdle)
 //				if (! (Player1.IsIdle && Player2.IsIdle))
 //					Debug.Log(Player1.CurrentState + (Player1.isFrozen ? "(frozen)" : "") + " // " + Player2.CurrentState + (Player2.isFrozen ? "(frozen)" : "") + " [" + AnimationFrameCount + "]");
-			}
+//			}
 		}
 
 
-		private void UpdateAnimation()
+		public void UpdateAnimation()
 		{
 			if (FightPaused)
 				return;
@@ -833,7 +835,6 @@ namespace FightingLegends
 			{
 				if (HasPlayer1)
 					Player1.UpdateAnimation();
-				
 				if (HasPlayer2)
 					Player2.UpdateAnimation();
 			}
@@ -1520,7 +1521,6 @@ namespace FightingLegends
 			}
 			else
 			{
-//				if (!underAI && !inTraining && firstFighters)
 				if (!underAI && firstFighters)
 				{
 					nextFighterName = SelectedFighterName;
@@ -1529,20 +1529,16 @@ namespace FightingLegends
 				else
 				{
 					// always cycle non-AI colours...
-//					nextFighterColour = underAI ? AIColours.Dequeue() : fighterColours.Dequeue();
 					nextFighterColour = underAI ? AIFighterColour : fighterColours.Dequeue();
 					nextFighterName = firstFighters ? "" : (player1 ? Player1.FighterName : Player2.FighterName);
 
 					if (underAI)
 					{
-//						AIColours.Enqueue(nextFighterColour);		// back to end of queue (to keep looping)
-
 						if (firstFighters || nextFighterColour == "P1")		// cycle to next fighter name
 						{
 							if (!SavedGameStatus.CompletedBasicTraining)
 							{
-								nextFighterName = TrainingAIName; // TrainingAINames.Dequeue();
-//								TrainingAINames.Enqueue(nextFighterName);
+								nextFighterName = TrainingAIName;
 							}
 							else
 							{
@@ -2467,8 +2463,13 @@ namespace FightingLegends
 				if (challengeTeam.Count <= 0)					// assumes we should not have got this far if either team depleted
 					return null;
 
-				if (existingFighter != null)					// dont dequeue if first fighter in team
-					challengeTeam.Dequeue();					// remove from head of queue
+				if (existingFighter != null)					// don't dequeue if first fighter in team
+				{
+					var loser = challengeTeam.Dequeue();		// remove from head of queue
+					var winner = challengeAITeam.Peek();
+
+					ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, true));			// player1 lost
+				}
 
 				nextFighterCard = challengeTeam.Peek();
 			}
@@ -2477,8 +2478,13 @@ namespace FightingLegends
 				if (challengeAITeam.Count <= 0)					// assumes we should not have got this far if either team depleted
 					return null;
 
-				if (existingFighter != null)					// dont dequeue if first fighter in team
-					challengeAITeam.Dequeue();					// remove from head of queue
+				if (existingFighter != null)					// don't dequeue if first fighter in team
+				{
+					var loser = challengeAITeam.Dequeue();					// remove from head of queue
+					var winner = challengeTeam.Peek();
+
+					ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, false));			// player1 won
+				}
 
 				nextFighterCard = challengeAITeam.Peek();
 			}
@@ -2620,13 +2626,7 @@ namespace FightingLegends
 
 		public void SetupChallenge(TeamChallenge challenge, List<FighterCard> selectedTeam, int selectedTeamPrizeCoins, List<FighterCard> selectedAITeam)
 		{
-//			if (CombatMode != FightMode.Challenge)
-//				return;
-
-//			Debug.Log("SetupChallenge: selectedTeam " + selectedTeam.Count + ", selectedAITeam " + selectedAITeam.Count);
-
-			// update the profile of the user that posted the challenge with details of the pot of the challenge in progresss
-//			FirebaseManager.ChallengeAccepted(challengePot);		// callback on successful update (removes challenge and updates user profile with pot)
+			ChallengeRoundResults = new List<ChallengeRoundResult>();
 
 			SavedGameStatus.CompletedBasicTraining = true;		// just to make sure
 			challengeInProgress = challenge;
@@ -2634,7 +2634,7 @@ namespace FightingLegends
 			ChallengePot = (challenge.PrizeCoins + selectedTeamPrizeCoins) - (int)((float)ChallengePot * ChallengeFee / 100.0f);
 
 			ChosenCategory = challenge.ChallengeCategory;
-			SelectedLocation = challenge.Location; //AcceptedChallenge.Location;
+			SelectedLocation = challenge.Location;
 			gameUI.SetupCombatMode();							// update 'title'
 
 			challengeTeam = new Queue<FighterCard>();
@@ -2660,6 +2660,15 @@ namespace FightingLegends
 				return false;
 			
 			return AIWinner ? challengeTeam.Count == 1 : challengeAITeam.Count == 1;
+		}
+
+		// record results of final round of challenge match
+		public void RecordChallengeResult(bool AIWinner)
+		{
+			FighterCard winner = (AIWinner) ? challengeAITeam.Peek() : challengeTeam.Peek();
+			FighterCard loser = (AIWinner) ? challengeTeam.Peek() : challengeAITeam.Peek();
+
+			ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, AIWinner));
 		}
 
 		#endregion 		// fight control

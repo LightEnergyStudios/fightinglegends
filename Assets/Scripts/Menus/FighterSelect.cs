@@ -32,8 +32,8 @@ namespace FightingLegends
 		public Button ninjaButton;
 
 		public Text SelectedName;
-		public Text SelectedClass;
 		public Text SelectedElements;
+		public Text SelectedClass;
 
 		public Image ElementsPanel;
 		public Sprite WaterEarth;				// selected fighter element
@@ -63,13 +63,25 @@ namespace FightingLegends
 		public Sprite skeletronFrame;
 		public Sprite ninjaFrame;
 
-		public Image Coin;
-		private bool animateInsertCoin = false;
+		public Image Coin;									// animated
 		private float insertCoinTime = 1.5f;
-		private float insertCoinOffset = 200.0f;			// entry from right
 
+		public Image InsertCoinTextPanel;
+		public List<Text> InsertCoinTop;					// animated text x3
+		public List<Text> InsertCoinBottom;					// animated text x3
+		private float insertCoinTextTime = 2.0f;
+
+		private float insertCoinXOffset = 200.0f;			// looping coin entry from right
+		private float insertCoinTextWidth = 210.0f;			// cycling text entry from right
+		private const int insertCoinTextRepeats = 3;
+
+		private IEnumerator coinCoroutine = null;
+		private IEnumerator insertCoinTopCoroutine = null;
+		private IEnumerator insertCoinBottomCoroutine = null;
+
+		// animated entry
 		private Animator animator;
-		private bool animatingEntry = false;
+		private bool animatingCardEntry = false;
 		private bool animatedEntry = false;
 		private const float animatePauseTime = 0.5f;		// pause before animated card entry
 
@@ -109,6 +121,8 @@ namespace FightingLegends
 
 			LoadFighterCards();		// if not already loaded
 			StartListening();		// if not already listening
+
+			InsertCoinTextPanel.gameObject.SetActive(false);
 		}
 
 		private void OnEnable()
@@ -120,10 +134,13 @@ namespace FightingLegends
 
 			InitFighterCards();		// virtual
 
-			if (! animatedEntry)
+			if (!animatedEntry)
 				StartCoroutine(AnimateCardEntry());			// virtual (different animators)
 			else
+			{
 				AnimateCoin();
+				CycleInsertCoinText();
+			}
 		}
 
 		protected void SetPreviewFighter()
@@ -141,7 +158,7 @@ namespace FightingLegends
 		private void OnDisable()
 		{
 			HideFighter();
-			animateInsertCoin = false;
+//			animateInsertCoin = false;
 		}
 
 		private void StartListening()
@@ -160,10 +177,10 @@ namespace FightingLegends
 			
 			FightManager.OnThemeChanged += SetTheme;
 
-			if (fightManager.HasPlayer1)
-				fightManager.Player1.OnLockedChanged += LockChanged;
-			if (fightManager.HasPlayer2)
-				fightManager.Player2.OnLockedChanged += LockChanged;
+			if (FightManager.HasPlayer1)
+				FightManager.Player1.OnLockedChanged += LockChanged;
+			if (FightManager.HasPlayer2)
+				FightManager.Player2.OnLockedChanged += LockChanged;
 			
 			shiroButton.onClick.AddListener(delegate { CreatePreview("Shiro", "P1", true, true); });
 			natalyaButton.onClick.AddListener(delegate { CreatePreview("Natalya", "P1", true, true); });
@@ -190,10 +207,10 @@ namespace FightingLegends
 //			Debug.Log("StopListening: " + fightManager.SelectedFighterName + " " + fightManager.SelectedFighterColour);
 			FightManager.OnThemeChanged -= SetTheme;
 
-			if (fightManager.HasPlayer1)
-				fightManager.Player1.OnLockedChanged -= LockChanged;
-			if (fightManager.HasPlayer2)
-				fightManager.Player2.OnLockedChanged -= LockChanged;
+			if (FightManager.HasPlayer1)
+				FightManager.Player1.OnLockedChanged -= LockChanged;
+			if (FightManager.HasPlayer2)
+				FightManager.Player2.OnLockedChanged -= LockChanged;
 			
 			DestroyPreview();
 
@@ -331,18 +348,19 @@ namespace FightingLegends
 			
 		private void ShowCombat()
 		{
-			if (animatingEntry)
+			if (animatingCardEntry)
 				return;
 			
-			animateInsertCoin = false;
+//			animateInsertCoin = false;
+
+			StopCoinAnimation();
+			StopInsertCoinAnimation();
 
 			if (! Store.CanAfford(1))
 				FightManager.BuyCoinsToPlay(BuyCoins);
 			else
 			{
 				FightManager.Coins--;
-
-				// fightManager.CombatMode already set
 				fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
 			}
 		}
@@ -552,7 +570,7 @@ namespace FightingLegends
 		private IEnumerator AnimateCardEntry()
 		{
 			animator = GetComponent<Animator>();
-			animatingEntry = true;
+			animatingCardEntry = true;
 
 //			yield return new WaitForSeconds(animatePauseTime);
 
@@ -563,30 +581,43 @@ namespace FightingLegends
 
 		public void EntryComplete()
 		{
-			animatingEntry = false;
+			animatingCardEntry = false;
 			animatedEntry = true;
 
 			AnimateCoin();
+			CycleInsertCoinText();
 		}
 
 		private void AnimateCoin()
 		{
-			if (! animateInsertCoin)
-			{
-				animateInsertCoin = true;
-				StartCoroutine(InsertCoin());
-			}
+			StopCoinAnimation();
+
+			coinCoroutine = InsertCoin();
+			StartCoroutine(coinCoroutine);
+		}
+
+		private void StopCoinAnimation()
+		{
+			if (coinCoroutine != null)
+				StopCoroutine(coinCoroutine);
+		}
+
+
+		private void StopInsertCoinAnimation()
+		{
+			if (insertCoinTopCoroutine != null)
+				StopCoroutine(insertCoinTopCoroutine);
+
+			if (insertCoinBottomCoroutine != null)
+				StopCoroutine(insertCoinBottomCoroutine);
 		}
 
 		protected IEnumerator InsertCoin()
 		{
-			if (! animateInsertCoin)
-				yield break;
-			
 			float t = 0;
 
 			var targetPosition = fightButton.transform.localPosition;
-			var startPosition = new Vector3(targetPosition.x + insertCoinOffset, targetPosition.y, targetPosition.z);
+			var startPosition = new Vector3(targetPosition.x + insertCoinXOffset, targetPosition.y, targetPosition.z);
 
 			while (t < 1.0f)
 			{
@@ -597,9 +628,58 @@ namespace FightingLegends
 
 			fightManager.CoinAudio();
 
-			if (animateInsertCoin)
-				yield return StartCoroutine(InsertCoin());		// keep repeating
+			yield return StartCoroutine(InsertCoin());		// keep repeating
 		}
+
+
+		private void CycleInsertCoinText()
+		{
+			InsertCoinTextPanel.gameObject.SetActive(true);
+
+			StopInsertCoinAnimation();
+
+			insertCoinTopCoroutine = InsertCoinText(InsertCoinTop);
+			StartCoroutine(insertCoinTopCoroutine);
+
+			insertCoinBottomCoroutine = InsertCoinText(InsertCoinBottom);
+			StartCoroutine(insertCoinBottomCoroutine);
+		}
+
+		protected IEnumerator InsertCoinText(List<Text> coinTextList)
+		{
+			while (true)			// loop until coroutine stopped externally
+			{
+				foreach (var coinText in coinTextList)
+				{
+					StartCoroutine(AnimateCoinText(coinText));
+				}
+
+				yield return new WaitForSeconds(insertCoinTextTime);
+			}
+		}
+
+		protected IEnumerator AnimateCoinText(Text coinText)
+		{
+			float t = 0;
+
+			var startPosition = coinText.transform.localPosition;
+			var targetPosition = new Vector3(startPosition.x - insertCoinTextWidth, startPosition.y, startPosition.z);
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / insertCoinTextTime); 
+
+				coinText.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+				yield return null;
+			}
+
+			// loop back to start position if beyond return point
+			var currentPosition = coinText.transform.localPosition;
+
+			if (currentPosition.x <= -(insertCoinTextWidth * 2))
+				coinText.transform.localPosition = new Vector3(currentPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentPosition.y, currentPosition.z);
+		}
+
 
 		public void EnableFighterButton(string fighterName, bool enable)
 		{
@@ -616,7 +696,6 @@ namespace FightingLegends
 				return;
 
 			ResetHilights();
-
 			button.image.color = hilightColour;
 		}
 

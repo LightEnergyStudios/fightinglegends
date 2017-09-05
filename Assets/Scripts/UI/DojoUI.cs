@@ -173,8 +173,8 @@ namespace FightingLegends
 			
 			fightersListening = true;
 			
-			fighter = fightManager.Player1;
-			shadow = fightManager.Player2;
+			fighter = FightManager.Player1;
+			shadow = FightManager.Player2;
 
 			autoShadowPlayback = !shadow.UnderAI;
 
@@ -353,12 +353,12 @@ namespace FightingLegends
 		{
 			if (!shadow.UnderAI)
 			{
-				string elementsLabel = fightManager.Player1.ElementsLabel;
+				string elementsLabel = FightManager.Player1.ElementsLabel;
 				if (elementsLabel == "")
-					elementsLabel = fightManager.Player1.FighterName;
+					elementsLabel = FightManager.Player1.FighterName;
 
-				ProfileLabel.text = string.Format("{0} {1} - {2} - {3}", FightManager.Translate("level", false, false, true), fightManager.Player1.Level,
-													elementsLabel, fightManager.Player1.ClassLabel);
+				ProfileLabel.text = string.Format("{0} {1} - {2} - {3}", FightManager.Translate("level", false, false, true), FightManager.Player1.Level,
+													elementsLabel, FightManager.Player1.ClassLabel);
 			}
 
 //			FireExtraMove.MoveImage.gameObject.SetActive(fightManager.Player1.IsFireElement);

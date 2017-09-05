@@ -1951,6 +1951,19 @@ namespace FightingLegends
 		#endregion 		// challenges
 	}
 
+	public class ChallengeRoundResult
+	{
+		public FighterCard Winner { get; private set; }
+		public FighterCard Loser { get; private set; }
+		public bool AIWinner { get; private set; }
+
+		public ChallengeRoundResult(FighterCard winnerCard, FighterCard loserCard, bool aiWinner)
+		{
+			Winner = winnerCard;
+			Loser = loserCard;
+			AIWinner = aiWinner;
+		}
+	}
 
 //	public class ChallengePot
 //	{

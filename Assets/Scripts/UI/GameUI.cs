@@ -314,24 +314,24 @@ namespace FightingLegends
 			{
 				StopListening();		// detach from current fighters, if any
 
-				if (fightManager.HasPlayer1)
+				if (FightManager.HasPlayer1)
 				{
-					Player1Health.Fighter = fightManager.Player1;		// sets name / health / gauge
-					SetPowerUpSprites(fightManager.Player1);
+					Player1Health.Fighter = FightManager.Player1;		// sets name / health / gauge
+					SetPowerUpSprites(FightManager.Player1);
 
 					// initialise power-up sprites
-					Player1SetTriggerPowerUp(fightManager.Player1.TriggerPowerUp);
-					Player1SetStaticPowerUp(fightManager.Player1.StaticPowerUp);
+					Player1SetTriggerPowerUp(FightManager.Player1.TriggerPowerUp);
+					Player1SetStaticPowerUp(FightManager.Player1.StaticPowerUp);
 				}
 
-				if (fightManager.HasPlayer2)
+				if (FightManager.HasPlayer2)
 				{
-					Player2Health.Fighter = fightManager.Player2;
-					SetPowerUpSprites(fightManager.Player2);
+					Player2Health.Fighter = FightManager.Player2;
+					SetPowerUpSprites(FightManager.Player2);
 
 					// initialise power-up sprites
-					Player2SetTriggerPowerUp(fightManager.Player2.TriggerPowerUp);
-					Player2SetStaticPowerUp(fightManager.Player2.StaticPowerUp);
+					Player2SetTriggerPowerUp(FightManager.Player2.TriggerPowerUp);
+					Player2SetStaticPowerUp(FightManager.Player2.StaticPowerUp);
 				}
 
 				StartListening();
@@ -448,8 +448,8 @@ namespace FightingLegends
 			var fighter = newState.Fighter;
 			bool lastHit = newState.ChangeType == FighterChangeType.LastHit;
 
-			var player1 = fightManager.Player1;
-			var player2 = fightManager.Player2;
+			var player1 = FightManager.Player1;
+			var player2 = FightManager.Player2;
 
 			bool fighterCanCounter = player1.HasCounterGauge && (player1.IsIdle || player1.IsDashing || player1.IsBlockIdle || player1.IsBlockStunned);
 
