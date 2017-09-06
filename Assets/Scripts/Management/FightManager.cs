@@ -6,8 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-
-//using UnityEngine.Networking;
  
 
 namespace FightingLegends
@@ -136,12 +134,46 @@ namespace FightingLegends
 
 		// fighters currently in play
 		[HideInInspector]
-		public static Fighter Player1;	 
+		public Fighter Player1;	 
 		[HideInInspector]
-		public static Fighter Player2;
+		public Fighter Player2;
 
-		public static bool HasPlayer1 { get { return Player1 != null; } }
-		public static bool HasPlayer2 { get { return Player2 != null; } }
+		public static bool IsNetworked = false;	
+
+//		private static Fighter player1;
+//		public static Fighter Player1
+//		{ 
+//			get { return player1; }
+//			private set
+//			{
+//				bool changed = (player1 != value);
+//
+//				if (changed)
+//					player1 = value;
+//
+//				if (OnFighterChanged != null)
+//					OnFighterChanged(player1, true);
+//			}
+//		}
+//
+//		private static Fighter player2;
+//		public static Fighter Player2
+//		{ 
+//			get { return player2; }
+//			private set
+//			{
+//				bool changed = (player2 != value);
+//
+//				if (changed)
+//					player2 = value;
+//
+//				if (OnFighterChanged != null)
+//					OnFighterChanged(player2, false);
+//			}
+//		}
+
+		public bool HasPlayer1 { get { return Player1 != null; } }
+		public bool HasPlayer2 { get { return Player2 != null; } }
 
 		public bool TrainingInProgress { get { return HasPlayer1 && Player1.InTraining; } }
 
@@ -409,6 +441,9 @@ namespace FightingLegends
 
 		public delegate void ReadyToFightDelegate(bool ReadyToFight, bool changed, FightMode fightMode);
 		public static ReadyToFightDelegate OnReadyToFight;
+
+//		public delegate void FighterChangedDelegate(Fighter fighter, bool isPlayer1);
+//		public static FighterChangedDelegate OnFighterChanged;
 
 		public delegate void NewFightDelegate(FightMode fightMode);
 		public static NewFightDelegate OnNewFight;
@@ -811,8 +846,7 @@ namespace FightingLegends
 //					Debug.Log(Player1.CurrentState + (Player1.isFrozen ? "(frozen)" : "") + " // " + Player2.CurrentState + (Player2.isFrozen ? "(frozen)" : "") + " [" + AnimationFrameCount + "]");
 //			}
 		}
-
-
+			
 		public void UpdateAnimation()
 		{
 			if (FightPaused)
@@ -1999,7 +2033,7 @@ namespace FightingLegends
 					Player1.ResetPosition();
 					Player1.ResetHealth();
 					Player1.Reveal();
-
+				
 					// player 2 is shadow of player1
 					Player2 = CreateFighter(SelectedFighterName, NextFighterColour(SelectedFighterColour), false, false, false);
 					Player2.ResetPosition(true);		// player 2 faces left
@@ -2619,6 +2653,8 @@ namespace FightingLegends
 		{
 			Player2.StaticPowerUp = Store.RandomStaticPowerUp;
 			Player2.TriggerPowerUp = Store.RandomTriggerPowerUp;
+
+			Debug.Log("SetAIRandomPowerUps: StaticPowerUp = "  + Player2.StaticPowerUp + ", TriggerPowerUp = " + Player2.TriggerPowerUp);
 		}
 			
 
@@ -2948,6 +2984,8 @@ namespace FightingLegends
 		{
 			if (CombatMode == FightMode.Arcade || CombatMode == FightMode.Training)
 				yield break;
+
+			Debug.Log("PowerUpFeedback: " + powerUp);
 
 			powerUpFrozen = true;
 			PowerUpFeedbackActive = true;
@@ -3656,9 +3694,6 @@ namespace FightingLegends
 			{
 				gameUIVisible = visible;
 				gameUI.gameObject.SetActive(gameUIVisible);
-
-//				if (gameUIVisible)
-//					gameUI.TriggerEntry();
 			}
 		}
 

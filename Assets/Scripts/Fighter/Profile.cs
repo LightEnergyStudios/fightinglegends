@@ -185,9 +185,9 @@ namespace FightingLegends
 			profile.Level = Level;
 			profile.XP = profile.TotalXP = XP;
 
-			// TODO: remove!
-			profile.StaticPowerUp = Store.RandomStaticPowerUp;
-			profile.TriggerPowerUp = Store.RandomTriggerPowerUp;
+//			// TODO: remove!
+//			profile.StaticPowerUp = Store.RandomStaticPowerUp;
+//			profile.TriggerPowerUp = Store.RandomTriggerPowerUp;
 
 			Profile.Save(profile);
 		}

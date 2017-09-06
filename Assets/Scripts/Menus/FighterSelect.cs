@@ -71,6 +71,9 @@ namespace FightingLegends
 		public List<Text> InsertCoinBottom;					// animated text x3
 		private float insertCoinTextTime = 2.0f;
 
+		private List<float> insertCoinTopPosition;			// original x position of animated text x3
+		private List<float> insertCoinBottomPosition;		// original x position of animated text x3
+
 		private float insertCoinXOffset = 200.0f;			// looping coin entry from right
 		private float insertCoinTextWidth = 210.0f;			// cycling text entry from right
 		private const int insertCoinTextRepeats = 3;
@@ -122,7 +125,11 @@ namespace FightingLegends
 			LoadFighterCards();		// if not already loaded
 			StartListening();		// if not already listening
 
-			InsertCoinTextPanel.gameObject.SetActive(false);
+			if (InsertCoinTextPanel != null)
+			{
+				SaveInsertCoinTextPositions();
+				InsertCoinTextPanel.gameObject.SetActive(false);
+			}
 		}
 
 		private void OnEnable()
@@ -158,6 +165,10 @@ namespace FightingLegends
 		private void OnDisable()
 		{
 			HideFighter();
+
+			if (InsertCoinTextPanel != null)
+				RestoreInsertCoinTextPositions();
+			
 //			animateInsertCoin = false;
 		}
 
@@ -177,10 +188,10 @@ namespace FightingLegends
 			
 			FightManager.OnThemeChanged += SetTheme;
 
-			if (FightManager.HasPlayer1)
-				FightManager.Player1.OnLockedChanged += LockChanged;
-			if (FightManager.HasPlayer2)
-				FightManager.Player2.OnLockedChanged += LockChanged;
+			if (fightManager.HasPlayer1)
+				fightManager.Player1.OnLockedChanged += LockChanged;
+			if (fightManager.HasPlayer2)
+				fightManager.Player2.OnLockedChanged += LockChanged;
 			
 			shiroButton.onClick.AddListener(delegate { CreatePreview("Shiro", "P1", true, true); });
 			natalyaButton.onClick.AddListener(delegate { CreatePreview("Natalya", "P1", true, true); });
@@ -207,10 +218,10 @@ namespace FightingLegends
 //			Debug.Log("StopListening: " + fightManager.SelectedFighterName + " " + fightManager.SelectedFighterColour);
 			FightManager.OnThemeChanged -= SetTheme;
 
-			if (FightManager.HasPlayer1)
-				FightManager.Player1.OnLockedChanged -= LockChanged;
-			if (FightManager.HasPlayer2)
-				FightManager.Player2.OnLockedChanged -= LockChanged;
+			if (fightManager.HasPlayer1)
+				fightManager.Player1.OnLockedChanged -= LockChanged;
+			if (fightManager.HasPlayer2)
+				fightManager.Player2.OnLockedChanged -= LockChanged;
 			
 			DestroyPreview();
 
@@ -570,6 +581,9 @@ namespace FightingLegends
 		private IEnumerator AnimateCardEntry()
 		{
 			animator = GetComponent<Animator>();
+			if (animator == null)
+				yield break;
+			
 			animatingCardEntry = true;
 
 //			yield return new WaitForSeconds(animatePauseTime);
@@ -590,6 +604,9 @@ namespace FightingLegends
 
 		private void AnimateCoin()
 		{
+			if (Coin == null)
+				return;
+			
 			StopCoinAnimation();
 
 			coinCoroutine = InsertCoin();
@@ -634,6 +651,9 @@ namespace FightingLegends
 
 		private void CycleInsertCoinText()
 		{
+			if (InsertCoinTextPanel == null)
+				return;
+			
 			InsertCoinTextPanel.gameObject.SetActive(true);
 
 			StopInsertCoinAnimation();
@@ -680,6 +700,36 @@ namespace FightingLegends
 				coinText.transform.localPosition = new Vector3(currentPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentPosition.y, currentPosition.z);
 		}
 
+
+		private void SaveInsertCoinTextPositions()
+		{
+			if (InsertCoinTextPanel == null)
+				return;
+			
+			insertCoinTopPosition = new List<float>();
+			insertCoinBottomPosition = new List<float>();
+
+			for (int i = 0; i < insertCoinTextRepeats; i++)
+			{
+				insertCoinTopPosition.Add(InsertCoinTop[i].transform.localPosition.x);
+				insertCoinBottomPosition.Add(InsertCoinBottom[i].transform.localPosition.x);
+			}
+		}
+
+		private void RestoreInsertCoinTextPositions()
+		{
+			if (InsertCoinTextPanel == null)
+				return;
+
+			for (int i = 0; i < insertCoinTextRepeats; i++)
+			{
+				var topPosition = InsertCoinTop[i].transform.localPosition;
+				InsertCoinTop[i].transform.localPosition = new Vector3(insertCoinTopPosition[i], topPosition.y, topPosition.z);
+
+				var bottomPosition = InsertCoinBottom[i].transform.localPosition;
+				InsertCoinBottom[i].transform.localPosition = new Vector3(insertCoinBottomPosition[i], bottomPosition.y, bottomPosition.z);
+			}
+		}
 
 		public void EnableFighterButton(string fighterName, bool enable)
 		{

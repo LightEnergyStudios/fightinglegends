@@ -1160,12 +1160,12 @@ namespace FightingLegends
 //				if (PreviewMoves)
 //					return true;
 				
-				if (! FightManager.HasPlayer1)
+				if (! fightManager.HasPlayer1)
 					return false;
 
 				try
 				{
-					return gameObject.GetInstanceID() == FightManager.Player1.gameObject.GetInstanceID();
+					return gameObject.GetInstanceID() == fightManager.Player1.gameObject.GetInstanceID();
 				}
 				catch (Exception ex)
 				{
@@ -1182,10 +1182,10 @@ namespace FightingLegends
 //				if (PreviewMoves && ! PreviewUseGauge)
 //					return false;
 				
-				if (! FightManager.HasPlayer2)
+				if (! fightManager.HasPlayer2)
 					return false;
 				
-				return gameObject.GetInstanceID() == FightManager.Player2.gameObject.GetInstanceID();
+				return gameObject.GetInstanceID() == fightManager.Player2.gameObject.GetInstanceID();
 			}
 		}
 
@@ -1206,7 +1206,7 @@ namespace FightingLegends
 //					return null;
 //				}
 				
-				return IsPlayer1 ? FightManager.Player2 : FightManager.Player1;
+				return IsPlayer1 ? fightManager.Player2 : fightManager.Player1;
 			} 
 		}
 
@@ -2423,7 +2423,7 @@ namespace FightingLegends
 		// swipe up
 		public bool PowerUp()
 		{
-//			Debug.Log(FullName + ": PowerUp " + TriggerPowerUp + ", CanTriggerPowerUp = " + CanTriggerPowerUp + ", FightPaused = " + fightManager.FightPaused);
+			Debug.Log(FullName + ": PowerUp " + TriggerPowerUp + ", CanTriggerPowerUp = " + CanTriggerPowerUp + ", FightPaused = " + fightManager.FightPaused);
 
 			if (fightManager.PowerUpFeedbackActive)
 				return false;
@@ -2478,9 +2478,8 @@ namespace FightingLegends
 					
 			if (powerUpTriggered)
 			{
-//				if (! IsDojoShadow && OnPowerUpTriggered != null)
-				if (OnPowerUpTriggered != null)
-					OnPowerUpTriggered(this, TriggerPowerUp, CurrentState == State.Idle);		// stars + cool-off countdown
+//				if (OnPowerUpTriggered != null)
+//					OnPowerUpTriggered(this, TriggerPowerUp, CurrentState == State.Idle);		// stars + cool-off countdown
 				
 				fightManager.PowerUpAudio();
 				fightManager.StateFeedback(IsPlayer1, FightManager.Translate("powerUp", false, true), !IsDojoShadow, IsDojoShadow);
@@ -2515,6 +2514,9 @@ namespace FightingLegends
 					// more kudos for more expensive power-ups
 					FightManager.IncreaseKudos(ProfileData.SavedData.TriggerPowerUpCost); // * FightManager.KudosPowerUpFactor);
 				}
+
+				if (OnPowerUpTriggered != null)
+					OnPowerUpTriggered(this, TriggerPowerUp, CurrentState == State.Idle);		// stars + cool-off countdown
 			}
 
 			return powerUpTriggered;
@@ -3688,7 +3690,7 @@ namespace FightingLegends
 
 		public void ResetMove(bool resetTraining)
 		{
-			Debug.Log(FullName + ": ResetMove" + " [" + AnimationFrameCount + "]");
+//			Debug.Log(FullName + ": ResetMove" + " [" + AnimationFrameCount + "]");
 
 			// combos and chaining
 			comboTriggered = false; 

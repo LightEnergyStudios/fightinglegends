@@ -54,7 +54,7 @@ namespace FightingLegends
 
 		void Update()
 		{
-			if (!FightManager.HasPlayer1 || !FightManager.HasPlayer2)
+			if (!fightManager.HasPlayer1 || !fightManager.HasPlayer2)
 				return;
 
 			if (! fightManager.ReadyToFight)
@@ -72,8 +72,8 @@ namespace FightingLegends
 			if (trackingHome)
 				return;
 			
-			var P1Position = FightManager.Player1.transform.position;
-			var P2Position = FightManager.Player2.transform.position;
+			var P1Position = fightManager.Player1.transform.position;
+			var P2Position = fightManager.Player2.transform.position;
 
 			if (fightManager.FightPaused && (TrackLeft || TrackRight))			// rolling through scenery (demo only)
 			{
@@ -82,28 +82,28 @@ namespace FightingLegends
 				transform.position = newCameraPosition;
 
 				// constantly move the fighters to stay on camera...
-				FightManager.Player1.transform.position = new Vector3(P1Position.x + distance, P1Position.y, P1Position.z);
-				FightManager.Player2.transform.position = new Vector3(P2Position.x + distance, P2Position.y, P2Position.z);
+				fightManager.Player1.transform.position = new Vector3(P1Position.x + distance, P1Position.y, P1Position.z);
+				fightManager.Player2.transform.position = new Vector3(P2Position.x + distance, P2Position.y, P2Position.z);
 			}
 			else if (TrackFighters && !fightManager.FightFrozen)
 			{
-				var P1TrackPosition = FightManager.Player1.TrackPosition;
-				var P2TrackPosition = FightManager.Player2.TrackPosition;
-				var P1LagPosition = FightManager.Player1.LagPosition;
-				var P2LagPosition = FightManager.Player2.LagPosition;
+				var P1TrackPosition = fightManager.Player1.TrackPosition;
+				var P2TrackPosition = fightManager.Player2.TrackPosition;
+				var P1LagPosition = fightManager.Player1.LagPosition;
+				var P2LagPosition = fightManager.Player2.LagPosition;
 
 				var trackSpeed = FighterTrackSpeed / fightManager.AnimationSpeed;
 
 				if (fightManager.EitherFighterExpiredState)
 				{
-					bool AIWinner = FightManager.HasPlayer1 && FightManager.Player1.ExpiredState;
+					bool AIWinner = fightManager.HasPlayer1 && fightManager.Player1.ExpiredState;
 					bool survivalLoser = FightManager.CombatMode == FightMode.Survival && AIWinner;	
 					bool followLoser = FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Training
 						|| FightManager.CombatMode == FightMode.Dojo || survivalLoser || fightManager.ChallengeLastInTeam(AIWinner);
 					
 					if (followLoser)
 					{
-						var koPosition = FightManager.Player1.ExpiredState ? P1Position : P2Position;
+						var koPosition = fightManager.Player1.ExpiredState ? P1Position : P2Position;
 						var targetPosition = new Vector3(koPosition.x, originalPosition.y, originalPosition.z);
 
 						transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * trackSpeed);

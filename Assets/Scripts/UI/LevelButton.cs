@@ -147,6 +147,7 @@ namespace FightingLegends
 		private IEnumerator TriggerCoolDownCountdown(bool revealUpwards)
 		{
 			int coolDownTime = fighter.ProfileData.SavedData.TriggerPowerUpCoolDown;
+//			Debug.Log("TriggerCoolDownCountdown: coolDownTime = " + coolDownTime);
 			if (coolDownTime <= 0)
 			{
 				// power-up expires immediately if no countdown

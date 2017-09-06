@@ -256,8 +256,12 @@
 		<string name="music">MUSIC</string>
 		<string name="sfx">SFX</string>
 		<string name="quitFight">QUIT FIGHT</string>
+		<string name="captions">CAPTIONS</string>
 		<string name="captionsOn">CAPTIONS ON</string>
 		<string name="captionsOff">CAPTIONS OFF</string>
+		<string name="hud">HUD</string>
+		<string name="hudOn">HUD ON</string>
+		<string name="hudOff">HUD OFF</string>
 		<string name="hintsOn">HINTS ON</string>
 		<string name="hintsOff">HINTS OFF</string>
 		<string name="narrative">NARRATIVE</string>
