@@ -17,13 +17,13 @@ namespace FightingLegends
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
 
-			if (FightManager.IsNetworked && isLocalPlayer)
+			if (FightManager.MultiPlayerFight && isLocalPlayer)
 				StartListeningForInput();
 		}
 
 		private void OnDestroy()
 		{
-			if (FightManager.IsNetworked && isLocalPlayer)
+			if (FightManager.MultiPlayerFight && isLocalPlayer)
 				StopListeningForInput();
 		}
 			
@@ -32,7 +32,7 @@ namespace FightingLegends
 		// 0.0666667 = 1/15 sec
 		private void FixedUpdate()
 		{
-			if (FightManager.IsNetworked && isServer)
+			if (FightManager.MultiPlayerFight && isServer)
 				RpcUpdateAnimation();
 		}
 

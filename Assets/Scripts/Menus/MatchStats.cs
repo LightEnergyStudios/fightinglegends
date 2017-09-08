@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace FightingLegends
 {
@@ -48,7 +49,7 @@ namespace FightingLegends
 		public AudioClip photoAudio;
 		public AudioClip statsAudio;
 
-		private Animator winnerReveal;			// slide in from left
+		private Animator resultsAnimator;
 
 		private bool inputAllowed = false;
 		private float statsInterval = 0.1f;		// between each line
@@ -58,13 +59,21 @@ namespace FightingLegends
 		private FightManager fightManager;
 		private Fighter winner;
 
+		public GameObject ChallengePanel;
+		public FighterButton Player1Button;
+		public FighterButton Player2Button;
+//		public FighterCard Player1Card;
+//		public FighterCard Player2Card;
+
+		private List<ChallengeRoundResult> challengeResults;
+
 
 		public override bool CanNavigateBack { get { return false; } }
 
 
 		public void Awake()
 		{
-			winnerReveal = GetComponent<Animator>();
+			resultsAnimator = GetComponent<Animator>();
 		}
 
 		// initialization
@@ -137,6 +146,9 @@ namespace FightingLegends
 	
 		public void RevealWinner(Fighter victor)
 		{
+			if (winner == null)
+				return;
+			
 			winner = victor;
 			var loser = winner.Opponent;
 
@@ -214,9 +226,9 @@ namespace FightingLegends
 
 			// TODO: why must P1 and P2 be reversed?
 			if (winner.IsPlayer1)
-				winnerReveal.SetTrigger("Player2Winner");		// animate portrait entry from left
+				resultsAnimator.SetTrigger("Player2Winner");		// animate portrait entry from left
 			else
-				winnerReveal.SetTrigger("Player1Winner");		// animate portrait entry from right
+				resultsAnimator.SetTrigger("Player1Winner");		// animate portrait entry from right
 		}
 
 
@@ -415,6 +427,35 @@ namespace FightingLegends
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
 			else
 				StartCoroutine(WinnerStats());
+		}
+
+
+		public IEnumerator ShowChallengeResults(List<ChallengeRoundResult> results)
+		{
+			challengeResults = results;
+
+			ChallengePanel.SetActive(true);
+
+			foreach (var result in challengeResults)
+			{
+				var winnerSprite = result.Winner.Portrait.sprite;
+				var loserSprite = result.Loser.Portrait.sprite;
+
+				Debug.Log("ShowChallengeResults: winnerSprite = " + winnerSprite + ", loserSprite = " + loserSprite + ", AIWinner = " + result.AIWinner);
+
+				if (result.AIWinner)
+				{
+					Player2Button.SetFighterCard(winnerSprite, result.Winner);
+					Player1Button.SetFighterCard(loserSprite, result.Loser);
+				}
+				else
+				{
+					Player1Button.SetFighterCard(winnerSprite, result.Winner);
+					Player2Button.SetFighterCard(loserSprite, result.Loser);
+				}
+
+				yield return new WaitForSeconds(1.0f);
+			}
 		}
 	}
 }

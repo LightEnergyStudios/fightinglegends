@@ -138,7 +138,7 @@ namespace FightingLegends
 		[HideInInspector]
 		public Fighter Player2;
 
-		public static bool IsNetworked = false;	
+		public static bool MultiPlayerFight = false;	
 
 //		private static Fighter player1;
 //		public static Fighter Player1
@@ -836,8 +836,11 @@ namespace FightingLegends
 		// 0.0666667 = 1/15 sec
 		private void FixedUpdate()
 		{
-			if (! PreviewMode)
-				UpdateAnimation();
+//			if (! PreviewMode)
+			if (MultiPlayerFight)		// handled by FighterController
+				return;
+			
+			UpdateAnimation();
 
 //			if (HasPlayer1 && HasPlayer2)
 //			{
@@ -2130,10 +2133,12 @@ namespace FightingLegends
 				bool fighterUnlocked = UpdateMatchStats(winner);			// announces an unlocked fighter (arcade mode only)
 
 				if (CombatMode == FightMode.Challenge)
+				{
 					PayoutChallengePot(winner);
-
-				if (! fighterUnlocked)
-					yield return StartCoroutine(ShowMatchStatsCanvas(winner));		// winner image + fight stats - until user taps
+					yield return StartCoroutine(ShowMatchStatsCanvas(winner, ChallengeRoundResults));	// loop thru round resuts (FighterCards)
+				}
+				else if (! fighterUnlocked)
+					yield return StartCoroutine(ShowMatchStatsCanvas(winner, null));		// winner image + fight stats - until user taps
 			}
 
 			if (CombatMode == FightMode.Arcade && winner.UnderAI)			// player lost - MatchStats offers option to insert coin to continue...
@@ -2174,8 +2179,29 @@ namespace FightingLegends
 		}
 
 
+		public void DummyChallengeResults(List<FighterCard> selectedTeam, List<FighterCard> AITeam)
+		{
+			ChallengeRoundResults = new List<ChallengeRoundResult>();
+
+			bool AIwon = false;
+
+			foreach (var fighter in selectedTeam)
+			{
+				if (AIwon)
+					ChallengeRoundResults.Add(new ChallengeRoundResult(selectedTeam[0], fighter, true));			// player2 won
+				else
+					ChallengeRoundResults.Add(new ChallengeRoundResult(fighter, selectedTeam[0], false));			// player1 won
+				
+				AIwon = ! AIwon;
+			}
+		}
+
+
 		private void PayoutChallengePot(Fighter winner)
 		{
+			if (winner == null)
+				return;
+			
 			if (CombatMode != FightMode.Challenge)
 				return;
 
@@ -2283,6 +2309,9 @@ namespace FightingLegends
 
 		private bool UpdateMatchStats(Fighter winner)
 		{
+			if (winner == null)
+				return false;
+			
 			var loser = winner.Opponent;
 			bool fighterUnlocked = false;
 
@@ -3759,7 +3788,7 @@ namespace FightingLegends
 
 			SavedGameStatus.PlayCount++;
 
-			GameUIVisible(true);
+			GameUIVisible(SavedGameStatus.ShowHud);
 			InitMenus();
 
 			StartGameKudos();
@@ -4316,7 +4345,7 @@ namespace FightingLegends
 
 		#region match stats 
 
-		private IEnumerator MatchEndStats(Fighter winner)
+		private IEnumerator MatchEndStats(Fighter winner, List<ChallengeRoundResult> roundResults)
 		{
 //			Debug.Log("MatchEndStats: winner = " + winner.FullName);
 
@@ -4329,7 +4358,10 @@ namespace FightingLegends
 			if (OnMenuChanged != null)
 				OnMenuChanged(MenuType.MatchStats, false, false, false, false);
 
-			matchStats.RevealWinner(winner);		// set image and animate entry from side
+			if (CombatMode == FightMode.Challenge)
+				StartCoroutine(matchStats.ShowChallengeResults(roundResults));	// loop through round results, showing FighterCards
+			else
+				matchStats.RevealWinner(winner);		// set image and animate entry from side
 
 			if (curtain != null)
 			{
@@ -4358,13 +4390,13 @@ namespace FightingLegends
 				MatchStatsRestartMatch = false;
 			}
 
-			GameUIVisible(true);
+			GameUIVisible(SavedGameStatus.ShowHud);
 		}
 
 
-		private IEnumerator ShowMatchStatsCanvas(Fighter winner)
+		private IEnumerator ShowMatchStatsCanvas(Fighter winner, List<ChallengeRoundResult> roundResults)
 		{
-			yield return StartCoroutine(MatchEndStats(winner));
+			yield return StartCoroutine(MatchEndStats(winner, roundResults));
 		}
 
 		private void HideMatchStats()
@@ -4408,7 +4440,7 @@ namespace FightingLegends
 
 			if (animateEntry)
 			{
-				GameUIVisible(true);
+				GameUIVisible(SavedGameStatus.ShowHud);
 				gameUI.TriggerEntry();
 			}
 

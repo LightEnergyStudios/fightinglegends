@@ -403,7 +403,7 @@ namespace FightingLegends
 
 			fightButton.onClick.AddListener(delegate { ShowChallengesOverlay(); });
 			uploadButton.onClick.AddListener(delegate { ConfirmUploadSelectedTeam(); });
-//			resultButton.onClick.AddListener(delegate { ShowChallengeResult(); });
+			resultButton.onClick.AddListener(delegate { DummyChallengeRoundResults(); });
 //			powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
 
 			ChallengeUpload.OnCancelClicked += OnUploadCancelled;
@@ -443,8 +443,6 @@ namespace FightingLegends
 				uploadButton.interactable = true;
 			else
 				uploadButton.interactable = false;				// until user profile retrieved - checks for existing challenge
-
-			resultButton.interactable = false;				// TODO: remove button
 		}
 
 		private void RemoveListeners()
@@ -464,7 +462,7 @@ namespace FightingLegends
 
 			fightButton.onClick.RemoveListener(delegate { ShowChallengesOverlay(); });
 			uploadButton.onClick.RemoveListener(delegate { ConfirmUploadSelectedTeam(); });
-//			resultButton.onClick.RemoveListener(delegate { ShowChallengeResult(); });
+			resultButton.onClick.RemoveListener(delegate { DummyChallengeRoundResults(); });
 
 			ChallengeUpload.OnCancelClicked -= OnUploadCancelled;
 
@@ -766,7 +764,7 @@ namespace FightingLegends
 			bool fightersInTeam = selectedTeam.Count > 0;
 			fightButton.interactable = fightersInTeam;
 			uploadButton.interactable = internetReachable && fightersInTeam;
-//			powerUpButton.interactable = fightersInTeam;
+			resultButton.interactable = fightersInTeam;
 		}
 
 
@@ -1004,39 +1002,41 @@ namespace FightingLegends
 				var fighterButton = fighterButtonObject.GetComponent<FighterButton>();
 				var fighterRect = fighterButtonObject.GetComponent<RectTransform>();
 
-				switch (fighterCard.FighterName)
-				{
-					case "Shiro":
-						fighterButton.SetFighterCard(shiroSprite, fighterCard);
-						break;
-					case "Natalya":
-						fighterButton.SetFighterCard(natalyaSprite, fighterCard);
-						break;
-					case "Hoi Lun":
-						fighterButton.SetFighterCard(hoiLunSprite, fighterCard);
-						break;
-					case "Leoni":
-						fighterButton.SetFighterCard(leoniSprite, fighterCard);
-						break;
-					case "Danjuma":
-						fighterButton.SetFighterCard(danjumaSprite, fighterCard);
-						break;
-					case "Jackson":
-						fighterButton.SetFighterCard(jacksonSprite, fighterCard);
-						break;
-					case "Alazne":
-						fighterButton.SetFighterCard(alazneSprite, fighterCard);
-						break;
-					case "Shiyang":
-						fighterButton.SetFighterCard(shiyangSprite, fighterCard);
-						break;
-					case "Ninja":
-						fighterButton.SetFighterCard(ninjaSprite, fighterCard);
-						break;
-					case "Skeletron":
-						fighterButton.SetFighterCard(skeletronSprite, fighterCard);
-						break;
-				}
+				fighterButton.SetFighterCard(FighterSprite(fighterCard.FighterName), fighterCard);
+
+//				switch (fighterCard.FighterName)
+//				{
+//					case "Shiro":
+//						fighterButton.SetFighterCard(shiroSprite, fighterCard);
+//						break;
+//					case "Natalya":
+//						fighterButton.SetFighterCard(natalyaSprite, fighterCard);
+//						break;
+//					case "Hoi Lun":
+//						fighterButton.SetFighterCard(hoiLunSprite, fighterCard);
+//						break;
+//					case "Leoni":
+//						fighterButton.SetFighterCard(leoniSprite, fighterCard);
+//						break;
+//					case "Danjuma":
+//						fighterButton.SetFighterCard(danjumaSprite, fighterCard);
+//						break;
+//					case "Jackson":
+//						fighterButton.SetFighterCard(jacksonSprite, fighterCard);
+//						break;
+//					case "Alazne":
+//						fighterButton.SetFighterCard(alazneSprite, fighterCard);
+//						break;
+//					case "Shiyang":
+//						fighterButton.SetFighterCard(shiyangSprite, fighterCard);
+//						break;
+//					case "Ninja":
+//						fighterButton.SetFighterCard(ninjaSprite, fighterCard);
+//						break;
+//					case "Skeletron":
+//						fighterButton.SetFighterCard(skeletronSprite, fighterCard);
+//						break;
+//				}
 
 				// currently clicking a fighter button has the same effect as clicking the challenge button
 				fighterCard.CardButton.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });
@@ -1049,12 +1049,37 @@ namespace FightingLegends
 
 				fighterIndex++;
 			}
-
-			// set width of Fighters panel according to number of fighterCards
-//			var fightersWidth = challenge.AITeam.Count * fighterCardWidth;
-//			challengeButton.Fighters.sizeDelta = new Vector2(fightersWidth, 0); // challengeButton.Fighters.sizeDelta.y);
 		}
 
+
+		private Sprite FighterSprite(string fighterName)
+		{
+			switch (fighterName)
+			{
+				case "Shiro":
+					return shiroSprite;
+				case "Natalya":
+					return natalyaSprite;
+				case "Hoi Lun":
+					return hoiLunSprite;
+				case "Leoni":
+					return leoniSprite;
+				case "Danjuma":
+					return danjumaSprite;
+				case "Jackson":
+					return jacksonSprite;
+				case "Alazne":
+					return alazneSprite;
+				case "Shiyang":
+					return shiyangSprite;
+				case "Ninja":
+					return ninjaSprite;
+				case "Skeletron":
+					return skeletronSprite;
+				default:
+					return null;
+			}
+		}
 
 		private void GetChallenges(ChallengeCategory category) //, bool playerCreated)
 		{
@@ -1445,6 +1470,12 @@ namespace FightingLegends
 			}
 		}
 
+
+		private void DummyChallengeRoundResults()
+		{
+			fightManager.DummyChallengeResults(selectedTeam, selectedAITeam);
+			StartCoroutine(fightManager.NextMatch(null));
+		}
 
 		public static ChallengeCategory DetermineCoinCategory(ChallengeData challenge)
 		{

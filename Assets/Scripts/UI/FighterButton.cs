@@ -6,6 +6,7 @@ namespace FightingLegends
 {
 	// simple class to encapsulate a FighterCard and attach a button to it for prefab instantiation
 	// used to dynamically populate challenge buttons with AI team member buttons
+	// and for challenge round results in MatchStats
 	public class FighterButton : MonoBehaviour
 	{
 		private FighterCard fighterCard; 
