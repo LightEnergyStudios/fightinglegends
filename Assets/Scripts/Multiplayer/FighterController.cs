@@ -10,6 +10,14 @@ namespace FightingLegends
 	// server (host) represents player1, client represents player2
 	public class FighterController : NetworkBehaviour
 	{
+//		public string FighterName;
+//		public string FighterColour;
+
+		[SyncVar]
+		public string PlayerName = "";
+		[SyncVar]
+		public Color PlayerColor = Color.white;
+
 		private FightManager fightManager;
 
 		public void Start()
