@@ -454,6 +454,11 @@ namespace FightingLegends
 					Player2Button.SetFighterCard(loserSprite, result.Loser);
 				}
 
+				if (result.AIWinner)
+					resultsAnimator.SetTrigger("ChallengeP2");		// animate card entry from right
+				else
+					resultsAnimator.SetTrigger("ChallengeP1");		// animate card entry from left
+				
 				yield return new WaitForSeconds(1.0f);
 			}
 		}

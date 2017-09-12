@@ -138,7 +138,7 @@ namespace FightingLegends
 		[HideInInspector]
 		public Fighter Player2;
 
-		public static bool MultiPlayerFight = false;	
+		public bool MultiPlayerFight = true;	
 
 //		private static Fighter player1;
 //		public static Fighter Player1
@@ -777,6 +777,9 @@ namespace FightingLegends
 
 			Time.fixedDeltaTime = AnimationFrameInterval;		// just to make sure it's set correctly
 
+//			FighterController.OnAnimationFrame += UpdateAnimation;
+//			FighterController.OnSingleFingerTap += SingleFingerTap;
+
 			// FIFO	queue
 //			sceneryNames.Enqueue(hawaii);		// training
 //			sceneryNames.Enqueue(dojo);			// training moves
@@ -812,6 +815,9 @@ namespace FightingLegends
 
 			DestroyFighter(Player1);		// also saves profile
 			DestroyFighter(Player2);
+
+//			FighterController.OnAnimationFrame -= UpdateAnimation;
+//			FighterController.OnSingleFingerTap -= SingleFingerTap;
 		}
 
 
@@ -1541,6 +1547,9 @@ namespace FightingLegends
 			string nextFighterName;
 			string nextFighterColour;
 
+			if (MultiPlayerFight)
+				underAI = false;
+
 			if (underAI && random)		// survival mode - next AI is selected randomly
 			{
 				RandomFighter(out nextFighterName, out nextFighterColour);		// ensures a different name/colour to both current fighters
@@ -1712,6 +1721,9 @@ namespace FightingLegends
 		public Fighter CreateFighter(string name, string colourScheme, bool underAI, bool training, bool listenForInput = true)
 		{
 			Fighter newFighter = null;
+
+			if (MultiPlayerFight)
+				underAI = false;
 
 			if (training)
 				name = underAI ? TrainingAIName : TrainingFighterName;
@@ -2016,7 +2028,7 @@ namespace FightingLegends
 						CreateNextFighter(true, false, !SavedGameStatus.CompletedBasicTraining, false, true, true, true);
 				}
 
-				// player 2 always AI
+				// player 2 always AI - unless multiplayer!
 				if (Player2 == null)
 					CreateNextFighter(false, true, false, false, true, true, true);
 				else if (SavedGameStatus.CompletedBasicTraining) 			// otherwise keep same fighter (restarted training)
@@ -3491,8 +3503,23 @@ namespace FightingLegends
 		#endregion 	// feedback
 
 
-		#region touch handlers 
+		#region inputs
 
+//		public void SingleFingerTap(bool player1)
+//		{
+//			if (! SavedGameStatus.FightInProgress)
+//				return;
+//			
+//			if (player1 && HasPlayer1)
+//				Player1.SingleFingerTap();
+//			else if (HasPlayer2)
+//				Player2.SingleFingerTap();
+//		}
+
+		#endregion
+
+
+		#region touch handlers 
 
 //		private void FingerTouch(Vector3 position)
 //		{
@@ -3553,53 +3580,55 @@ namespace FightingLegends
 //		}
 
 
-		private void SwipeLeft()
-		{
-			if (FightPaused)
-			{
-				if (cameraController.TrackRight)	// already panning right - increase speed
-				{
-					cameraController.IncreaseTrackSpeed();
-				}
-				else if	(cameraController.TrackLeft)		// panning left - slow down
-				{
-					cameraController.DecreaseTrackSpeed();
-				}
-				else 									// not panning - start panning right
-				{
-					cameraController.TrackRight = true;
-					cameraController.TrackLeft = false;
-
-					cameraController.IncreaseTrackSpeed();
-				}
-			}
-		}
-
-		private void SwipeRight()
-		{
-			if (FightPaused)
-			{
-				if (cameraController.TrackLeft)	// already panning left - increase speed
-				{
-					cameraController.IncreaseTrackSpeed();
-				}
-				else if	(cameraController.TrackRight)		// panning right - slow down
-				{
-					cameraController.DecreaseTrackSpeed();
-				}
-				else 									// not panning - start panning left
-				{
-					cameraController.IncreaseTrackSpeed();
-					cameraController.TrackLeft = true;
-					cameraController.TrackRight = false;
-				}
-			}
-		}
+//		private void SwipeLeft()
+//		{
+//			if (FightPaused)
+//			{
+//				if (cameraController.TrackRight)	// already panning right - increase speed
+//				{
+//					cameraController.IncreaseTrackSpeed();
+//				}
+//				else if	(cameraController.TrackLeft)		// panning left - slow down
+//				{
+//					cameraController.DecreaseTrackSpeed();
+//				}
+//				else 									// not panning - start panning right
+//				{
+//					cameraController.TrackRight = true;
+//					cameraController.TrackLeft = false;
+//
+//					cameraController.IncreaseTrackSpeed();
+//				}
+//			}
+//		}
+//
+//		private void SwipeRight()
+//		{
+//			if (FightPaused)
+//			{
+//				if (cameraController.TrackLeft)	// already panning left - increase speed
+//				{
+//					cameraController.IncreaseTrackSpeed();
+//				}
+//				else if	(cameraController.TrackRight)		// panning right - slow down
+//				{
+//					cameraController.DecreaseTrackSpeed();
+//				}
+//				else 									// not panning - start panning left
+//				{
+//					cameraController.IncreaseTrackSpeed();
+//					cameraController.TrackLeft = true;
+//					cameraController.TrackRight = false;
+//				}
+//			}
+//		}
 
 //		public void SwipeRightLeft()	// same signature as TouchListener.SwipeRightLeftAction delegate
 //		{
 //			ToggleTurbo();
 //		}
+
+		#endregion 		// touch handlers
 
 
 		// feedback to show if a move was successfully cued / continued
@@ -3614,7 +3643,6 @@ namespace FightingLegends
 			MoveCuedFeedback(ok, gestureListener.LastFingerPosition);
 		}
 			
-		#endregion 		// touch handlers
 
 //		public void SlowDown()
 //		{

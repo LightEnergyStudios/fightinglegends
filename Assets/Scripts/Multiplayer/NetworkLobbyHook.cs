@@ -14,6 +14,7 @@ namespace Prototype.NetworkLobby
 			LobbyPlayer lobby = lobbyPlayer.GetComponent<LobbyPlayer>();
 			FighterController localPlayer = gamePlayer.GetComponent<FighterController>();
 
+			localPlayer.IsPlayer1 = lobby.isPlayer1;
 			localPlayer.PlayerName = lobby.playerName;
 			localPlayer.PlayerColor = lobby.playerColor;
 		}

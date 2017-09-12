@@ -35,6 +35,7 @@ namespace FightingLegends
 		public Button ChallengesButton;			// TeamSelect (player-created challenges)
 		public Button FriendsButton;			// Facebook
 		public Button LeaderboardsButton;
+		public Button MultiplayerButton;
 		public Button TrainingButton;
 
 		public Button NewUserButton;
@@ -296,6 +297,7 @@ namespace FightingLegends
 			ChallengesButton.gameObject.SetActive(internetReachable);
 			FriendsButton.gameObject.SetActive(internetReachable);
 			LeaderboardsButton.gameObject.SetActive(internetReachable);
+			MultiplayerButton.gameObject.SetActive(internetReachable);
 
 			// hide if already registered!
 			NewUserButton.gameObject.SetActive(false); // string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId));
@@ -355,6 +357,7 @@ namespace FightingLegends
 			FriendsButton.onClick.AddListener(delegate { Facebook(); });
 			ChallengesButton.onClick.AddListener(delegate { Challenges(); });
 			LeaderboardsButton.onClick.AddListener(delegate { Leaderboards(); });
+			MultiplayerButton.onClick.AddListener(delegate { Multiplayer(); });
 			PowerUpButton.onClick.AddListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, PowerUp.None, true); });
 			StaticPowerUpButton.onClick.AddListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, fighterSelect.previewFighter.ProfileData.SavedData.StaticPowerUp, true); });
 			TriggerPowerUpButton.onClick.AddListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, fighterSelect.previewFighter.ProfileData.SavedData.TriggerPowerUp, false); });
@@ -409,6 +412,7 @@ namespace FightingLegends
 			FriendsButton.onClick.RemoveListener(delegate { Facebook(); });
 			ChallengesButton.onClick.RemoveListener(delegate { Challenges(); });
 			LeaderboardsButton.onClick.RemoveListener(delegate { Leaderboards(); });
+			MultiplayerButton.onClick.RemoveListener(delegate { Multiplayer(); });
 			PowerUpButton.onClick.RemoveListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, PowerUp.None, true); });
 			StaticPowerUpButton.onClick.RemoveListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, fighterSelect.previewFighter.ProfileData.SavedData.StaticPowerUp, true); });
 			TriggerPowerUpButton.onClick.RemoveListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, fighterSelect.previewFighter.ProfileData.SavedData.TriggerPowerUp, true); });
@@ -627,6 +631,11 @@ namespace FightingLegends
 		private void Leaderboards()
 		{
 			fightManager.StoreChoice = MenuType.Leaderboards;			// triggers fade to black and new menu
+		}
+
+		private void Multiplayer()
+		{
+			SceneLoader.LoadScene(SceneLoader.LobbyScene);
 		}
 
 		private void Challenges()

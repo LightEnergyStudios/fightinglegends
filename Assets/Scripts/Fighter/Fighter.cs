@@ -650,7 +650,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StartListeningForInput");
 
-			if (FightManager.MultiPlayerFight)		// handled by FighterController
+			if (fightManager.MultiPlayerFight)		// handled by FighterController
 				return;
 			
 			// subscribe to touch events
@@ -679,7 +679,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StopListeningForInput");
 
-			if (FightManager.MultiPlayerFight)		// handled by FighterController
+			if (fightManager.MultiPlayerFight)		// handled by FighterController
 				return;
 			
 			if (UnderAI || IsDojoShadow)

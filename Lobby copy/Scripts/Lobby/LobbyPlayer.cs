@@ -25,8 +25,6 @@ namespace Prototype.NetworkLobby
         public GameObject remoteIcone;
 
         //OnMyName function will be invoked on clients when server change the value of playerName
-		[SyncVar]  // (hook = "OnPlayer1")]
-		public bool isPlayer1 = true;
         [SyncVar(hook = "OnMyName")]
         public string playerName = "";
         [SyncVar(hook = "OnMyColor")]

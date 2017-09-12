@@ -20,9 +20,9 @@ namespace FightingLegends
 
 		private const float preloadPercent = 0.9f;		// % of scene loaded async - fixed - cannot change
 
-		protected const string OpeningScene = "Scenes/Opening";
-		protected const string CombatScene = "Scenes/Combat";
-
+		public const string OpeningScene = "Scenes/Opening";
+		public const string CombatScene = "Scenes/Combat";
+		public const string LobbyScene = "Scenes/Lobby";
 
 
 		// initialization
@@ -83,13 +83,14 @@ namespace FightingLegends
 			asyncLoadSceneOp.allowSceneActivation = true;
 		}
 			
+
 		// non async version
-		protected void LoadScene(string scene)
+		public static void LoadScene(string scene)
 		{
-			SceneManager.LoadScene(scene, LoadSceneMode.Single);
+			SceneManager.LoadScene(scene, LoadSceneMode.Additive);
 		}
 
-		protected void UnloadSceneAsync(string scene)
+		public static void UnloadSceneAsync(string scene)
 		{
 			SceneManager.UnloadSceneAsync(scene);
 		}

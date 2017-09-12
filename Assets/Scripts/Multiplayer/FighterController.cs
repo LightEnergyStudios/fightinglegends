@@ -14,33 +14,45 @@ namespace FightingLegends
 //		public string FighterColour;
 
 		[SyncVar]
+		public bool IsPlayer1 = true;
+		[SyncVar]
 		public string PlayerName = "";
 		[SyncVar]
 		public Color PlayerColor = Color.white;
 
+//		public delegate void AnimationDelegate();
+//		public static AnimationDelegate OnAnimationFrame;
+
+//		public delegate void SingleFingerTapDelegate(bool player1);
+//		public static SingleFingerTapDelegate OnSingleFingerTap;
+
 		private FightManager fightManager;
+
 
 		public void Start()
 		{
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
 
-			if (FightManager.MultiPlayerFight && isLocalPlayer)
+			if (fightManager.MultiPlayerFight && isLocalPlayer)
 				StartListeningForInput();
+
+			IsPlayer1 = isServer;		// TODO: assumes server is also host (ie. LAN)
 		}
 
 		private void OnDestroy()
 		{
-			if (FightManager.MultiPlayerFight && isLocalPlayer)
+			if (fightManager.MultiPlayerFight && isLocalPlayer)
 				StopListeningForInput();
 		}
 			
 
 		// called every Time.fixedDeltaTime seconds
 		// 0.0666667 = 1/15 sec
+		[ServerCallback]
 		private void FixedUpdate()
 		{
-			if (FightManager.MultiPlayerFight && isServer)
+			if (fightManager.MultiPlayerFight && isServer)
 				RpcUpdateAnimation();
 		}
 
@@ -50,9 +62,11 @@ namespace FightingLegends
 		{
 			if (!isLocalPlayer)
 				return;
-			
-			if (fightManager != null)
-				fightManager.UpdateAnimation();
+
+			fightManager.UpdateAnimation();
+
+//			if (OnAnimationFrame != null)
+//				OnAnimationFrame();
 		}
 
 	
@@ -94,13 +108,16 @@ namespace FightingLegends
 		private void SingleFingerTap()
 		{
 			if (isLocalPlayer)
-				CmdSingleFingerTap(isServer);		// player1 if host, else player2
+				CmdSingleFingerTap(IsPlayer1);		// player1 if host, else player2
 		}
 
 		[Command]
 		// called from client, runs on server
 		private void CmdSingleFingerTap(bool player1)
 		{
+			if (!isServer)
+				return;
+			
 			RpcSingleFingerTap(player1);
 		}
 
@@ -108,13 +125,26 @@ namespace FightingLegends
 		// called on server, runs on clients
 		private void RpcSingleFingerTap(bool player1)
 		{
-			if (!isLocalPlayer)
+//			if (!isLocalPlayer)
+//				return;
+
+//			if (player1)
+//				fightManager.Player1.SingleFingerTap();
+//			else
+//				fightManager.Player2.SingleFingerTap();
+
+			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1)
+			if (player1 && fightManager.HasPlayer1)
 				fightManager.Player1.SingleFingerTap();
-			else
+			else if (fightManager.HasPlayer2)
 				fightManager.Player2.SingleFingerTap();
+
+//			fightManager.SingleFingerTap(player1);
+			
+//			if (OnSingleFingerTap != null)
+//				OnSingleFingerTap(player1);
 		}
 
 		private void HoldDown()
@@ -165,6 +195,11 @@ namespace FightingLegends
 		private void FingerRelease(Vector3 position)
 		{
 
+		}
+
+		private void BackToLobby()
+		{
+			FindObjectOfType<NetworkLobbyManager>().ServerReturnToLobby();
 		}
 
 	}
