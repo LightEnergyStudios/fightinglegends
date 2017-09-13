@@ -24,9 +24,11 @@ namespace Prototype.NetworkLobby
         public GameObject localIcone;
         public GameObject remoteIcone;
 
-        //OnMyName function will be invoked on clients when server change the value of playerName
-		[SyncVar]  // (hook = "OnPlayer1")]
-		public bool isPlayer1 = true;
+		//OnPlayerNumber function will be invoked on clients when server changes the value of playerNumber
+		[SyncVar] // (hook = "OnPlayerNumber")]
+		public int playerNumber = 0;
+
+		//OnMyName function will be invoked on clients when server changes the value of playerName
         [SyncVar(hook = "OnMyName")]
         public string playerName = "";
         [SyncVar(hook = "OnMyColor")]
@@ -117,9 +119,13 @@ namespace Prototype.NetworkLobby
             readyButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
             readyButton.interactable = true;
 
-            //have to use child count of player prefab already setup as "this.slot" is not set yet
+            // use child count of player prefab for Player 1 / 2
+			int playerNumber = LobbyPlayerList._instance.playerListContentTransform.childCount-1;
+			CmdPlayerNumber(playerNumber);
+
+			//have to use child count of player prefab already setup as "this.slot" is not set yet
             if (playerName == "")
-                CmdNameChanged("Player" + (LobbyPlayerList._instance.playerListContentTransform.childCount-1));
+				CmdNameChanged("Player" + playerNumber);
 
             //we switch from simple name display to name input
             colorButton.interactable = true;
@@ -184,6 +190,11 @@ namespace Prototype.NetworkLobby
         }
 
         ///===== callback from sync var
+
+//		public void OnPlayerNumber(int playerNum)
+//		{
+//			playerNumber = playerNumber;
+//		}
 
         public void OnMyName(string newName)
         {
@@ -288,10 +299,16 @@ namespace Prototype.NetworkLobby
         }
 
         [Command]
-        public void CmdNameChanged(string name)
+		public void CmdNameChanged(string name)
         {
             playerName = name;
         }
+
+		[Command]
+		public void CmdPlayerNumber(int playerNumber)
+		{
+			playerNumber = playerNumber;
+		}
 
         //Cleanup thing when get destroy (which happen when client kick or disconnect)
         public void OnDestroy()

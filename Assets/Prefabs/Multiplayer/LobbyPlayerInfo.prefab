@@ -490,14 +490,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 811523f8e578d6f4abb259f1fbaa5e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ShowLobbyGUI: 0
+  ShowLobbyGUI: 1
   colorButton: {fileID: 114644888170240306}
   nameInput: {fileID: 114859669575933122}
   readyButton: {fileID: 114100974910971972}
   waitingPlayerButton: {fileID: 114996452612373330}
   removePlayerButton: {fileID: 114746189982712102}
   localIcone: {fileID: 1489584316515652}
-  remoteIcone: {fileID: 1086404737699330}
+  remoteIcone: {fileID: 1731675282604316}
+  playerNumber: 0
   playerName: 
   playerColor: {r: 1, g: 1, b: 1, a: 1}
   OddRowColor: {r: 0.98039216, g: 0.98039216, b: 0.98039216, a: 1}

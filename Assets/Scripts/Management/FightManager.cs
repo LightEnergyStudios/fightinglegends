@@ -139,6 +139,7 @@ namespace FightingLegends
 		public Fighter Player2;
 
 		public bool MultiPlayerFight = true;	
+		public bool SwitchFighterPositions = false;	
 
 //		private static Fighter player1;
 //		public static Fighter Player1
@@ -777,29 +778,6 @@ namespace FightingLegends
 
 			Time.fixedDeltaTime = AnimationFrameInterval;		// just to make sure it's set correctly
 
-//			FighterController.OnAnimationFrame += UpdateAnimation;
-//			FighterController.OnSingleFingerTap += SingleFingerTap;
-
-			// FIFO	queue
-//			sceneryNames.Enqueue(hawaii);		// training
-//			sceneryNames.Enqueue(dojo);			// training moves
-//
-//			sceneryNames.Enqueue(china);
-//			sceneryNames.Enqueue(tokyo);
-//			sceneryNames.Enqueue(ghetto);
-//			sceneryNames.Enqueue(cuba);
-//			sceneryNames.Enqueue(nigeria);
-//			sceneryNames.Enqueue(soviet);
-//			sceneryNames.Enqueue(hongKong);
-//			sceneryNames.Enqueue(spaceStation);
-
-//			sceneryNames.Enqueue(junkyard);
-
-			// build first (default) scene
-//			if (sceneryManager != null)
-//				sceneryManager.BuildScenery(hawaii);
-//				sceneryManager.BuildScenery(CurrentSceneryName);
-
 			// create lists of fighter names and colours
 			RegisterFighterNames();
 			RegisterAINames();
@@ -815,9 +793,6 @@ namespace FightingLegends
 
 			DestroyFighter(Player1);		// also saves profile
 			DestroyFighter(Player2);
-
-//			FighterController.OnAnimationFrame -= UpdateAnimation;
-//			FighterController.OnSingleFingerTap -= SingleFingerTap;
 		}
 
 
@@ -842,8 +817,7 @@ namespace FightingLegends
 		// 0.0666667 = 1/15 sec
 		private void FixedUpdate()
 		{
-//			if (! PreviewMode)
-			if (MultiPlayerFight)		// handled by FighterController
+			if (MultiPlayerFight)		// handled by NetworkFighter
 				return;
 			
 			UpdateAnimation();
@@ -1503,6 +1477,9 @@ namespace FightingLegends
 
 		public Vector3 GetFighterPosition(bool player1, bool waiting, bool defaultPosition)
 		{
+			if (SwitchFighterPositions)
+				player1 = !player1;
+			
 			if (! defaultPosition)
 			{
 				// player 1 on left, player 2 on right
@@ -1519,6 +1496,9 @@ namespace FightingLegends
 
 		public Vector3 GetFighterScale(bool player1)
 		{
+			if (SwitchFighterPositions)
+				player1 = !player1;
+			
 			// player 1 faces right, player 2 faces left
 			return player1 ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
 		}
@@ -1526,6 +1506,9 @@ namespace FightingLegends
 		// position relative to opponent for default fighting distance
 		public Vector3 GetRelativeDefaultPosition(bool player1)
 		{
+			if (SwitchFighterPositions)
+				player1 = !player1;
+			
 			if (player1)
 				return new Vector3(Player2.transform.position.x - (xOffset * 2.0f), yOffset, OnTopZOffset(true));
 			else
@@ -1535,6 +1518,9 @@ namespace FightingLegends
 		// position relative to opponent for strike contact
 		public Vector3 GetRelativeStrikePosition(bool player1)
 		{
+			if (SwitchFighterPositions)
+				player1 = !player1;
+			
 			var defaultPosition = GetRelativeDefaultPosition(player1);
 			var strikeOffset = player1 ? Player1.ProfileData.AttackDistance : -Player2.ProfileData.AttackDistance;
 
@@ -1615,7 +1601,7 @@ namespace FightingLegends
 			fighter.transform.position = GetFighterPosition(player1, waiting, toDefaultPosition);
 
 			// scale player 1 to face right, player 2 faces left
-			fighter.transform.localScale = GetFighterScale(player1); //  player1 ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
+			fighter.transform.localScale = GetFighterScale(player1); 
 
 			fighter.ResetHealth();			// set initial health
 
@@ -3362,7 +3348,7 @@ namespace FightingLegends
 		}
 			
 
-		public void TriggerFeedbackFX(FeedbackFXType feedback, float xOffset = 0.0f, float yOffset = 0.0f, string layer = null, bool splat = false)
+		public void TriggerFeedbackFX(FeedbackFXType feedback, float xOffset = 0.0f, float yOffset = 0.0f, string layer = null)
 		{
 			if (HasPlayer1)
 				Player1.StopAllFeedback();
@@ -3372,52 +3358,10 @@ namespace FightingLegends
 			if (feedbackUI != null)
 				feedbackUI.TriggerFeedbackFX(feedback, xOffset, yOffset, layer);
 
-//			if (splat)
-//				SplatOrPaintStroke(feedback);
-			
 			if (CurrentMenuCanvas == MenuType.Combat && CombatMode == FightMode.Training)
 				GestureSparks(feedback);
 		}
 
-//		public static void SplatOrPaintStroke(FeedbackFXType feedback)
-//		{
-//			switch (feedback)
-//			{
-//				// left/right swipes use paint stroke
-//				case FeedbackFXType.Swipe_Back:
-//				case FeedbackFXType.Swipe_Forward:
-//				case FeedbackFXType.Swipe_Vengeance:
-//					if (OnTriggerPaintStroke != null)
-//						OnTriggerPaintStroke(feedback == FeedbackFXType.Swipe_Forward || feedback == FeedbackFXType.Swipe_Vengeance);
-//
-//					if (OnHideSplat != null)
-//						OnHideSplat();
-//					break;
-//
-//				// all others use splat
-//				case FeedbackFXType.Press:
-//				case FeedbackFXType.Press_Both:
-//				case FeedbackFXType.Hold:
-//				case FeedbackFXType.Mash:
-//					if (OnTriggerSplat != null)
-//						OnTriggerSplat();
-//
-//					if (OnHidePaintStroke != null)
-//						OnHidePaintStroke();
-//					break;
-//			}
-//		}
-
-//		private void HideSplatPaintStroke()
-//		{
-////			Debug.Log("HideSplatPaintStroke");
-//
-//			if (OnHideSplat != null)
-//				OnHideSplat();
-//
-//			if (OnHidePaintStroke != null)
-//				OnHidePaintStroke();
-//		}
 
 		public void GestureSparks(FeedbackFXType feedback)
 		{
@@ -3503,134 +3447,6 @@ namespace FightingLegends
 		#endregion 	// feedback
 
 
-		#region inputs
-
-//		public void SingleFingerTap(bool player1)
-//		{
-//			if (! SavedGameStatus.FightInProgress)
-//				return;
-//			
-//			if (player1 && HasPlayer1)
-//				Player1.SingleFingerTap();
-//			else if (HasPlayer2)
-//				Player2.SingleFingerTap();
-//		}
-
-		#endregion
-
-
-		#region touch handlers 
-
-//		private void FingerTouch(Vector3 position)
-//		{
-//			if (TrainingUI.InfoBubbleShowing)
-//			{
-//				if (OnInfoBubbleRead != null)
-//					OnInfoBubbleRead();				// hides bubble and marks message as read
-//			}
-//		}
-
-//		public void SingleFingerTap()
-//		{
-//			Player1.SingleFingerTap();		// strike
-//		}
-//
-//		public void TwoFingerTap()
-//		{
-//			Player1.TwoFingerTap();			// roman cancel
-//		}
-			
-//		public void ThreeFingerTap()
-//		{
-			// removed for demos
-//			ToggleStatusUI();
-//			ToggleGameUI();
-//		}
-
-//		public void FourFingerTap()
-//		{
-//			TogglePause();
-//		}
-			
-
-//		public void SwipeUp()
-//		{
-//			if (Player1.CanPowerUp || Player2.CanPowerUp)
-//				return;
-//
-//			if (! FightPaused)
-//			{
-//				if (BothFightersIdle)
-//					StartCoroutine(TestRecycleFighters());			// TODO: remove!
-//			}
-//			else
-//			{
-//				CycleScenery();				// TODO: remove!
-//			}
-//		}
-
-//		public void SwipeDownUp()	// same signature as TouchListener.SwipeDownUpAction delegate
-//		{
-//			SlowDown();
-//		}
-//
-//		public void SwipeUpDown()	// same signature as TouchListener.SwipeUpDownAction delegate
-//		{
-//			SpeedUp();
-//		}
-
-
-//		private void SwipeLeft()
-//		{
-//			if (FightPaused)
-//			{
-//				if (cameraController.TrackRight)	// already panning right - increase speed
-//				{
-//					cameraController.IncreaseTrackSpeed();
-//				}
-//				else if	(cameraController.TrackLeft)		// panning left - slow down
-//				{
-//					cameraController.DecreaseTrackSpeed();
-//				}
-//				else 									// not panning - start panning right
-//				{
-//					cameraController.TrackRight = true;
-//					cameraController.TrackLeft = false;
-//
-//					cameraController.IncreaseTrackSpeed();
-//				}
-//			}
-//		}
-//
-//		private void SwipeRight()
-//		{
-//			if (FightPaused)
-//			{
-//				if (cameraController.TrackLeft)	// already panning left - increase speed
-//				{
-//					cameraController.IncreaseTrackSpeed();
-//				}
-//				else if	(cameraController.TrackRight)		// panning right - slow down
-//				{
-//					cameraController.DecreaseTrackSpeed();
-//				}
-//				else 									// not panning - start panning left
-//				{
-//					cameraController.IncreaseTrackSpeed();
-//					cameraController.TrackLeft = true;
-//					cameraController.TrackRight = false;
-//				}
-//			}
-//		}
-
-//		public void SwipeRightLeft()	// same signature as TouchListener.SwipeRightLeftAction delegate
-//		{
-//			ToggleTurbo();
-//		}
-
-		#endregion 		// touch handlers
-
-
 		// feedback to show if a move was successfully cued / continued
 		private void MoveCuedFeedback(bool ok, Vector3 position)
 		{
@@ -3662,67 +3478,16 @@ namespace FightingLegends
 //			UpdateAnimationSpeed();								// FPS
 //		}
 
-		#region switch commands
-
-//		private IEnumerator SwitchPositions()
-//		{
-//			var p1Position = Player1.transform.position;
-//			var p2Position = Player2.transform.position;
-//
-//			StartCoroutine(Player1.SwitchPosition(switchPositionTime, p2Position));
-//			StartCoroutine(Player2.SwitchPosition(switchPositionTime, p1Position));
-//
-//			yield return new WaitForSeconds(switchPositionTime);
-//
-//			// switch players once they have switched positions
-//			var tempP1 = Player1;
-//
-//			Player1 = Player2;
-//			Player2 = tempP1;
-//
-//			// Player 2 is always AI
-//			Player1.UnderAI = false;
-//			Player2.UnderAI = true;
-//
-//			if (statusUI != null)
-//				statusUI.SetFighters();
-//
-//			if (gameUI != null)
-//				gameUI.SetFighters(gameUIVisible);
-//
-//			yield return null;
-//		}
-			
-
-//		private bool CycleScenery()
-//		{
-//			if (sceneryManager == null)
-//				return false;
-//			
-//			// cycle through scenery queue
-//			// push current (ie. next) in queue to the end
-//			sceneryNames.Enqueue(sceneryNames.Dequeue());				// remove from head of queue
-//			
-//			return sceneryManager.BuildScenery(CurrentSceneryName);		// destroys current scenery
-//		}
 
 		public bool LoadSelectedScenery()
 		{
 			var locationFound = false;
 
 			if (SelectedLocation != "")		
-				locationFound = sceneryManager.BuildScenery(SelectedLocation);		// destroys current scenery - won't load scenery if already there!
-
-//			if (! locationFound)
-//			{
-//				Debug.Log("LoadSelectedScenery: " + SelectedLocation + " not found!");
-//				CycleScenery();
-//			}
+				locationFound = sceneryManager.BuildScenery(SelectedLocation);		// destroys current scenery - won't load scenery if already there
 
 			return locationFound;
 		}
-
-		#endregion 	// switching commands
 
 
 		#region UI 
@@ -5269,6 +5034,11 @@ namespace FightingLegends
 		public static string Translate(string text, bool wrap = false, bool exclaim = false, bool toUpper = false)
 		{
 			return Translator.Instance.LookupString(text, wrap, exclaim, toUpper);
+		}
+
+		public static void SwitchToLobby()
+		{
+			FindObjectOfType<UnityEngine.Networking.NetworkLobbyManager>().ServerReturnToLobby();
 		}
 	}
 }

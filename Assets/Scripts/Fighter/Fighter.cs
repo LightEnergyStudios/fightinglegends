@@ -351,9 +351,6 @@ namespace FightingLegends
 		public delegate void EndPowerUpFreezeDelegate(Fighter fighter, bool fromIdle);
 		public EndPowerUpFreezeDelegate OnEndPowerUpFreeze;
 
-//		public delegate void CanRomanCancelDelegate(bool canRomanCancel);
-//		public CanRomanCancelDelegate OnCanRomanCancel;
-
 		public delegate void CanContinueDelegate(FighterChangedData newState);
 		public CanContinueDelegate OnCanContinue;
 
@@ -414,17 +411,6 @@ namespace FightingLegends
 		public delegate void ExecuteMoveOkDelegate(Move move, bool ok);
 		public ExecuteMoveOkDelegate OnExecuteMoveOk;
 
-//		public delegate void HideInfoBubbleDelegate();
-//		public HideInfoBubbleDelegate OnInfoBubbleRead;
-
-//		public delegate void HitStunDelegate(HitFrameData hitData);
-//		public HitStunDelegate OnHitStunned;
-//
-//		public delegate void ShoveStunDelegate(HitFrameData hitData);
-//		public ShoveStunDelegate OnShoveStunned;
-//
-//		public delegate void BlockStunDelegate(HitFrameData hitData);
-//		public BlockStunDelegate OnBlockStunned;
 
 		#endregion 		// event delegates
 
@@ -536,31 +522,6 @@ namespace FightingLegends
 					smokeFXObject.transform.localScale = new Vector3(-1, 1, 1);
 			}
 
-//			if (profile.DustPrefab != null)
-//			{
-//				var dustObject = Instantiate(profile.DustPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-//				dustParticles = dustObject.GetComponent<Dust>();
-//
-//				// make dustObject a child of the fighter
-//				dustObject.transform.parent = transform;
-//
-//				// adjust position of dustObject (relative to fighter)
-//				dustObject.transform.localPosition = new Vector3(dustOffsetX, dustOffsetY, dustOffsetZ);
-//			}
-
-
-//			if (profile.FirePrefab != null)
-//			{
-//				var fireObject = Instantiate(profile.FirePrefab, Vector3.zero, Quaternion.identity) as GameObject;
-//				fireParticles = fireObject.GetComponent<Fire>();
-//
-//				// make dustObject a child of the fighter
-//				fireObject.transform.parent = transform;
-//
-//				// adjust position of fireObject (relative to fighter)
-//				fireObject.transform.localPosition = new Vector3(fireOffsetX, fireOffsetY, fireOffsetZ);
-//			}
-
 			var hitFlashObject = GameObject.Find("HitFlash");
 			if (hitFlashObject != null)
 				hitFlash = hitFlashObject.GetComponent<HitFlash>();
@@ -617,20 +578,6 @@ namespace FightingLegends
 			if (UnderAI && AIController != null)
 				AIController.StopWatching();	// opponent and self
 		}
-
-//		private void OnEnable()
-//		{
-//			// subscribe to touch events
-//			if (! PreviewMode)
-//				StartListeningForInput();
-//		}
-
-//		private void OnDisable()
-//		{
-//			// unsubscribe from touch events
-//			if (! PreviewMode)
-//				StopListeningForInput();
-//		}
 
 		private void OnDestroy()
 		{
@@ -1163,9 +1110,6 @@ namespace FightingLegends
 		{
  			get
 			{
-//				if (PreviewMoves)
-//					return true;
-				
 				if (! fightManager.HasPlayer1)
 					return false;
 
@@ -1185,9 +1129,6 @@ namespace FightingLegends
 		{
 			get
 			{
-//				if (PreviewMoves && ! PreviewUseGauge)
-//					return false;
-				
 				if (! fightManager.HasPlayer2)
 					return false;
 				
@@ -1202,18 +1143,7 @@ namespace FightingLegends
 
 		public Fighter Opponent
 		{
-			get
-			{
-//				if (PreviewMoves)
-//				{
-//					if (previewOpponent != null)
-//						return previewOpponent;
-//				
-//					return null;
-//				}
-				
-				return IsPlayer1 ? fightManager.Player2 : fightManager.Player1;
-			} 
+			get { return IsPlayer1 ? fightManager.Player2 : fightManager.Player1; } 
 		}
 
 		public bool InFight
@@ -1719,13 +1649,13 @@ namespace FightingLegends
 		}
 
 
-		public void FingerTouch(Vector3 position)
+		public void FingerTouch(Vector3 position = default(Vector3))
 		{
 			if (FightManager.SavedGameStatus.FightInProgress && ! fightManager.FightPaused)
 				moveCuedOk = false;
 		}
 
-		public void FingerRelease(Vector3 position)  		// same signature as GestureListener.FingerReleaseAction delegate
+		public void FingerRelease(Vector3 position = default(Vector3))  		// same signature as GestureListener.FingerReleaseAction delegate
 		{
 			if (UnderAI)  		// listening but not interested in this
 				return;
@@ -1761,16 +1691,6 @@ namespace FightingLegends
 			}
 		}
 
-//		private void UnfreezeFight()
-//		{
-//			if (!isFrozen)
-//				return;
-//			
-//			bool trainingFreeze = InTraining && !Trainer.CurrentStepIsCombo;		// no auto-freezing during a combo
-//
-//			if (! trainingFreeze)		
-//				fightManager.UnfreezeFight();
-//		}
 
 		private void OnLogFailedInput(FailedInput failedInput)		// currently during training only
 		{
@@ -2079,31 +1999,12 @@ namespace FightingLegends
 		{
 			bool hitOk = false;		// miss if false
 
-//			// just play sound effect if previewing moves
-//			if (PreviewMoves && Opponent == null)
-//			{
-//				hitOk = true;
-//				IncrementComboCount();
-//
-//				float damage = LevelDamage(hitData);
-//
-//				if (OnDamageInflicted != null)
-//					OnDamageInflicted(damage);
-//				
-//				fightManager.DamageKudos(damage, CurrentPriority, false, true);		// less kudos for preview (as if on receiving end of hit)
-//
-//				if (hitData.SoundEffect != null)
-//					AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
-//			}
-//			else
-			{
-				StartCoroutine(StrikeTravel());			// to make sure every strike connects
+			StartCoroutine(StrikeTravel());			// to make sure every strike connects
 
-				if (hitData.TypeOfHit == HitType.Shove)
-					hitOk = Opponent.CanBeShoved && DeliverShove(hitData, ProfileData.AttackDistance / 2.0f);	// shove stun + spot FX
-				else
-					hitOk = DeliverHit(hitData, ProfileData.AttackDistance, lastHit);	// hit stun + inflict damage + spot FX
-			}
+			if (hitData.TypeOfHit == HitType.Shove)
+				hitOk = Opponent.CanBeShoved && DeliverShove(hitData, ProfileData.AttackDistance / 2.0f);	// shove stun + spot FX
+			else
+				hitOk = DeliverHit(hitData, ProfileData.AttackDistance, lastHit);	// hit stun + inflict damage + spot FX
 
 //			Debug.Log(FullName + ": HIT FRAME! Miss = " + !hitOk + ", Priority = " + CurrentPriority + " [ " + AnimationFrameCount + " ]");
 
@@ -4799,9 +4700,6 @@ namespace FightingLegends
 		// returns false if damage was fatal
 		private bool TakeDamage(HitFrameData hitData, bool blockStun, bool lastHit, bool hitBlocked)
 		{
-//			if (PreviewMoves && !PreviewUseGauge)
-//				return true;
-			
 			// block damage is less than hit damage
 			float damage = blockStun ? hitData.BlockDamage : hitData.HitDamage;
 
@@ -5141,27 +5039,15 @@ namespace FightingLegends
 			if (! InTraining || Trainer.CurrentStepIsCombo)		// show special extra feedback when in combo trainin
 			{
 				if (IsFireElement)
-					fightManager.TriggerFeedbackFX(FeedbackFXType.Mash, xOffset, 0, null, true);				// splat
+					fightManager.TriggerFeedbackFX(FeedbackFXType.Mash, xOffset, 0, null);	
 				else if (IsWaterElement)
 				{
 					xOffset -= feedbackSwipeOffsetX;		// nearer to centre
-					fightManager.TriggerFeedbackFX(FeedbackFXType.Swipe_Forward, xOffset, 0, null, true);		// paint stroke
+					fightManager.TriggerFeedbackFX(FeedbackFXType.Swipe_Forward, xOffset, 0, null);
 				}
 			}
 		}
-
-//		private void TriggerDust(bool backwards)
-//		{
-//			var offset = backwards ? dustAttackOffsetX : -dustAttackOffsetX;
-//			dustParticles.transform.localPosition = new Vector3(dustOffsetX + offset, dustOffsetY, dustOffsetZ);
-//
-//			var force = (backwards ? -dustForce : dustForce);
-//			if (IsPlayer2)
-//				force = -force;
-//			
-//			dustParticles.Trigger(force);
-//		}
-
+	
 
 		// recoil deferred until after freeze
 		public void RecoilFromAttack()

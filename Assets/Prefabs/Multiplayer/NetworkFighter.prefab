@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114534711804142662}
   - component: {fileID: 114760339218774768}
   m_Layer: 0
-  m_Name: FighterController
+  m_Name: NetworkFighter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,3 +84,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca6ed10a763c4c808d23cc59737a9b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  PlayerNumber: 0
+  PlayerName: 
+  PlayerColor: {r: 1, g: 1, b: 1, a: 1}

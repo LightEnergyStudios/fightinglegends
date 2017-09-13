@@ -244,8 +244,8 @@ namespace FightingLegends
 			// listen to player2 powerup changes for when AI executes powerups
 			if (Player2Health.Fighter != null)
 			{
-				Player2Health.Fighter.OnTriggerPowerUpChanged -= Player2SetTriggerPowerUp;
-				Player2Health.Fighter.OnStaticPowerUpChanged -= Player2SetStaticPowerUp;
+				Player2Health.Fighter.OnTriggerPowerUpChanged += Player2SetTriggerPowerUp;
+				Player2Health.Fighter.OnStaticPowerUpChanged += Player2SetStaticPowerUp;
 
 				// traffic light listeners
 				Player2Health.Fighter.OnStateStarted += OnStateStarted;

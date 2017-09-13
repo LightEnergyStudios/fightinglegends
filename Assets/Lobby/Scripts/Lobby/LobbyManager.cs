@@ -27,6 +27,8 @@ namespace Prototype.NetworkLobby
         public RectTransform mainMenuPanel;
         public RectTransform lobbyPanel;
 
+//		public Button singlePlayerButton;
+
         public LobbyInfoPanel infoPanel;
         public LobbyCountdownPanel countdownPanel;
         public GameObject addPlayerButton;
@@ -65,7 +67,14 @@ namespace Prototype.NetworkLobby
             DontDestroyOnLoad(gameObject);
 
             SetServerInfo("Offline", "None");
+
+//			singlePlayerButton.onClick.AddListener(delegate { PlayGame(); });
         }
+
+//		void OnDestroy()
+//		{
+//			singlePlayerButton.onClick.RemoveListener(delegate { PlayGame(); });
+//		}
 
         public override void OnLobbyClientSceneChanged(NetworkConnection conn)
         {
@@ -163,6 +172,11 @@ namespace Prototype.NetworkLobby
             backDelegate();
 			topPanel.isInGame = false;
         }
+
+//		private void PlayGame()
+//		{
+//			ServerChangeScene(playScene);
+//		}
 
         // ----------------- Server management
 
