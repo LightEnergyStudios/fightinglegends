@@ -252,7 +252,7 @@ namespace FightingLegends
 //			slowDownButton.onClick.AddListener(SlowDown);
 
 			trainingNarrativeToggle.onValueChanged.AddListener(TrainingNarrativeToggled);
-			stateFeedbackToggle.onValueChanged.AddListener(StateFeedbackToggled);
+			stateFeedbackToggle.onValueChanged.AddListener(FightCaptionsToggled);
 			hudToggle.onValueChanged.AddListener(HudToggled);
 			hintsToggle.onValueChanged.AddListener(HintsToggled);
 
@@ -314,7 +314,7 @@ namespace FightingLegends
 //			slowDownButton.onClick.RemoveListener(SlowDown);
 
 			trainingNarrativeToggle.onValueChanged.RemoveListener(TrainingNarrativeToggled);
-			stateFeedbackToggle.onValueChanged.RemoveListener(StateFeedbackToggled);
+			stateFeedbackToggle.onValueChanged.RemoveListener(FightCaptionsToggled);
 			hudToggle.onValueChanged.RemoveListener(HudToggled);
 			hintsToggle.onValueChanged.RemoveListener(HintsToggled);
 
@@ -665,7 +665,7 @@ namespace FightingLegends
 			SetTrainingNarrativeLabel(isOn);
 		}
 
-		private void StateFeedbackToggled(bool isOn)
+		private void FightCaptionsToggled(bool isOn)
 		{
 			FightManager.SavedGameStatus.ShowStateFeedback = isOn;
 			SetFightCaptionsLabel(isOn);
@@ -689,10 +689,10 @@ namespace FightingLegends
 
 		private void SetHudLabel(bool isOn)
 		{
-			var label = stateFeedbackToggle.transform.Find("Label").GetComponent<Text>();
+			var label = hudToggle.transform.Find("Label").GetComponent<Text>();
 			label.text = isOn ? FightManager.Translate("hudOn", true) : FightManager.Translate("hudOff", true);
 
-			stateFeedbackToggle.GetComponent<Image>().color = isOn ? OnColour : OffColour;
+			hudToggle.GetComponent<Image>().color = isOn ? OnColour : OffColour;
 		}
 
 		private void HintsToggled(bool isOn)

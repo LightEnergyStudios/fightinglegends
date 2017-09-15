@@ -1983,7 +1983,7 @@ namespace FightingLegends
 			CombatMode = FightMode.Arcade;		// TODO: prolly shouldn't be forced here
 
 			MultiPlayerFight = true;
-			Debug.Log("StartMultiplayerFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
+//			Debug.Log("StartMultiplayerFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
 
 			SelectedFighterName = player1Name;
 			SelectedFighterColour = player1Colour;
@@ -1993,8 +1993,28 @@ namespace FightingLegends
 
 			SelectedLocation = location;
 
-			ActivateMenu(MenuType.Combat);		// default starts new fight
+			WorldMapChoice = MenuType.Combat;		// TODO: safe to assume fight started from world map?
+
+//			ActivateMenu(MenuType.Combat);		// default starts new fight
+//			StartCoroutine(NewMultiplayerFight());
 		}
+
+//		private IEnumerator NewMultiplayerFight()
+//		{
+//			if (curtain != null)
+//			{
+//				curtain.gameObject.SetActive(true);
+//				yield return StartCoroutine(curtain.FadeToBlack());
+//			}
+//				
+//			ActivateMenu(MenuType.Combat);		// default starts new fight
+//
+//			if (curtain != null)
+//			{
+//				yield return StartCoroutine(curtain.CurtainUp());
+//				curtain.gameObject.SetActive(false);
+//			}
+//		}
 
 		private IEnumerator StartNewFight(bool curtainDelay)
 		{

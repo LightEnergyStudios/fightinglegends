@@ -441,7 +441,7 @@ namespace FightingLegends
 				DestroyPreview();		// existing preview
 
 				previewFighter = newFighter;
-				previewFighter.transform.position = PreviewPosition(); //new Vector3(cameraX - previewX, previewY, previewZ);
+				previewFighter.transform.position = PreviewPosition();
 				previewFighter.SetPreview(idleFrameNumber);
 
 				FightManager.SelectedFighterName = previewFighter.FighterName; 
