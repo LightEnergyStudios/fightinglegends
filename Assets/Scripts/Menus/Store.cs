@@ -342,7 +342,7 @@ namespace FightingLegends
 			OnOverlayHiding += OverlayHiding;
 			OnOverlayHidden += OverlayHidden;
 
-			fighterSelect.OnPreviewCreated += UpdateFighterCard;
+			FighterSelect.OnPreviewCreated += UpdateFighterCard;
 
 			GestureListener.OnSwipeLeft += PreviewPreviousFighter;
 			GestureListener.OnSwipeRight += PreviewNextFighter;
@@ -401,7 +401,7 @@ namespace FightingLegends
 			OnOverlayHiding -= OverlayHiding;
 			OnOverlayHidden -= OverlayHidden;
 
-			fighterSelect.OnPreviewCreated -= UpdateFighterCard;
+			FighterSelect.OnPreviewCreated -= UpdateFighterCard;
 
 			GestureListener.OnSwipeLeft -= PreviewPreviousFighter;	
 			GestureListener.OnSwipeRight -= PreviewNextFighter;	

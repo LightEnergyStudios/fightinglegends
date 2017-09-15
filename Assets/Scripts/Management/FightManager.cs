@@ -138,8 +138,10 @@ namespace FightingLegends
 		[HideInInspector]
 		public Fighter Player2;
 
-		public bool MultiPlayerFight = true;	
-		public bool SwitchFighterPositions = false;	
+		public bool MultiPlayerFight = true;		// fighter animation and gesture input handled by NetworkFighter
+
+//		[HideInInspector]
+//		public bool SwitchFighterPositions = false;	
 
 //		private static Fighter player1;
 //		public static Fighter Player1
@@ -532,6 +534,9 @@ namespace FightingLegends
 			}
 		}
 
+		private string SelectedFighter2Name = "";		// multiplayer only
+		private string SelectedFighter2Colour = "";		// multiplayer only
+
 		private static UserProfile userLoginProfile;
 		public static UserProfile UserLoginProfile
 		{
@@ -545,7 +550,7 @@ namespace FightingLegends
 
 				return null;
 			}
-			private set
+			set
 			{
 				userLoginProfile = value;
 
@@ -817,7 +822,7 @@ namespace FightingLegends
 		// 0.0666667 = 1/15 sec
 		private void FixedUpdate()
 		{
-			if (MultiPlayerFight)		// handled by NetworkFighter
+			if (MultiPlayerFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
 				return;
 			
 			UpdateAnimation();
@@ -1477,8 +1482,8 @@ namespace FightingLegends
 
 		public Vector3 GetFighterPosition(bool player1, bool waiting, bool defaultPosition)
 		{
-			if (SwitchFighterPositions)
-				player1 = !player1;
+//			if (SwitchFighterPositions)
+//				player1 = !player1;
 			
 			if (! defaultPosition)
 			{
@@ -1496,8 +1501,8 @@ namespace FightingLegends
 
 		public Vector3 GetFighterScale(bool player1)
 		{
-			if (SwitchFighterPositions)
-				player1 = !player1;
+//			if (SwitchFighterPositions)
+//				player1 = !player1;
 			
 			// player 1 faces right, player 2 faces left
 			return player1 ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
@@ -1506,8 +1511,8 @@ namespace FightingLegends
 		// position relative to opponent for default fighting distance
 		public Vector3 GetRelativeDefaultPosition(bool player1)
 		{
-			if (SwitchFighterPositions)
-				player1 = !player1;
+//			if (SwitchFighterPositions)
+//				player1 = !player1;
 			
 			if (player1)
 				return new Vector3(Player2.transform.position.x - (xOffset * 2.0f), yOffset, OnTopZOffset(true));
@@ -1518,8 +1523,8 @@ namespace FightingLegends
 		// position relative to opponent for strike contact
 		public Vector3 GetRelativeStrikePosition(bool player1)
 		{
-			if (SwitchFighterPositions)
-				player1 = !player1;
+//			if (SwitchFighterPositions)
+//				player1 = !player1;
 			
 			var defaultPosition = GetRelativeDefaultPosition(player1);
 			var strikeOffset = player1 ? Player1.ProfileData.AttackDistance : -Player2.ProfileData.AttackDistance;
@@ -1533,7 +1538,7 @@ namespace FightingLegends
 			string nextFighterName;
 			string nextFighterColour;
 
-			if (MultiPlayerFight)
+			if (MultiPlayerFight && CombatMode == FightMode.Arcade)
 				underAI = false;
 
 			if (underAI && random)		// survival mode - next AI is selected randomly
@@ -1624,16 +1629,16 @@ namespace FightingLegends
 			return fighter;
 		}
 
-		public void SetFighters(Fighter player1, Fighter player2)
-		{
-			if (player1 != null && HasPlayer1)
-				DestroyFighter(Player1);
-			if (player2 != null && HasPlayer2)
-				DestroyFighter(Player2);
-			
-			Player1 = player1;
-			Player2 = player2;
-		}
+//		public void SetFighters(Fighter player1, Fighter player2)
+//		{
+//			if (player1 != null && HasPlayer1)
+//				DestroyFighter(Player1);
+//			if (player2 != null && HasPlayer2)
+//				DestroyFighter(Player2);
+//			
+//			Player1 = player1;
+//			Player2 = player2;
+//		}
 
 
 		public static string NextFighterColour(string currentColour)
@@ -1708,7 +1713,7 @@ namespace FightingLegends
 		{
 			Fighter newFighter = null;
 
-			if (MultiPlayerFight)
+			if (MultiPlayerFight && CombatMode == FightMode.Arcade)
 				underAI = false;
 
 			if (training)
@@ -1896,7 +1901,6 @@ namespace FightingLegends
 			{
 				newFighter.UnderAI = underAI;
 
-//				if (! PreviewMode && ! underAI)
 				if (! underAI)
 					newFighter.LoadProfile();		// if it exists
 
@@ -1974,6 +1978,24 @@ namespace FightingLegends
 //				OnCleanupFight();
 		}
 
+		public void StartMultiplayerFight(string player1Name, string player1Colour, string player2Name, string player2Colour, string location)
+		{
+			CombatMode = FightMode.Arcade;		// TODO: prolly shouldn't be forced here
+
+			MultiPlayerFight = true;
+			Debug.Log("StartMultiplayerFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
+
+			SelectedFighterName = player1Name;
+			SelectedFighterColour = player1Colour;
+
+			SelectedFighter2Name = player2Name;
+			SelectedFighter2Colour = player2Colour;
+
+			SelectedLocation = location;
+
+			ActivateMenu(MenuType.Combat);		// default starts new fight
+		}
+
 		private IEnumerator StartNewFight(bool curtainDelay)
 		{
 			if (PreviewMode)
@@ -2016,7 +2038,18 @@ namespace FightingLegends
 
 				// player 2 always AI - unless multiplayer!
 				if (Player2 == null)
-					CreateNextFighter(false, true, false, false, true, true, true);
+				{
+					if (MultiPlayerFight && CombatMode == FightMode.Arcade)
+					{
+						Player2 = CreateFighter(SelectedFighter2Name, SelectedFighter2Colour, false, false); 
+
+						Player2.ResetPosition(true);
+						Player2.ResetHealth();
+						Player2.Reveal();
+					}
+					else
+						CreateNextFighter(false, true, false, false, true, true, true);
+				}
 				else if (SavedGameStatus.CompletedBasicTraining) 			// otherwise keep same fighter (restarted training)
 					RecycleFighter(Player2, true);
 

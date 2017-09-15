@@ -597,7 +597,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StartListeningForInput");
 
-			if (fightManager.MultiPlayerFight)		// handled by FighterController
+			if (fightManager.MultiPlayerFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
 				return;
 			
 			// subscribe to touch events
@@ -626,7 +626,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StopListeningForInput");
 
-			if (fightManager.MultiPlayerFight)		// handled by FighterController
+			if (fightManager.MultiPlayerFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
 				return;
 			
 			if (UnderAI || IsDojoShadow)
@@ -1656,7 +1656,7 @@ namespace FightingLegends
 		}
 
 		public void FingerRelease(Vector3 position = default(Vector3))  		// same signature as GestureListener.FingerReleaseAction delegate
-		{
+		{			
 			if (UnderAI)  		// listening but not interested in this
 				return;
 

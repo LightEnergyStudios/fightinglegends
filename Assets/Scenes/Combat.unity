@@ -4219,6 +4219,11 @@ Prefab:
       propertyPath: options
       value: 
       objectReference: {fileID: 4182}
+    - target: {fileID: 114000011511193482, guid: eec7f291c2c2242b69e216344e171c29,
+        type: 2}
+      propertyPath: MultiPlayerFight
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eec7f291c2c2242b69e216344e171c29, type: 2}
   m_IsPrefabParent: 0
@@ -4779,7 +4784,7 @@ GameObject:
   - component: {fileID: 658235515}
   - component: {fileID: 658235514}
   m_Layer: 0
-  m_Name: NetworkController
+  m_Name: NetworkManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4808,7 +4813,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 658235512}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -822479833, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 53449b0fc816a44fa98d09a14c559214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_NetworkPort: 7777

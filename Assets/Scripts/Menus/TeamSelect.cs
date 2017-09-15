@@ -84,7 +84,7 @@ namespace FightingLegends
 			set
 			{
 				upLoadingChallenge = value;
-				uploadButton.interactable = !upLoadingChallenge;	
+				uploadButton.interactable = CanUpload; // !upLoadingChallenge;	
 
 				if (upLoadingChallenge)
 				{
@@ -390,7 +390,7 @@ namespace FightingLegends
 		private void AddListeners()
 		{
 			FightManager.OnThemeChanged += SetTheme;
-			FightManager.OnUserProfileChanged += CheckChallengeStatus;			// check for challenge result
+			FightManager.OnUserProfileChanged += OnUserProfileChanged;			// check for challenge result
 
 			FirebaseManager.OnChallengeSaved += OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted += OnChallengeAccepted;
@@ -448,7 +448,7 @@ namespace FightingLegends
 		private void RemoveListeners()
 		{
 			FightManager.OnThemeChanged -= SetTheme;
-			FightManager.OnUserProfileChanged -= CheckChallengeStatus;	
+			FightManager.OnUserProfileChanged -= OnUserProfileChanged;	
 
 			FirebaseManager.OnChallengeSaved -= OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted -= OnChallengeAccepted;
@@ -510,7 +510,6 @@ namespace FightingLegends
 				SetChallengesTitle();
 			}
 		}
-
 
 		private void CheckInternet()
 		{
@@ -763,8 +762,17 @@ namespace FightingLegends
 		{
 			bool fightersInTeam = selectedTeam.Count > 0;
 			fightButton.interactable = fightersInTeam;
-			uploadButton.interactable = internetReachable && fightersInTeam;
+			uploadButton.interactable = CanUpload; //internetReachable && fightersInTeam;
 			resultButton.interactable = fightersInTeam;
+		}
+
+		private bool CanUpload
+		{
+			get
+			{
+				bool challengeUploaded = FightManager.UserLoginProfile != null && FightManager.UserLoginProfile.ChallengeKey == "";
+				return internetReachable && selectedTeam.Count > 0 && !upLoadingChallenge && !challengeUploaded;
+			}
 		}
 
 
@@ -1389,7 +1397,7 @@ namespace FightingLegends
 		}
 
 
-		private void CheckChallengeStatus(string userId, UserProfile profile)
+		private void OnUserProfileChanged(string userId, UserProfile profile)
 		{
 			if (!internetReachable)
 				return;
@@ -1404,34 +1412,29 @@ namespace FightingLegends
 
 			if (profile != null && userId == FightManager.SavedGameStatus.UserId)	
 			{
+				uploadButton.interactable = CanUpload; 		// one at a time
+
 				if (profile.ChallengeKey == "")			// no challenge uploaded
 				{
-					uploadButton.interactable = true;
 					statusText.text = "";
 					return;
 				}
 					
-				uploadButton.interactable = false; 
 				statusText.text = FightManager.Translate("challengeUploaded");
 					
-				if (profile.ChallengeResult == "")		// challenge not yet accepted/completed
-				{
-					resultText.text = "";	
-					return;
-				}
 
 				if (profile.ChallengeResult == "Won")
 					resultText.text = FightManager.Translate("youWon", false, true);
 				else if (profile.ChallengeResult == "Lost")
 					resultText.text = FightManager.Translate("youLost", false, true);
-
-//				resultButton.interactable = profile.ChallengeResult != "";
-
+				else 		// challenge not yet accepted / completed
+					resultText.text = "";	
+				
 				profile.ChallengeResult = "";
 				profile.CoinsToCollect = 0;
 				profile.ChallengeKey = "";
 
-				FirebaseManager.SaveUserProfile(profile);		// callback enables/disables upload button according to challenge status
+//				FirebaseManager.SaveUserProfile(profile);		// callback enables/disables upload button according to challenge status
 
 				ShowChallengeResult();
 			}
@@ -1444,12 +1447,14 @@ namespace FightingLegends
 			
 			if (success && profile != null && userId == FightManager.SavedGameStatus.UserId)
 			{
-				uploadButton.interactable = profile.ChallengeKey == "";		// one at a time
+				FightManager.UserLoginProfile = profile;  		// -> OnUserProfileChanged
 
-				if (profile.ChallengeKey != "")
-					statusText.text = FightManager.Translate("challengeUploaded");
-				else
-					statusText.text = "";
+//				uploadButton.interactable = CanUpload; // profile.ChallengeKey == "";		// one at a time
+//
+//				if (profile.ChallengeKey != "")
+//					statusText.text = FightManager.Translate("challengeUploaded");
+//				else
+//					statusText.text = "";
 			}
 		}
 

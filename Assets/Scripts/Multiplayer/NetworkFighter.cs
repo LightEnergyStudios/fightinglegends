@@ -11,43 +11,111 @@ namespace FightingLegends
 	// in WAN environment player number passed through from lobby player - game creator is player1
 	public class NetworkFighter : NetworkBehaviour
 	{
-//		public string FighterName;
-//		public string FighterColour;
+		// set via lobby (hook)
+		public int PlayerNumber = 0;	
+	
+		// fighters set via FighterSelect delegate - server only
+		private static string Fighter1Name;
+		private static string Fighter1Colour;
+		private static string Fighter2Name;
+		private static string Fighter2Colour;
 
-		[SyncVar]
-		public int PlayerNumber = 0;		// set via lobby
-		[SyncVar]
-		public string PlayerName = "";
-		[SyncVar]
-		public Color PlayerColor = Color.white;
+		// location set via WorldMap delegate - server only
+		private static string SelectedLocation;
+	
+
+		private FightManager fightManager;
+
 
 		private bool IsPlayer1
 		{
 			get
 			{
-				if (PlayerNumber == 0)
+				if (PlayerNumber == 0)		// not set via lobby - must be LAN game
 					return isServer;		// LAN host == Player1
 				
-				return PlayerNumber == 1;	// first to join (game creator) == Player1
+				return PlayerNumber == 1;	// from lobby - first to join (game creator) == Player1
 			}
 		}
-
-		private FightManager fightManager;
-
 
 		public void Start()
 		{
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
 
+			if (PlayerNumber == 0)		// ie. not set via lobby (game creator == Player1)
+				PlayerNumber = isServer ? 1 : 2;
+			
 			if (fightManager.MultiPlayerFight && isLocalPlayer)
-				StartListeningForInput();
+			{
+				StartListening();
+
+//				if (!IsPlayer1)
+//					fightManager.SwitchFighterPositions = true;
+			}
 		}
 
 		private void OnDestroy()
 		{
 			if (fightManager.MultiPlayerFight && isLocalPlayer)
-				StopListeningForInput();
+				StopListening();
+		}
+
+		private void StartListening()
+		{
+			if (!isLocalPlayer)
+				return;
+
+			GestureListener.OnTap += SingleFingerTap;				// strike		
+			GestureListener.OnHoldStart += HoldDown;				// start block	
+			GestureListener.OnHoldEnd += HoldRelease;				// end block
+			GestureListener.OnSwipeLeft += SwipeLeft;				// counter
+			GestureListener.OnSwipeRight += SwipeRight;				// special
+			GestureListener.OnSwipeLeftRight += SwipeLeftRight;		// vengeance
+			GestureListener.OnSwipeDown += SwipeDown;				// shove
+			GestureListener.OnSwipeUp += SwipeUp;					// power up
+
+			GestureListener.OnTwoFingerTap += TwoFingerTap;			// roman cancel		
+
+			GestureListener.OnFingerTouch += FingerTouch;			// reset moveCuedOk
+			GestureListener.OnFingerRelease += FingerRelease;		// to ensure block released
+
+			if (IsPlayer1)
+				FighterSelect.OnFighterSelected += Fighter1Selected;
+			else
+				FighterSelect.OnFighterSelected += Fighter2Selected;
+
+//			FighterSelect.OnFighterSelected += FighterSelected;
+			WorldMap.OnLocationSelected += LocationSelected;
+		}
+
+		private void StopListening()
+		{
+			if (!isLocalPlayer)
+				return;
+
+			GestureListener.OnTap -= SingleFingerTap;		
+
+			GestureListener.OnHoldStart -= HoldDown;		
+			GestureListener.OnHoldEnd -= HoldRelease;		
+			GestureListener.OnSwipeLeft -= SwipeLeft;
+			GestureListener.OnSwipeRight -= SwipeRight;
+			GestureListener.OnSwipeLeftRight -= SwipeLeftRight;
+			GestureListener.OnSwipeDown -= SwipeDown;
+			GestureListener.OnSwipeUp -= SwipeUp;
+
+			GestureListener.OnTwoFingerTap -= TwoFingerTap;	
+
+			GestureListener.OnFingerTouch -= FingerTouch;			
+			GestureListener.OnFingerRelease -= FingerRelease;
+
+			if (IsPlayer1)
+				FighterSelect.OnFighterSelected -= Fighter1Selected;
+			else
+				FighterSelect.OnFighterSelected -= Fighter2Selected;
+
+//			FighterSelect.OnFighterSelected -= FighterSelected;
+			WorldMap.OnLocationSelected -= LocationSelected;
 		}
 			
 
@@ -68,46 +136,105 @@ namespace FightingLegends
 				return;
 
 			fightManager.UpdateAnimation();
-
-//			if (OnAnimationFrame != null)
-//				OnAnimationFrame();
 		}
-
 	
-		private void StartListeningForInput()
+
+		#region fight construction
+
+		private bool CanStartFight { get { return !string.IsNullOrEmpty(Fighter1Name) && !string.IsNullOrEmpty(Fighter1Colour) &&
+													!string.IsNullOrEmpty(Fighter2Name) && !string.IsNullOrEmpty(Fighter2Colour) &&
+													!string.IsNullOrEmpty(SelectedLocation); }}
+
+
+		// FighterSelect event handler
+		private void FighterSelected(Fighter fighter)
 		{
-			GestureListener.OnTap += SingleFingerTap;				// strike		
-			GestureListener.OnHoldStart += HoldDown;				// start block	
-			GestureListener.OnHoldEnd += HoldRelease;				// end block
-			GestureListener.OnSwipeLeft += SwipeLeft;				// counter
-			GestureListener.OnSwipeRight += SwipeRight;				// special
-			GestureListener.OnSwipeLeftRight += SwipeLeftRight;		// vengeance
-			GestureListener.OnSwipeDown += SwipeDown;				// shove
-			GestureListener.OnSwipeUp += SwipeUp;					// power up
-
-			GestureListener.OnTwoFingerTap += TwoFingerTap;			// roman cancel		
-
-			GestureListener.OnFingerTouch += FingerTouch;			// reset moveCuedOk
-			GestureListener.OnFingerRelease += FingerRelease;		// to ensure block released
+			if (isLocalPlayer)
+				CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);	
 		}
 
-		private void StopListeningForInput()
+		private void Fighter1Selected(Fighter fighter)
 		{
-			GestureListener.OnTap -= SingleFingerTap;		
-
-			GestureListener.OnHoldStart -= HoldDown;		
-			GestureListener.OnHoldEnd -= HoldRelease;		
-			GestureListener.OnSwipeLeft -= SwipeLeft;
-			GestureListener.OnSwipeRight -= SwipeRight;
-			GestureListener.OnSwipeLeftRight -= SwipeLeftRight;
-			GestureListener.OnSwipeDown -= SwipeDown;
-			GestureListener.OnSwipeUp -= SwipeUp;
-
-			GestureListener.OnTwoFingerTap -= TwoFingerTap;	
-
-			GestureListener.OnFingerTouch -= FingerTouch;			
-			GestureListener.OnFingerRelease -= FingerRelease;
+			if (isLocalPlayer)
+				CmdSetFighter(true, fighter.FighterName, fighter.ColourScheme);	
 		}
+
+		private void Fighter2Selected(Fighter fighter)
+		{
+			if (isLocalPlayer)
+				CmdSetFighter(false, fighter.FighterName, fighter.ColourScheme);	
+		}
+			
+
+		[Command]
+		// called from client, runs on server
+		private void CmdSetFighter(bool player1, string fighterName, string fighterColour)
+		{
+			if (!isServer)
+				return;
+
+			if (player1)
+			{
+				Fighter1Name = fighterName;	
+				Fighter1Colour = fighterColour;	
+			}
+			else
+			{
+				Fighter2Name = fighterName;	
+				Fighter2Colour = fighterColour;	
+			}
+
+			TryStartFight();
+		}
+
+
+		private void LocationSelected(string location)
+		{
+			if (isLocalPlayer)
+				CmdSetLocation(location);	
+		}
+
+		[Command]
+		// called from client, runs on server
+		private void CmdSetLocation(string location)
+		{
+			if (!isServer)
+				return;
+
+			SelectedLocation = location;
+
+			TryStartFight();
+		}
+
+		private void TryStartFight()
+		{
+			if (!isServer)
+				return;
+			
+			if (CanStartFight)
+			{
+				RpcStartFight(Fighter1Name, Fighter1Colour, Fighter2Name, Fighter2Colour, SelectedLocation);
+
+				// reset for next fight
+				Fighter1Name = null;
+				Fighter1Colour = null;
+				Fighter2Name = null;
+				Fighter2Colour = null;
+				SelectedLocation = null;
+			}
+		}
+
+		[ClientRpc]
+		// called on server, runs on clients
+		private void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
+		{
+			fightManager.StartMultiplayerFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
+		}
+
+		#endregion
+
+
+		#region gesture handlers
 
 		private void SingleFingerTap()
 		{
@@ -207,6 +334,11 @@ namespace FightingLegends
 			if (isLocalPlayer)
 				CmdFingerRelease(IsPlayer1);	
 		}
+
+		#endregion
+
+
+		#region server commands invoked by local player gestures
 
 		[Command]
 		// called from client, runs on server
@@ -344,6 +476,11 @@ namespace FightingLegends
 
 			RpcFingerRelease(player1);	
 		}
+
+		#endregion
+
+
+		#region client rpcs to execute moves
 
 		[ClientRpc]
 		// called on server, runs on clients
@@ -488,6 +625,8 @@ namespace FightingLegends
 			else if (fightManager.HasPlayer2)
 				fightManager.Player2.FingerRelease();
 		}
+
+		#endregion
 
 		private void BackToLobby()
 		{

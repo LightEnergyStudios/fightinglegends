@@ -89,7 +89,10 @@ namespace FightingLegends
 		private const float animatePauseTime = 0.5f;		// pause before animated card entry
 
 		public delegate void PreviewCreatedDelegate(Fighter previewFighter, bool fighterChanged);
-		public PreviewCreatedDelegate OnPreviewCreated;
+		public static PreviewCreatedDelegate OnPreviewCreated;
+
+		public delegate void FighterSelectedDelegate(Fighter fighter);
+		public static FighterSelectedDelegate OnFighterSelected;
 
 
 		private void Awake()
@@ -372,8 +375,13 @@ namespace FightingLegends
 			else
 			{
 				FightManager.Coins--;
-				fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
+
+//				if (! fightManager.MultiPlayerFight)							// new fight started when both fighters and location set
+					fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
 			}
+
+			if (OnFighterSelected != null)
+				OnFighterSelected(previewFighter);
 		}
 			
 //		private void ShowStore()

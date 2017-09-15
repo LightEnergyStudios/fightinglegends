@@ -43,6 +43,10 @@ namespace FightingLegends
 
 		private bool flying = false;
 
+		public delegate void LocationSelectedDelegate(string location);
+		public static LocationSelectedDelegate OnLocationSelected;
+
+
 		public void Awake()
 		{
 			var fightManagerObject = GameObject.Find("FightManager");
@@ -226,15 +230,22 @@ namespace FightingLegends
 			}
 
 			// return with selected location / AI fighter
-//			fightManager.SelectedLocation = FightManager.spaceStation; //  location;
 			fightManager.SelectedLocation = location;
 			fightManager.SelectedAIName = fighterName;
 
-//			Debug.Log("WorldMap FlyTo end: WorldMapPosition = " + fightManager.WorldMapPosition);
+			if (OnLocationSelected != null)
+				OnLocationSelected(location);
 
+//			Debug.Log("WorldMap FlyTo end: WorldMapPosition = " + fightManager.WorldMapPosition);
+		
 			// setting WorldMapChoice triggers fade to black and hides world map
-			if (TransportOnArrival)
-				fightManager.WorldMapChoice = MenuType.Combat;
+//			if (fightManager.MultiPlayerFight)							// new fight started when both fighters and location set
+//				fightManager.WorldMapChoice = FightManager.CombatMode == FightMode.Survival ? MenuType.SurvivalFighterSelect : MenuType.ArcadeFighterSelect;
+//			else if (TransportOnArrival)
+//				fightManager.WorldMapChoice = MenuType.Combat;
+
+			if (TransportOnArrival && !fightManager.MultiPlayerFight)
+				fightManager.WorldMapChoice = MenuType.Combat;		// new multiplayer fight started once both fighters and location set
 			
 			yield return null;
 		}

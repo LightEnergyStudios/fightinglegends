@@ -267,6 +267,16 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114992126374045060, guid: 5163035e57b1f45a3979807416bcada3,
+        type: 2}
+      propertyPath: m_Text
+      value: INTERNET MATCH
+      objectReference: {fileID: 0}
+    - target: {fileID: 114014236358433164, guid: 5163035e57b1f45a3979807416bcada3,
+        type: 2}
+      propertyPath: m_Text
+      value: LOCAL MATCH
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5163035e57b1f45a3979807416bcada3, type: 2}
   m_IsPrefabParent: 0
