@@ -98,8 +98,8 @@ namespace FightingLegends
 		public Button resetGameButton;
 		public Button newUserButton;
 
-		public Color OnColour;
-		public Color OffColour;
+		public Color OnColour;				// green
+		public Color OffColour;				// red
 
 		public Toggle smartAIToggle;
 		public Toggle proactiveToggle;

@@ -1367,6 +1367,7 @@ MonoBehaviour:
   CombatMode: {fileID: 114000013306379034}
   ScoreDash: {fileID: 114000013925247668}
   ScoreColour: {r: 1, g: 0.33426183, b: 0, a: 1}
+  NetworkColour: {r: 0, g: 0.31724167, b: 1, a: 1}
   SurvivalScoreColour: {r: 0.06833035, g: 0.5882353, b: 0, a: 1}
   ChallengeScoreColour: {r: 0.65517235, g: 0, b: 1, a: 1}
   DojoColour: {r: 0, g: 0.6585723, b: 0.687, a: 1}

@@ -81,7 +81,7 @@ namespace FightingLegends
 		// power-up sprites passed by GameUI parent (so sprites not duplicated in HealthUI each player)
 		public void SetTriggerPowerUp(Sprite triggerPowerUp, bool stars)
 		{
-			Debug.Log(fighter.FullName + " SetTriggerPowerUp: " + triggerPowerUp);
+//			Debug.Log(fighter.FullName + " SetTriggerPowerUp: " + triggerPowerUp);
 			LevelButton.SetTriggerPowerUp(triggerPowerUp, stars);
 		}
 

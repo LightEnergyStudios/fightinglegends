@@ -46,7 +46,7 @@ namespace FightingLegends
 			if (PlayerNumber == 0)		// ie. not set via lobby (game creator == Player1)
 				PlayerNumber = isServer ? 1 : 2;
 			
-			if (fightManager.MultiPlayerFight && isLocalPlayer)
+			if (fightManager.NetworkFight && isLocalPlayer)
 			{
 				StartListening();
 
@@ -57,7 +57,7 @@ namespace FightingLegends
 
 		private void OnDestroy()
 		{
-			if (fightManager.MultiPlayerFight && isLocalPlayer)
+			if (fightManager.NetworkFight && isLocalPlayer)
 				StopListening();
 		}
 
@@ -80,13 +80,16 @@ namespace FightingLegends
 			GestureListener.OnFingerTouch += FingerTouch;			// reset moveCuedOk
 			GestureListener.OnFingerRelease += FingerRelease;		// to ensure block released
 
-			if (IsPlayer1)
-				FighterSelect.OnFighterSelected += Fighter1Selected;
-			else
-				FighterSelect.OnFighterSelected += Fighter2Selected;
+//			if (IsPlayer1)
+//				FighterSelect.OnFighterSelected += Fighter1Selected;
+//			else
+//				FighterSelect.OnFighterSelected += Fighter2Selected;
 
-//			FighterSelect.OnFighterSelected += FighterSelected;
+			FighterSelect.OnFighterSelected += FighterSelected;
 			WorldMap.OnLocationSelected += LocationSelected;
+
+			FightManager.OnQuitFight += QuitFight;
+			FightManager.OnFightPaused += PauseFight;
 		}
 
 		private void StopListening()
@@ -109,13 +112,16 @@ namespace FightingLegends
 			GestureListener.OnFingerTouch -= FingerTouch;			
 			GestureListener.OnFingerRelease -= FingerRelease;
 
-			if (IsPlayer1)
-				FighterSelect.OnFighterSelected -= Fighter1Selected;
-			else
-				FighterSelect.OnFighterSelected -= Fighter2Selected;
+//			if (IsPlayer1)
+//				FighterSelect.OnFighterSelected -= Fighter1Selected;
+//			else
+//				FighterSelect.OnFighterSelected -= Fighter2Selected;
 
-//			FighterSelect.OnFighterSelected -= FighterSelected;
+			FighterSelect.OnFighterSelected -= FighterSelected;
 			WorldMap.OnLocationSelected -= LocationSelected;
+
+			FightManager.OnQuitFight -= QuitFight;
+			FightManager.OnFightPaused -= PauseFight;
 		}
 			
 
@@ -124,7 +130,7 @@ namespace FightingLegends
 		[ServerCallback]
 		private void FixedUpdate()
 		{
-			if (fightManager.MultiPlayerFight && isServer)
+			if (fightManager.NetworkFight && isServer)
 				RpcUpdateAnimation();
 		}
 
@@ -153,17 +159,17 @@ namespace FightingLegends
 				CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);	
 		}
 
-		private void Fighter1Selected(Fighter fighter)
-		{
-			if (isLocalPlayer)
-				CmdSetFighter(true, fighter.FighterName, fighter.ColourScheme);	
-		}
-
-		private void Fighter2Selected(Fighter fighter)
-		{
-			if (isLocalPlayer)
-				CmdSetFighter(false, fighter.FighterName, fighter.ColourScheme);	
-		}
+//		private void Fighter1Selected(Fighter fighter)
+//		{
+//			if (isLocalPlayer)
+//				CmdSetFighter(true, fighter.FighterName, fighter.ColourScheme);	
+//		}
+//
+//		private void Fighter2Selected(Fighter fighter)
+//		{
+//			if (isLocalPlayer)
+//				CmdSetFighter(false, fighter.FighterName, fighter.ColourScheme);	
+//		}
 			
 
 		[Command]
@@ -228,8 +234,28 @@ namespace FightingLegends
 		// called on server, runs on clients
 		private void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
 		{
-			fightManager.StartMultiplayerFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
+			if (isServer)
+				fightManager.StartMultiplayerFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
+			else
+				fightManager.StartMultiplayerFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
 		}
+
+		#endregion
+
+		#region quit / pause fight
+
+		private void QuitFight()
+		{
+
+		}
+
+
+		private void PauseFight(bool paused)
+		{
+
+		}
+
+
 
 		#endregion
 
@@ -489,10 +515,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.SingleFingerTap();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.SingleFingerTap();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.SingleFingerTap();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.SingleFingerTap();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.SingleFingerTap();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.SingleFingerTap();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SingleFingerTap();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SingleFingerTap();
 		}
 
 		[ClientRpc]
@@ -501,11 +542,26 @@ namespace FightingLegends
 		{
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
+			
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.HoldDown();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.HoldDown();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.HoldDown();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.HoldDown();
+			}
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.HoldDown();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.HoldDown();
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.HoldDown();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.HoldDown();
 		}
 
 		[ClientRpc]
@@ -515,10 +571,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.HoldRelease();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.HoldRelease();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.HoldRelease();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.HoldRelease();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.HoldRelease();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.HoldRelease();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.HoldRelease();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.HoldRelease();
 		}
 
 		[ClientRpc]
@@ -528,10 +599,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.SwipeLeft();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.SwipeLeft();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.SwipeLeft();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.SwipeLeft();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.SwipeLeft();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.SwipeLeft();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeLeft();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeLeft();
 		}
 
 		[ClientRpc]
@@ -541,10 +627,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.SwipeRight();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.SwipeRight();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.SwipeRight();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.SwipeRight();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.SwipeRight();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.SwipeRight();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeRight();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeRight();
 		}
 
 		[ClientRpc]
@@ -554,10 +655,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.SwipeLeftRight();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.SwipeLeftRight();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.SwipeLeftRight();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.SwipeLeftRight();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.SwipeLeftRight();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.SwipeLeftRight();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeLeftRight();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeLeftRight();
 
 		}
 
@@ -568,10 +684,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.SwipeDown();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.SwipeDown();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.SwipeDown();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.SwipeDown();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.SwipeDown();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.SwipeDown();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeDown();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeDown();
 		}
 
 		[ClientRpc]
@@ -581,10 +712,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.SwipeUp();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.SwipeUp();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.SwipeUp();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.SwipeUp();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.SwipeUp();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.SwipeUp();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeUp();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeUp();
 		}
 
 		[ClientRpc]
@@ -594,10 +740,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.TwoFingerTap();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.TwoFingerTap();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.TwoFingerTap();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.TwoFingerTap();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.TwoFingerTap();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.TwoFingerTap();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.TwoFingerTap();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.TwoFingerTap();
 		}
 
 		[ClientRpc]
@@ -607,10 +768,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.FingerTouch();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.FingerTouch();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.FingerTouch();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.FingerTouch();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.FingerTouch();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.FingerTouch();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.FingerTouch();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.FingerTouch();
 		}
 
 		[ClientRpc]
@@ -620,10 +796,25 @@ namespace FightingLegends
 			if (! FightManager.SavedGameStatus.FightInProgress)
 				return;
 
-			if (player1 && fightManager.HasPlayer1)
-				fightManager.Player1.FingerRelease();
-			else if (fightManager.HasPlayer2)
-				fightManager.Player2.FingerRelease();
+			if (isServer) 
+			{
+				if (player1 && fightManager.HasPlayer1)
+					fightManager.Player1.FingerRelease();
+				else if (fightManager.HasPlayer2)
+					fightManager.Player2.FingerRelease();
+			}
+			else
+			{
+				if (player1 && fightManager.HasPlayer2)
+					fightManager.Player2.FingerRelease();
+				else if (fightManager.HasPlayer1)
+					fightManager.Player1.FingerRelease();
+			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.FingerRelease();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.FingerRelease();
 		}
 
 		#endregion

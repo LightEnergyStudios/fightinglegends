@@ -16,6 +16,7 @@ namespace FightingLegends
 
 		// score
 		public Color ScoreColour;				// arcade and training
+		public Color NetworkColour;				// multiplayer
 		public Color SurvivalScoreColour;
 		public Color ChallengeScoreColour;
 		public Color DojoColour;
@@ -174,7 +175,7 @@ namespace FightingLegends
 				ScoreDash.color = SurvivalScoreColour;	
 				CombatMode.color = SurvivalScoreColour;
 			}
-			else if (FightManager.CombatMode == FightMode.Dojo) 
+			else if (FightManager.CombatMode == FightMode.Dojo)
 			{
 				Player1Health.ShowScore(false);
 				Player2Health.ShowScore(false);					// not relevant
@@ -188,7 +189,7 @@ namespace FightingLegends
 				ScoreDash.color = DojoColour;	
 				CombatMode.color = DojoColour;
 			}
-			else
+			else  		// arcade / training
 			{
 				bool trainingCompleted = FightManager.SavedGameStatus.CompletedBasicTraining;
 
@@ -201,15 +202,29 @@ namespace FightingLegends
 					var mode = FightManager.CombatMode.ToString().ToLower();
 					var difficulty = FightManager.SavedGameStatus.Difficulty.ToString().ToLower();
 
-					CombatMode.text = FightManager.SavedGameStatus.NinjaSchoolFight ? FightManager.Translate("ninjaSchool") : string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate(difficulty));
+					if (fightManager.NetworkFight && FightManager.CombatMode == FightMode.Arcade)
+						CombatMode.text = string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate("twoPlayer"));
+					else
+						CombatMode.text = FightManager.SavedGameStatus.NinjaSchoolFight ? FightManager.Translate("ninjaSchool")
+												: string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate(difficulty));
 				}
 				else
 					CombatMode.text = FightManager.Translate("ninjaSchool");
 
-				Player1Health.SetScoreColour(ScoreColour);
-				Player2Health.SetScoreColour(ScoreColour);
-				ScoreDash.color = ScoreColour;
-				CombatMode.color = ScoreColour;
+				if (fightManager.NetworkFight && FightManager.CombatMode == FightMode.Arcade)
+				{
+					Player1Health.SetScoreColour(NetworkColour);
+					Player2Health.SetScoreColour(NetworkColour);
+					ScoreDash.color = NetworkColour;
+					CombatMode.color = NetworkColour;
+				}
+				else
+				{
+					Player1Health.SetScoreColour(ScoreColour);
+					Player2Health.SetScoreColour(ScoreColour);
+					ScoreDash.color = ScoreColour;
+					CombatMode.color = ScoreColour;
+				}
 			}
 
 			// no traffic lights in hard/brutal arcade, survival, challenge or training modes (training 'scripts' controls traffic lights)
@@ -342,7 +357,7 @@ namespace FightingLegends
 
 		private void Player1SetTriggerPowerUp(PowerUp powerUp)
 		{
-			Debug.Log("Player1SetTriggerPowerUp: " + powerUp);
+//			Debug.Log("Player1SetTriggerPowerUp: " + powerUp);
 
 			var sprite = PowerUpSprite(powerUp);
 			Player1Health.SetTriggerPowerUp(sprite, false);
@@ -350,7 +365,7 @@ namespace FightingLegends
 
 		private void Player2SetTriggerPowerUp(PowerUp powerUp)
 		{
-			Debug.Log("Player2SetTriggerPowerUp: " + powerUp);
+//			Debug.Log("Player2SetTriggerPowerUp: " + powerUp);
 
 			var sprite = PowerUpSprite(powerUp);
 			Player2Health.SetTriggerPowerUp(sprite, false);

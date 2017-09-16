@@ -597,7 +597,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StartListeningForInput");
 
-			if (fightManager.MultiPlayerFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
+			if (fightManager.NetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
 				return;
 			
 			// subscribe to touch events
@@ -626,7 +626,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StopListeningForInput");
 
-			if (fightManager.MultiPlayerFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
+			if (fightManager.NetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
 				return;
 			
 			if (UnderAI || IsDojoShadow)

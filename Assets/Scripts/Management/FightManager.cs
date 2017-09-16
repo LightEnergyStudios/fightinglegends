@@ -138,7 +138,7 @@ namespace FightingLegends
 		[HideInInspector]
 		public Fighter Player2;
 
-		public bool MultiPlayerFight = true;		// fighter animation and gesture input handled by NetworkFighter
+		public bool NetworkFight = true;		// fighter animation and gesture input handled by NetworkFighter
 
 //		[HideInInspector]
 //		public bool SwitchFighterPositions = false;	
@@ -822,7 +822,7 @@ namespace FightingLegends
 		// 0.0666667 = 1/15 sec
 		private void FixedUpdate()
 		{
-			if (MultiPlayerFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
+			if (NetworkFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
 				return;
 			
 			UpdateAnimation();
@@ -1538,7 +1538,7 @@ namespace FightingLegends
 			string nextFighterName;
 			string nextFighterColour;
 
-			if (MultiPlayerFight && CombatMode == FightMode.Arcade)
+			if (NetworkFight && CombatMode == FightMode.Arcade)
 				underAI = false;
 
 			if (underAI && random)		// survival mode - next AI is selected randomly
@@ -1713,7 +1713,7 @@ namespace FightingLegends
 		{
 			Fighter newFighter = null;
 
-			if (MultiPlayerFight && CombatMode == FightMode.Arcade)
+			if (NetworkFight && CombatMode == FightMode.Arcade)
 				underAI = false;
 
 			if (training)
@@ -1982,7 +1982,7 @@ namespace FightingLegends
 		{
 			CombatMode = FightMode.Arcade;		// TODO: prolly shouldn't be forced here
 
-			MultiPlayerFight = true;
+			NetworkFight = true;
 //			Debug.Log("StartMultiplayerFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
 
 			SelectedFighterName = player1Name;
@@ -1993,7 +1993,8 @@ namespace FightingLegends
 
 			SelectedLocation = location;
 
-			WorldMapChoice = MenuType.Combat;		// TODO: safe to assume fight started from world map?
+			// TODO: safe to assume fight started from world map?
+			WorldMapChoice = MenuType.Combat;  // default starts new fight		
 
 //			ActivateMenu(MenuType.Combat);		// default starts new fight
 //			StartCoroutine(NewMultiplayerFight());
@@ -2059,7 +2060,7 @@ namespace FightingLegends
 				// player 2 always AI - unless multiplayer!
 				if (Player2 == null)
 				{
-					if (MultiPlayerFight && CombatMode == FightMode.Arcade)
+					if (NetworkFight && CombatMode == FightMode.Arcade)
 					{
 						Player2 = CreateFighter(SelectedFighter2Name, SelectedFighter2Colour, false, false); 
 
@@ -2078,6 +2079,15 @@ namespace FightingLegends
 
 				if (CombatMode == FightMode.Training && trainingUI != null && Player1.InTraining)
 					trainingUI.SetTrainer();
+
+				if (NetworkFight && CombatMode == FightMode.Arcade)
+				{
+					if (statusUI != null)
+						statusUI.SetFighters();
+
+					if (gameUI != null)
+						gameUI.SetFighters(gameUIVisible);
+				}
 			}
 			else if (CombatMode == FightMode.Dojo)
 			{

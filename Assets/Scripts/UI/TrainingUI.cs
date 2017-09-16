@@ -834,6 +834,9 @@ namespace FightingLegends
 			if (!FightManager.SavedGameStatus.ShowInfoBubbles)
 				yield break;
 
+			if (fightManager.NetworkFight)
+				yield break;
+
 			if (message != InfoBubbleMessage.None && message == CurrentInfoBubbleMessage)		// no change
 				yield break;
 
