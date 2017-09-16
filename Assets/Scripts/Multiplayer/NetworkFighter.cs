@@ -79,6 +79,7 @@ namespace FightingLegends
 			WorldMap.OnLocationSelected += LocationSelected;
 
 			FightManager.OnQuitFight += QuitFight;
+//			FightManager.OnFightFrozen += FreezeFight;
 			FightManager.OnFightPaused += PauseFight;
 		}
 
@@ -106,6 +107,7 @@ namespace FightingLegends
 			WorldMap.OnLocationSelected -= LocationSelected;
 
 			FightManager.OnQuitFight -= QuitFight;
+//			FightManager.OnFightFrozen -= FreezeFight;
 			FightManager.OnFightPaused -= PauseFight;
 		}
 			
@@ -123,12 +125,23 @@ namespace FightingLegends
 		// called on server, runs on clients
 		private void RpcUpdateAnimation()
 		{
-			if (!isLocalPlayer)
-				return;
-
-			fightManager.UpdateAnimation();
+			if (isLocalPlayer)
+				fightManager.UpdateAnimation();
 		}
 	
+
+//		private void Update()
+//		{
+//			//TODO: remove this!
+//			// handle key strokes for testing in Unity
+//			if (! DeviceDetector.IsMobile)
+//			{
+//				if (Input.GetKeyDown(KeyCode.X))
+//				{
+//					TwoFingerTap();				// roman cancel (requires gauge)
+//				}
+//			}
+//		}
 
 		#region fight construction
 
@@ -208,9 +221,15 @@ namespace FightingLegends
 		private void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
 		{
 			if (isServer)
+			{
+				Debug.Log("RpcStartFight - server: " + fighter1Name + " / " + fighter1Colour + " / " + fighter2Name + " / " + fighter2Colour + " / " + location);
 				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
+			}
 			else
+			{
+				Debug.Log("RpcStartFight - client: " + fighter2Name + " / " + fighter2Colour + " / " + fighter1Name + " / " + fighter1Colour + " / " + location);
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
+			}
 		}
 
 		#endregion
@@ -222,7 +241,6 @@ namespace FightingLegends
 			if (isLocalPlayer)
 				CmdQuitFight();
 		}
-
 
 		[Command]
 		// called from client, runs on server
@@ -238,15 +256,42 @@ namespace FightingLegends
 		// called on server, runs on clients
 		private void RpcQuitFight()
 		{
-			fightManager.QuitNetworkFight();
+			fightManager.ExitFight();
 		}
+
+
+//		private void FreezeFight(bool frozen)
+//		{
+//			if (isLocalPlayer)
+//				CmdFreezeFight(frozen);
+//		}
+//
+//		[Command]
+//		// called from client, runs on server
+//		private void CmdFreezeFight(bool frozen)
+//		{
+//			if (!isServer)
+//				return;
+//
+//			RpcFreezeFight(frozen);
+//		}
+//
+//		[ClientRpc]
+//		// called on server, runs on clients
+//		private void RpcFreezeFight(bool frozen)
+//		{
+//			if (frozen)
+//				fightManager.FreezeFight();
+//			else
+//				fightManager.UnfreezeFight();
+//		}
 
 		private void PauseFight(bool paused)
 		{
 			if (isLocalPlayer)
 				CmdPauseFight(paused);
 		}
-
+	
 		[Command]
 		// called from client, runs on server
 		private void CmdPauseFight(bool paused)
@@ -261,10 +306,8 @@ namespace FightingLegends
 		// called on server, runs on clients
 		private void RpcPauseFight(bool paused)
 		{
-			fightManager.PauseNetworkFight(paused);
+			fightManager.PauseFight(paused, false);
 		}
-
-
 
 		#endregion
 

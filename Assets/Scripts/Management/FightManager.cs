@@ -140,6 +140,7 @@ namespace FightingLegends
 
 		public bool NetworkFight = true;						// fighter animation and gesture input handled by NetworkFighter
 		private const int networkArcadeFightCountdown = 3;		// before starting new network fight
+		private const float networkArcadeFightPause = 0.5f;		// before starting countdown
 		private const string countdownLayer = "Curtain";		// so curtain camera picks it up
 
 //		private static Fighter player1;
@@ -201,6 +202,7 @@ namespace FightingLegends
 			}
 		}
 
+//		[HideInInspector]
 		public bool FightPaused { get; private set; }
 
 		public bool TurboMode { get; private set; }			// 24 FPS
@@ -1090,6 +1092,9 @@ namespace FightingLegends
 
 			if (OnFightFrozen != null)
 				OnFightFrozen(true);
+
+//			if (freezeFrames == 0 && OnFightFrozen != null)
+//				OnFightFrozen(true);
 		}
 
 		public void UnfreezeFight()
@@ -1906,6 +1911,17 @@ namespace FightingLegends
 
 		#region fight control
 
+		public void PauseFight(bool pause, bool notify = true)
+		{
+			if (FightPaused == pause)		// no change
+				return;
+
+			FightPaused = pause;
+
+			if (notify && OnFightPaused != null)
+				OnFightPaused(FightPaused);
+		}
+
 		private void ConfirmQuitFight()
 		{
 			if (! (CurrentMenuCanvas == MenuType.Combat || CurrentMenuCanvas == MenuType.WorldMap))
@@ -1927,26 +1943,23 @@ namespace FightingLegends
 		}
 
 
-		public void QuitNetworkFight()
+		public void ExitFight()
 		{
+			// quitting a challenge automatically loses the pot to the defender
+			if (CombatMode == FightMode.Challenge)
+				PayoutChallengePot(Player2);
 
+			CleanupFighters();
+			HideDojoUI();
+
+			SaveStatus();
+
+			ActivateMenu(MenuType.ModeSelect);
 		}
 
 		private void QuitFight()
 		{
-			if (! NetworkFight)
-			{
-				// quitting a challenge automatically loses the pot to the defender
-				if (CombatMode == FightMode.Challenge)
-					PayoutChallengePot(Player2);
-			
-				CleanupFighters();
-				HideDojoUI();
-
-				SaveStatus();
-
-				ActivateMenu(MenuType.ModeSelect);
-			}
+			ExitFight();
 
 			if (OnQuitFight != null)
 				OnQuitFight();
@@ -1986,12 +1999,15 @@ namespace FightingLegends
 			SelectedFighter2Colour = player2Colour;
 
 			SelectedLocation = location;
+			Debug.Log("StartNetworkArcadeFight: SelectedLocation = " + SelectedLocation);
 
 			StartCoroutine(CountdownNetworkArcadeFight());
 		}
 			
 		private IEnumerator CountdownNetworkArcadeFight()
 		{
+			yield return new WaitForSeconds(networkArcadeFightPause);
+
 			for (int count = networkArcadeFightCountdown; count > 0; count--)
 			{
 				TriggerNumberFX(count, 0, 0, countdownLayer);
@@ -2003,6 +2019,7 @@ namespace FightingLegends
 
 			// TODO: safe to assume arcade network fight started from world map?
 			WorldMapChoice = MenuType.Combat;  // default starts new fight	
+			yield return null;
 		}
 
 	
@@ -2011,7 +2028,7 @@ namespace FightingLegends
 			if (PreviewMode)
 				yield break;
 			
-//			Debug.Log("StartNewFight: Mode = " + CombatMode + " - " + SelectedFighterName + " / " + SelectedFighterColour);
+			Debug.Log("StartNewFight: Mode = " + CombatMode + " - " + SelectedLocation);
 
 			CleanupFighters();
 
@@ -4334,8 +4351,8 @@ namespace FightingLegends
 				yield return StartCoroutine(curtain.CurtainUp());
 				curtain.gameObject.SetActive(false);
 			}
-
-			SelectedLocation = "";
+				
+//			SelectedLocation = "";   //TODO: this ok?  Network / Multiplayer
 			WorldMapChoice = MenuType.None;
 			while (WorldMapChoice == MenuType.None)			// set when location selected on world map
 			{
@@ -4759,25 +4776,6 @@ namespace FightingLegends
 
 //		#endregion
 
-
-		public void PauseNetworkFight(bool pause)
-		{
-
-		}
-
-		private void PauseFight(bool pause)
-		{
-			if (! NetworkFight)
-			{
-				if (FightPaused == pause)		// no change
-				return;
-
-				FightPaused = pause;
-			}
-
-			if (OnFightPaused != null)
-				OnFightPaused(FightPaused);
-		}
 
 //		public void TogglePauseFight()
 //		{
