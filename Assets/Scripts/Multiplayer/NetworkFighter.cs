@@ -130,18 +130,18 @@ namespace FightingLegends
 		}
 	
 
-//		private void Update()
-//		{
-//			//TODO: remove this!
-//			// handle key strokes for testing in Unity
-//			if (! DeviceDetector.IsMobile)
-//			{
-//				if (Input.GetKeyDown(KeyCode.X))
-//				{
-//					TwoFingerTap();				// roman cancel (requires gauge)
-//				}
-//			}
-//		}
+		private void Update()
+		{
+			//TODO: remove this!
+			// handle key strokes for testing in Unity
+			if (fightManager.NetworkFight && ! DeviceDetector.IsMobile)
+			{
+				if (Input.GetKeyDown(KeyCode.X))
+				{
+					TwoFingerTap();				// roman cancel (requires gauge)
+				}
+			}
+		}
 
 		#region fight construction
 

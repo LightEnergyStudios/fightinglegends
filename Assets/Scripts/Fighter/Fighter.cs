@@ -1723,7 +1723,7 @@ namespace FightingLegends
 				return;
 
 			// handle key strokes for testing in Unity
-			if (! UnderAI && !IsDojoShadow && ! DeviceDetector.IsMobile)
+			if (!fightManager.NetworkFight && ! UnderAI && !IsDojoShadow && ! DeviceDetector.IsMobile)
 			{
 				if (Input.GetKeyDown(KeyCode.X))
 				{
