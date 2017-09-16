@@ -113,9 +113,14 @@ namespace FightingLegends
 		private bool iterateStrategies = false;
 		private bool isolateStrategy = false;
 
-		public Text Coins;		// not used! (see Options)
-		public Text Kudos;		// not used! (see Options)
-		public Text Stats;
+//		public Text Coins;		// not used! (see Options)
+//		public Text Kudos;		// not used! (see Options)
+//		public Text Stats;
+
+		// animated entry
+		private Animator animator;
+		private bool animatingEntry = false;
+		private bool animatedEntry = false;
 
 		private FightManager fightManager;
 
@@ -141,12 +146,6 @@ namespace FightingLegends
 
 			newFightLabel.text = FightManager.Translate("quitFight");
 
-//			simpleLabel.text = FightManager.Translate("simple");
-//			easyLabel.text = FightManager.Translate("easy");
-//			mediumLabel.text = FightManager.Translate("medium");
-//			hardLabel.text = FightManager.Translate("hard");
-//			brutalLabel.text = FightManager.Translate("brutal");
-
 			waterLabel.text = FightManager.Translate("water");
 			fireLabel.text = FightManager.Translate("fire");
 			airLabel.text = FightManager.Translate("air");
@@ -170,31 +169,15 @@ namespace FightingLegends
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
 
-			FightManager.OnCoinsChanged += CoinsChanged;
-			CoinsChanged(FightManager.Coins);				// set current value
-
-			FightManager.OnKudosChanged += KudosChanged;
-			KudosChanged(FightManager.Kudos);				// set current value
-
-//			if (facebookManager != null)
-//			{
-//				// set user name and profile pic if facebookManager already logged in
-//				if (facebookManager.IsLoggedIn)
-//				{
-//					if (facebookManager.UserName != null)
-//						SetFBUserName(facebookManager.UserName.text);
-//					
-//					if (facebookManager.ProfilePic != null)
-//						SetFBProfilePic(facebookManager.ProfilePic.sprite);
-//					else
-//						FBProfilePic.gameObject.SetActive(false);
-//				}
+//			FightManager.OnCoinsChanged += CoinsChanged;
+//			CoinsChanged(FightManager.Coins);				// set current value
 //
-//				FacebookManager.OnLookupUserName += SetFBUserName;
-//				FacebookManager.OnLookupProfilePic += SetFBProfilePic;
-//			}
+//			FightManager.OnKudosChanged += KudosChanged;
+//			KudosChanged(FightManager.Kudos);				// set current value
 
-			SetStats();
+//			SetStats();
+
+			AnimateEntry();
 
 			trainingNarrativeToggle.isOn = FightManager.SavedGameStatus.ShowTrainingNarrative;
 			stateFeedbackToggle.isOn = FightManager.SavedGameStatus.ShowStateFeedback;
@@ -207,30 +190,10 @@ namespace FightingLegends
 			SetTrainingNarrativeLabel(trainingNarrativeToggle.isOn);
 
 			bool fromFight = NavigatedFrom == MenuType.Combat || NavigatedFrom == MenuType.WorldMap || NavigatedFrom == MenuType.MatchStats;
-//			newFightButton.interactable = fromFight;
-//			newFightButton.onClick.AddListener(ConfirmQuitFight);
-
-//			trainButton.onClick.AddListener(RepeatTraining);
-//			friendsButton.onClick.AddListener(ShowFacebook);
-//			storeButton.onClick.AddListener(ShowStore);
-//			powerUpButton.onClick.AddListener(ShowStorePowerUp);
-//			buyCoinsButton.onClick.AddListener(ShowStoreBuyCoins);
 
 			difficultySelector.EnableDifficulties(!fromFight);
 
-//			simpleButton.interactable = !fromFight;
-//			easyButton.interactable = !fromFight;
-//			mediumButton.interactable = !fromFight;
-//			hardButton.interactable = !fromFight;
-//			brutalButton.interactable = !fromFight;
-
 			resetGameButton.interactable = !fromFight;
-
-//			simpleButton.onClick.AddListener(delegate { ConfirmSetDifficulty(AIDifficulty.Simple); });
-//			easyButton.onClick.AddListener(delegate { ConfirmSetDifficulty(AIDifficulty.Easy); });
-//			mediumButton.onClick.AddListener(delegate { ConfirmSetDifficulty(AIDifficulty.Medium); });
-//			hardButton.onClick.AddListener(delegate { ConfirmSetDifficulty(AIDifficulty.Hard); });
-//			brutalButton.onClick.AddListener(delegate { ConfirmSetDifficulty(AIDifficulty.Brutal); });
 
 			waterButton.onClick.AddListener(delegate { SetTheme(UITheme.Water); });
 			fireButton.onClick.AddListener(delegate { SetTheme(UITheme.Fire); });
@@ -243,13 +206,8 @@ namespace FightingLegends
 
 			friendsButton.interactable = FacebookManager.FacebookOk;
 
-//			quitButton.onClick.AddListener(QuitClicked);
-
 			sfxSlider.onValueChanged.AddListener(SFXVolumeChanged);
 			musicSlider.onValueChanged.AddListener(MusicVolumeChanged);
-
-//			speedUpButton.onClick.AddListener(SpeedUp);
-//			slowDownButton.onClick.AddListener(SlowDown);
 
 			trainingNarrativeToggle.onValueChanged.AddListener(TrainingNarrativeToggled);
 			stateFeedbackToggle.onValueChanged.AddListener(FightCaptionsToggled);
@@ -268,30 +226,8 @@ namespace FightingLegends
 
 		private void OnDisable()
 		{
-			FightManager.OnCoinsChanged -= CoinsChanged;
-			FightManager.OnKudosChanged -= KudosChanged;
-
-//			if (facebookManager != null)
-//			{
-//				FacebookManager.OnLookupUserName -= SetFBUserName;
-//				FacebookManager.OnLookupProfilePic -= SetFBProfilePic;
-//			}
-
-//			newFightButton.onClick.RemoveListener(ConfirmQuitFight);
-//			trainButton.onClick.RemoveListener(RepeatTraining);
-//			friendsButton.onClick.RemoveListener(ShowFacebook);
-//			storeButton.onClick.RemoveListener(ShowStore);
-
-//			powerUpButton.onClick.RemoveListener(ShowStorePowerUp);
-//			buyCoinsButton.onClick.RemoveListener(ShowStoreBuyCoins);
-
-//			postScoreButton.onClick.RemoveListener(PostFBScore);
-
-//			simpleButton.onClick.RemoveListener(delegate { ConfirmSetDifficulty(AIDifficulty.Simple); });
-//			easyButton.onClick.RemoveListener(delegate { ConfirmSetDifficulty(AIDifficulty.Easy); });
-//			mediumButton.onClick.RemoveListener(delegate { ConfirmSetDifficulty(AIDifficulty.Medium); });
-//			hardButton.onClick.RemoveListener(delegate { ConfirmSetDifficulty(AIDifficulty.Hard); });
-//			brutalButton.onClick.RemoveListener(delegate { ConfirmSetDifficulty(AIDifficulty.Brutal); });
+//			FightManager.OnCoinsChanged -= CoinsChanged;
+//			FightManager.OnKudosChanged -= KudosChanged;
 
 			waterButton.onClick.RemoveListener(delegate { SetTheme(UITheme.Water); });
 			fireButton.onClick.RemoveListener(delegate { SetTheme(UITheme.Fire); });
@@ -302,16 +238,8 @@ namespace FightingLegends
 			resetGameButton.onClick.RemoveListener(delegate { ConfirmResetGame(); });
 			newUserButton.onClick.RemoveListener(delegate { RegisterNewUser(); });
 
-
-//			quitButton.onClick.RemoveListener(QuitClicked);
-
-//			adButton.onClick.RemoveListener(ShowAdvert);
-
 			sfxSlider.onValueChanged.RemoveListener(SFXVolumeChanged);
 			musicSlider.onValueChanged.RemoveListener(MusicVolumeChanged);
-
-//			speedUpButton.onClick.RemoveListener(SpeedUp);
-//			slowDownButton.onClick.RemoveListener(SlowDown);
 
 			trainingNarrativeToggle.onValueChanged.RemoveListener(TrainingNarrativeToggled);
 			stateFeedbackToggle.onValueChanged.RemoveListener(FightCaptionsToggled);
@@ -333,6 +261,25 @@ namespace FightingLegends
 			FightManager.OnThemeChanged -= SetTheme;
 		}
 
+		private void AnimateEntry()
+		{
+			animator = GetComponent<Animator>();
+			if (animator == null)
+				return;
+
+			animatingEntry = true;
+
+			animator.enabled = true;
+			animator.SetTrigger("SettingsEntry");
+		}
+
+		public void EntryComplete()
+		{
+			animatingEntry = false;
+			animatedEntry = true;
+			animator.enabled = false;
+		}
+
 		private void SetTheme(UITheme theme)
 		{
 			if (fightManager.SetTheme(theme))	
@@ -341,87 +288,35 @@ namespace FightingLegends
 			ThemeGlow();
 		}
 			
-		private void CoinsChanged(int coins)
-		{
-			Coins.text = string.Format("{0:N0}", coins);		// thousands separator, for clarity
-		}
-
-		private void KudosChanged(float kudos)
-		{
-			Kudos.text = string.Format("{0:N0}", kudos);
-		}
-
-		private void ConfirmQuitFight()
-		{
-			if (FightManager.CombatMode == FightMode.Dojo)
-				FightManager.GetConfirmation(FightManager.Translate("confirmExitDojo"), 0, QuitFight);
-			else
-				FightManager.GetConfirmation(FightManager.Translate("confirmQuitFight"), 0, QuitFight);
-		}
-
-		private void QuitFight()
-		{
-			fightManager.CleanupFighters();
-
-			if (FightManager.CombatMode == FightMode.Dojo)									
-				fightManager.PauseSettingsChoice = MenuType.Dojo;				// triggers fade to black and new menu
-			else
-				fightManager.PauseSettingsChoice = MenuType.ModeSelect;			// triggers fade to black and new menu
-
-			if (OnQuitFight != null)
-				OnQuitFight();
-		}
-
-//		private void ShowFacebook()
+//		private void CoinsChanged(int coins)
 //		{
-//			if (FacebookManager.FacebookOk)
-//				fightManager.PauseSettingsChoice = MenuType.Facebook;			// triggers fade to black and new menu
+//			Coins.text = string.Format("{0:N0}", coins);		// thousands separator, for clarity
 //		}
-
-//		private void ShowStore()
-//		{
-//			fightManager.PauseSettingsChoice = MenuType.Store;				// triggers fade to black and new menu
-//		}
-
-//		private void ShowStorePowerUp()
-//		{
-//			fightManager.PauseSettingsChoice = MenuType.Store;				// triggers fade to black and new menu
-//			fightManager.SelectedMenuOverlay = MenuOverlay.PowerUp;			// requires a selected fighter!
-//		}
-
-//		private void ShowStoreBuyCoins()
-//		{
-//			fightManager.PauseSettingsChoice = MenuType.Store;				// triggers fade to black and new menu
-//			fightManager.SelectedMenuOverlay = MenuOverlay.BuyCoins;
 //
-////			fightManager.StoreBuyOverlay(true);
-//		}
-
-//		private void ShowAdvert()
+//		private void KudosChanged(float kudos)
 //		{
-			//TODO:
-//			fightManager.PauseSettingsChoice = MenuType.Advert;				// triggers fade to black and new menu
+//			Kudos.text = string.Format("{0:N0}", kudos);
 //		}
-			
+	
 
-		private void SetStats()
-		{
-			var profileData = FightManager.SavedGameStatus;
-
-			Stats.text += string.Format("\nROUNDS WON: {0}", profileData.RoundsWon);
-			Stats.text += string.Format("\nROUNDS LOST: {0}", profileData.RoundsLost);
-
-			Stats.text = string.Format("\n\nARCADE MODE WINS: {0}", profileData.MatchesWon);
-			Stats.text += string.Format("\nARCADE MODE LOSSES: {0}", profileData.MatchesLost);
-			Stats.text += string.Format("\nSURVIVAL MODE BEST: {0}", profileData.BestSurvivalEndurance);
-
-			Stats.text += string.Format("\n\nSUCCESSFUL HITS: {0}", profileData.SuccessfulHits);
-			Stats.text += string.Format("\nBLOCKED HITS: {0}", profileData.BlockedHits);		// unsuccessful hits (opponent blocked)
-			Stats.text += string.Format("\nHITS TAKEN: {0}", profileData.HitsTaken);
-			Stats.text += string.Format("\nHITS BLOCKED: {0}", profileData.HitsBlocked);
-			Stats.text += string.Format("\nDAMAGE INFLICTED: {0}", (int) profileData.DamageInflicted);
-			Stats.text += string.Format("\nDAMAGE SUSTAINED: {0}", (int) profileData.DamageSustained);
-		}
+//		private void SetStats()
+//		{
+//			var profileData = FightManager.SavedGameStatus;
+//
+//			Stats.text += string.Format("\nROUNDS WON: {0}", profileData.RoundsWon);
+//			Stats.text += string.Format("\nROUNDS LOST: {0}", profileData.RoundsLost);
+//
+//			Stats.text = string.Format("\n\nARCADE MODE WINS: {0}", profileData.MatchesWon);
+//			Stats.text += string.Format("\nARCADE MODE LOSSES: {0}", profileData.MatchesLost);
+//			Stats.text += string.Format("\nSURVIVAL MODE BEST: {0}", profileData.BestSurvivalEndurance);
+//
+//			Stats.text += string.Format("\n\nSUCCESSFUL HITS: {0}", profileData.SuccessfulHits);
+//			Stats.text += string.Format("\nBLOCKED HITS: {0}", profileData.BlockedHits);		// unsuccessful hits (opponent blocked)
+//			Stats.text += string.Format("\nHITS TAKEN: {0}", profileData.HitsTaken);
+//			Stats.text += string.Format("\nHITS BLOCKED: {0}", profileData.HitsBlocked);
+//			Stats.text += string.Format("\nDAMAGE INFLICTED: {0}", (int) profileData.DamageInflicted);
+//			Stats.text += string.Format("\nDAMAGE SUSTAINED: {0}", (int) profileData.DamageSustained);
+//		}
 
 		private void ConfirmResetHints()
 		{
@@ -451,41 +346,6 @@ namespace FightingLegends
 		{
 			FightManager.RegisterNewUser();
 		}
-
-	
-//		private void ConfirmSetDifficulty(AIDifficulty difficulty)
-//		{
-//			if (difficulty == FightManager.SavedGameStatus.Difficulty)		// no change
-//				return;
-//			
-//			string message = string.Format(FightManager.Translate("confirmChangeDifficulty"), difficulty.ToString().ToUpper());
-//			Action onYes = null;
-//
-//			switch (difficulty)
-//			{
-//				case AIDifficulty.Simple:
-//					onYes = SetSimple;
-//					break;
-//
-//				case AIDifficulty.Easy:
-//					onYes = SetEasy;
-//					break;
-//
-//				case AIDifficulty.Medium:
-//					onYes = SetMedium;
-//					break;
-//
-//				case AIDifficulty.Hard:
-//					onYes = SetHard;
-//					break;
-//
-//				case AIDifficulty.Brutal:
-//					onYes = SetBrutal;
-//					break;
-//			}
-//
-//			FightManager.GetConfirmation(message, 0, onYes);
-//		}
 
 		private void SetDifficulty(AIDifficulty difficulty)
 		{
@@ -596,64 +456,13 @@ namespace FightingLegends
 		{
 			fightManager.SetMusicVolume(value);
 		}
-
-//		private void SpeedUp()
-//		{
-//			fightManager.SpeedUp();
-//			UpdateFPS();
-//		}
-//
-//		private void SlowDown()
-//		{
-//			fightManager.SlowDown();
-//			UpdateFPS();
-//		}
-
-//		private void QuitClicked()
-//		{
-//			quitClicks++;
-//
-//			if (quitClicks == 2)
-//			{
-//				Application.Quit();
-//
-//				// does not quit in unity, so reset
-//				if (quitCountdown != null)
-//					StopCoroutine(quitCountdown);
-//				
-//				quitClicks = 0;
-//				quitText.text = "EXIT GAME";
-//			}
-//			else
-//			{
-//				// timeout for second click to quit
-//				quitCountdown = StartCoroutine(QuitCountdown());		
-//			}
-//		}
-//
-//		private IEnumerator QuitCountdown()
-//		{
-//			int countdown = quitTimeout;
-//
-//			while (countdown > 0)
-//			{
-//				quitText.text = "CONFIRM EXIT ... " + countdown;
-//				yield return new WaitForSeconds(1.0f);
-//				countdown--;
-//			}
-//
-//			// timed out - reset
-//			quitClicks = 0;
-//			quitText.text = "QUIT GAME";
-//		}
-
+			
 		private void SetVolumes()
 		{
 			sfxSlider.value = FightManager.SFXVolume;
 			musicSlider.value = FightManager.MusicVolume;
 		}
-
-
+			
 		private void UpdateFPS()
 		{
 			gameFPS.text = string.Format("{0:0.##} FPS", fightManager.AnimationFPS);
@@ -714,27 +523,6 @@ namespace FightingLegends
 			var label = trainingNarrativeToggle.transform.Find("Label").GetComponent<Text>();
 			label.text = FightManager.Translate("narrative") + " " + (isOn ? FightManager.Translate("on") : FightManager.Translate("off"));
 		}
-
-
-//		private void SetFBUserName(string userName)
-//		{
-//			if (! string.IsNullOrEmpty(userName))
-//				FBUserName.text = userName;
-//			else
-//				FBUserName.text = "";
-//		}
-//
-//		private void SetFBProfilePic(Sprite profilePic)
-//		{
-//			if (profilePic != null)
-//			{
-//				FBProfilePic.sprite = profilePic;
-//				FBProfilePic.gameObject.SetActive(true);
-//			}
-//			else
-//				FBProfilePic.gameObject.SetActive(false);
-//		}
-
 
 		#region AI testing
 

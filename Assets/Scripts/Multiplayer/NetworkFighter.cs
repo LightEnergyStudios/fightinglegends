@@ -47,12 +47,7 @@ namespace FightingLegends
 				PlayerNumber = isServer ? 1 : 2;
 			
 			if (fightManager.NetworkFight && isLocalPlayer)
-			{
 				StartListening();
-
-//				if (!IsPlayer1)
-//					fightManager.SwitchFighterPositions = true;
-			}
 		}
 
 		private void OnDestroy()
@@ -80,11 +75,6 @@ namespace FightingLegends
 			GestureListener.OnFingerTouch += FingerTouch;			// reset moveCuedOk
 			GestureListener.OnFingerRelease += FingerRelease;		// to ensure block released
 
-//			if (IsPlayer1)
-//				FighterSelect.OnFighterSelected += Fighter1Selected;
-//			else
-//				FighterSelect.OnFighterSelected += Fighter2Selected;
-
 			FighterSelect.OnFighterSelected += FighterSelected;
 			WorldMap.OnLocationSelected += LocationSelected;
 
@@ -111,11 +101,6 @@ namespace FightingLegends
 
 			GestureListener.OnFingerTouch -= FingerTouch;			
 			GestureListener.OnFingerRelease -= FingerRelease;
-
-//			if (IsPlayer1)
-//				FighterSelect.OnFighterSelected -= Fighter1Selected;
-//			else
-//				FighterSelect.OnFighterSelected -= Fighter2Selected;
 
 			FighterSelect.OnFighterSelected -= FighterSelected;
 			WorldMap.OnLocationSelected -= LocationSelected;
@@ -159,19 +144,6 @@ namespace FightingLegends
 				CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);	
 		}
 
-//		private void Fighter1Selected(Fighter fighter)
-//		{
-//			if (isLocalPlayer)
-//				CmdSetFighter(true, fighter.FighterName, fighter.ColourScheme);	
-//		}
-//
-//		private void Fighter2Selected(Fighter fighter)
-//		{
-//			if (isLocalPlayer)
-//				CmdSetFighter(false, fighter.FighterName, fighter.ColourScheme);	
-//		}
-			
-
 		[Command]
 		// called from client, runs on server
 		private void CmdSetFighter(bool player1, string fighterName, string fighterColour)
@@ -190,7 +162,7 @@ namespace FightingLegends
 				Fighter2Colour = fighterColour;	
 			}
 
-			TryStartFight();
+			TryStartFight();		// if both fighters and location set
 		}
 
 
@@ -209,8 +181,9 @@ namespace FightingLegends
 
 			SelectedLocation = location;
 
-			TryStartFight();
+			TryStartFight(); 		// if both fighters and location set
 		}
+
 
 		private void TryStartFight()
 		{
@@ -235,9 +208,9 @@ namespace FightingLegends
 		private void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
 		{
 			if (isServer)
-				fightManager.StartMultiplayerFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
+				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
 			else
-				fightManager.StartMultiplayerFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
+				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
 		}
 
 		#endregion
@@ -246,13 +219,49 @@ namespace FightingLegends
 
 		private void QuitFight()
 		{
-
+			if (isLocalPlayer)
+				CmdQuitFight();
 		}
 
 
+		[Command]
+		// called from client, runs on server
+		private void CmdQuitFight()
+		{
+			if (!isServer)
+				return;
+
+			RpcQuitFight();
+		}
+
+		[ClientRpc]
+		// called on server, runs on clients
+		private void RpcQuitFight()
+		{
+			fightManager.QuitNetworkFight();
+		}
+
 		private void PauseFight(bool paused)
 		{
+			if (isLocalPlayer)
+				CmdPauseFight(paused);
+		}
 
+		[Command]
+		// called from client, runs on server
+		private void CmdPauseFight(bool paused)
+		{
+			if (!isServer)
+				return;
+
+			RpcPauseFight(paused);
+		}
+
+		[ClientRpc]
+		// called on server, runs on clients
+		private void RpcPauseFight(bool paused)
+		{
+			fightManager.PauseNetworkFight(paused);
 		}
 
 

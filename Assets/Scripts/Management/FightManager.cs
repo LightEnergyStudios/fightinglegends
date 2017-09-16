@@ -138,10 +138,9 @@ namespace FightingLegends
 		[HideInInspector]
 		public Fighter Player2;
 
-		public bool NetworkFight = true;		// fighter animation and gesture input handled by NetworkFighter
-
-//		[HideInInspector]
-//		public bool SwitchFighterPositions = false;	
+		public bool NetworkFight = true;						// fighter animation and gesture input handled by NetworkFighter
+		private const int networkArcadeFightCountdown = 3;		// before starting new network fight
+		private const string countdownLayer = "Curtain";		// so curtain camera picks it up
 
 //		private static Fighter player1;
 //		public static Fighter Player1
@@ -1482,9 +1481,6 @@ namespace FightingLegends
 
 		public Vector3 GetFighterPosition(bool player1, bool waiting, bool defaultPosition)
 		{
-//			if (SwitchFighterPositions)
-//				player1 = !player1;
-			
 			if (! defaultPosition)
 			{
 				// player 1 on left, player 2 on right
@@ -1501,9 +1497,6 @@ namespace FightingLegends
 
 		public Vector3 GetFighterScale(bool player1)
 		{
-//			if (SwitchFighterPositions)
-//				player1 = !player1;
-			
 			// player 1 faces right, player 2 faces left
 			return player1 ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
 		}
@@ -1511,9 +1504,6 @@ namespace FightingLegends
 		// position relative to opponent for default fighting distance
 		public Vector3 GetRelativeDefaultPosition(bool player1)
 		{
-//			if (SwitchFighterPositions)
-//				player1 = !player1;
-			
 			if (player1)
 				return new Vector3(Player2.transform.position.x - (xOffset * 2.0f), yOffset, OnTopZOffset(true));
 			else
@@ -1523,9 +1513,6 @@ namespace FightingLegends
 		// position relative to opponent for strike contact
 		public Vector3 GetRelativeStrikePosition(bool player1)
 		{
-//			if (SwitchFighterPositions)
-//				player1 = !player1;
-			
 			var defaultPosition = GetRelativeDefaultPosition(player1);
 			var strikeOffset = player1 ? Player1.ProfileData.AttackDistance : -Player2.ProfileData.AttackDistance;
 
@@ -1939,20 +1926,27 @@ namespace FightingLegends
 			UnfreezeFight();
 		}
 
+
+		public void QuitNetworkFight()
+		{
+
+		}
+
 		private void QuitFight()
 		{
-			// quitting a challenge automatically loses the pot to the defender
-			if (CombatMode == FightMode.Challenge)
-				PayoutChallengePot(Player2);
+			if (! NetworkFight)
+			{
+				// quitting a challenge automatically loses the pot to the defender
+				if (CombatMode == FightMode.Challenge)
+					PayoutChallengePot(Player2);
 			
-			CleanupFighters();
-			HideDojoUI();
+				CleanupFighters();
+				HideDojoUI();
 
-			SaveStatus();
+				SaveStatus();
 
-			ActivateMenu(MenuType.ModeSelect);
-//			StartCoroutine(ShowModeSelectCanvas());
-//			ActivatePreviousMenu(true, true);
+				ActivateMenu(MenuType.ModeSelect);
+			}
 
 			if (OnQuitFight != null)
 				OnQuitFight();
@@ -1978,9 +1972,9 @@ namespace FightingLegends
 //				OnCleanupFight();
 		}
 
-		public void StartMultiplayerFight(string player1Name, string player1Colour, string player2Name, string player2Colour, string location)
+		public void StartNetworkArcadeFight(string player1Name, string player1Colour, string player2Name, string player2Colour, string location)
 		{
-			CombatMode = FightMode.Arcade;		// TODO: prolly shouldn't be forced here
+			CombatMode = FightMode.Arcade;
 
 			NetworkFight = true;
 //			Debug.Log("StartMultiplayerFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
@@ -1993,30 +1987,25 @@ namespace FightingLegends
 
 			SelectedLocation = location;
 
-			// TODO: safe to assume fight started from world map?
-			WorldMapChoice = MenuType.Combat;  // default starts new fight		
+			StartCoroutine(CountdownNetworkArcadeFight());
+		}
+			
+		private IEnumerator CountdownNetworkArcadeFight()
+		{
+			for (int count = networkArcadeFightCountdown; count > 0; count--)
+			{
+				TriggerNumberFX(count, 0, 0, countdownLayer);
+				BlingAudio();
+//				PlayNumberSound(count);
 
-//			ActivateMenu(MenuType.Combat);		// default starts new fight
-//			StartCoroutine(NewMultiplayerFight());
+				yield return new WaitForSeconds(1.0f);
+			}
+
+			// TODO: safe to assume arcade network fight started from world map?
+			WorldMapChoice = MenuType.Combat;  // default starts new fight	
 		}
 
-//		private IEnumerator NewMultiplayerFight()
-//		{
-//			if (curtain != null)
-//			{
-//				curtain.gameObject.SetActive(true);
-//				yield return StartCoroutine(curtain.FadeToBlack());
-//			}
-//				
-//			ActivateMenu(MenuType.Combat);		// default starts new fight
-//
-//			if (curtain != null)
-//			{
-//				yield return StartCoroutine(curtain.CurtainUp());
-//				curtain.gameObject.SetActive(false);
-//			}
-//		}
-
+	
 		private IEnumerator StartNewFight(bool curtainDelay)
 		{
 			if (PreviewMode)
@@ -4771,12 +4760,20 @@ namespace FightingLegends
 //		#endregion
 
 
+		public void PauseNetworkFight(bool pause)
+		{
+
+		}
+
 		private void PauseFight(bool pause)
 		{
-			if (FightPaused == pause)		// no change
+			if (! NetworkFight)
+			{
+				if (FightPaused == pause)		// no change
 				return;
 
-			FightPaused = pause;
+				FightPaused = pause;
+			}
 
 			if (OnFightPaused != null)
 				OnFightPaused(FightPaused);
