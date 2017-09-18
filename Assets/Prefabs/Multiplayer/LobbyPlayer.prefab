@@ -497,7 +497,7 @@ MonoBehaviour:
   waitingPlayerButton: {fileID: 114996452612373330}
   removePlayerButton: {fileID: 114746189982712102}
   localIcone: {fileID: 1489584316515652}
-  remoteIcone: {fileID: 1731675282604316}
+  remoteIcone: {fileID: 1086404737699330}
   playerNumber: 0
   playerName: 
   playerColor: {r: 1, g: 1, b: 1, a: 1}
