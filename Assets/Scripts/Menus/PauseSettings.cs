@@ -11,42 +11,14 @@ namespace FightingLegends
 		public Text difficultyHeading;
 		public Text volumeHeading;
 		public Text themeHeading;
-//		public Text captionsHeading;
-//		public Text hintsHeading;
+
 		public Text resetHintsLabel;
 		public Text resetGameLabel;
 		public Text newUserLabel;
 
-		public Text trainingHeading;
+//		public Text trainingHeading;
 		public Text musicHeading;
 		public Text sfxHeading;
-
-		public Button newFightButton;		// not used
-		public Button trainButton;			// not used
-		public Button friendsButton;		// not used
-		public Button storeButton;			// not used
-		public Button powerUpButton;		// not used
-		public Button buyCoinsButton;		// not used
-
-		public Text newFightLabel;
-
-//		public Button simpleButton;
-//		public Button easyButton;
-//		public Button mediumButton;
-//		public Button hardButton;
-//		public Button brutalButton;
-//
-//		public Text simpleLabel;
-//		public Text easyLabel;
-//		public Text mediumLabel;
-//		public Text hardLabel;
-//		public Text brutalLabel;
-//
-//		public Image simpleGlow;		// has animator
-//		public Image easyGlow;			// has animator
-//		public Image mediumGlow;		// has animator
-//		public Image hardGlow;			// has animator
-//		public Image brutalGlow;		// has animator
 
 		public DifficultySelector difficultySelector;
 
@@ -71,10 +43,10 @@ namespace FightingLegends
 		public float starSweepTime;
 		private const float starSweepDistance = 390.0f;
 
-		// facebook
-		public FacebookManager facebookManager;
-		public Text FBUserName;
-		public Image FBProfilePic;
+//		// facebook
+//		public FacebookManager facebookManager;
+//		public Text FBUserName;
+//		public Image FBProfilePic;
 
 //		public Button quitButton;
 //		public Text quitText;
@@ -97,6 +69,11 @@ namespace FightingLegends
 		public Button resetHintsButton;
 		public Button resetGameButton;
 		public Button newUserButton;
+
+		public Button buyCoinsButton;
+		public Button trainingButton;
+		public Text buyCoinsLabel;
+		public Text trainingLabel;
 
 		public Color OnColour;				// green
 		public Color OffColour;				// red
@@ -140,11 +117,15 @@ namespace FightingLegends
 //			hintsHeading.text = FightManager.Translate("hints");
 			resetHintsLabel.text = FightManager.Translate("resetHits", true);
 			resetGameLabel.text = FightManager.Translate("resetGame", true);
-			newUserLabel.text = FightManager.Translate("newUser", true);
+
+			buyCoinsLabel.text = FightManager.Translate("buy");
+			trainingLabel.text = FightManager.Translate("ninjaSchool", true);
+
+//			newUserLabel.text = FightManager.Translate("newUser", true);
 			musicHeading.text = FightManager.Translate("music");
 			sfxHeading.text = FightManager.Translate("sfx");
 
-			newFightLabel.text = FightManager.Translate("quitFight");
+//			newFightLabel.text = FightManager.Translate("quitFight");
 
 			waterLabel.text = FightManager.Translate("water");
 			fireLabel.text = FightManager.Translate("fire");
@@ -194,6 +175,7 @@ namespace FightingLegends
 			difficultySelector.EnableDifficulties(!fromFight);
 
 			resetGameButton.interactable = !fromFight;
+			trainingButton.interactable = !fromFight;
 
 			waterButton.onClick.AddListener(delegate { SetTheme(UITheme.Water); });
 			fireButton.onClick.AddListener(delegate { SetTheme(UITheme.Fire); });
@@ -204,7 +186,8 @@ namespace FightingLegends
 			resetGameButton.onClick.AddListener(delegate { ConfirmResetGame(); });
 			newUserButton.onClick.AddListener(delegate { RegisterNewUser(); });
 
-			friendsButton.interactable = FacebookManager.FacebookOk;
+			buyCoinsButton.onClick.AddListener(delegate { BuyCoins(); });
+			trainingButton.onClick.AddListener(delegate { Training(); });
 
 			sfxSlider.onValueChanged.AddListener(SFXVolumeChanged);
 			musicSlider.onValueChanged.AddListener(MusicVolumeChanged);
@@ -347,6 +330,23 @@ namespace FightingLegends
 			FightManager.RegisterNewUser();
 		}
 
+		private void BuyCoins()
+		{
+
+		}
+
+		private void Training()
+		{
+			FightManager.SavedGameStatus.CompletedBasicTraining = false;		// TODO: for testing purposes only
+
+			FightManager.CombatMode = FightMode.Training;
+			FightManager.SavedGameStatus.NinjaSchoolFight = false;				// only after completed training
+
+			fightManager.CleanupFighters();
+			fightManager.SelectedLocation = FightManager.hawaii;
+			fightManager.PauseSettingsChoice = MenuType.Combat;				// triggers fade to black and new menu
+		}
+
 		private void SetDifficulty(AIDifficulty difficulty)
 		{
 			switch (difficulty)
@@ -376,41 +376,24 @@ namespace FightingLegends
 		private void SetSimple()
 		{
 			FightManager.SavedGameStatus.Difficulty = AIDifficulty.Simple;
-//			DifficultyGlow();
 		}
 		private void SetEasy()
 		{
 			FightManager.SavedGameStatus.Difficulty = AIDifficulty.Easy;
-//			DifficultyGlow();
 		}
 		private void SetMedium()
 		{
 			FightManager.SavedGameStatus.Difficulty = AIDifficulty.Medium;
-//			DifficultyGlow();
 		}
 		private void SetHard()
 		{
 			FightManager.SavedGameStatus.Difficulty = AIDifficulty.Hard;
-//			DifficultyGlow();
 		}
 		private void SetBrutal()
 		{
 			FightManager.SavedGameStatus.Difficulty = AIDifficulty.Brutal;
-//			DifficultyGlow();
 		}
-
-//		private void DifficultyGlow()
-//		{
-//			var difficulty = FightManager.SavedGameStatus.Difficulty;
-//
-//			simpleGlow.gameObject.SetActive(difficulty == AIDifficulty.Simple);
-//			easyGlow.gameObject.SetActive(difficulty == AIDifficulty.Easy);
-//			mediumGlow.gameObject.SetActive(difficulty == AIDifficulty.Medium);
-//			hardGlow.gameObject.SetActive(difficulty == AIDifficulty.Hard);
-//			brutalGlow.gameObject.SetActive(difficulty == AIDifficulty.Brutal);
-//		}
-
-
+			
 		private void ThemeGlow()
 		{
 			var theme = FightManager.SavedGameStatus.Theme;

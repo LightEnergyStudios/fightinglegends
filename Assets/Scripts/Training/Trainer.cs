@@ -1087,7 +1087,7 @@ namespace FightingLegends
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Green Light",
 				Header = FightManager.Translate("greenLightHeader"),
-				Narrative = FightManager.Translate("greenLightNarrative"),
+//				Narrative = FightManager.Translate("greenLightNarrative"),
 				NarrativeSprite = feedbackUI.OkSprite,
 				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
 				TrafficLightColour = TrafficLight.Green
@@ -1097,7 +1097,7 @@ namespace FightingLegends
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Red Light",
 				Header = FightManager.Translate("redLightHeader"),
-				Narrative = FightManager.Translate("redLightNarrative"),
+//				Narrative = FightManager.Translate("redLightNarrative"),
 				NarrativeSprite = feedbackUI.NotOkSprite,
 				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
 				TrafficLightColour = TrafficLight.Red
@@ -1114,7 +1114,7 @@ namespace FightingLegends
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Yellow Light",
 				Header = FightManager.Translate("yellowLightHeader"),
-				Narrative = FightManager.Translate("yellowLightNarrative"), 
+//				Narrative = FightManager.Translate("yellowLightNarrative"), 
 //				NarrativeSprite = feedbackUI.ResetSprite,
 //				WaitSeconds = 2.0f,
 				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
@@ -1125,7 +1125,7 @@ namespace FightingLegends
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Left Arrow",
 				Header = FightManager.Translate("leftArrowHeader"),
-				Narrative = FightManager.Translate("leftArrowNarrative"),
+//				Narrative = FightManager.Translate("leftArrowNarrative"),
 				NarrativeSprite = trainingUI.swipeBackSprite,
 				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
 				TrafficLightColour = TrafficLight.Left
@@ -1141,7 +1141,7 @@ namespace FightingLegends
 			// start light strike, freeze on hit frame, prompt to strike
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Light Strike",
-				Narrative = FightManager.Translate("ninjaAtTheBeach"),
+//				Narrative = FightManager.Translate("ninjaAtTheBeach"),
 				Prompt = FightManager.Translate("tapLight"),
 				GestureFX = FeedbackFXType.Press,
 				FreezeOnState = State.Light_HitFrame,
@@ -1176,7 +1176,7 @@ namespace FightingLegends
 			// no prompt, AI starts tutorial punch, freezes at end of punch start
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "AI Tutorial Punch",
-				Narrative = FightManager.Translate("blockNinja"),
+//				Narrative = FightManager.Translate("blockNinja"),
 				AIMove = Move.Tutorial_Punch,
 				FreezeOnState = State.Tutorial_Punch_Start,
 				FreezeOnAI = true,
@@ -1207,7 +1207,7 @@ namespace FightingLegends
 			// prompt for special, start special, freeze on special last hit
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Special",
-				Narrative = FightManager.Translate("coolMoves"),
+//				Narrative = FightManager.Translate("coolMoves"),
 				Prompt =FightManager.Translate("swipeSpecial"),
 				//					Prompt = specialAgain,		// after AI block / shove
 				GestureFX = FeedbackFXType.Swipe_Forward,
@@ -1246,7 +1246,7 @@ namespace FightingLegends
 			// no prompt, with enough gauge AI performs vengeance attack
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "AI Vengeance",
-				Narrative = FightManager.Translate("reallyMad"),
+//				Narrative = FightManager.Translate("reallyMad"),
 				AIMove = Move.Vengeance,
 //				ActivatesTrafficLights = true,				// activates traffic light UI
 //				TrafficLightColour = TrafficLight.Red,
@@ -1257,7 +1257,7 @@ namespace FightingLegends
 			// prompt for vengeance, AI strikes counter taunt and triggers counter attack
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Vengeance",
-				Narrative = FightManager.Translate("vengeanceGauge"),
+//				Narrative = FightManager.Translate("vengeanceGauge"),
 				Prompt = FightManager.Translate("swipeVengeance"),
 				GestureFX = FeedbackFXType.Swipe_Vengeance,
 				FreezeOnHit = true,
@@ -1282,7 +1282,7 @@ namespace FightingLegends
 			
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Special Extra Combo",
-				Narrative = FightManager.Translate("specialExtraComboNarrative"),
+//				Narrative = FightManager.Translate("specialExtraComboNarrative"),
 				TrafficLightColour = TrafficLight.None,
 
 				Combo = new TrainingCombo {
@@ -1346,7 +1346,7 @@ namespace FightingLegends
 			
 			TrainingScript.Enqueue(new TrainingStep {
 				Title = "Reset-Counter Combo",
-				Narrative = FightManager.Translate("resetCounterComboNarrative"),
+//				Narrative = FightManager.Translate("resetCounterComboNarrative"),
 //				NarrativeSprite = feedbackUI.SwipeLeftSprite,
 				TrafficLightColour = TrafficLight.None,
 
@@ -1394,300 +1394,300 @@ namespace FightingLegends
 
 		private void ConstructVerboseBasicTraining()
 		{
-			if (! verboseBasicTraining)
-				return;
-
-			// start light strike, freeze on hit frame, prompt to strike
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Light Strike",
-				Narrative = FightManager.Translate("ninjaAtTheBeach"),
-				Prompt = FightManager.Translate("tapLight"),
-				GestureFX = FeedbackFXType.Press,
-				FreezeOnState = State.Light_HitFrame,
-			}
-			);
-
-			//  prompt to strike (follow up), start medium strike, freeze on hit frame
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Medium Strike",
-				Prompt = FightManager.Translate("tapMedium"),
-				GestureFX = FeedbackFXType.Press,
-				FreezeOnState = State.Medium_HitFrame,
-			}
-			);
-
-			// prompt to strike (follow up), start heavy strike, freeze on hit frame 
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Heavy Strike",
-				Prompt = FightManager.Translate("tapHeavy"),
-				GestureFX = FeedbackFXType.Press,
-				FreezeOnState = State.Heavy_HitFrame,
-			}
-			);
-
-			// next step (tutorial punch) triggered on return to idle
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Idle then Tutorial Punch",
-				NextStepOnState = State.Idle,
-			}
-			);
-
-			// no prompt, AI starts tutorial punch, freezes at end of punch start
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "AI Tutorial Punch",
-				Narrative = FightManager.Translate("blockNinja"),
-				AIMove = Move.Tutorial_Punch,
-				FreezeOnState = State.Tutorial_Punch_Start,
-				FreezeOnAI = true,
-				FreezeAtEnd = true,
-				SuccessOnFreeze = false,
-			}
-			);
-
-			// prompt to block, start block idle, freeze on AI tutorial punch hit frame, release block at end
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Block Tutorial Punch",
-				Prompt = FightManager.Translate("holdBlock"),
-				GestureFX = FeedbackFXType.Hold,
-				FreezeOnHit = true,
-				FreezeOnState = State.Tutorial_Punch,
-				FreezeOnAI = true,
-			}
-			);
-
-			// next step (special) triggered on return to idle
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Idle then Special",
-				ReleaseBlock = true,			// at start of step
-				NextStepOnState = State.Idle,
-			}
-			);
-
-			// prompt for special, start special, freeze on special last hit
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Special",
-				Narrative = FightManager.Translate("coolMoves"),
-				Prompt = FightManager.Translate("swipeSpecial"),
-				GestureFX = FeedbackFXType.Swipe_Forward,
-				FreezeOnHit = true,				// last special hit
-				FreezeOnState = State.Special,	
-			}
-			);
-
-			// advance to special opportunity because a special extra is not possible until then
-			// unfrozen as no prompt, freeze at end of special opportunity
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Special Opportunity",
-				FreezeOnState = State.Special_Opportunity,
-				FreezeAtEnd = true,
-				SuccessOnFreeze = false,
-			}
-			);
-
-			// prompt for special extra, trigger special extra, freeze on special extra last hit
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Special Extra",
-				Prompt = FightManager.Translate("swipeSpecialExtra"),
-				GestureFX = FeedbackFXType.Swipe_Forward,
-				FreezeOnHit = true,
-				FreezeOnState = State.Special_Extra,	
-			}
-			);
-
-			// next step (special) triggered on return to idle
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Return to Idle",
-				NextStepOnState = State.Idle,
-			}
-			);
-
-			// prompt again for special, start special, AI blocks, freeze on special last hit
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Blocked Special",
-				Narrative = FightManager.Translate("tryItAgain"),
-				Prompt = FightManager.Translate("swipeSpecial"),
-				GestureFX = FeedbackFXType.Swipe_Forward,
-				AIMove = Move.Block,
-				FreezeOnHit = true,				// last special hit
-				FreezeOnState = State.Special,	
-				SuccessOnFreeze = false,
-			}
-			);
-
-			// next step (shove) triggered on return to idle
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Return to Idle",
-				NextStepOnState = State.Idle,
-			}
-			);
-
-			// prompt for shove, AI still blocking, freeze on first frame of AI shove stun
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Blocked Special",
-				Narrative = FightManager.Translate("offBalance"),
-				Prompt = FightManager.Translate("swipeShove"),
-				GestureFX = FeedbackFXType.Swipe_Down,
-				FreezeOnState = State.Shove_Stun,	
-				FreezeOnAI = true,
-			}
-			);
-
-			// prompt for light strike, AI still shove stunned, freeze on hit frame
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Light Strike Shove Stun",
-				Prompt = FightManager.Translate("tapLightShoveStun"),
-				GestureFX = FeedbackFXType.Press,
-				FreezeOnHit = true,	
-				FreezeOnState = State.Light_HitFrame,	
-			}
-			);
-
-			// prompt for medium strike, AI still shove stunned, freeze on hit frame
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Medium Strike Shove Stun",
-				Prompt = FightManager.Translate("tapMediumShoveStun"),
-				GestureFX = FeedbackFXType.Press,
-				FreezeOnHit = true,	
-				FreezeOnState = State.Medium_HitFrame,	
-			}
-			);
-
-			// prompt for heavy strike, AI still shove stunned, releases block hold, freeze on hit frame
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Heavy Strike Shove Stun",
-				Prompt = FightManager.Translate("tapHeavyShoveStun"),
-				GestureFX = FeedbackFXType.Press,
-				AIMove = Move.ReleaseBlock,
-				FreezeOnHit = true,	
-				FreezeOnState = State.Heavy_HitFrame,	
-			}
-			);
-
-			// prompt for special, start special, freeze on special last hit
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Chain Special",
-				Prompt = FightManager.Translate("swipeChainSpecial"),
-				GestureFX = FeedbackFXType.Swipe_Forward,
-				FreezeOnHit = true,				// last special hit
-				FreezeOnState = State.Special,	
-			}
-			);
-
-			// advance to special opportunity because a special extra is not possible until then
-			// unfrozen as no prompt, freeze at end of special opportunity
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Special Opportunity",
-				FreezeOnState = State.Special_Opportunity,
-				FreezeAtEnd = true,
-				SuccessOnFreeze = false,
-			}
-			);
-
-			// prompt for special extra, trigger special extra, freeze on special extra last hit
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Chain Special Extra",
-				Prompt = FightManager.Translate("swipeSpecialExtra"),
-				GestureFX = FeedbackFXType.Swipe_Forward,
-				FreezeOnHit = true,
-				FreezeOnState = State.Special_Extra,
-			}
-			);
-
-			// next step (AI vengeance) triggered on return to idle
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Return to Idle",
-				NextStepOnState = State.Idle,
-			}
-			);
-
-			// no prompt, with enough gauge AI performs vengeance attack
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "AI Vengeance",
-				Narrative = FightManager.Translate("reallyMad"),
-				AIMove = Move.Vengeance,
-				NextStepOnState = State.Idle,	// go to next step as soon as AI is idle
-			}
-			);
-
-			// no prompt, AI starts tutorial punch, freezes at end of punch start
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "AI Tutorial Punch",
-				AIMove = Move.Tutorial_Punch,
-				FreezeOnState = State.Tutorial_Punch_Start,
-				FreezeOnAI = true,
-				FreezeAtEnd = true,
-				SuccessOnFreeze = false,
-			}
-			);
-
-			// prompt for counter attack, AI tutorial punch strikes counter taunt and triggers counter attack
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Counter Attack",
-				Narrative = FightManager.Translate("ouchGauge"),
-				Prompt = FightManager.Translate("swipeCounter"),
-				GestureFX = FeedbackFXType.Swipe_Back,
-				FreezeOnHit = true,
-				FreezeOnState = State.Counter_Attack,
-			}
-			);
-
-			// no prompt, AI performs a special
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "AI Special",
-				Narrative = FightManager.Translate("comesAgain"),
-				AIMove = Move.Special,
-				FreezeOnState = State.Special,
-				FreezeOnAI = true,
-				FreezeAtEnd = true,
-				SuccessOnFreeze = false,
-			}
-			);
-
-			// next step triggered on return to idle
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Return to Idle",
-				NextStepOnState = State.Idle,
-			}
-			);
-
-			// prompt for vengeance, AI strikes counter taunt and triggers counter attack
-			TrainingScript.Enqueue(new TrainingStep
-			{
-				Title = "Vengeance",
-				Narrative = FightManager.Translate("vengeanceGauge"),
-				Prompt = FightManager.Translate("swipeVengeance"),
-				GestureFX = FeedbackFXType.Swipe_Vengeance,
-				FreezeOnHit = true,
-				FreezeOnState = State.Vengeance,
-				SuccessOnFreeze = false,				// ...KO!!
-			}
-			);
+//			if (! verboseBasicTraining)
+//				return;
+//
+//			// start light strike, freeze on hit frame, prompt to strike
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Light Strike",
+//				Narrative = FightManager.Translate("ninjaAtTheBeach"),
+//				Prompt = FightManager.Translate("tapLight"),
+//				GestureFX = FeedbackFXType.Press,
+//				FreezeOnState = State.Light_HitFrame,
+//			}
+//			);
+//
+//			//  prompt to strike (follow up), start medium strike, freeze on hit frame
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Medium Strike",
+//				Prompt = FightManager.Translate("tapMedium"),
+//				GestureFX = FeedbackFXType.Press,
+//				FreezeOnState = State.Medium_HitFrame,
+//			}
+//			);
+//
+//			// prompt to strike (follow up), start heavy strike, freeze on hit frame 
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Heavy Strike",
+//				Prompt = FightManager.Translate("tapHeavy"),
+//				GestureFX = FeedbackFXType.Press,
+//				FreezeOnState = State.Heavy_HitFrame,
+//			}
+//			);
+//
+//			// next step (tutorial punch) triggered on return to idle
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Idle then Tutorial Punch",
+//				NextStepOnState = State.Idle,
+//			}
+//			);
+//
+//			// no prompt, AI starts tutorial punch, freezes at end of punch start
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "AI Tutorial Punch",
+//				Narrative = FightManager.Translate("blockNinja"),
+//				AIMove = Move.Tutorial_Punch,
+//				FreezeOnState = State.Tutorial_Punch_Start,
+//				FreezeOnAI = true,
+//				FreezeAtEnd = true,
+//				SuccessOnFreeze = false,
+//			}
+//			);
+//
+//			// prompt to block, start block idle, freeze on AI tutorial punch hit frame, release block at end
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Block Tutorial Punch",
+//				Prompt = FightManager.Translate("holdBlock"),
+//				GestureFX = FeedbackFXType.Hold,
+//				FreezeOnHit = true,
+//				FreezeOnState = State.Tutorial_Punch,
+//				FreezeOnAI = true,
+//			}
+//			);
+//
+//			// next step (special) triggered on return to idle
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Idle then Special",
+//				ReleaseBlock = true,			// at start of step
+//				NextStepOnState = State.Idle,
+//			}
+//			);
+//
+//			// prompt for special, start special, freeze on special last hit
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Special",
+//				Narrative = FightManager.Translate("coolMoves"),
+//				Prompt = FightManager.Translate("swipeSpecial"),
+//				GestureFX = FeedbackFXType.Swipe_Forward,
+//				FreezeOnHit = true,				// last special hit
+//				FreezeOnState = State.Special,	
+//			}
+//			);
+//
+//			// advance to special opportunity because a special extra is not possible until then
+//			// unfrozen as no prompt, freeze at end of special opportunity
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Special Opportunity",
+//				FreezeOnState = State.Special_Opportunity,
+//				FreezeAtEnd = true,
+//				SuccessOnFreeze = false,
+//			}
+//			);
+//
+//			// prompt for special extra, trigger special extra, freeze on special extra last hit
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Special Extra",
+//				Prompt = FightManager.Translate("swipeSpecialExtra"),
+//				GestureFX = FeedbackFXType.Swipe_Forward,
+//				FreezeOnHit = true,
+//				FreezeOnState = State.Special_Extra,	
+//			}
+//			);
+//
+//			// next step (special) triggered on return to idle
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Return to Idle",
+//				NextStepOnState = State.Idle,
+//			}
+//			);
+//
+//			// prompt again for special, start special, AI blocks, freeze on special last hit
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Blocked Special",
+//				Narrative = FightManager.Translate("tryItAgain"),
+//				Prompt = FightManager.Translate("swipeSpecial"),
+//				GestureFX = FeedbackFXType.Swipe_Forward,
+//				AIMove = Move.Block,
+//				FreezeOnHit = true,				// last special hit
+//				FreezeOnState = State.Special,	
+//				SuccessOnFreeze = false,
+//			}
+//			);
+//
+//			// next step (shove) triggered on return to idle
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Return to Idle",
+//				NextStepOnState = State.Idle,
+//			}
+//			);
+//
+//			// prompt for shove, AI still blocking, freeze on first frame of AI shove stun
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Blocked Special",
+//				Narrative = FightManager.Translate("offBalance"),
+//				Prompt = FightManager.Translate("swipeShove"),
+//				GestureFX = FeedbackFXType.Swipe_Down,
+//				FreezeOnState = State.Shove_Stun,	
+//				FreezeOnAI = true,
+//			}
+//			);
+//
+//			// prompt for light strike, AI still shove stunned, freeze on hit frame
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Light Strike Shove Stun",
+//				Prompt = FightManager.Translate("tapLightShoveStun"),
+//				GestureFX = FeedbackFXType.Press,
+//				FreezeOnHit = true,	
+//				FreezeOnState = State.Light_HitFrame,	
+//			}
+//			);
+//
+//			// prompt for medium strike, AI still shove stunned, freeze on hit frame
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Medium Strike Shove Stun",
+//				Prompt = FightManager.Translate("tapMediumShoveStun"),
+//				GestureFX = FeedbackFXType.Press,
+//				FreezeOnHit = true,	
+//				FreezeOnState = State.Medium_HitFrame,	
+//			}
+//			);
+//
+//			// prompt for heavy strike, AI still shove stunned, releases block hold, freeze on hit frame
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Heavy Strike Shove Stun",
+//				Prompt = FightManager.Translate("tapHeavyShoveStun"),
+//				GestureFX = FeedbackFXType.Press,
+//				AIMove = Move.ReleaseBlock,
+//				FreezeOnHit = true,	
+//				FreezeOnState = State.Heavy_HitFrame,	
+//			}
+//			);
+//
+//			// prompt for special, start special, freeze on special last hit
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Chain Special",
+//				Prompt = FightManager.Translate("swipeChainSpecial"),
+//				GestureFX = FeedbackFXType.Swipe_Forward,
+//				FreezeOnHit = true,				// last special hit
+//				FreezeOnState = State.Special,	
+//			}
+//			);
+//
+//			// advance to special opportunity because a special extra is not possible until then
+//			// unfrozen as no prompt, freeze at end of special opportunity
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Special Opportunity",
+//				FreezeOnState = State.Special_Opportunity,
+//				FreezeAtEnd = true,
+//				SuccessOnFreeze = false,
+//			}
+//			);
+//
+//			// prompt for special extra, trigger special extra, freeze on special extra last hit
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Chain Special Extra",
+//				Prompt = FightManager.Translate("swipeSpecialExtra"),
+//				GestureFX = FeedbackFXType.Swipe_Forward,
+//				FreezeOnHit = true,
+//				FreezeOnState = State.Special_Extra,
+//			}
+//			);
+//
+//			// next step (AI vengeance) triggered on return to idle
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Return to Idle",
+//				NextStepOnState = State.Idle,
+//			}
+//			);
+//
+//			// no prompt, with enough gauge AI performs vengeance attack
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "AI Vengeance",
+//				Narrative = FightManager.Translate("reallyMad"),
+//				AIMove = Move.Vengeance,
+//				NextStepOnState = State.Idle,	// go to next step as soon as AI is idle
+//			}
+//			);
+//
+//			// no prompt, AI starts tutorial punch, freezes at end of punch start
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "AI Tutorial Punch",
+//				AIMove = Move.Tutorial_Punch,
+//				FreezeOnState = State.Tutorial_Punch_Start,
+//				FreezeOnAI = true,
+//				FreezeAtEnd = true,
+//				SuccessOnFreeze = false,
+//			}
+//			);
+//
+//			// prompt for counter attack, AI tutorial punch strikes counter taunt and triggers counter attack
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Counter Attack",
+//				Narrative = FightManager.Translate("ouchGauge"),
+//				Prompt = FightManager.Translate("swipeCounter"),
+//				GestureFX = FeedbackFXType.Swipe_Back,
+//				FreezeOnHit = true,
+//				FreezeOnState = State.Counter_Attack,
+//			}
+//			);
+//
+//			// no prompt, AI performs a special
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "AI Special",
+//				Narrative = FightManager.Translate("comesAgain"),
+//				AIMove = Move.Special,
+//				FreezeOnState = State.Special,
+//				FreezeOnAI = true,
+//				FreezeAtEnd = true,
+//				SuccessOnFreeze = false,
+//			}
+//			);
+//
+//			// next step triggered on return to idle
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Return to Idle",
+//				NextStepOnState = State.Idle,
+//			}
+//			);
+//
+//			// prompt for vengeance, AI strikes counter taunt and triggers counter attack
+//			TrainingScript.Enqueue(new TrainingStep
+//			{
+//				Title = "Vengeance",
+//				Narrative = FightManager.Translate("vengeanceGauge"),
+//				Prompt = FightManager.Translate("swipeVengeance"),
+//				GestureFX = FeedbackFXType.Swipe_Vengeance,
+//				FreezeOnHit = true,
+//				FreezeOnState = State.Vengeance,
+//				SuccessOnFreeze = false,				// ...KO!!
+//			}
+//			);
 		}
 
 		#endregion

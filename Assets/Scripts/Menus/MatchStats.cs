@@ -146,7 +146,9 @@ namespace FightingLegends
 	
 		public void RevealWinner(Fighter victor)
 		{
-			if (winner == null)
+//			Debug.Log("RevealWinner: winner = " + (victor == null ? " NULL!" : victor.FullName));
+
+			if (victor == null)
 				return;
 			
 			winner = victor;

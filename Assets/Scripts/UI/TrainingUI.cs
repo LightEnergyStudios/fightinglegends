@@ -92,8 +92,8 @@ namespace FightingLegends
 		{
 			GameUI.TrafficLightInfoBubble += TrafficLightInfoBubble;
 			GameUI.OnGaugeIncreased += CrystalInfoBubble;
-			FightManager.OnNewFight += CombatModeInfoBubble;
-			FightManager.OnMenuChanged += MenuInfoBubble;
+//			FightManager.OnNewFight += CombatModeInfoBubble;
+//			FightManager.OnMenuChanged += MenuInfoBubble;
 			FightManager.OnInfoBubbleRead += OnInfoBubbleRead;
 			GestureListener.OnSwipeCount += SwipeCountInfoBubble;
 		}
@@ -102,8 +102,8 @@ namespace FightingLegends
 		{
 			GameUI.TrafficLightInfoBubble -= TrafficLightInfoBubble;
 			GameUI.OnGaugeIncreased -= CrystalInfoBubble;
-			FightManager.OnNewFight -= CombatModeInfoBubble;
-			FightManager.OnMenuChanged -= MenuInfoBubble;
+//			FightManager.OnNewFight -= CombatModeInfoBubble;
+//			FightManager.OnMenuChanged -= MenuInfoBubble;
 			FightManager.OnInfoBubbleRead -= OnInfoBubbleRead;
 			GestureListener.OnSwipeCount -= SwipeCountInfoBubble;
 
@@ -644,118 +644,118 @@ namespace FightingLegends
 		}
 
 
-		private void MenuInfoBubble(MenuType newMenu, bool canGoBack, bool canPause, bool coinsVisible, bool kudosVisible)
-		{
-			InfoBubbleMessage bubbleMessage = InfoBubbleMessage.None;
-			string bubbleHeading = "";
-			string bubbleText = "";
-			Sprite bubbleImage = FightModeSprite;
+//		private void MenuInfoBubble(MenuType newMenu, bool canGoBack, bool canPause, bool coinsVisible, bool kudosVisible)
+//		{
+//			InfoBubbleMessage bubbleMessage = InfoBubbleMessage.None;
+//			string bubbleHeading = "";
+//			string bubbleText = "";
+//			Sprite bubbleImage = FightModeSprite;
+//
+//			switch (newMenu)
+//			{
+//				case MenuType.ArcadeFighterSelect:
+//					bubbleMessage = InfoBubbleMessage.ArcadeMenu;
+//					bubbleHeading = FightManager.Translate("arcadeMode");
+//					bubbleText = FightManager.Translate("arcadeMenuInfoMessage");
+//					break;
+//
+//				case MenuType.SurvivalFighterSelect:
+//					bubbleMessage = InfoBubbleMessage.SurvivalMenu;
+//					bubbleHeading = FightManager.Translate("survivalMode");
+//					bubbleText = FightManager.Translate("survivalMenuInfoMessage");
+//					break;
+//
+//				case MenuType.TeamSelect:
+//					bubbleMessage = InfoBubbleMessage.ChallengeMenu;
+//					bubbleHeading = FightManager.Translate("challengeMode");
+//					bubbleText = FightManager.Translate("challengeMenuInfoMessage");
+//					break;
+//
+//				case MenuType.Dojo:
+//					bubbleMessage = InfoBubbleMessage.DojoMenu;
+//					bubbleHeading = FightManager.Translate("dojo");
+//					bubbleText = FightManager.Translate("dojoMenuInfoMessage");
+//					break;
+//
+//				case MenuType.Facebook:
+//					bubbleMessage = InfoBubbleMessage.FacebookMenu;
+//					bubbleHeading = FightManager.Translate("friends");
+//					bubbleText = FightManager.Translate("facebookMenuInfoMessage");
+//					break;
+//
+//				case MenuType.Leaderboards:
+//					bubbleMessage = InfoBubbleMessage.LeaderboardsMenu;
+//					bubbleHeading = FightManager.Translate("leaderBoards");
+//					bubbleText = FightManager.Translate("leaderboardsMenuInfoMessage");
+//					break;
+//
+//				case MenuType.None:
+//				case MenuType.Combat:
+//				case MenuType.MatchStats:
+//				case MenuType.PauseSettings:
+//				case MenuType.ModeSelect:
+//				case MenuType.WorldMap:
+//				case MenuType.Advert:
+//				default:
+//					bubbleMessage = InfoBubbleMessage.None;
+//					break;
+//			}
+//
+//			if (bubbleMessage != InfoBubbleMessage.None && bubbleHeading != "" && !FightManager.WasInfoBubbleMessageRead(bubbleMessage))
+//				StartCoroutine(ShowInfoBubble(Vector3.zero, bubbleMessage, bubbleHeading, bubbleText, bubbleImage, false, menuBubbleDelay));
+//		}
 
-			switch (newMenu)
-			{
-				case MenuType.ArcadeFighterSelect:
-					bubbleMessage = InfoBubbleMessage.ArcadeMenu;
-					bubbleHeading = FightManager.Translate("arcadeMode");
-					bubbleText = FightManager.Translate("arcadeMenuInfoMessage");
-					break;
 
-				case MenuType.SurvivalFighterSelect:
-					bubbleMessage = InfoBubbleMessage.SurvivalMenu;
-					bubbleHeading = FightManager.Translate("survivalMode");
-					bubbleText = FightManager.Translate("survivalMenuInfoMessage");
-					break;
-
-				case MenuType.TeamSelect:
-					bubbleMessage = InfoBubbleMessage.ChallengeMenu;
-					bubbleHeading = FightManager.Translate("challengeMode");
-					bubbleText = FightManager.Translate("challengeMenuInfoMessage");
-					break;
-
-				case MenuType.Dojo:
-					bubbleMessage = InfoBubbleMessage.DojoMenu;
-					bubbleHeading = FightManager.Translate("dojo");
-					bubbleText = FightManager.Translate("dojoMenuInfoMessage");
-					break;
-
-				case MenuType.Facebook:
-					bubbleMessage = InfoBubbleMessage.FacebookMenu;
-					bubbleHeading = FightManager.Translate("friends");
-					bubbleText = FightManager.Translate("facebookMenuInfoMessage");
-					break;
-
-				case MenuType.Leaderboards:
-					bubbleMessage = InfoBubbleMessage.LeaderboardsMenu;
-					bubbleHeading = FightManager.Translate("leaderBoards");
-					bubbleText = FightManager.Translate("leaderboardsMenuInfoMessage");
-					break;
-
-				case MenuType.None:
-				case MenuType.Combat:
-				case MenuType.MatchStats:
-				case MenuType.PauseSettings:
-				case MenuType.ModeSelect:
-				case MenuType.WorldMap:
-				case MenuType.Advert:
-				default:
-					bubbleMessage = InfoBubbleMessage.None;
-					break;
-			}
-
-			if (bubbleMessage != InfoBubbleMessage.None && bubbleHeading != "" && !FightManager.WasInfoBubbleMessageRead(bubbleMessage))
-				StartCoroutine(ShowInfoBubble(Vector3.zero, bubbleMessage, bubbleHeading, bubbleText, bubbleImage, false, menuBubbleDelay));
-		}
-
-
-		private void CombatModeInfoBubble(FightMode fightMode)
-		{
-//			if (!fightManager.ReadyToFight)			// no point if not ready
-//				return;
-			
-			InfoBubbleMessage bubbleMessage = InfoBubbleMessage.None;
-			string bubbleHeading = "";
-			string bubbleText = "";
-			Sprite bubbleImage = FightModeSprite;
-
-			switch (fightMode)
-			{
-				case FightMode.Dojo:
-					bubbleMessage = InfoBubbleMessage.DojoCombat;
-					bubbleHeading = FightManager.Translate("dojo");
-					bubbleText = FightManager.Translate("dojoFightInfoMessage");
-					break;
-
-				case FightMode.Training:
-					bubbleMessage = InfoBubbleMessage.TrainingCombat;
-					bubbleHeading = FightManager.Translate("ninjaSchool");
-					bubbleText = FightManager.Translate("trainingFightInfoMessage");
-					break;
-
-				case FightMode.Arcade:
-					bubbleMessage = InfoBubbleMessage.ArcadeCombat;
-					bubbleHeading = FightManager.Translate("arcadeMode");
-					bubbleText = FightManager.Translate("arcadeFightInfoMessage");
-					break;
-
-				case FightMode.Survival:
-					bubbleMessage = InfoBubbleMessage.SurvivalCombat;
-					bubbleHeading = FightManager.Translate("survivalMode");
-					bubbleText = FightManager.Translate("survivalFightInfoMessage");
-					break;
-
-				case FightMode.Challenge:
-					bubbleMessage = InfoBubbleMessage.ChallengeCombat;
-					bubbleHeading = FightManager.Translate("challengeMode");
-					bubbleText = FightManager.Translate("challengeFightInfoMessage");
-					break;
-
-				default:
-					bubbleMessage = InfoBubbleMessage.None;
-					break;
-			}
-
-			if (bubbleMessage != InfoBubbleMessage.None && bubbleHeading != "" && !FightManager.WasInfoBubbleMessageRead(bubbleMessage))
-				StartCoroutine(ShowInfoBubble(Vector3.zero, bubbleMessage, bubbleHeading, bubbleText, bubbleImage, false));
-		}
+//		private void CombatModeInfoBubble(FightMode fightMode)
+//		{
+////			if (!fightManager.ReadyToFight)			// no point if not ready
+////				return;
+//			
+//			InfoBubbleMessage bubbleMessage = InfoBubbleMessage.None;
+//			string bubbleHeading = "";
+//			string bubbleText = "";
+//			Sprite bubbleImage = FightModeSprite;
+//
+//			switch (fightMode)
+//			{
+//				case FightMode.Dojo:
+//					bubbleMessage = InfoBubbleMessage.DojoCombat;
+//					bubbleHeading = FightManager.Translate("dojo");
+//					bubbleText = FightManager.Translate("dojoFightInfoMessage");
+//					break;
+//
+//				case FightMode.Training:
+//					bubbleMessage = InfoBubbleMessage.TrainingCombat;
+//					bubbleHeading = FightManager.Translate("ninjaSchool");
+//					bubbleText = FightManager.Translate("trainingFightInfoMessage");
+//					break;
+//
+//				case FightMode.Arcade:
+//					bubbleMessage = InfoBubbleMessage.ArcadeCombat;
+//					bubbleHeading = FightManager.Translate("arcadeMode");
+//					bubbleText = FightManager.Translate("arcadeFightInfoMessage");
+//					break;
+//
+//				case FightMode.Survival:
+//					bubbleMessage = InfoBubbleMessage.SurvivalCombat;
+//					bubbleHeading = FightManager.Translate("survivalMode");
+//					bubbleText = FightManager.Translate("survivalFightInfoMessage");
+//					break;
+//
+//				case FightMode.Challenge:
+//					bubbleMessage = InfoBubbleMessage.ChallengeCombat;
+//					bubbleHeading = FightManager.Translate("challengeMode");
+//					bubbleText = FightManager.Translate("challengeFightInfoMessage");
+//					break;
+//
+//				default:
+//					bubbleMessage = InfoBubbleMessage.None;
+//					break;
+//			}
+//
+//			if (bubbleMessage != InfoBubbleMessage.None && bubbleHeading != "" && !FightManager.WasInfoBubbleMessageRead(bubbleMessage))
+//				StartCoroutine(ShowInfoBubble(Vector3.zero, bubbleMessage, bubbleHeading, bubbleText, bubbleImage, false));
+//		}
 
 		private void CrystalInfoBubble(int newGauge)
 		{

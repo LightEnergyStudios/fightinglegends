@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Prototype.NetworkLobby;
 
 namespace FightingLegends
 {
@@ -10,6 +11,9 @@ namespace FightingLegends
 		public Image fightingLegends;			// logo
 		public Text loadingText;				// animated dots
 		public HitFlash whiteFlash;				// not used
+
+//		public LobbyManager lobbyManager;
+//		public Image lobbyPanel;
 
 		private const string loading = "Loading";
 
@@ -22,6 +26,8 @@ namespace FightingLegends
 
 			fightingLegends.enabled = false;
 			loadingText.enabled = false;
+
+//			lobbyPanel.gameObject.SetActive(false);
 
 			whiteFlash.gameObject.SetActive(false);
 		}

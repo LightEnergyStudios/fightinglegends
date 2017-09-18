@@ -11,6 +11,7 @@ namespace FightingLegends
 		public Button challengeModeButton;
 		public Button storeButton;
 		public Button trainingButton;
+		public Button networkFightButton;
 
 		public Text arcadeModeLabel;
 		public Text arcadeModeText;
@@ -22,6 +23,8 @@ namespace FightingLegends
 		public Text storeText;
 		public Text trainingLabel;
 		public Text trainingText;
+		public Text networkFightLabel;
+		public Text networkFightText;
 
 		private FightManager fightManager;
 
@@ -32,13 +35,22 @@ namespace FightingLegends
 		bool entryTriggered = false;
 
 
+		public void Awake()
+		{
+			var fightManagerObject = GameObject.Find("FightManager");
+			fightManager = fightManagerObject.GetComponent<FightManager>();
+		}
+
 		private void OnEnable()
 		{
 			arcadeModeButton.onClick.AddListener(ArcadeMode);
 			survivalModeButton.onClick.AddListener(SurvivalMode);
 			challengeModeButton.onClick.AddListener(ChallengeMode);
 			storeButton.onClick.AddListener(ShowDojo);
-			trainingButton.onClick.AddListener(Training);
+//			trainingButton.onClick.AddListener(Training);
+			networkFightButton.onClick.AddListener(NetworkFight);
+
+			fightManager.NetworkFight = false;
 		}
 
 		private void OnDisable()
@@ -47,13 +59,14 @@ namespace FightingLegends
 			survivalModeButton.onClick.RemoveListener(SurvivalMode);
 			challengeModeButton.onClick.RemoveListener(ChallengeMode);
 			storeButton.onClick.RemoveListener(ShowDojo);
-			trainingButton.onClick.RemoveListener(Training);
+//			trainingButton.onClick.RemoveListener(Training);
+			networkFightButton.onClick.RemoveListener(NetworkFight);
 		}
 
 		public void Start()
 		{
-			var fightManagerObject = GameObject.Find("FightManager");
-			fightManager = fightManagerObject.GetComponent<FightManager>();
+//			var fightManagerObject = GameObject.Find("FightManager");
+//			fightManager = fightManagerObject.GetComponent<FightManager>();
 
 			arcadeModeLabel.text = FightManager.Translate("arcadeMode");
 			arcadeModeText.text = FightManager.Translate("arcadeTitle");
@@ -66,6 +79,8 @@ namespace FightingLegends
 //			trainingLabel.text = FightManager.Translate("training");
 			trainingLabel.text = FightManager.Translate("ninjaSchool");
 			trainingText.text = FightManager.Translate("trainingTitle");
+			networkFightLabel.text = FightManager.Translate("vs");
+			networkFightText.text = FightManager.Translate("networkTitle");
 
 			FightManager.OnThemeChanged += SetTheme;
 
@@ -122,9 +137,25 @@ namespace FightingLegends
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;
 		}
 
+		private void NetworkFight()
+		{
+			if (string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
+			{
+				FightManager.RegisterNewUser();
+			}
+			else
+			{
+				FightManager.CombatMode = FightMode.Arcade;
+				fightManager.NetworkFight = true;
+				fightManager.ModeSelectChoice = MenuType.ArcadeFighterSelect;		// triggers fade to black and new menu
+
+				fightManager.ShowLobby();			// matchmaker / LAN connect
+			}
+		}
+
 		private void Training()
 		{
-			FightManager.SavedGameStatus.CompletedBasicTraining = false;		// TODO: for testing purposes only
+//			FightManager.SavedGameStatus.CompletedBasicTraining = false;		// TODO: for testing purposes only
 
 			FightManager.CombatMode = FightMode.Training;
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;				// only after completed training

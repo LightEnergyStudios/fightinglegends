@@ -10,9 +10,11 @@
 		<string name="survivalMode">SURVIVAL MODE</string>
 		<string name="survivalTitle">FIGHT ENDLESS OPPONENTS AND LEVEL-UP!</string>
 		<string name="challengeMode">CHALLENGE MODE</string>
+		<string name="vs">VS</string>
 		<string name="challengeTitle">LEAD A TEAM OF CHAMPIONS TO VICTORY!</string>
 		<string name="dojoTitle">TRAINING, POWER-UP AND COMMUNITY HUB</string>
 		<string name="trainingTitle">LEARN BASIC TIMING AND TECHNIQUE</string>
+		<string name="networkTitle">VS BATTLE AGAINST A FRIEND</string>
 
         <string name="redLightHeading">RED = BLOCK</string>
         <string name="greenLightHeading">GREEN = FIGHT</string>
@@ -57,19 +59,6 @@
         <string name="swipeVengeanceInfoMessage">Swipe back and forward once to mount a VENGEANCE attack! Requires 3 crystals.</string>
         <string name="mashInfoMessage">FIRE characters follow-up a SPECIAL by mashing at the right time!</string>
 
-        <string name="dojoMenuInfoMessage">Use the DOJO to spar, power-up and connect to other players! String together long combos to feature on the leader board!</string>
-        <string name="arcadeMenuInfoMessage">Choose a fighter and a location on the world map to take on the local champion. Complete a WORLD TOUR for extra rewards!</string>
-        <string name="survivalMenuInfoMessage">Face an endless stream of opponents and SURVIVE as many fights as you can to feature on the Leader Board!</string>
-        <string name="challengeMenuInfoMessage">Pick a team and upload to the ARENA to challenge other players for coins ... or choose a challenge to pit them against!</string>
-        <string name="facebookMenuInfoMessage">Check out how your top score compares with your Facebook friends!</string>
-        <string name="leaderboardsMenuInfoMessage">Compete on the world stage with your fight statistics!</string>
-
-        <string name="dojoFightInfoMessage">Practice your attack and defence technique. Your best combo score will be posted to the Leader Board!</string>
-        <string name="trainingFightInfoMessage">Follow the prompts to learn some basic moves and understand the importance of TIMING.</string>
-        <string name="arcadeFightInfoMessage">Defeat your chosen opponent to progress on your WORLD TOUR!</string>
-        <string name="survivalFightInfoMessage">How long can you SURVIVE an endless onslaught from random opponents? Use power-ups to maximise your chances!</string>
-        <string name="challengeFightInfoMessage">Your team against theirs. The victorious team wins the challenge pot!</string>
-
         <string name="crystalInfoHeading">CRYSTALS</string>
         <string name="crystalInfoMessage">These pink crystals are activated as you sustain damage. Some moves can only be performed by using crystals!</string>
 
@@ -94,16 +83,6 @@
 		<string name="swipeChainSpecial">YOU CAN SWIPE FORWARD HALFWAY \n THROUGH YOUR 2nd OR 3rd STRIKE...</string>
 		<string name="swipeCounter">SWIPE BACK TO COUNTER!</string>
 		<string name="swipeVengeance">SWIPE BACK AND FORWARD \n FOR A VENGEANCE ATTACK!</string>
-
-		<string name="ninjaAtTheBeach">What's a Ninja doing here at the beach!? \n Looks like she's not backing down!</string>
-		<string name="blockNinja">Take THAT! \n I guess it's your turn!</string>
-		<string name="coolMoves">Get ready!! \n I'll show you some COOL moves!</string>
-		<string name="tryItAgain">That was GREAT! \n Let's try it again!</string>
-		<string name="offBalance">She blocked the whole thing? \n I have to get her off balance!</string>
-		<string name="reallyMad">Now she looks REALLY mad!</string>
-		<string name="ouchGauge">OUCH!! So when we take damage those \n crystals light up to enable other moves..!</string>
-		<string name="comesAgain">Here she comes again!</string>
-		<string name="vengeanceGauge">I have enough crystals to perform a \n vengeance attack! Let's FINISH THIS!!</string>
 
 		<string name="moves">MOVES</string>
 		<string name="strike">STRIKE</string>

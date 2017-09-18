@@ -155,8 +155,9 @@ namespace FightingLegends
 				return;
 			}
 
-			registerButton.interactable = false;
-			cancelButton.interactable = false;
+//			registerButton.interactable = false;
+//			cancelButton.interactable = false;
+			AllowInput(false);
 
 			// check if name already exists
 			FirebaseManager.GetUserProfile(userIdInput.text);		// callback will register if not already existing
@@ -192,6 +193,7 @@ namespace FightingLegends
 				else
 				{
 					feedbackMessage.text = "'" + userId + "' is already in use";
+					AllowInput(true);
 				}
 			}
 			else

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using Prototype.NetworkLobby;
  
 
 namespace FightingLegends
@@ -138,10 +139,14 @@ namespace FightingLegends
 		[HideInInspector]
 		public Fighter Player2;
 
+		// multiplayer
 		public bool NetworkFight = true;						// fighter animation and gesture input handled by NetworkFighter
 		private const int networkArcadeFightCountdown = 3;		// before starting new network fight
 		private const float networkArcadeFightPause = 0.5f;		// before starting countdown
 		private const string countdownLayer = "Curtain";		// so curtain camera picks it up
+
+		private LobbyManager lobbyManager;
+//		private UnityEngine.Networking.NetworkLobbyManager networkLobbyManager;
 
 //		private static Fighter player1;
 //		public static Fighter Player1
@@ -201,11 +206,8 @@ namespace FightingLegends
 					OnReadyToFight(readyToFight, changed, CombatMode);
 			}
 		}
-
-//		[HideInInspector]
+			
 		public bool FightPaused { get; private set; }
-
-		public bool TurboMode { get; private set; }			// 24 FPS
 
 		public const float xOffset = 750; 					// when instantiated in default fight position
 		public const float yOffset = 525;
@@ -217,8 +219,8 @@ namespace FightingLegends
 
 		public float FightingDistance { get { return xOffset * 2; } }	// default distance between fighters
 
-		[HideInInspector]
-		public bool IsMobileDevice = true;
+//		[HideInInspector]
+//		public bool IsMobileDevice = true;
 
 		private float DefaultAnimationSpeed = 1.0f;				// not FPS!
 		public float AnimationSpeed { get; private set; }		// effective speed (can be adjusted)
@@ -381,9 +383,6 @@ namespace FightingLegends
 		// scenery
 
 		private SceneryManager sceneryManager;
-//		private Queue<string> sceneryNames;
-//		public string CurrentSceneryName { get { return sceneryNames != null ? sceneryNames.Peek() : ""; } }
-//		public string CurrentSceneryName { get; private set; }
 
 		// camera
 
@@ -726,6 +725,13 @@ namespace FightingLegends
 			var fighterUnlockObject = GameObject.Find("FighterUnlock");
 			if (fighterUnlockObject != null)
 				fighterUnlock = fighterUnlockObject.GetComponent<FighterUnlock>();
+
+			var lobbyManagerObject = GameObject.Find("LobbyManager");
+			if (lobbyManagerObject != null)
+				lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
+
+//			networkLobbyManager = FindObjectOfType<UnityEngine.Networking.NetworkLobbyManager>();
+//			Debug.Log("LobbyManager = " + lobbyManager);
 			
 			cameraController = Camera.main.GetComponent<CameraController>();
 
@@ -775,7 +781,7 @@ namespace FightingLegends
 			QualitySettings.vSyncCount = 0;				// stop syncing FPS with monitor's refresh rate
 			Application.targetFrameRate = FxTargetFPS;	// for FX / feedback etc
 
-			IsMobileDevice = DeviceDetector.IsMobile;
+//			IsMobileDevice = DeviceDetector.IsMobile;
 
 			// initialise to default animation speed
 			SetDefaultAnimationSpeed();
@@ -795,7 +801,7 @@ namespace FightingLegends
 
 		private void OnDestroy()
 		{
-			SaveStatus();
+			SaveGameStatus();
 
 			DestroyFighter(Player1);		// also saves profile
 			DestroyFighter(Player2);
@@ -808,7 +814,7 @@ namespace FightingLegends
 			// save status and Player1 profile if going to background
 			if (paused)
 			{
-				SaveStatus();
+				SaveGameStatus();
 
 				if (HasPlayer1)
 					Player1.SaveProfile();
@@ -1952,7 +1958,7 @@ namespace FightingLegends
 			CleanupFighters();
 			HideDojoUI();
 
-			SaveStatus();
+			SaveGameStatus();
 
 			ActivateMenu(MenuType.ModeSelect);
 		}
@@ -1989,7 +1995,7 @@ namespace FightingLegends
 		{
 			CombatMode = FightMode.Arcade;
 
-			NetworkFight = true;
+//			NetworkFight = true;
 //			Debug.Log("StartMultiplayerFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
 
 			SelectedFighterName = player1Name;
@@ -1999,7 +2005,7 @@ namespace FightingLegends
 			SelectedFighter2Colour = player2Colour;
 
 			SelectedLocation = location;
-			Debug.Log("StartNetworkArcadeFight: SelectedLocation = " + SelectedLocation);
+//			Debug.Log("StartNetworkArcadeFight: SelectedLocation = " + SelectedLocation);
 
 			StartCoroutine(CountdownNetworkArcadeFight());
 		}
@@ -2028,7 +2034,7 @@ namespace FightingLegends
 			if (PreviewMode)
 				yield break;
 			
-			Debug.Log("StartNewFight: Mode = " + CombatMode + " - " + SelectedLocation);
+//			Debug.Log("StartNewFight: Mode = " + CombatMode + " - " + SelectedLocation);
 
 			CleanupFighters();
 
@@ -2227,7 +2233,7 @@ namespace FightingLegends
 				{
 					CombatMode = FightMode.Arcade;
 					SavedGameStatus.NinjaSchoolFight = true;	// shows dojo-style move UI
-					SaveStatus();								// completed training!
+					SaveGameStatus();								// completed training!
 
 					gameUI.SetupCombatMode();					// title etc.
 					yield return StartCoroutine(RestartMatch());					
@@ -3611,6 +3617,7 @@ namespace FightingLegends
 				if (CurrentMenuCanvas == MenuType.PauseSettings)	// not pushed onto menu stack
 				{
 					ActivatePreviousMenu(true, false);
+					SaveGameStatus();
 				}
 				else if (CurrentMenuCanvas == MenuType.WorldMap)		// not pushed onto menu stack
 				{
@@ -3634,7 +3641,7 @@ namespace FightingLegends
 			if (CanSettings)	
 				ActivateMenu(MenuType.PauseSettings);
 				
-			SaveStatus();
+			SaveGameStatus();
 		}
 			
 
@@ -4209,7 +4216,7 @@ namespace FightingLegends
 
 		private IEnumerator MatchEndStats(Fighter winner, List<ChallengeRoundResult> roundResults)
 		{
-//			Debug.Log("MatchEndStats: winner = " + winner.FullName);
+//			Debug.Log("MatchEndStats: winner = " + (winner == null ? " NULL!" : winner.FullName));
 
 			FreezeFight();
 
@@ -4792,9 +4799,9 @@ namespace FightingLegends
 //			Time.fixedDeltaTime = AnimationFrameInterval;		// based on FPS
 //		}
 
-		private void SaveStatus()
+		private void SaveGameStatus()
 		{
-//			Debug.Log("Saving status: " + CombatMode + " FightInProgress = " + SavedStatus.FightInProgress);
+//			Debug.Log("Saving status: " + CombatMode + " Difficulty = " + SavedGameStatus.Difficulty);
 
 			// save fight status if not in training
 //			if (HasPlayer1 && Player1.InTraining)
@@ -5003,7 +5010,7 @@ namespace FightingLegends
 				File.Delete(filePath);
 
 			SavedGameStatus = new SavedStatus();
-			SaveStatus();
+			SaveGameStatus();
 
 			PlayerPrefs.SetString("FL_UserId", "");
 			PlayerPrefs.SetFloat("FL_Kudos", 0);
@@ -5093,10 +5100,22 @@ namespace FightingLegends
 		{
 			return Translator.Instance.LookupString(text, wrap, exclaim, toUpper);
 		}
-
-		public static void SwitchToLobby()
+			
+		public void ShowLobby()
 		{
-			FindObjectOfType<UnityEngine.Networking.NetworkLobbyManager>().ServerReturnToLobby();
+			if (!NetworkFight)
+				return;
+			
+			if (lobbyManager != null)
+			{
+				// appears we must be in the 'lobby scene' in order to add players etc
+				lobbyManager.SetLobbyToPlayScene();
+
+				lobbyManager.ServerReturnToLobby();
+				lobbyManager.ShowLobbyUI(true);
+			}
+			else
+				Debug.Log("SwitchToLobby: lobbyManager not found!");
 		}
 	}
 }

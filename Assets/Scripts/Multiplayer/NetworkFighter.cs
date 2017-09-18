@@ -221,15 +221,9 @@ namespace FightingLegends
 		private void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
 		{
 			if (isServer)
-			{
-				Debug.Log("RpcStartFight - server: " + fighter1Name + " / " + fighter1Colour + " / " + fighter2Name + " / " + fighter2Colour + " / " + location);
 				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
-			}
 			else
-			{
-				Debug.Log("RpcStartFight - client: " + fighter2Name + " / " + fighter2Colour + " / " + fighter1Name + " / " + fighter1Colour + " / " + location);
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
-			}
 		}
 
 		#endregion
@@ -871,11 +865,11 @@ namespace FightingLegends
 
 		#endregion
 
-		private void BackToLobby()
-		{
-			FightManager.SwitchToLobby();
-//			FindObjectOfType<NetworkLobbyManager>().ServerReturnToLobby();
-		}
+//		private void BackToLobby()
+//		{
+//			fightManager.SwitchToLobby();
+////			FindObjectOfType<NetworkLobbyManager>().ServerReturnToLobby();
+//		}
 
 	}
 }

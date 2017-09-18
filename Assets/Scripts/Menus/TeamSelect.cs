@@ -108,11 +108,10 @@ namespace FightingLegends
 		private static string defaultLocation = FightManager.dojo; 
 		private string selectedLocation = ""; 
 
-//		private static int DiamondThreshold = 10000;	// prize coins
-		private static int GoldThreshold = 100;		// prize coins <=
-		private static int SilverThreshold = 50;	// prize coins <=
-		private static int BronzeThreshold = 20;	// prize coins <=
-		private static int IronThreshold = 10;		// prize coins <=
+		private static int GoldThreshold = 1000;	// prize coins <=
+		private static int SilverThreshold = 500;	// prize coins <=
+		private static int BronzeThreshold = 200;	// prize coins <=
+		private static int IronThreshold = 100;		// prize coins <=
 
 //		private bool diamondFilled = false;		// with challenge buttons 
 //		private bool goldFilled = false;		// with challenge buttons 
@@ -770,7 +769,7 @@ namespace FightingLegends
 		{
 			get
 			{
-				bool challengeUploaded = FightManager.UserLoginProfile != null && FightManager.UserLoginProfile.ChallengeKey == "";
+				bool challengeUploaded = FightManager.UserLoginProfile != null && FightManager.UserLoginProfile.ChallengeKey != "";
 				return internetReachable && selectedTeam.Count > 0 && !upLoadingChallenge && !challengeUploaded;
 			}
 		}
@@ -1858,10 +1857,10 @@ namespace FightingLegends
 							CreateChallengeCard("Shiro", "P2", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
 							CreateChallengeCard("Jackson", "P1", 48, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
 							CreateChallengeCard("Natalya", "P3", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
-							CreateChallengeCard("Jackson", "P1", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
+							CreateChallengeCard("Skeletron", "P1", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
 							CreateChallengeCard("Danjuma", "P2", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
 							CreateChallengeCard("Hoi Lun", "P1", 9, 10.0f, AIDifficulty.Medium, Ignite, null),
-							CreateChallengeCard("Shiyang", "P3", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
+							CreateChallengeCard("Ninja", "P3", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
 							CreateChallengeCard("Alazne", "P2", 4, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
 							CreateChallengeCard("Leoni", "P3", 17, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
 						}

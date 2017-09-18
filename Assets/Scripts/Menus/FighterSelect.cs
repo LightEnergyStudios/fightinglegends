@@ -19,6 +19,7 @@ namespace FightingLegends
 //		public Text powerUpLabel;
 
 		public Text titleText;
+		public Text networkText;
 
 		public Button shiroButton;
 		public Button natalyaButton;
@@ -64,7 +65,7 @@ namespace FightingLegends
 		public Sprite ninjaFrame;
 
 		public Image Coin;									// animated
-		private float insertCoinTime = 1.5f;
+		private float insertCoinTime = 3.0f;
 
 		public Image InsertCoinTextPanel;
 		public List<Text> InsertCoinTop;					// animated text x3
@@ -108,6 +109,9 @@ namespace FightingLegends
 			if (fightLabel != null)
 				fightLabel.text = FightManager.Translate("fight", false, true);
 
+			if (networkText != null)
+				networkText.text = FightManager.Translate("vs");
+			
 //			if (storeLabel != null)
 //				storeLabel.text = FightManager.Translate("dojo");
 //
@@ -115,6 +119,12 @@ namespace FightingLegends
 //				powerUpLabel.text = FightManager.Translate("powerUp"); //, true, false);
 
 			animatedEntry = false;
+
+			if (InsertCoinTextPanel != null)
+			{
+				SaveInsertCoinTextPositions();
+				InsertCoinTextPanel.gameObject.SetActive(false);
+			}
 		}
 
 		public void Init()
@@ -128,11 +138,11 @@ namespace FightingLegends
 			LoadFighterCards();		// if not already loaded
 			StartListening();		// if not already listening
 
-			if (InsertCoinTextPanel != null)
-			{
-				SaveInsertCoinTextPositions();
-				InsertCoinTextPanel.gameObject.SetActive(false);
-			}
+//			if (InsertCoinTextPanel != null)
+//			{
+//				SaveInsertCoinTextPositions();
+//				InsertCoinTextPanel.gameObject.SetActive(false);
+//			}
 		}
 
 		private void OnEnable()
@@ -143,6 +153,8 @@ namespace FightingLegends
 				SetPreviewFighter();
 
 			InitFighterCards();		// virtual
+
+			networkText.gameObject.SetActive(FightManager.CombatMode == FightMode.Arcade && fightManager.NetworkFight);
 
 			if (!animatedEntry)
 				StartCoroutine(AnimateCardEntry());			// virtual (different animators)

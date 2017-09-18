@@ -15,19 +15,19 @@ namespace Prototype.NetworkLobby
 
         static public LobbyManager s_Singleton;
 
-
         [Header("Unity UI Lobby")]
         [Tooltip("Time in second between all players ready & match start")]
         public float prematchCountdown = 5.0f;
 
-        [Space]
+		[Header("Custom UI")]
+		public Image lobbyUIPanel;			// entire lobby UI
+		public Text userID;					// used for matchmaker game name 
+
         [Header("UI Reference")]
         public LobbyTopPanel topPanel;
 
         public RectTransform mainMenuPanel;
         public RectTransform lobbyPanel;
-
-//		public Button singlePlayerButton;
 
         public LobbyInfoPanel infoPanel;
         public LobbyCountdownPanel countdownPanel;
@@ -67,14 +67,22 @@ namespace Prototype.NetworkLobby
             DontDestroyOnLoad(gameObject);
 
             SetServerInfo("Offline", "None");
-
-//			singlePlayerButton.onClick.AddListener(delegate { PlayGame(); });
         }
 
-//		void OnDestroy()
-//		{
-//			singlePlayerButton.onClick.RemoveListener(delegate { PlayGame(); });
-//		}
+		public void ShowLobbyUI(bool show)
+		{
+			if (lobbyUIPanel != null)
+				lobbyUIPanel.gameObject.SetActive(show);
+
+			if (show)
+				userID.text = FightingLegends.FightManager.SavedGameStatus.UserId;
+		}
+			
+		// appears we must be in the 'lobby scene' in order to add players etc
+		public void SetLobbyToPlayScene()
+		{
+			lobbyScene = playScene;
+		}
 
         public override void OnLobbyClientSceneChanged(NetworkConnection conn)
         {
@@ -173,7 +181,7 @@ namespace Prototype.NetworkLobby
 			topPanel.isInGame = false;
         }
 
-//		private void PlayGame()
+//		public void PlayGame()
 //		{
 //			ServerChangeScene(playScene);
 //		}
@@ -193,7 +201,13 @@ namespace Prototype.NetworkLobby
         public void SimpleBackClbk()
         {
             ChangeTo(mainMenuPanel);
+//			ShowLobbyUI(false);
         }
+
+		public void HideLobbyClbk()
+		{
+			ShowLobbyUI(false);
+		}
                  
         public void StopHostClbk()
         {
