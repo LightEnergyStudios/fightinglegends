@@ -58,15 +58,9 @@ namespace Prototype.NetworkLobby
 
         public void OnClickCreateMatchmakingGame()
         {
-//			if (FightingLegends.FightManager.SavedGameStatus.UserId == "")
-//			{
-//				Debug.Log("OnClickCreateMatchmakingGame: no UserId!!");
-//				return;
-//			}
-			
             lobbyManager.StartMatchMaker();
             lobbyManager.matchMaker.CreateMatch(
-                matchNameInput.text,				// set to UserId
+                matchNameInput.text,				// preset to UserId
                 (uint)lobbyManager.maxPlayers,
                 true,
 				"", "", "", 0, 0,
@@ -82,7 +76,8 @@ namespace Prototype.NetworkLobby
         public void OnClickOpenServerList()
         {
             lobbyManager.StartMatchMaker();
-            lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
+			lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
+//            lobbyManager.backDelegate = lobbyManager.HideLobbyClbk;
             lobbyManager.ChangeTo(lobbyServerList);
         }
 

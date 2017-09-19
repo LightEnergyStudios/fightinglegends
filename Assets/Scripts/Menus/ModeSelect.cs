@@ -39,6 +39,8 @@ namespace FightingLegends
 		{
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
+
+			animator = GetComponent<Animator>();
 		}
 
 		private void OnEnable()
@@ -50,7 +52,13 @@ namespace FightingLegends
 //			trainingButton.onClick.AddListener(Training);
 			networkFightButton.onClick.AddListener(NetworkFight);
 
-			fightManager.NetworkFight = false;
+			fightManager.IsNetworkFight = false;
+
+			animator.SetTrigger("EnterModes");
+			entryTriggered = true;
+
+			if (entryAudio != null)
+				AudioSource.PlayClipAtPoint(entryAudio, Vector3.zero, FightManager.SFXVolume);
 		}
 
 		private void OnDisable()
@@ -83,17 +91,17 @@ namespace FightingLegends
 			networkFightText.text = FightManager.Translate("networkTitle");
 
 			FightManager.OnThemeChanged += SetTheme;
+//
+//			animator = GetComponent<Animator>();
 
-			animator = GetComponent<Animator>();
-
-			if (!entryTriggered)
-			{
-				animator.SetTrigger("EnterModes");
-				entryTriggered = true;
-
-				if (entryAudio != null)
-					AudioSource.PlayClipAtPoint(entryAudio, Vector3.zero, FightManager.SFXVolume);
-			}
+//			if (!entryTriggered)
+//			{
+//				animator.SetTrigger("EnterModes");
+//				entryTriggered = true;
+//
+//				if (entryAudio != null)
+//					AudioSource.PlayClipAtPoint(entryAudio, Vector3.zero, FightManager.SFXVolume);
+//			}
 		}
 
 		public void OnDestroy()
@@ -146,7 +154,7 @@ namespace FightingLegends
 			else
 			{
 				FightManager.CombatMode = FightMode.Arcade;
-				fightManager.NetworkFight = true;
+				fightManager.IsNetworkFight = true;
 				fightManager.ModeSelectChoice = MenuType.ArcadeFighterSelect;		// triggers fade to black and new menu
 
 				fightManager.ShowLobby();			// matchmaker / LAN connect

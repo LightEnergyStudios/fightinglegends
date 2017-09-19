@@ -597,7 +597,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StartListeningForInput");
 
-			if (fightManager.NetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
+			if (fightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
 				return;
 			
 			// subscribe to touch events
@@ -626,7 +626,7 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": StopListeningForInput");
 
-			if (fightManager.NetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
+			if (fightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
 				return;
 			
 			if (UnderAI || IsDojoShadow)
@@ -1723,7 +1723,7 @@ namespace FightingLegends
 				return;
 
 			// handle key strokes for testing in Unity
-			if (!fightManager.NetworkFight && ! UnderAI && !IsDojoShadow && ! DeviceDetector.IsMobile)
+			if (!fightManager.IsNetworkFight && ! UnderAI && !IsDojoShadow && ! DeviceDetector.IsMobile)
 			{
 				if (Input.GetKeyDown(KeyCode.X))
 				{

@@ -140,7 +140,7 @@ namespace FightingLegends
 		public Fighter Player2;
 
 		// multiplayer
-		public bool NetworkFight = true;						// fighter animation and gesture input handled by NetworkFighter
+		public bool IsNetworkFight = true;						// fighter animation and gesture input handled by NetworkFighter
 		private const int networkArcadeFightCountdown = 3;		// before starting new network fight
 		private const float networkArcadeFightPause = 0.5f;		// before starting countdown
 		private const string countdownLayer = "Curtain";		// so curtain camera picks it up
@@ -829,7 +829,7 @@ namespace FightingLegends
 		// 0.0666667 = 1/15 sec
 		private void FixedUpdate()
 		{
-			if (NetworkFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
+			if (IsNetworkFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
 				return;
 			
 			UpdateAnimation();
@@ -1536,7 +1536,7 @@ namespace FightingLegends
 			string nextFighterName;
 			string nextFighterColour;
 
-			if (NetworkFight && CombatMode == FightMode.Arcade)
+			if (IsNetworkFight && CombatMode == FightMode.Arcade)
 				underAI = false;
 
 			if (underAI && random)		// survival mode - next AI is selected randomly
@@ -1711,7 +1711,7 @@ namespace FightingLegends
 		{
 			Fighter newFighter = null;
 
-			if (NetworkFight && CombatMode == FightMode.Arcade)
+			if (IsNetworkFight && CombatMode == FightMode.Arcade)
 				underAI = false;
 
 			if (training)
@@ -1955,6 +1955,8 @@ namespace FightingLegends
 			if (CombatMode == FightMode.Challenge)
 				PayoutChallengePot(Player2);
 
+			IsNetworkFight = false;
+
 			CleanupFighters();
 			HideDojoUI();
 
@@ -2072,7 +2074,7 @@ namespace FightingLegends
 				// player 2 always AI - unless multiplayer!
 				if (Player2 == null)
 				{
-					if (NetworkFight && CombatMode == FightMode.Arcade)
+					if (IsNetworkFight && CombatMode == FightMode.Arcade)
 					{
 						Player2 = CreateFighter(SelectedFighter2Name, SelectedFighter2Colour, false, false); 
 
@@ -2092,7 +2094,7 @@ namespace FightingLegends
 				if (CombatMode == FightMode.Training && trainingUI != null && Player1.InTraining)
 					trainingUI.SetTrainer();
 
-				if (NetworkFight && CombatMode == FightMode.Arcade)
+				if (IsNetworkFight && CombatMode == FightMode.Arcade)
 				{
 					if (statusUI != null)
 						statusUI.SetFighters();
@@ -5101,18 +5103,18 @@ namespace FightingLegends
 			return Translator.Instance.LookupString(text, wrap, exclaim, toUpper);
 		}
 			
+
 		public void ShowLobby()
 		{
-			if (!NetworkFight)
+			if (!IsNetworkFight)
 				return;
 			
 			if (lobbyManager != null)
 			{
 				// appears we must be in the 'lobby scene' in order to add players etc
-				lobbyManager.SetLobbyToPlayScene();
-
-				lobbyManager.ServerReturnToLobby();
-				lobbyManager.ShowLobbyUI(true);
+				// so set the lobby scene to the play scene to allow this
+//				lobbyManager.SetLobbyToPlayScene();
+				lobbyManager.ShowLobbyUI();
 			}
 			else
 				Debug.Log("SwitchToLobby: lobbyManager not found!");

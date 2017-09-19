@@ -900,6 +900,7 @@ GameObject:
   - component: {fileID: 114000013805212946}
   - component: {fileID: 114000013815955962}
   - component: {fileID: 114000011048241478}
+  - component: {fileID: 95121985897066252}
   m_Layer: 14
   m_Name: Store
   m_TagString: Untagged
@@ -2342,7 +2343,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000014117192452
 GameObject:
   m_ObjectHideFlags: 1
@@ -6052,6 +6053,23 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!95 &95121985897066252
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000011696736500}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 017e757bf5b914eac9702f4ec815a7b7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!95 &95150579535346740
 Animator:
   serializedVersion: 3
@@ -7921,6 +7939,7 @@ MonoBehaviour:
   fightButton: {fileID: 0}
   fightLabel: {fileID: 0}
   titleText: {fileID: 0}
+  networkText: {fileID: 0}
   shiroButton: {fileID: 114000010690642178}
   natalyaButton: {fileID: 114000010485281718}
   hoiLunButton: {fileID: 114000012381728360}
@@ -11855,7 +11874,6 @@ MonoBehaviour:
   ChallengesButton: {fileID: 114000011057413084}
   FriendsButton: {fileID: 114165458076332522}
   LeaderboardsButton: {fileID: 114383569305712470}
-  MultiplayerButton: {fileID: 0}
   TrainingButton: {fileID: 114278387007600690}
   NewUserButton: {fileID: 114031940051805624}
   DojoButtons: {fileID: 1910609949571310}

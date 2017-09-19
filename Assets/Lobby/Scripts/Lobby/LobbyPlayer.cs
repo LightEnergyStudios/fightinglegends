@@ -28,6 +28,9 @@ namespace Prototype.NetworkLobby
 		[SyncVar] // (hook = "OnPlayerNumber")]
 		public int playerNumber = 0;
 
+		[SyncVar] // (hook = "OnPlayerNumber")]
+		public string UserId = "";
+
 		//OnMyName function will be invoked on clients when server changes the value of playerName
         [SyncVar(hook = "OnMyName")]
         public string playerName = "";
@@ -193,7 +196,7 @@ namespace Prototype.NetworkLobby
 
 //		public void OnPlayerNumber(int playerNum)
 //		{
-//			playerNumber = playerNumber;
+//			playerNumber = playerNum;
 //		}
 
         public void OnMyName(string newName)
@@ -305,9 +308,9 @@ namespace Prototype.NetworkLobby
         }
 
 		[Command]
-		public void CmdPlayerNumber(int playerNumber)
+		public void CmdPlayerNumber(int playerNum)
 		{
-			playerNumber = playerNumber;
+			playerNumber = playerNum;
 		}
 
         //Cleanup thing when get destroy (which happen when client kick or disconnect)

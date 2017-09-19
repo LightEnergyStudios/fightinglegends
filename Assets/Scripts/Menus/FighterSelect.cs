@@ -154,7 +154,8 @@ namespace FightingLegends
 
 			InitFighterCards();		// virtual
 
-			networkText.gameObject.SetActive(FightManager.CombatMode == FightMode.Arcade && fightManager.NetworkFight);
+			if (networkText != null)
+				networkText.gameObject.SetActive(FightManager.CombatMode == FightMode.Arcade && fightManager.IsNetworkFight);
 
 			if (!animatedEntry)
 				StartCoroutine(AnimateCardEntry());			// virtual (different animators)

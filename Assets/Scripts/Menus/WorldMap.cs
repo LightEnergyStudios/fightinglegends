@@ -244,7 +244,7 @@ namespace FightingLegends
 //			else if (TransportOnArrival)
 //				fightManager.WorldMapChoice = MenuType.Combat;
 
-			if (TransportOnArrival && !fightManager.NetworkFight)
+			if (TransportOnArrival && !fightManager.IsNetworkFight)
 				fightManager.WorldMapChoice = MenuType.Combat;		// new multiplayer fight started once both fighters and location set
 			
 			yield return null;

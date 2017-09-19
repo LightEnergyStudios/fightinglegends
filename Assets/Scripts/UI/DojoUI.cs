@@ -13,6 +13,7 @@ namespace FightingLegends
 		public MoveUI TapMove;				// strike
 		public MoveUI BothTapMove;			// reset
 		public MoveUI SwipeLeftMove;		// counter (taunt) -> counter attack?
+		public MoveUI TutorialPunchMove;	// swipe left (ninja only)
 		public MoveUI SwipeRightMove;		// special
 		public MoveUI SwipeUpMove;			// power-up
 		public MoveUI SwipeDownMove;		// shove
@@ -1131,6 +1132,9 @@ namespace FightingLegends
 
 				case Move.Counter:
 					return SwipeLeftMove;
+
+				case Move.Tutorial_Punch:			// swipe left - ninja only
+					return TutorialPunchMove;
 
 				case Move.Vengeance:
 					return SwipeLeftRightMove;

@@ -46,13 +46,13 @@ namespace FightingLegends
 			if (PlayerNumber == 0)		// ie. not set via lobby (game creator == Player1)
 				PlayerNumber = isServer ? 1 : 2;
 			
-			if (fightManager.NetworkFight && isLocalPlayer)
+			if (fightManager.IsNetworkFight && isLocalPlayer)
 				StartListening();
 		}
 
 		private void OnDestroy()
 		{
-			if (fightManager.NetworkFight && isLocalPlayer)
+			if (fightManager.IsNetworkFight && isLocalPlayer)
 				StopListening();
 		}
 
@@ -117,7 +117,7 @@ namespace FightingLegends
 		[ServerCallback]
 		private void FixedUpdate()
 		{
-			if (fightManager.NetworkFight && isServer)
+			if (fightManager.IsNetworkFight && isServer)
 				RpcUpdateAnimation();
 		}
 
@@ -134,7 +134,7 @@ namespace FightingLegends
 		{
 			//TODO: remove this!
 			// handle key strokes for testing in Unity
-			if (fightManager.NetworkFight && ! DeviceDetector.IsMobile)
+			if (fightManager.IsNetworkFight && ! DeviceDetector.IsMobile)
 			{
 				if (Input.GetKeyDown(KeyCode.X))
 				{

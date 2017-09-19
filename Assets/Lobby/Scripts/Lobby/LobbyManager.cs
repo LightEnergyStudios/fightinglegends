@@ -61,78 +61,98 @@ namespace Prototype.NetworkLobby
             _lobbyHooks = GetComponent<Prototype.NetworkLobby.LobbyHook>();
             currentPanel = mainMenuPanel;
 
-            backButton.gameObject.SetActive(false);
+//            backButton.gameObject.SetActive(false);
             GetComponent<Canvas>().enabled = true;
 
             DontDestroyOnLoad(gameObject);
 
             SetServerInfo("Offline", "None");
+
+			backDelegate = ExitLobby;
         }
 
-		public void ShowLobbyUI(bool show)
+		public void ShowLobbyUI() //bool show)
+		{
+//			if (show)
+//			{
+				if (lobbyUIPanel != null)
+					lobbyUIPanel.gameObject.SetActive(true);
+				
+//				backDelegate = ExitLobby;
+				userID.text = FightingLegends.FightManager.SavedGameStatus.UserId;
+
+				ChangeTo(mainMenuPanel);
+//			}
+//			else
+//				ExitLobby();
+//				FightingLegends.FightManager.GetConfirmation("Exit VS mode?", 0, ExitLobby);
+		}
+
+		private void ExitLobby()
 		{
 			if (lobbyUIPanel != null)
-				lobbyUIPanel.gameObject.SetActive(show);
-
-			if (show)
-				userID.text = FightingLegends.FightManager.SavedGameStatus.UserId;
+				lobbyUIPanel.gameObject.SetActive(false);
+			
+			StopHostClbk();
+			StopClientClbk();
 		}
 			
-		// appears we must be in the 'lobby scene' in order to add players etc
-		public void SetLobbyToPlayScene()
-		{
-			lobbyScene = playScene;
-		}
+//		// appears we must be in the 'lobby scene' in order to add players etc
+//		public void SetLobbyToPlayScene()
+//		{
+//			lobbyScene = playScene;
+//		}
 
-        public override void OnLobbyClientSceneChanged(NetworkConnection conn)
-        {
-            if (SceneManager.GetSceneAt(0).name == lobbyScene)
-            {
-                if (topPanel.isInGame)
-                {
-                    ChangeTo(lobbyPanel);
-                    if (_isMatchmaking)
-                    {
-                        if (conn.playerControllers[0].unetView.isServer)
-                        {
-                            backDelegate = StopHostClbk;
-                        }
-                        else
-                        {
-                            backDelegate = StopClientClbk;
-                        }
-                    }
-                    else
-                    {
-                        if (conn.playerControllers[0].unetView.isClient)
-                        {
-                            backDelegate = StopHostClbk;
-                        }
-                        else
-                        {
-                            backDelegate = StopClientClbk;
-                        }
-                    }
-                }
-                else
-                {
-                    ChangeTo(mainMenuPanel);
-                }
 
-                topPanel.ToggleVisibility(true);
-                topPanel.isInGame = false;
-            }
-            else
-            {
-                ChangeTo(null);
-
-                Destroy(GameObject.Find("MainMenuUI(Clone)"));
-
-                //backDelegate = StopGameClbk;
-                topPanel.isInGame = true;
-                topPanel.ToggleVisibility(false);
-            }
-        }
+//        public override void OnLobbyClientSceneChanged(NetworkConnection conn)
+//        {
+//            if (SceneManager.GetSceneAt(0).name == lobbyScene)
+//            {
+//                if (topPanel.isInGame)
+//                {
+//                    ChangeTo(lobbyPanel);
+//                    if (_isMatchmaking)
+//                    {
+//                        if (conn.playerControllers[0].unetView.isServer)
+//                        {
+//							backDelegate = ExitLobby; // SM StopHostClbk;
+//                        }
+//                        else
+//                        {
+//							backDelegate = ExitLobby; // StopClientClbk;
+//                        }
+//                    }
+//                    else
+//                    {
+//                        if (conn.playerControllers[0].unetView.isClient)
+//                        {
+//							backDelegate = ExitLobby; // SM  StopHostClbk;
+//                        }
+//                        else
+//                        {
+//							backDelegate = ExitLobby; // StopClientClbk;
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    ChangeTo(mainMenuPanel);
+//                }
+//
+//                topPanel.ToggleVisibility(true);
+//                topPanel.isInGame = false;
+//            }
+//            else
+//            {
+//                ChangeTo(null);
+//
+//                Destroy(GameObject.Find("MainMenuUI(Clone)"));
+//
+//                //backDelegate = StopGameClbk;
+//                topPanel.isInGame = true;
+//                topPanel.ToggleVisibility(false);
+//            }
+//        }
 
         public void ChangeTo(RectTransform newPanel)
         {
@@ -150,11 +170,11 @@ namespace Prototype.NetworkLobby
 
             if (currentPanel != mainMenuPanel)
             {
-                backButton.gameObject.SetActive(true);
+//                backButton.gameObject.SetActive(true);
             }
             else
             {
-                backButton.gameObject.SetActive(false);
+//                backButton.gameObject.SetActive(false);
                 SetServerInfo("Offline", "None");
                 _isMatchmaking = false;
             }
@@ -200,14 +220,15 @@ namespace Prototype.NetworkLobby
 
         public void SimpleBackClbk()
         {
-            ChangeTo(mainMenuPanel);
+//            ChangeTo(mainMenuPanel);
 //			ShowLobbyUI(false);
         }
 
-		public void HideLobbyClbk()
-		{
-			ShowLobbyUI(false);
-		}
+//		public void ExitLobbyClbk()
+//		{
+////			ShowLobbyUI(false);
+//			ExitLobby();
+//		}
                  
         public void StopHostClbk()
         {
@@ -222,7 +243,7 @@ namespace Prototype.NetworkLobby
             }
 
             
-            ChangeTo(mainMenuPanel);
+//            ChangeTo(mainMenuPanel);
         }
 
         public void StopClientClbk()
@@ -234,13 +255,13 @@ namespace Prototype.NetworkLobby
                 StopMatchMaker();
             }
 
-            ChangeTo(mainMenuPanel);
+//            ChangeTo(mainMenuPanel);
         }
 
         public void StopServerClbk()
         {
             StopServer();
-            ChangeTo(mainMenuPanel);
+//            ChangeTo(mainMenuPanel);
         }
 
         class KickMsg : MessageBase { }
@@ -265,7 +286,7 @@ namespace Prototype.NetworkLobby
             base.OnStartHost();
 
             ChangeTo(lobbyPanel);
-            backDelegate = StopHostClbk;
+//			backDelegate = ExitLobby; // SM  StopHostClbk;
             SetServerInfo("Hosting", networkAddress);
         }
 
@@ -308,6 +329,9 @@ namespace Prototype.NetworkLobby
             LobbyPlayer newPlayer = obj.GetComponent<LobbyPlayer>();
             newPlayer.ToggleJoinButton(numPlayers + 1 >= minPlayers);
 
+			newPlayer.UserId = FightingLegends.FightManager.SavedGameStatus.UserId;
+
+			Debug.Log("OnLobbyServerCreateLobbyPlayer: " + newPlayer.UserId);
 
             for (int i = 0; i < lobbySlots.Length; ++i)
             {
@@ -428,7 +452,7 @@ namespace Prototype.NetworkLobby
             if (!NetworkServer.active)
             {//only to do on pure client (not self hosting client)
                 ChangeTo(lobbyPanel);
-                backDelegate = StopClientClbk;
+//                backDelegate = StopClientClbk;
                 SetServerInfo("Client", networkAddress);
             }
         }
