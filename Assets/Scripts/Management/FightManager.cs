@@ -140,12 +140,12 @@ namespace FightingLegends
 		public Fighter Player2;
 
 		// multiplayer
-		public bool IsNetworkFight = true;						// fighter animation and gesture input handled by NetworkFighter
+		public static bool IsNetworkFight = true;				// fighter animation and gesture input handled by NetworkFighter
 		private const int networkArcadeFightCountdown = 3;		// before starting new network fight
 		private const float networkArcadeFightPause = 0.5f;		// before starting countdown
 		private const string countdownLayer = "Curtain";		// so curtain camera picks it up
 
-		private LobbyManager lobbyManager;
+//		private LobbyManager lobbyManager;
 //		private UnityEngine.Networking.NetworkLobbyManager networkLobbyManager;
 
 //		private static Fighter player1;
@@ -726,12 +726,9 @@ namespace FightingLegends
 			if (fighterUnlockObject != null)
 				fighterUnlock = fighterUnlockObject.GetComponent<FighterUnlock>();
 
-			var lobbyManagerObject = GameObject.Find("LobbyManager");
-			if (lobbyManagerObject != null)
-				lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
-
-//			networkLobbyManager = FindObjectOfType<UnityEngine.Networking.NetworkLobbyManager>();
-//			Debug.Log("LobbyManager = " + lobbyManager);
+//			var lobbyManagerObject = GameObject.Find("LobbyManager");
+//			if (lobbyManagerObject != null)
+//				lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
 			
 			cameraController = Camera.main.GetComponent<CameraController>();
 
@@ -2028,6 +2025,11 @@ namespace FightingLegends
 			// TODO: safe to assume arcade network fight started from world map?
 			WorldMapChoice = MenuType.Combat;  // default starts new fight	
 			yield return null;
+		}
+
+		public void Arcade()
+		{
+			ModeSelectChoice = MenuType.ArcadeFighterSelect;
 		}
 
 	
@@ -5104,20 +5106,15 @@ namespace FightingLegends
 		}
 			
 
-		public void ShowLobby()
-		{
-			if (!IsNetworkFight)
-				return;
-			
-			if (lobbyManager != null)
-			{
-				// appears we must be in the 'lobby scene' in order to add players etc
-				// so set the lobby scene to the play scene to allow this
-//				lobbyManager.SetLobbyToPlayScene();
-				lobbyManager.ShowLobbyUI();
-			}
-			else
-				Debug.Log("SwitchToLobby: lobbyManager not found!");
-		}
+//		public void ShowLobby()
+//		{
+//			if (!IsNetworkFight)
+//				return;
+//			
+//			if (lobbyManager != null)
+//				lobbyManager.ShowLobbyUI();
+//			else
+//				Debug.Log("SwitchToLobby: lobbyManager not found!");
+//		}
 	}
 }

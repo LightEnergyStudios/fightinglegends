@@ -14,6 +14,9 @@ namespace Prototype.NetworkLobby
 			NetworkFighter localPlayer = gamePlayer.GetComponent<NetworkFighter>();
 
 			localPlayer.PlayerNumber = lobby.playerNumber;
+			localPlayer.PlayerName = lobby.playerName;			// user id
+
+			Debug.Log("NetworkLobbyHook: " + localPlayer.PlayerNumber + " / " + localPlayer.PlayerName);
 		}
 	}
 }

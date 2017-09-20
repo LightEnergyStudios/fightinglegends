@@ -202,7 +202,7 @@ namespace FightingLegends
 					var mode = FightManager.CombatMode.ToString().ToLower();
 					var difficulty = FightManager.SavedGameStatus.Difficulty.ToString().ToLower();
 
-					if (fightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
+					if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
 						CombatMode.text = string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate("twoPlayer"));
 					else
 						CombatMode.text = FightManager.SavedGameStatus.NinjaSchoolFight ? FightManager.Translate("ninjaSchool")
@@ -211,7 +211,7 @@ namespace FightingLegends
 				else
 					CombatMode.text = FightManager.Translate("ninjaSchool");
 
-				if (fightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
+				if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
 				{
 					Player1Health.SetScoreColour(NetworkColour);
 					Player2Health.SetScoreColour(NetworkColour);

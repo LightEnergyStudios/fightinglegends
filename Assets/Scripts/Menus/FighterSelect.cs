@@ -137,12 +137,6 @@ namespace FightingLegends
 
 			LoadFighterCards();		// if not already loaded
 			StartListening();		// if not already listening
-
-//			if (InsertCoinTextPanel != null)
-//			{
-//				SaveInsertCoinTextPositions();
-//				InsertCoinTextPanel.gameObject.SetActive(false);
-//			}
 		}
 
 		private void OnEnable()
@@ -155,7 +149,7 @@ namespace FightingLegends
 			InitFighterCards();		// virtual
 
 			if (networkText != null)
-				networkText.gameObject.SetActive(FightManager.CombatMode == FightMode.Arcade && fightManager.IsNetworkFight);
+				networkText.gameObject.SetActive(FightManager.CombatMode == FightMode.Arcade && FightManager.IsNetworkFight);
 
 			if (!animatedEntry)
 				StartCoroutine(AnimateCardEntry());			// virtual (different animators)
@@ -192,6 +186,8 @@ namespace FightingLegends
 		{
 			if (listening)
 				return;
+
+//			Prototype.NetworkLobby.LobbyManager.OnExitLobby += OnExitLobby;
 			
 			if (fightButton != null)
 				fightButton.onClick.AddListener(delegate { ShowCombat(); });
@@ -230,6 +226,8 @@ namespace FightingLegends
 		{
 			if (! listening)
 				return;
+
+//			Prototype.NetworkLobby.LobbyManager.OnExitLobby -= OnExitLobby;
 			
 //			Debug.Log("StopListening: " + fightManager.SelectedFighterName + " " + fightManager.SelectedFighterColour);
 			FightManager.OnThemeChanged -= SetTheme;
@@ -269,6 +267,11 @@ namespace FightingLegends
 		{
 			StopListening();
 		}
+
+//		private void OnExitLobby()
+//		{
+//			fightManager.FighterSelectChoice = MenuType.ModeSelect;
+//		}
 
 		private void LoadFighterCards()
 		{

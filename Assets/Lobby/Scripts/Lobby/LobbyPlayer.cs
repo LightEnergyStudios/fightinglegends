@@ -25,15 +25,16 @@ namespace Prototype.NetworkLobby
         public GameObject remoteIcone;
 
 		//OnPlayerNumber function will be invoked on clients when server changes the value of playerNumber
-		[SyncVar] // (hook = "OnPlayerNumber")]
+//		[SyncVar] // (hook = "OnPlayerNumber")]
 		public int playerNumber = 0;
 
-		[SyncVar] // (hook = "OnPlayerNumber")]
-		public string UserId = "";
+		// OnMyName invoked on clients when server changes the value of UserId
+//		[SyncVar(hook = "OnMyName")]
+//		public string UserId = "";
 
 		//OnMyName function will be invoked on clients when server changes the value of playerName
         [SyncVar(hook = "OnMyName")]
-        public string playerName = "";
+		public string playerName = ""; //FightingLegends.FightManager.SavedGameStatus.UserId;
         [SyncVar(hook = "OnMyColor")]
         public Color playerColor = Color.white;
 
@@ -69,7 +70,7 @@ namespace Prototype.NetworkLobby
 
             //setup the player data on UI. The value are SyncVar so the player
             //will be created with the right value currently on server
-            OnMyName(playerName);
+			OnMyName(playerName);
             OnMyColor(playerColor);
         }
 
@@ -117,6 +118,9 @@ namespace Prototype.NetworkLobby
             if (playerColor == Color.white)
                 CmdColorChange();
 
+			if (playerName == "")
+				CmdNameChanged(FightingLegends.FightManager.SavedGameStatus.UserId);
+
             ChangeReadyButtonColor(JoinColor);
 
             readyButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
@@ -127,8 +131,9 @@ namespace Prototype.NetworkLobby
 			CmdPlayerNumber(playerNumber);
 
 			//have to use child count of player prefab already setup as "this.slot" is not set yet
-            if (playerName == "")
-				CmdNameChanged("Player" + playerNumber);
+//            if (playerName == "")
+				CmdNameChanged(FightingLegends.FightManager.SavedGameStatus.UserId);
+//				CmdNameChanged("Player" + playerNumber);
 
             //we switch from simple name display to name input
             colorButton.interactable = true;
@@ -211,6 +216,11 @@ namespace Prototype.NetworkLobby
             colorButton.GetComponent<Image>().color = newColor;
         }
 
+//		public void OnMyUserId(string userId)
+//		{
+//			UserId = userId;
+//		}
+
         //===== UI Handler
 
         //Note that those handler use Command function, as we need to change the value on the server not locally
@@ -259,6 +269,12 @@ namespace Prototype.NetworkLobby
         {
             CheckRemoveButton();
         }
+
+		[ClientRpc]
+		public void RpcPlayersReady()
+		{
+			LobbyManager.s_Singleton.HideLobbyUI();
+		}
 
         //====== Server Command
 

@@ -13,6 +13,7 @@ namespace FightingLegends
 	{
 		// set via lobby (hook)
 		public int PlayerNumber = 0;	
+		public string PlayerName = "";			// user id
 	
 		// fighters set via FighterSelect delegate - server only
 		private static string Fighter1Name;
@@ -45,14 +46,16 @@ namespace FightingLegends
 
 			if (PlayerNumber == 0)		// ie. not set via lobby (game creator == Player1)
 				PlayerNumber = isServer ? 1 : 2;
+
+			Debug.Log("NetworkFighter: PlayerNumber = " + PlayerNumber);
 			
-			if (fightManager.IsNetworkFight && isLocalPlayer)
+			if (FightManager.IsNetworkFight && isLocalPlayer)
 				StartListening();
 		}
 
 		private void OnDestroy()
 		{
-			if (fightManager.IsNetworkFight && isLocalPlayer)
+			if (FightManager.IsNetworkFight && isLocalPlayer)
 				StopListening();
 		}
 
@@ -117,7 +120,7 @@ namespace FightingLegends
 		[ServerCallback]
 		private void FixedUpdate()
 		{
-			if (fightManager.IsNetworkFight && isServer)
+			if (FightManager.IsNetworkFight && isServer)
 				RpcUpdateAnimation();
 		}
 
@@ -134,7 +137,7 @@ namespace FightingLegends
 		{
 			//TODO: remove this!
 			// handle key strokes for testing in Unity
-			if (fightManager.IsNetworkFight && ! DeviceDetector.IsMobile)
+			if (FightManager.IsNetworkFight && ! DeviceDetector.IsMobile)
 			{
 				if (Input.GetKeyDown(KeyCode.X))
 				{
