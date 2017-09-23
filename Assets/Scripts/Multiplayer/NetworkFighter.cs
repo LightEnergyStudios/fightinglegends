@@ -50,6 +50,12 @@ namespace FightingLegends
 			
 //			Debug.Log("NetworkFighter.Start: PlayerNumber = " + PlayerNumber + ", PlayerName = " + PlayerName);
 			
+//			if (FightManager.IsNetworkFight && isLocalPlayer)
+//				StartListening();
+		}
+
+		public override void OnStartLocalPlayer()
+		{
 			if (FightManager.IsNetworkFight && isLocalPlayer)
 				StartListening();
 		}
@@ -134,29 +140,7 @@ namespace FightingLegends
 				fightManager.UpdateAnimation();
 		}
 
-//		[ClientRpc]
-//		private void RpcFighterSelect()
-//		{
-//			if (isLocalPlayer)
-//			{
-//				Debug.Log("RpcFighterSelect: " + PlayerNumber + " / " + PlayerName);
-//				EnterFighterSelect();
-//			}
-//		}
-
-//		public void EnterFighterSelect()
-//		{
-//			var lobbyManagerObject = GameObject.Find("LobbyManager");
-//			lobbyManager = lobbyManagerObject.GetComponent<Prototype.NetworkLobby.LobbyManager>();
-//
-//			Debug.Log("EnterFighterSelect: " + PlayerNumber + " / " + PlayerName);
-//
-//			lobbyManager.HideLobbyUI();
-//			FightManager.IsNetworkFight = true;
-//			SceneSettings.DirectToFighterSelect = true;		// for VS FighterSelect
-//		}
 	
-
 		private void Update()
 		{
 			//TODO: remove this!
@@ -183,7 +167,10 @@ namespace FightingLegends
 		private void FighterSelected(Fighter fighter)
 		{
 			if (isLocalPlayer)
-				CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);	
+			{
+				Debug.Log("FighterSelected: " + fighter.FighterName + " / " + fighter.ColourScheme);
+				CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);
+			}
 		}
 
 		[Command]
@@ -211,7 +198,10 @@ namespace FightingLegends
 		private void LocationSelected(string location)
 		{
 			if (isLocalPlayer)
+			{
+				Debug.Log("LocationSelected: " + location);
 				CmdSetLocation(location);	
+			}
 		}
 
 		[Command]

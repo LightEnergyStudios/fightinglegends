@@ -19,7 +19,7 @@ namespace Prototype.NetworkLobby
 //		public InputField nameInput;
 		public Text playerNumberText;
         public Text playerUserId;
-        public Button readyButton;
+        public Button joinButton;
         public Button waitingPlayerButton;
         public Button removePlayerButton;
 
@@ -82,19 +82,19 @@ namespace Prototype.NetworkLobby
             base.OnStartAuthority();
 
             //if we return from a game, color of text can still be the one for "Ready"
-            readyButton.transform.GetChild(0).GetComponent<Text>().color = Color.white;
+            joinButton.transform.GetChild(0).GetComponent<Text>().color = Color.white;
 
             SetupLocalPlayer();
         }
 
-        void ChangeReadyButtonColor(Color c)
+        void ChangeJoinButtonColor(Color c)
         {
-            ColorBlock b = readyButton.colors;
+            ColorBlock b = joinButton.colors;
             b.normalColor = c;
             b.pressedColor = c;
             b.highlightedColor = c;
             b.disabledColor = c;
-            readyButton.colors = b;
+            joinButton.colors = b;
         }
 
         void SetupOtherPlayer()
@@ -102,10 +102,10 @@ namespace Prototype.NetworkLobby
 //            nameInput.interactable = false;
             removePlayerButton.interactable = NetworkServer.active;
 
-            ChangeReadyButtonColor(NotReadyColor);
+            ChangeJoinButtonColor(NotReadyColor);
 
-            readyButton.transform.GetChild(0).GetComponent<Text>().text = "...";
-            readyButton.interactable = false;
+            joinButton.transform.GetChild(0).GetComponent<Text>().text = "...";
+            joinButton.interactable = false;
 
             OnClientReady(false);
         }
@@ -124,10 +124,10 @@ namespace Prototype.NetworkLobby
 			if (playerName == "")
 				CmdNameChanged(FightingLegends.FightManager.SavedGameStatus.UserId);
 
-            ChangeReadyButtonColor(JoinColor);
+            ChangeJoinButtonColor(JoinColor);
 
-            readyButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
-            readyButton.interactable = true;
+            joinButton.transform.GetChild(0).GetComponent<Text>().text = "JOIN";
+            joinButton.interactable = true;
 
             // use child count of player prefab for Player 1 / 2
 			int playerNumber = LobbyPlayerList._instance.playerListContentTransform.childCount-1;
@@ -152,8 +152,8 @@ namespace Prototype.NetworkLobby
 //            colorButton.onClick.RemoveAllListeners();
 //            colorButton.onClick.AddListener(OnColorClicked);
 
-            readyButton.onClick.RemoveAllListeners();
-            readyButton.onClick.AddListener(OnReadyClicked);
+            joinButton.onClick.RemoveAllListeners();
+            joinButton.onClick.AddListener(OnReadyClicked);
 
 //			Debug.Log("SetupLocalPlayer: " + playerNumber + " / " + playerName);
 
@@ -180,26 +180,28 @@ namespace Prototype.NetworkLobby
         {
             if (readyState)
             {
-                ChangeReadyButtonColor(TransparentColor);
+                ChangeJoinButtonColor(TransparentColor);
 
-                Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
+                Text textComponent = joinButton.transform.GetChild(0).GetComponent<Text>();
                 textComponent.text = "READY";
                 textComponent.color = ReadyColor;
-                readyButton.interactable = false;
+                joinButton.interactable = false;
 //                colorButton.interactable = false;
 //                nameInput.interactable = false;
             }
             else
             {
-                ChangeReadyButtonColor(isLocalPlayer ? JoinColor : NotReadyColor);
+                ChangeJoinButtonColor(isLocalPlayer ? JoinColor : NotReadyColor);
 
-                Text textComponent = readyButton.transform.GetChild(0).GetComponent<Text>();
+                Text textComponent = joinButton.transform.GetChild(0).GetComponent<Text>();
                 textComponent.text = isLocalPlayer ? "JOIN" : "...";
                 textComponent.color = Color.white;
-                readyButton.interactable = isLocalPlayer;
+                joinButton.interactable = isLocalPlayer;
 //                colorButton.interactable = isLocalPlayer;
 //                nameInput.interactable = isLocalPlayer;
             }
+
+			waitingPlayerButton.gameObject.SetActive(false);
         }
 
 //        public void OnPlayerListChanged(int idx)
@@ -261,8 +263,8 @@ namespace Prototype.NetworkLobby
 
         public void ToggleJoinButton(bool enabled)
         {
-            readyButton.gameObject.SetActive(enabled);
-//            waitingPlayerButton.gameObject.SetActive(!enabled);
+            joinButton.gameObject.SetActive(enabled); 		// join button
+			waitingPlayerButton.gameObject.SetActive(!enabled);
         }
 
         [ClientRpc]

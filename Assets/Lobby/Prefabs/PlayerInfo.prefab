@@ -813,7 +813,7 @@ MonoBehaviour:
   ShowLobbyGUI: 0
   playerNumberText: {fileID: 114144271381429724}
   playerUserId: {fileID: 114325925183099904}
-  readyButton: {fileID: 11413860}
+  joinButton: {fileID: 11413860}
   waitingPlayerButton: {fileID: 11405868}
   removePlayerButton: {fileID: 11443358}
   localIcone: {fileID: 153088}
@@ -1076,7 +1076,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -343, y: 0}
+  m_AnchoredPosition: {x: -51, y: -4}
   m_SizeDelta: {x: 522, y: 100}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!224 &22452140
@@ -1175,7 +1175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -486, y: 331.57892}
+  m_AnchoredPosition: {x: -1445.9506, y: 986.51587}
   m_SizeDelta: {x: 1688, y: 150}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &22499820
@@ -1511,7 +1511,7 @@ MonoBehaviour:
   m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 1, g: 0.33333334, b: 0, a: 0.822}
+  m_EffectColor: {r: 1, g: 0, b: 0.29946518, a: 0.797}
   m_EffectDistance: {x: 2, y: 2}
   m_UseGraphicAlpha: 1
 --- !u!114 &114465976077441114
