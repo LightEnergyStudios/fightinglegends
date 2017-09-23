@@ -12,59 +12,57 @@ namespace FightingLegends
 		public Text loadingText;				// animated dots
 		public HitFlash whiteFlash;				// not used
 
-//		public LobbyManager lobbyManager;
-//		public Image lobbyPanel;
+		private LobbyManager lobbyManager;
 
 		private const string loading = "Loading";
 
 		private const float dotInterval = 0.5f;
 
+		private IEnumerator preloadCoroutine = null;
+
+
 		// initialization
 		public void Start()
 		{
-			Debug.Log("Opening.Start");
+//			Debug.Log("Opening.Start");
 
 			fightingLegends.enabled = false;
 			loadingText.enabled = false;
-
-//			lobbyPanel.gameObject.SetActive(false);
 
 			whiteFlash.gameObject.SetActive(false);
 		}
 
 		private void OnEnable()
 		{
-			Debug.Log("Opening.OnEnable");
+//			Debug.Log("Opening.OnEnable");
 
-//			BHS.OnEndState += LogoEnd;
-//			OnPreloadStart += PreloadStart;
+			// LobbyManager is not destroyed between scenes, but we have to
+			// get a new reference to it after scene is switched
+			var lobbyManagerObject = GameObject.Find("LobbyManager");
+			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
+
+			if (lobbyManager != null)
+			{
+				if (SceneSettings.ShowLobbyUI)
+				{
+					lobbyManager.ShowLobbyUI();
+//					PreloadCombat();
+				}
+				else
+					lobbyManager.HideLobbyUI();
+			}
+			else
+				Debug.Log("Opening.OnEnable: lobbyManager not found!");
+
 			OnPreloadComplete += PreloadComplete;
-
 			BHS.OnDrums += OnLogoDrums;
 		}
 
 		private void OnDisable()
 		{
-//			BHS.OnEndState -= LogoEnd;
-//			OnPreloadStart -= PreloadStart;
 			OnPreloadComplete -= PreloadComplete;
-
 			BHS.OnDrums -= OnLogoDrums;
 		}
-			
-//		private void Update() 
-//		{
-			// if tapped / left mouse, finish loading the combat scene
-//			if (inputEnabled && ((Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
-//						|| Input.GetMouseButtonDown(0)))			// left button
-//			{
-//				tapToPlay.enabled = false;
-//					
-//				// enable completion of the scene load
-//				ActivatePreloadedScene();		// combat/training if not completed else mode select
-//			}
-//		}
-
 
 //		private IEnumerator WhiteFlash()
 //		{
@@ -79,10 +77,21 @@ namespace FightingLegends
 //			Debug.Log("OnLogoDrums");
 //			StartCoroutine(WhiteFlash());
 
-			StartCoroutine(PreloadSceneAsync(CombatScene));	
+			PreloadCombat();	
 			fightingLegends.enabled = true;	
 
 			LoadingMessage();
+
+			SceneSettings.OpeningSequencePlayed = true;
+		}
+
+		public void PreloadCombat()
+		{
+			if (preloadCoroutine != null)
+				StopCoroutine(preloadCoroutine);
+
+			preloadCoroutine = PreloadSceneAsync(CombatScene);
+			StartCoroutine(preloadCoroutine);	
 		}
 
 		private IEnumerator AnimateLoadingText()
@@ -116,12 +125,12 @@ namespace FightingLegends
 			StartCoroutine(AnimateLoadingText());
 		}
 
+
 		private void PreloadComplete(string scene)
 		{
-			Debug.Log("PreloadComplete");
-
-			// enable completion of the scene load
-			ActivatePreloadedScene();		// combat/training if not completed else mode select
+////			Debug.Log("Opening.PreloadComplete");
+			if (! SceneSettings.ShowLobbyUI)
+				ActivatePreloadedScene();		// ninja school if not completed else mode select
 		}
 	}
 }

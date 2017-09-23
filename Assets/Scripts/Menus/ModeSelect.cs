@@ -35,8 +35,6 @@ namespace FightingLegends
 		bool entryTriggered = false;
 
 
-		public static bool ArcadeVsMode = false;
-
 
 		public void Awake()
 		{
@@ -55,16 +53,13 @@ namespace FightingLegends
 //			trainingButton.onClick.AddListener(Training);
 			networkFightButton.onClick.AddListener(NetworkFight);
 
-//			FightManager.IsNetworkFight = false;
-
-			if (ArcadeVsMode)
-			{
-				ArcadeVsMode = false;
-
-				FightManager.IsNetworkFight = true;
-				ArcadeMode();
-			}
-			else
+//			if (SceneSettings.DirectToFighterSelect)
+//			{
+//				SceneSettings.DirectToFighterSelect = false;
+//				FightManager.IsNetworkFight = true;
+//				ArcadeMode();
+//			}
+//			else
 			{
 				animator.SetTrigger("EnterModes");
 				entryTriggered = true;
@@ -158,6 +153,7 @@ namespace FightingLegends
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;
 		}
 
+		// register a new user or open lobby (opening scene)
 		private void NetworkFight()
 		{
 			if (string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
@@ -169,7 +165,8 @@ namespace FightingLegends
 //				FightManager.CombatMode = FightMode.Arcade;
 				FightManager.IsNetworkFight = true;
 
-				SceneLoader.LoadScene(SceneLoader.LobbyScene);
+				SceneSettings.ShowLobbyUI = true;
+				SceneLoader.LoadScene(SceneLoader.OpeningScene);			// lobby scene
 //
 //				fightManager.ModeSelectChoice = MenuType.ArcadeFighterSelect;		// triggers fade to black and new menu
 //				fightManager.ShowLobby();			// matchmaker / LAN connect

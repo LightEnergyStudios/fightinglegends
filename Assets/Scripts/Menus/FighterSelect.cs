@@ -65,7 +65,7 @@ namespace FightingLegends
 		public Sprite ninjaFrame;
 
 		public Image Coin;									// animated
-		private float insertCoinTime = 3.0f;
+		private float insertCoinTime = 2.5f;
 
 		public Image InsertCoinTextPanel;
 		public List<Text> InsertCoinTop;					// animated text x3
@@ -151,7 +151,7 @@ namespace FightingLegends
 			if (networkText != null)
 				networkText.gameObject.SetActive(FightManager.CombatMode == FightMode.Arcade && FightManager.IsNetworkFight);
 
-			if (!animatedEntry)
+			if (!animatedEntry || (FightManager.IsNetworkFight && SceneSettings.DirectToFighterSelect))
 				StartCoroutine(AnimateCardEntry());			// virtual (different animators)
 			else
 			{

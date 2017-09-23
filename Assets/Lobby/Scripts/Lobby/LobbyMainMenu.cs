@@ -17,7 +17,7 @@ namespace Prototype.NetworkLobby
 
         public void OnEnable()
         {
-//            lobbyManager.topPanel.ToggleVisibility(true);
+            lobbyManager.topPanel.ToggleVisibility(true);
 
             ipInput.onEndEdit.RemoveAllListeners();
             ipInput.onEndEdit.AddListener(onEndEditIP);

@@ -9,8 +9,12 @@ namespace FightingLegends
 		public string LogoLabel { get { return "LOGO"; } }		// first frame (until LOAD frame)
 
 		private AudioSource musicSource;
+
 		private const uint heartFrame = 50;				// start playing music on heart
 		private const float drumsStart = 6.0f;			// seconds before drums kick in
+
+		public AudioClip openingMusic;
+		public AudioClip lobbyMusic;
 
 		public delegate void DrumsDelegate();
 		public DrumsDelegate OnDrums;
@@ -50,16 +54,31 @@ namespace FightingLegends
 		{
 			musicSource = GetComponent<AudioSource>();
 
-			InitAnimation();
+			if (SceneSettings.OpeningSequencePlayed)
+			{
+				musicSource.clip = lobbyMusic;
+				StartMusic();
+			}
+			else
+			{
+				musicSource.clip = openingMusic;
+				InitAnimation();
+			}
 		}
 
 		public void Start()
 		{
+			if (SceneSettings.OpeningSequencePlayed)
+				return;
+			
 			TriggerLogo();
 		}
 
 		public void Update()
 		{
+			if (SceneSettings.OpeningSequencePlayed)
+				return;
+			
 			if (isMovieClip)
 			{
 				NextAnimationFrame();		// if not paused
@@ -71,6 +90,9 @@ namespace FightingLegends
 
 		public void TriggerLogo()
 		{
+			if (SceneSettings.OpeningSequencePlayed)
+				return;
+			
 			if (isMovieClip)
 			{
 				CurrentLogoLabel = LogoFrameLabel.Logo;
@@ -94,7 +116,7 @@ namespace FightingLegends
 		private IEnumerator WaitForDrums()
 		{
 			yield return new WaitForSeconds(drumsStart);
-			Debug.Log("Drums!!");
+//			Debug.Log("Drums!!");
 
 			GetComponent<MeshRenderer>().enabled = false;
 

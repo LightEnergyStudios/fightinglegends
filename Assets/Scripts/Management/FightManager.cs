@@ -145,41 +145,6 @@ namespace FightingLegends
 		private const float networkArcadeFightPause = 0.5f;		// before starting countdown
 		private const string countdownLayer = "Curtain";		// so curtain camera picks it up
 
-//		private LobbyManager lobbyManager;
-//		private UnityEngine.Networking.NetworkLobbyManager networkLobbyManager;
-
-//		private static Fighter player1;
-//		public static Fighter Player1
-//		{ 
-//			get { return player1; }
-//			private set
-//			{
-//				bool changed = (player1 != value);
-//
-//				if (changed)
-//					player1 = value;
-//
-//				if (OnFighterChanged != null)
-//					OnFighterChanged(player1, true);
-//			}
-//		}
-//
-//		private static Fighter player2;
-//		public static Fighter Player2
-//		{ 
-//			get { return player2; }
-//			private set
-//			{
-//				bool changed = (player2 != value);
-//
-//				if (changed)
-//					player2 = value;
-//
-//				if (OnFighterChanged != null)
-//					OnFighterChanged(player2, false);
-//			}
-//		}
-
 		public bool HasPlayer1 { get { return Player1 != null; } }
 		public bool HasPlayer2 { get { return Player2 != null; } }
 
@@ -218,9 +183,6 @@ namespace FightingLegends
 		private const float xWaitingOffset = xOffset * 2;	// when instantiated in the wings
 
 		public float FightingDistance { get { return xOffset * 2; } }	// default distance between fighters
-
-//		[HideInInspector]
-//		public bool IsMobileDevice = true;
 
 		private float DefaultAnimationSpeed = 1.0f;				// not FPS!
 		public float AnimationSpeed { get; private set; }		// effective speed (can be adjusted)
@@ -725,22 +687,14 @@ namespace FightingLegends
 			var fighterUnlockObject = GameObject.Find("FighterUnlock");
 			if (fighterUnlockObject != null)
 				fighterUnlock = fighterUnlockObject.GetComponent<FighterUnlock>();
-
-//			var lobbyManagerObject = GameObject.Find("LobbyManager");
-//			if (lobbyManagerObject != null)
-//				lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
 			
 			cameraController = Camera.main.GetComponent<CameraController>();
 
 			HideAllMenus();
-			
-//			sceneryNames = new Queue<string>();
+
 			fighterNames = new Queue<string>();
 			fighterColours = new Queue<string>();
 			AINames = new Queue<string>();
-//			AIColours = new Queue<string>();
-//			TrainingAINames = new Queue<string>();
-//			TrainingAIColours = new Queue<string>();
 			BossNames = new Queue<string>();
 			BossColours = new Queue<string>();
 		}
@@ -790,7 +744,6 @@ namespace FightingLegends
 			// create lists of fighter names and colours
 			RegisterFighterNames();
 			RegisterAINames();
-//			RegisterTrainingAINames();
 			RegisterBossNames();
 
 			StartGame();
@@ -892,40 +845,12 @@ namespace FightingLegends
 				FirebaseManager.GetUserProfile(SavedGameStatus.UserId);		// callback below checks for result and coins to collect
 		}
 
-//		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
-//		{
-//			if (success && profile != null)		// not found!
-//			{
-//				if (profile.ChallengeResult != "")
-//				{
-//					if (profile.ChallengeResult == "Won")
-//					{
-//						// payout coins and congratulations
-//						ShowChallengeResult(ChallengePot, true, userId, null);
-//					}
-//					else if (profile.ChallengeResult == "Lost")
-//					{
-//						// commiserations
-//						ShowChallengeResult(ChallengePot, false, userId, null);
-//					}
-//
-//					profile.ChallengeResult = "";
-//					profile.CoinsToCollect = 0;
-//					profile.ChallengeKey = "";
-//
-//					FirebaseManager.SaveUserProfile(profile);		// no need for a callback - nothing to do
-//				}
-//			}
-//		}
 
 		#region touch event handlers
 
 		private void OnEnable()
 		{
-//			StartListeningForInput();
-
 			AreYouSure.OnCancelConfirm += OnConfirmNo;			// don't quit fight
-//			FirebaseManager.OnUserChallengePotUpdated += OnUserChallengePotUpdated;
 			FirebaseManager.OnGetUserProfile += OnGetUserProfile;		
 
 //			FBManager.OnLoginFail += FBLoginFail;
@@ -935,8 +860,6 @@ namespace FightingLegends
 
 		private void OnDisable()
 		{
-//			StopListeningForInput();
-
 			if (feedbackUI != null)					// subscribed in Awake()
 			{
 				feedbackUI.feedbackFX.OnEndState -= FeedbackStateEnd;
@@ -945,7 +868,6 @@ namespace FightingLegends
 				
 			AreYouSure.OnCancelConfirm -= OnConfirmNo;
 			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
-//			FirebaseManager.OnUserChallengePotUpdated -= OnUserChallengePotUpdated;
 
 //			FBManager.OnLoginFail -= FBLoginFail;
 //			FBManager.OnLoginSuccess -= FBLoginSuccess;
@@ -3656,13 +3578,11 @@ namespace FightingLegends
 
 			LoadSavedData();
 
-//			if (SavedGameStatus.PlayCount == 0)
-//				InitGame(false);
-
 			SavedGameStatus.PlayCount++;
 
-			GameUIVisible(SavedGameStatus.ShowHud);
+			GameUIVisible(false);
 			InitMenus();
+//			GameUIVisible(SavedGameStatus.ShowHud);
 
 			StartGameKudos();
 		}
@@ -3702,13 +3622,22 @@ namespace FightingLegends
 		{
 			menuStack = new List<MenuType>();
 		
-			if (! SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.IsNetworkFight && SceneSettings.DirectToFighterSelect)
+				NetworkFighterSelect();
+			else if (! SavedGameStatus.CompletedBasicTraining)
 				StartCoroutine(FirstPlayerExperience());
 			else
 				ActivateMenu(MenuType.ModeSelect);
 		}
 
-
+		// multiplayer - direct from lobby
+		private void NetworkFighterSelect()
+		{
+			BaseModeSelectMenu();			// not shown / broadcast
+			ActivateMenu(MenuType.ArcadeFighterSelect); 
+			SceneSettings.DirectToFighterSelect = false;
+		}
+			
 		private IEnumerator FirstPlayerExperience()
 		{
 			if (curtain != null)
@@ -3724,6 +3653,9 @@ namespace FightingLegends
 
 			SelectedLocation = FightManager.hawaii;
 
+			GameUIVisible(SavedGameStatus.ShowHud);
+
+			FightManager.IsNetworkFight = false;
 			ActivateMenu(MenuType.Combat);
 			yield return null;
 		}
@@ -3899,7 +3831,7 @@ namespace FightingLegends
 			ActivateMenu(MenuPeek(), false, backClicked);
 		}
 
-		private bool ActivateMenu(MenuType menu, bool push = true, bool navigatingBack = false)
+		private bool ActivateMenu(MenuType menu, bool push = true, bool navigatingBack = false) //, bool fromModeSelect = false)
 		{
 			if (menu == MenuType.Combat)				// fight music according to location
 				sceneryManager.PlayCurrentSceneryTrack();
@@ -3915,6 +3847,9 @@ namespace FightingLegends
 			DeactivateCurrentMenu();
 			CurrentMenuCanvas = menu;		// not necessarily on stack (eg. pauseSettings)
 
+//			if (fromModeSelect)							// direct from lobby (opening scene)
+//				navigatedFrom = MenuType.ModeSelect;			// to enable back button
+			
 			if (!navigatingBack)
 				CurrentMenu.NavigatedFrom = navigatedFrom;
 				
@@ -3980,7 +3915,6 @@ namespace FightingLegends
 			if (push)
 				MenuPush(menu);		// top of stack
 	
-
 			if (CurrentMenuCanvas != MenuType.None)
 				CurrentMenu.OnDeactivate += GoBack;
 
@@ -4410,6 +4344,8 @@ namespace FightingLegends
 				curtain.gameObject.SetActive(false);
 			}
 				
+			SceneSettings.DirectToFighterSelect = false;
+
 			FighterSelectChoice = MenuType.None;
 			while (FighterSelectChoice == MenuType.None)
 			{
@@ -4535,6 +4471,9 @@ namespace FightingLegends
 		{
 			FreezeFight();
 			modeSelect.Show();
+
+			FightManager.IsNetworkFight = false;
+			SceneSettings.DirectToFighterSelect = false;
 
 			if (curtain != null)
 			{
@@ -4960,7 +4899,7 @@ namespace FightingLegends
 //					// TODO: implement user registration to get unique user id from player (keyboard)
 //					SavedGameStatus.UserId = "DudosMcKudos" + UnityEngine.Random.Range(1, 99);
 
-					Debug.Log("RestoreStatus ok: Coins = " + Coins + ", Kudos = " + Kudos);
+//					Debug.Log("RestoreStatus ok: Coins = " + Coins + ", Kudos = " + Kudos);
 					OnSavedStatusChanged();
 					return true;
 				}

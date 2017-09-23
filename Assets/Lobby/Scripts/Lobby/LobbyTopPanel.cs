@@ -9,13 +9,13 @@ namespace Prototype.NetworkLobby
         public bool isInGame = false;
 
         protected bool isDisplayed = true;
-        protected Image panelImage;
-
-        void Start()
-        {
-            panelImage = GetComponent<Image>();
-        }
-
+//        protected Image panelImage;
+//
+//        void Start()
+//        {
+//            panelImage = GetComponent<Image>();
+//        }
+//
 
 //        void Update()
 //        {
@@ -37,10 +37,10 @@ namespace Prototype.NetworkLobby
                 t.gameObject.SetActive(isDisplayed);
             }
 
-            if (panelImage != null)
-            {
-                panelImage.enabled = isDisplayed;
-            }
+//            if (panelImage != null)
+//            {
+//                panelImage.enabled = isDisplayed;
+//            }
         }
     }
 }

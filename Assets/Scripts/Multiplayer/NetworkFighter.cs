@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 namespace FightingLegends
 {
-	// network player spawned by NetworkManager
+	// network player spawned by Network(Lobby)Manager
 	// in LAN environment server (host) represents player1, client represents player2
 	// in WAN environment player number passed through from lobby player - game creator is player1
 	public class NetworkFighter : NetworkBehaviour
@@ -26,6 +26,7 @@ namespace FightingLegends
 	
 
 		private FightManager fightManager;
+		private Prototype.NetworkLobby.LobbyManager lobbyManager;
 
 
 		private bool IsPlayer1
@@ -46,8 +47,8 @@ namespace FightingLegends
 
 			if (PlayerNumber == 0)		// ie. not set via lobby (game creator == Player1)
 				PlayerNumber = isServer ? 1 : 2;
-
-			Debug.Log("NetworkFighter: PlayerNumber = " + PlayerNumber);
+			
+//			Debug.Log("NetworkFighter.Start: PlayerNumber = " + PlayerNumber + ", PlayerName = " + PlayerName);
 			
 			if (FightManager.IsNetworkFight && isLocalPlayer)
 				StartListening();
@@ -114,6 +115,7 @@ namespace FightingLegends
 			FightManager.OnFightPaused -= PauseFight;
 		}
 			
+		#region animation
 
 		// called every Time.fixedDeltaTime seconds
 		// 0.0666667 = 1/15 sec
@@ -131,6 +133,28 @@ namespace FightingLegends
 			if (isLocalPlayer)
 				fightManager.UpdateAnimation();
 		}
+
+//		[ClientRpc]
+//		private void RpcFighterSelect()
+//		{
+//			if (isLocalPlayer)
+//			{
+//				Debug.Log("RpcFighterSelect: " + PlayerNumber + " / " + PlayerName);
+//				EnterFighterSelect();
+//			}
+//		}
+
+//		public void EnterFighterSelect()
+//		{
+//			var lobbyManagerObject = GameObject.Find("LobbyManager");
+//			lobbyManager = lobbyManagerObject.GetComponent<Prototype.NetworkLobby.LobbyManager>();
+//
+//			Debug.Log("EnterFighterSelect: " + PlayerNumber + " / " + PlayerName);
+//
+//			lobbyManager.HideLobbyUI();
+//			FightManager.IsNetworkFight = true;
+//			SceneSettings.DirectToFighterSelect = true;		// for VS FighterSelect
+//		}
 	
 
 		private void Update()
@@ -146,11 +170,13 @@ namespace FightingLegends
 			}
 		}
 
+		#endregion
+
 		#region fight construction
 
 		private bool CanStartFight { get { return !string.IsNullOrEmpty(Fighter1Name) && !string.IsNullOrEmpty(Fighter1Colour) &&
 													!string.IsNullOrEmpty(Fighter2Name) && !string.IsNullOrEmpty(Fighter2Colour) &&
-													!string.IsNullOrEmpty(SelectedLocation); }}
+														!string.IsNullOrEmpty(SelectedLocation); }}
 
 
 		// FighterSelect event handler

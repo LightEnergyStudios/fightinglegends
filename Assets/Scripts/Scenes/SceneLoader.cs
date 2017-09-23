@@ -13,10 +13,10 @@ namespace FightingLegends
 		protected bool preloadComplete = false;
 
 		public delegate void PreloadStartedDelegate(string scene);
-		public PreloadStartedDelegate OnPreloadStart;
+		public static PreloadStartedDelegate OnPreloadStart;
 
 		public delegate void PreloadCompleteDelegate(string scene);
-		public PreloadCompleteDelegate OnPreloadComplete;
+		public static PreloadCompleteDelegate OnPreloadComplete;
 
 		private const float preloadPercent = 0.9f;		// % of scene loaded async - fixed - cannot change
 
@@ -47,7 +47,7 @@ namespace FightingLegends
 			if (OnPreloadStart != null)
 				OnPreloadStart(scene);
 
-			Debug.Log("PreloadSceneAsync");
+			Debug.Log("PreloadSceneAsync: " + scene);
 
 			preloadComplete = false;
 
@@ -77,17 +77,24 @@ namespace FightingLegends
 		}
 
 		// complete load of scene and activate it
-		protected void ActivatePreloadedScene()
+		public void ActivatePreloadedScene()
 		{
 			Debug.Log("ActivatePreloadedScene");
 			asyncLoadSceneOp.allowSceneActivation = true;
 		}
-			
 
+		public IEnumerator ActivateWhenPreloaded()
+		{
+			while (! preloadComplete)
+				yield return null;
+
+			ActivatePreloadedScene();
+		}
+			
 		// non async version
 		public static void LoadScene(string scene)
 		{
-			SceneManager.LoadScene(scene, LoadSceneMode.Additive);
+			SceneManager.LoadScene(scene, LoadSceneMode.Single);
 		}
 
 		public static void UnloadSceneAsync(string scene)

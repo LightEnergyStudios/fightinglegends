@@ -16,7 +16,7 @@ namespace Prototype.NetworkLobby
 			localPlayer.PlayerNumber = lobby.playerNumber;
 			localPlayer.PlayerName = lobby.playerName;			// user id
 
-			Debug.Log("NetworkLobbyHook: " + localPlayer.PlayerNumber + " / " + localPlayer.PlayerName);
+			Debug.Log("NetworkLobbyHook - game player: " + localPlayer.PlayerNumber + " / " + localPlayer.PlayerName);
 		}
 	}
 }
