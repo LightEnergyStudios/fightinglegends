@@ -24,6 +24,8 @@ namespace Prototype.NetworkLobby
 
             matchNameInput.onEndEdit.RemoveAllListeners();
             matchNameInput.onEndEdit.AddListener(onEndEditGameName);
+
+			matchNameInput.text = FightingLegends.FightManager.SavedGameStatus.UserId;
         }
 
         public void OnClickHost()
@@ -43,6 +45,7 @@ namespace Prototype.NetworkLobby
 
             lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
         }
+	
 
         public void OnClickDedicated()
         {
@@ -58,7 +61,7 @@ namespace Prototype.NetworkLobby
         {
             lobbyManager.StartMatchMaker();
             lobbyManager.matchMaker.CreateMatch(
-                matchNameInput.text,
+                matchNameInput.text,				// preset to UserId
                 (uint)lobbyManager.maxPlayers,
                 true,
 				"", "", "", 0, 0,
@@ -74,7 +77,7 @@ namespace Prototype.NetworkLobby
         public void OnClickOpenServerList()
         {
             lobbyManager.StartMatchMaker();
-            lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
+//			lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
             lobbyManager.ChangeTo(lobbyServerList);
         }
 

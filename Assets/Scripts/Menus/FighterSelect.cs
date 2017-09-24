@@ -190,7 +190,7 @@ namespace FightingLegends
 //			Prototype.NetworkLobby.LobbyManager.OnExitLobby += OnExitLobby;
 			
 			if (fightButton != null)
-				fightButton.onClick.AddListener(delegate { ShowCombat(); });
+				fightButton.onClick.AddListener(delegate { ShowWorldMap(); });
 
 //				fightButton.onClick.AddListener(delegate { CombatInsertCoin(); });
 //			if (storeButton != null)
@@ -240,7 +240,7 @@ namespace FightingLegends
 			DestroyPreview();
 
 			if (fightButton != null)
-				fightButton.onClick.RemoveListener(delegate { ShowCombat(); });
+				fightButton.onClick.RemoveListener(delegate { ShowWorldMap(); });
 //			if (storeButton != null)
 //				storeButton.onClick.RemoveListener(delegate { ShowStore(); });
 //			if (powerUpButton != null)
@@ -376,7 +376,7 @@ namespace FightingLegends
 //				FightManager.InsertCoinToPlay(ShowCombat);
 //		}
 			
-		private void ShowCombat()
+		private void ShowWorldMap()
 		{
 			if (animatingCardEntry)
 				return;
@@ -392,8 +392,7 @@ namespace FightingLegends
 			{
 				FightManager.Coins--;
 
-//				if (! fightManager.MultiPlayerFight)							// new fight started when both fighters and location set
-					fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
+				fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
 			}
 
 			if (OnFighterSelected != null)
@@ -682,27 +681,27 @@ namespace FightingLegends
 
 			StopInsertCoinAnimation();
 
-			insertCoinTopCoroutine = InsertCoinText(InsertCoinTop);
+			insertCoinTopCoroutine = InsertCoinText(InsertCoinTop, SelectedName.transform.position.x);
 			StartCoroutine(insertCoinTopCoroutine);
 
-			insertCoinBottomCoroutine = InsertCoinText(InsertCoinBottom);
+			insertCoinBottomCoroutine = InsertCoinText(InsertCoinBottom, SelectedClass.transform.position.x);
 			StartCoroutine(insertCoinBottomCoroutine);
 		}
 
-		protected IEnumerator InsertCoinText(List<Text> coinTextList)
+		protected IEnumerator InsertCoinText(List<Text> coinTextList, float xLimit)
 		{
 			while (true)			// loop until coroutine stopped externally
 			{
 				foreach (var coinText in coinTextList)
 				{
-					StartCoroutine(AnimateCoinText(coinText));
+					StartCoroutine(AnimateCoinText(coinText, xLimit));
 				}
 
 				yield return new WaitForSeconds(insertCoinTextTime);
 			}
 		}
 
-		protected IEnumerator AnimateCoinText(Text coinText)
+		protected IEnumerator AnimateCoinText(Text coinText, float xLimit)
 		{
 			float t = 0;
 
@@ -719,8 +718,12 @@ namespace FightingLegends
 
 			// loop back to start position if beyond return point
 			var currentPosition = coinText.transform.localPosition;
+//			var currentPosition = coinText.transform.position;
+
+//			float distanceMoved = coinText.transform.localPosition.x - startPosition.x;
 
 			if (currentPosition.x <= -(insertCoinTextWidth * 2))
+//			if (currentPosition.x <= xLimit)
 				coinText.transform.localPosition = new Vector3(currentPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentPosition.y, currentPosition.z);
 		}
 

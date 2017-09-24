@@ -86,4 +86,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerNumber: 0
   PlayerName: 
-  PlayerColor: {r: 1, g: 1, b: 1, a: 1}

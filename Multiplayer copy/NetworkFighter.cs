@@ -16,15 +16,13 @@ namespace FightingLegends
 		public string PlayerName = "";			// user id
 	
 		// fighters set via FighterSelect delegate - server only
-		private static string Fighter1Name = "";
-		private static string Fighter1Colour = "";
-		private static string Fighter2Name = "";
-		private static string Fighter2Colour = "";
+		private static string Fighter1Name;
+		private static string Fighter1Colour;
+		private static string Fighter2Name;
+		private static string Fighter2Colour;
 
 		// location set via WorldMap delegate - server only
-		private static string SelectedLocation = "";
-
-		private FightManager fightManager;
+		private static string SelectedLocation;
 
 
 		// SyncVar hooks invoked on clients when server changes the value of the SyncVar
@@ -43,6 +41,9 @@ namespace FightingLegends
 //		public string SelectedLocation;
 
 
+		private FightManager fightManager;
+
+
 		private bool IsPlayer1
 		{
 			get
@@ -54,43 +55,52 @@ namespace FightingLegends
 			}
 		}
 
-		public void Awake()
-		{			
-			var fightManagerObject = GameObject.Find("FightManager");
-			fightManager = fightManagerObject.GetComponent<FightManager>();
-		}
-
 		public void Start()
 		{
 			if (! FightManager.IsNetworkFight)
 				return;
 			
-//			var fightManagerObject = GameObject.Find("FightManager");
-//			fightManager = fightManagerObject.GetComponent<FightManager>();
+			var fightManagerObject = GameObject.Find("FightManager");
+			fightManager = fightManagerObject.GetComponent<FightManager>();
 
 //			Debug.Log("NetworkFighter.Start: IsPlayer1 = " + IsPlayer1 + " - " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
 
 			if (PlayerNumber == 0)		// ie. not set via lobby (game creator == Player1)
 				PlayerNumber = isServer ? 1 : 2;
+			
+//			if (isLocalPlayer)
+//				StartListening();
+		}
+
+		public override void OnStartClient()
+		{
+			Debug.Log("NetworkFighter.OnStartClient: IsPlayer1 = " + IsPlayer1 + " - " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
 		}
 
 		public override void OnStartLocalPlayer()
 		{
-//			Debug.Log("NetworkFighter.OnStartLocalPlayer: IsPlayer1 = " + IsPlayer1 + " - " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
+			Debug.Log("NetworkFighter.OnStartLocalPlayer: IsPlayer1 = " + IsPlayer1 + " - " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
 			StartListening();
 		}
 
+//		public override void OnStartServer()
+//		{
+//			Debug.Log("NetworkFighter.OnStartServer: IsPlayer1 = " + IsPlayer1 + " - " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
+//		}
+
 		private void OnDestroy()
 		{
-			if (FightManager.IsNetworkFight && isLocalPlayer)
+			if (FightManager.IsNetworkFight) // && isLocalPlayer)
 				StopListening();
 		}
 
 		private void StartListening()
 		{
-//			Debug.Log("NetworkFighter.StartListening: " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
+			Debug.Log("NetworkFighter.StartListening: " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
 			if (!isLocalPlayer)
 				return;
+
+//			CmdDebugMessage("NetworkFighter.StartListening: " + PlayerNumber + " / " + PlayerName + " - isLocalPlayer = " + isLocalPlayer);
 
 			GestureListener.OnTap += SingleFingerTap;				// strike		
 			GestureListener.OnHoldStart += HoldDown;				// start block	
@@ -157,9 +167,6 @@ namespace FightingLegends
 		// called on server, runs on clients
 		private void RpcUpdateAnimation()
 		{
-			if (fightManager == null)
-				return;
-			
 			if (isLocalPlayer)
 				fightManager.UpdateAnimation();
 		}
@@ -192,11 +199,31 @@ namespace FightingLegends
 		{
 			if (isLocalPlayer)
 			{
+//				Debug.Log("FighterSelected: " + fighter.FighterName + " / " + fighter.ColourScheme);
 				CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);
-//				Debug.Log("FighterSelected: IsPlayer1 = " + IsPlayer1 + " - " + fighter.FighterName + " / " + fighter.ColourScheme);
+
+				Debug.Log("FighterSelected: IsPlayer1 = " + IsPlayer1 + " - " + fighter.FighterName + " / " + fighter.ColourScheme);
+//				CmdDebugMessage("FighterSelected: IsPlayer1 = " + IsPlayer1 + " - " + fighter.FighterName + " / " + fighter.ColourScheme);
 			}
 		}
 
+//		[Command]
+//		private void CmdDebugMessage(string message)
+//		{
+//			if (!isServer)
+//				return;
+//
+//			RpcDebugMessage(message);
+//		}
+//
+//		[ClientRpc]
+//		private void RpcDebugMessage(string message)
+//		{
+//			if (!isLocalPlayer)
+//				return;
+//
+//			Debug.Log(message);
+//		}
 
 		[Command]
 		// called from client, runs on server
@@ -225,8 +252,11 @@ namespace FightingLegends
 		{
 			if (isLocalPlayer)
 			{
+//				Debug.Log("LocationSelected: " + location);
 				CmdSetLocation(location);	
-//				Debug.Log("LocationSelected: IsPlayer1 = " + IsPlayer1 + " - " + location);
+
+//				CmdDebugMessage("LocationSelected: IsPlayer1 = " + IsPlayer1 + " - " + location);
+				Debug.Log("LocationSelected: IsPlayer1 = " + IsPlayer1 + " - " + location);
 			}
 		}
 
@@ -297,7 +327,33 @@ namespace FightingLegends
 		{
 			fightManager.ExitFight();
 		}
-			
+
+
+//		private void FreezeFight(bool frozen)
+//		{
+//			if (isLocalPlayer)
+//				CmdFreezeFight(frozen);
+//		}
+//
+//		[Command]
+//		// called from client, runs on server
+//		private void CmdFreezeFight(bool frozen)
+//		{
+//			if (!isServer)
+//				return;
+//
+//			RpcFreezeFight(frozen);
+//		}
+//
+//		[ClientRpc]
+//		// called on server, runs on clients
+//		private void RpcFreezeFight(bool frozen)
+//		{
+//			if (frozen)
+//				fightManager.FreezeFight();
+//			else
+//				fightManager.UnfreezeFight();
+//		}
 
 		private void PauseFight(bool paused)
 		{
@@ -594,6 +650,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.SingleFingerTap();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SingleFingerTap();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SingleFingerTap();
 		}
 
 		[ClientRpc]
@@ -617,6 +678,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.HoldDown();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.HoldDown();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.HoldDown();
 		}
 
 		[ClientRpc]
@@ -640,6 +706,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.HoldRelease();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.HoldRelease();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.HoldRelease();
 		}
 
 		[ClientRpc]
@@ -663,6 +734,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.SwipeLeft();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeLeft();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeLeft();
 		}
 
 		[ClientRpc]
@@ -686,6 +762,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.SwipeRight();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeRight();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeRight();
 		}
 
 		[ClientRpc]
@@ -709,6 +790,12 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.SwipeLeftRight();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeLeftRight();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeLeftRight();
+
 		}
 
 		[ClientRpc]
@@ -732,6 +819,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.SwipeDown();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeDown();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeDown();
 		}
 
 		[ClientRpc]
@@ -755,6 +847,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.SwipeUp();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.SwipeUp();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.SwipeUp();
 		}
 
 		[ClientRpc]
@@ -778,6 +875,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.TwoFingerTap();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.TwoFingerTap();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.TwoFingerTap();
 		}
 
 		[ClientRpc]
@@ -801,6 +903,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.FingerTouch();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.FingerTouch();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.FingerTouch();
 		}
 
 		[ClientRpc]
@@ -824,6 +931,11 @@ namespace FightingLegends
 				else if (fightManager.HasPlayer1)
 					fightManager.Player1.FingerRelease();
 			}
+
+//			if (player1 && fightManager.HasPlayer1)
+//				fightManager.Player1.FingerRelease();
+//			else if (fightManager.HasPlayer2)
+//				fightManager.Player2.FingerRelease();
 		}
 
 		#endregion

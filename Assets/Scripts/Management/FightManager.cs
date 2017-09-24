@@ -4467,7 +4467,7 @@ namespace FightingLegends
 
 		#region fight mode select 
 
-		private IEnumerator SelectMode()
+		private IEnumerator ModeSelect()
 		{
 			FreezeFight();
 			modeSelect.Show();
@@ -4501,7 +4501,7 @@ namespace FightingLegends
 			
 		private IEnumerator ShowModeSelectCanvas()
 		{
-			yield return StartCoroutine(SelectMode());
+			yield return StartCoroutine(ModeSelect());
 		}
 
 		private void HideModeSelectCanvas()

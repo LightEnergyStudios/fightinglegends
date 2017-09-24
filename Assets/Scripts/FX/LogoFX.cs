@@ -75,10 +75,7 @@ namespace FightingLegends
 		}
 
 		public void Update()
-		{
-			if (SceneSettings.OpeningSequencePlayed)
-				return;
-			
+		{			
 			if (isMovieClip)
 			{
 				NextAnimationFrame();		// if not paused
@@ -90,8 +87,7 @@ namespace FightingLegends
 
 		public void TriggerLogo()
 		{
-			if (SceneSettings.OpeningSequencePlayed)
-				return;
+			SceneSettings.OpeningSequencePlayed = true;
 			
 			if (isMovieClip)
 			{

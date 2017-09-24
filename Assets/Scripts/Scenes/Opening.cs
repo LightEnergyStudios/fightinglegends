@@ -82,7 +82,7 @@ namespace FightingLegends
 
 			LoadingMessage();
 
-			SceneSettings.OpeningSequencePlayed = true;
+//			SceneSettings.OpeningSequencePlayed = true;
 		}
 
 		public void PreloadCombat()

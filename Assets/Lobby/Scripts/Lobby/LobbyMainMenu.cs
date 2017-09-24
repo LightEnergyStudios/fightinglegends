@@ -40,18 +40,19 @@ namespace Prototype.NetworkLobby
             lobbyManager.networkAddress = ipInput.text;
             lobbyManager.StartClient();
 
-//            lobbyManager.backDelegate = lobbyManager.StopClientClbk;
+            lobbyManager.backDelegate = lobbyManager.StopClientClbk;
             lobbyManager.DisplayIsConnecting();
 
             lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
         }
+	
 
         public void OnClickDedicated()
         {
             lobbyManager.ChangeTo(null);
             lobbyManager.StartServer();
 
-//            lobbyManager.backDelegate = lobbyManager.StopServerClbk;
+            lobbyManager.backDelegate = lobbyManager.StopServerClbk;
 
             lobbyManager.SetServerInfo("Dedicated Server", lobbyManager.networkAddress);
         }
@@ -66,7 +67,7 @@ namespace Prototype.NetworkLobby
 				"", "", "", 0, 0,
 				lobbyManager.OnMatchCreate);
 
-//            lobbyManager.backDelegate = lobbyManager.StopHost;
+            lobbyManager.backDelegate = lobbyManager.StopHost;
             lobbyManager._isMatchmaking = true;
             lobbyManager.DisplayIsConnecting();
 

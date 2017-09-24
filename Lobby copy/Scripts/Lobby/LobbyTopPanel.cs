@@ -9,26 +9,26 @@ namespace Prototype.NetworkLobby
         public bool isInGame = false;
 
         protected bool isDisplayed = true;
-        protected Image panelImage;
+//        protected Image panelImage;
+//
+//        void Start()
+//        {
+//            panelImage = GetComponent<Image>();
+//        }
+//
 
-        void Start()
-        {
-            panelImage = GetComponent<Image>();
-        }
-
-
-        void Update()
-        {
-            if (!isInGame)
-                return;
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                ToggleVisibility(!isDisplayed);
-            }
-
-        }
-
+//        void Update()
+//        {
+//            if (!isInGame)
+//                return;
+//
+//            if (Input.GetKeyDown(KeyCode.Escape))
+//            {
+//                ToggleVisibility(!isDisplayed);
+//            }
+//
+//        }
+//
         public void ToggleVisibility(bool visible)
         {
             isDisplayed = visible;
@@ -37,10 +37,10 @@ namespace Prototype.NetworkLobby
                 t.gameObject.SetActive(isDisplayed);
             }
 
-            if (panelImage != null)
-            {
-                panelImage.enabled = isDisplayed;
-            }
+//            if (panelImage != null)
+//            {
+//                panelImage.enabled = isDisplayed;
+//            }
         }
     }
 }
