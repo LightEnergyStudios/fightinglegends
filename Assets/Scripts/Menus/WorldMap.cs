@@ -29,9 +29,6 @@ namespace FightingLegends
 		public Image ghettoDot;
 		public Image antarcticaDot;
 
-		public Text NetworkWaiting;						// waiting for network opponent
-		private const float networkWaitingPause = 1.0f;	// pause before waiting message
-
 		public bool showSpaceStation;
 
 		public Image currentLocale;						// (yellow dot) plane?
@@ -61,7 +58,6 @@ namespace FightingLegends
 			antarcticaDot.gameObject.SetActive(showSpaceStation);
 
 			titleLabel.text = FightManager.Translate("chooseLocation");
-			NetworkWaiting.text = FightManager.Translate("waitingForOpponent") + " ...";
 		}
 
 		private void OnDestroy()
@@ -96,8 +92,6 @@ namespace FightingLegends
 				antarcticaButton.onClick.AddListener(FlyToAntarctica);
 
 			TickCompletedLocations();
-
-			NetworkWaiting.gameObject.SetActive(false);
 		}
 
 		private void OnDisable()
@@ -244,17 +238,6 @@ namespace FightingLegends
 
 //			Debug.Log("WorldMap FlyTo end: WorldMapPosition = " + fightManager.WorldMapPosition);
 		
-			// setting WorldMapChoice triggers fade to black and hides world map
-//			if (fightManager.MultiPlayerFight)							// new fight started when both fighters and location set
-//				fightManager.WorldMapChoice = FightManager.CombatMode == FightMode.Survival ? MenuType.SurvivalFighterSelect : MenuType.ArcadeFighterSelect;
-//			else if (TransportOnArrival)
-//				fightManager.WorldMapChoice = MenuType.Combat;
-
-//			if (FightManager.IsNetworkFight)
-//			{
-//				yield return new WaitForSeconds(networkWaitingPause);
-//				NetworkWaiting.gameObject.SetActive(true);			// new multiplayer fight started once both fighters and location set
-//			}
 			if (TransportOnArrival && !FightManager.IsNetworkFight)
 				fightManager.WorldMapChoice = MenuType.Combat;	
 			

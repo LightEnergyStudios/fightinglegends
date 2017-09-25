@@ -24,23 +24,9 @@ namespace FightingLegends
 		// location set via WorldMap delegate - server only
 		private static string SelectedLocation = "";
 
+		private const float exitFightPause = 3.0f;
+
 		private FightManager fightManager;
-
-
-		// SyncVar hooks invoked on clients when server changes the value of the SyncVar
-
-//		[SyncVar] //(hook = "TryStartFight")]
-//		public string Fighter1Name;
-//		[SyncVar] //(hook = "TryStartFight")]
-//		public string Fighter1Colour;
-//		[SyncVar] //(hook = "TryStartFight")]
-//		public string Fighter2Name;
-//		[SyncVar] //(hook = "TryStartFight")]
-//		public string Fighter2Colour;
-//
-//		// location set via WorldMap delegate - server only
-//		[SyncVar] //(hook = "TryStartFight")]
-//		public string SelectedLocation;
 
 
 		private bool IsPlayer1
@@ -107,7 +93,7 @@ namespace FightingLegends
 			WorldMap.OnLocationSelected += LocationSelected;
 
 			FightManager.OnQuitFight += QuitFight;
-			FightManager.OnFightPaused += PauseFight;
+//			FightManager.OnFightPaused += PauseFight;
 		}
 
 		private void StopListening()
@@ -134,7 +120,7 @@ namespace FightingLegends
 			WorldMap.OnLocationSelected -= LocationSelected;
 
 			FightManager.OnQuitFight -= QuitFight;
-			FightManager.OnFightPaused -= PauseFight;
+//			FightManager.OnFightPaused -= PauseFight;
 		}
 			
 		#region animation
@@ -234,14 +220,15 @@ namespace FightingLegends
 
 			SelectedLocation = location;
 
-			TryStartFight(); 		// if both fighters and location set
+			if (! TryStartFight()) 		// if both fighters and location set
+				RpcNetworkMessage(NetworkMessageType.WaitingToStart);
 		}
 
 
-		private void TryStartFight()
+		private bool TryStartFight()
 		{
 			if (!isServer)
-				return;
+				return false;
 			
 			if (CanStartFight)
 			{
@@ -253,7 +240,12 @@ namespace FightingLegends
 				Fighter2Name = null;
 				Fighter2Colour = null;
 				SelectedLocation = null;
+
+				RpcNetworkMessage(NetworkMessageType.None);		// disable
+				return true;
 			}
+
+			return false;
 		}
 
 		[ClientRpc]
@@ -264,6 +256,30 @@ namespace FightingLegends
 				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
 			else
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
+		}
+
+
+		[ClientRpc]
+		// called on server, runs on clients
+		private void RpcNetworkMessage(NetworkMessageType messageType)
+		{
+			string message = "";
+
+			switch (messageType)
+			{
+				case NetworkMessageType.WaitingToStart:
+					message = FightManager.Translate("waitingToStart") + " ...";
+					break;
+
+				case NetworkMessageType.FightEnding:
+					message = FightManager.Translate("fightEnding") + " ...";
+					break;
+
+				default:
+					break;
+			}
+
+			fightManager.NetworkMessage(message);		// disabled if null or empty
 		}
 
 		#endregion
@@ -282,40 +298,55 @@ namespace FightingLegends
 		{
 			if (!isServer)
 				return;
-
+			
 			RpcQuitFight();
 		}
+
 
 		[ClientRpc]
 		// called on server, runs on clients
 		private void RpcQuitFight()
 		{
+			if (!isLocalPlayer)
+				return;
+			
+			StartCoroutine(ExitFightAfterPause());
+		}
+			
+		private IEnumerator ExitFightAfterPause()
+		{
+			fightManager.PauseFight(true);
+			fightManager.NetworkMessage(FightManager.Translate("fightEnding") + " ...");
+
+			yield return new WaitForSeconds(exitFightPause);
+
+			fightManager.NetworkMessage("");
 			fightManager.ExitFight();
 		}
 			
 
-		private void PauseFight(bool paused)
-		{
-			if (isLocalPlayer)
-				CmdPauseFight(paused);
-		}
+//		private void PauseFight(bool paused)
+//		{
+//			if (isLocalPlayer)
+//				CmdPauseFight(paused);
+//		}
 	
-		[Command]
-		// called from client, runs on server
-		private void CmdPauseFight(bool paused)
-		{
-			if (!isServer)
-				return;
+//		[Command]
+//		// called from client, runs on server
+//		private void CmdPauseFight(bool paused)
+//		{
+//			if (!isServer)
+//				return;
+//
+//			RpcPauseFight(paused);
+//		}
 
-			RpcPauseFight(paused);
-		}
-
-		[ClientRpc]
-		// called on server, runs on clients
-		private void RpcPauseFight(bool paused)
-		{
-			fightManager.PauseFight(paused, false);
-		}
+//		[ClientRpc]
+//		// called on server, runs on clients
+//		private void RpcPauseFight(bool paused)
+//		{
+//			fightManager.PauseFight(paused, false);
+//		}
 
 		#endregion
 

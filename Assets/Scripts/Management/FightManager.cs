@@ -204,6 +204,7 @@ namespace FightingLegends
 		private GameUI gameUI;						
 		private bool gameUIVisible = true;						// by default	
 
+		private NetworkUI networkUI;			
 		private TrainingUI trainingUI;			
 
 		private Vector3 expiryCameraPosition;					// camera 'snapshot' position at expiry
@@ -632,6 +633,10 @@ namespace FightingLegends
 				gameUI.gameObject.SetActive(gameUIVisible);
 			}
 
+			var networkUIObject = GameObject.Find("NetworkUI");
+			if (networkUIObject != null)
+				networkUI = networkUIObject.GetComponent<NetworkUI>();
+
 			var trainingUIObject = GameObject.Find("TrainingUI");
 			if (trainingUIObject != null)
 				trainingUI = trainingUIObject.GetComponent<TrainingUI>();
@@ -948,6 +953,12 @@ namespace FightingLegends
 		}
 
 
+		public void NetworkMessage(string message)
+		{
+			if (networkUI != null)
+				networkUI.NetworkMessage(message);		// disabled if null or empty
+		}
+
 		public bool SetTheme(UITheme theme)
 		{
 			var themeChanged = SavedGameStatus.Theme != theme;	
@@ -1152,7 +1163,7 @@ namespace FightingLegends
 		#endregion 		// power-up inventory
 
 
-		public void SetSFXVolume(float volume)
+		public void SetSFXVolume(float volume) 		// 0-1
 		{
 			SFXVolume = volume;
 
@@ -1160,7 +1171,7 @@ namespace FightingLegends
 				OnSFXVolumeChanged(SFXVolume);
 		}
 
-		public void SetMusicVolume(float volume)
+		public void SetMusicVolume(float volume)		// 0-1
 		{
 			MusicVolume = volume;
 
@@ -1836,14 +1847,14 @@ namespace FightingLegends
 
 		#region fight control
 
-		public void PauseFight(bool pause, bool notify = true)
+		public void PauseFight(bool pause) // bool notify = true)
 		{
 			if (FightPaused == pause)		// no change
 				return;
 
 			FightPaused = pause;
 
-			if (notify && OnFightPaused != null)
+			if (OnFightPaused != null)
 				OnFightPaused(FightPaused);
 		}
 
@@ -1851,8 +1862,9 @@ namespace FightingLegends
 		{
 			if (! (CurrentMenuCanvas == MenuType.Combat || CurrentMenuCanvas == MenuType.WorldMap))
 				return;
-			
-			FreezeFight();
+
+			if (! IsNetworkFight)
+				FreezeFight();
 
 			if (CombatMode == FightMode.Dojo)
 				GetConfirmation(Translate("confirmExitDojo"), 0, QuitFight);
@@ -1886,7 +1898,8 @@ namespace FightingLegends
 
 		private void QuitFight()
 		{
-			ExitFight();
+			if (! IsNetworkFight)		// synced quit handled by NetworkFighter
+				ExitFight();			
 
 			if (OnQuitFight != null)
 				OnQuitFight();
@@ -3582,7 +3595,6 @@ namespace FightingLegends
 
 			GameUIVisible(false);
 			InitMenus();
-//			GameUIVisible(SavedGameStatus.ShowHud);
 
 			StartGameKudos();
 		}
@@ -3674,7 +3686,8 @@ namespace FightingLegends
 
 		private bool CanSettings
 		{
-			get { return ! (CurrentMenuCanvas == MenuType.MatchStats || CurrentMenuCanvas == MenuType.PauseSettings || CurrentMenuCanvas == MenuType.WorldMap); }
+//			get { return ! (CurrentMenuCanvas == MenuType.MatchStats || CurrentMenuCanvas == MenuType.PauseSettings || CurrentMenuCanvas == MenuType.WorldMap); }
+			get { return !FightManager.IsNetworkFight && (! (CurrentMenuCanvas == MenuType.MatchStats || CurrentMenuCanvas == MenuType.PauseSettings || CurrentMenuCanvas == MenuType.WorldMap)); }
 		}
 
 		private bool CoinsVisible
@@ -4137,7 +4150,9 @@ namespace FightingLegends
 
 		private IEnumerator ShowPauseSettingsCanvas()
 		{	
-			PauseFight(true);
+			if (! IsNetworkFight)
+				PauseFight(true);
+			
 			yield return StartCoroutine(SelectPauseSettings());
 		}
 

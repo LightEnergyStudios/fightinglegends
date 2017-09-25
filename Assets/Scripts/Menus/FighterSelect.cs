@@ -666,7 +666,8 @@ namespace FightingLegends
 				yield return null;
 			}
 
-			fightManager.CoinAudio();
+			if (! FightManager.IsNetworkFight)
+				fightManager.CoinAudio();
 
 			yield return StartCoroutine(InsertCoin());		// keep repeating
 		}
@@ -681,16 +682,16 @@ namespace FightingLegends
 
 			StopInsertCoinAnimation();
 
-			insertCoinTopCoroutine = LoopInsertCoinText(InsertCoinTop); //, SelectedName.rectTransform.position.x);
+			insertCoinTopCoroutine = LoopInsertCoinText(InsertCoinTop);
 			StartCoroutine(insertCoinTopCoroutine);
 
-			insertCoinBottomCoroutine = LoopInsertCoinText(InsertCoinBottom); //, SelectedClass.rectTransform.position.x);
+			insertCoinBottomCoroutine = LoopInsertCoinText(InsertCoinBottom);
 			StartCoroutine(insertCoinBottomCoroutine);
 		}
 
-		protected IEnumerator LoopInsertCoinText(List<Text> coinTextList) //, float xReturnPoint)
+		protected IEnumerator LoopInsertCoinText(List<Text> coinTextList)
 		{
-			float xReturnPoint = coinTextList[0].rectTransform.position.x - insertCoinTextWidth;
+			float xReturnPoint = coinTextList[0].transform.localPosition.x - insertCoinTextWidth;
 
 			while (true)			// loop until coroutine stopped externally
 			{
@@ -700,6 +701,8 @@ namespace FightingLegends
 				}
 
 				yield return new WaitForSeconds(insertCoinTextTime);
+
+				RestoreInsertCoinTextPositions(); 		// need accurate float values
 			}
 		}
 
@@ -707,27 +710,24 @@ namespace FightingLegends
 		{
 			float t = 0;
 
-			var startPosition = coinText.rectTransform.localPosition;
+			var startPosition = coinText.transform.localPosition;
 			var targetPosition = new Vector3(startPosition.x - insertCoinTextWidth, startPosition.y, startPosition.z);
+
+			bool returnAtTarget = targetPosition.x == xReturnPoint;
 
 			while (t < 1.0f)
 			{
 				t += Time.deltaTime * (Time.timeScale / insertCoinTextTime); 
 
-				coinText.rectTransform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+				coinText.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
 				yield return null;
 			}
 
-			// loop back to start position if beyond return point
-//			var currentPosition = coinText.transform.localPosition;
-			var currentLocalPosition = coinText.rectTransform.localPosition;
-			var currentPosition = coinText.rectTransform.position;
+			// return back to start position if beyond return point
+			var currentPosition = coinText.transform.localPosition;
 
-//			float distanceMoved = coinText.transform.localPosition.x - startPosition.x;
-
-//			if (currentPosition.x <= -(insertCoinTextWidth * 2))
-			if (currentPosition.x <= xReturnPoint)
-				coinText.rectTransform.localPosition = new Vector3(currentLocalPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentLocalPosition.y, currentLocalPosition.z);
+			if (returnAtTarget)
+				coinText.transform.localPosition = new Vector3(currentPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentPosition.y, currentPosition.z);
 		}
 
 

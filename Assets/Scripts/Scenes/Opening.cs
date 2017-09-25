@@ -44,20 +44,18 @@ namespace FightingLegends
 			if (lobbyManager != null)
 			{
 				if (SceneSettings.ShowLobbyUI)
-				{
 					lobbyManager.ShowLobbyUI();
-//					PreloadCombat();
-				}
 				else
 					lobbyManager.HideLobbyUI();
 			}
 			else
-				Debug.Log("Opening.OnEnable: lobbyManager not found!");
-//
-//			BHS.gameObject.SetActive(!SceneSettings.ShowLobbyUI && !SceneSettings.OpeningSequencePlayed);
+				Debug.Log("Opening.OnEnable: LobbyManager not found!");
 
 			OnPreloadComplete += PreloadComplete;
 			BHS.OnDrums += OnLogoDrums;
+
+//			if (SceneSettings.ShowLobbyUI)
+//				PreloadCombat();
 		}
 
 		private void OnDisable()
@@ -130,7 +128,7 @@ namespace FightingLegends
 
 		private void PreloadComplete(string scene)
 		{
-////			Debug.Log("Opening.PreloadComplete");
+			Debug.Log("Opening.PreloadComplete");
 			if (! SceneSettings.ShowLobbyUI)
 				ActivatePreloadedScene();		// ninja school if not completed else mode select
 		}

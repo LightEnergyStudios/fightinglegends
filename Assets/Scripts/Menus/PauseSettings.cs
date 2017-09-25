@@ -56,6 +56,8 @@ namespace FightingLegends
 
 		public Slider sfxSlider;
 		public Slider musicSlider;
+		public Text musicVolume;				// number (1-11)
+		public Text sfxVolume;					// number (1-11)
 
 		public Button slowDownButton;
 		public Button speedUpButton;
@@ -445,18 +447,24 @@ namespace FightingLegends
 
 		private void SFXVolumeChanged(float value)
 		{
-			fightManager.SetSFXVolume(value);
+			float volume = value / sfxSlider.maxValue;
+			fightManager.SetSFXVolume(volume);
+
+			sfxVolume.text = ((int)value).ToString();
 		}
 
 		private void MusicVolumeChanged(float value)
 		{
-			fightManager.SetMusicVolume(value);
+			float volume = value / musicSlider.maxValue;
+			fightManager.SetMusicVolume(volume);
+
+			musicVolume.text = ((int)value).ToString();
 		}
 			
 		private void SetVolumes()
 		{
-			sfxSlider.value = FightManager.SFXVolume;
-			musicSlider.value = FightManager.MusicVolume;
+			sfxSlider.value = (FightManager.SFXVolume > 0) ? sfxSlider.maxValue / FightManager.SFXVolume : sfxSlider.minValue;
+			musicSlider.value = (FightManager.MusicVolume > 0) ? musicSlider.maxValue / FightManager.MusicVolume : musicSlider.minValue;
 		}
 			
 		private void UpdateFPS()

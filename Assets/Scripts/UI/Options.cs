@@ -30,16 +30,6 @@ namespace FightingLegends
 		private bool coinSpinning = false;
 		private IEnumerator coinSpinCoroutine;		// so it can be interrupted
 
-//		public GameObject Speed;
-//		public Slider SpeedSlider;
-//		public Text SpeedLabel;
-
-//		public delegate void AnimationSpeedChangedDelegate(float value);
-//		public static AnimationSpeedChangedDelegate OnAnimationSpeedChanged;
-	
-		public delegate void PlaybackClickedDelegate();
-		public static PlaybackClickedDelegate OnPlaybackClicked;
-
 		private FightManager fightManager;
 
 
@@ -66,8 +56,6 @@ namespace FightingLegends
 			kudosPanel.gameObject.SetActive(false);
 			FightManager.OnKudosChanged += KudosChanged;
 			KudosChanged(FightManager.Kudos);				// set current value
-
-//			SpeedSlider.onValueChanged.AddListener(SpeedChanged);
 		}
 
 		private void OnDisable()
@@ -78,8 +66,6 @@ namespace FightingLegends
 			FightManager.OnMenuChanged -= MenuChanged;
 			FightManager.OnCoinsChanged -= CoinsChanged;
 			FightManager.OnKudosChanged -= KudosChanged;
-
-//			SpeedSlider.onValueChanged.RemoveListener(SpeedChanged);
 		}
 
 
@@ -92,7 +78,7 @@ namespace FightingLegends
 			kudosPanel.gameObject.SetActive(showKudos);
 
 			if (newMenu == MenuType.Combat)
-				backButton.image.sprite = pauseImage;		// confirm quit fight
+				backButton.image.sprite = FightManager.IsNetworkFight ? backImage : pauseImage;		// confirm quit fight
 			else
 				backButton.image.sprite = backImage;
 
@@ -210,17 +196,5 @@ namespace FightingLegends
 		{
 			fightManager.PauseClicked();
 		}
-
-		private void Playback()
-		{
-			if (OnPlaybackClicked != null)
-				OnPlaybackClicked();
-		}
-
-//		private void SpeedChanged(float value)
-//		{
-//			if (OnAnimationSpeedChanged != null)
-//				OnAnimationSpeedChanged(value);
-//		}
 	}
 }
