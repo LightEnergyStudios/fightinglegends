@@ -167,9 +167,6 @@ namespace FightingLegends
 
 				SceneSettings.ShowLobbyUI = true;
 				SceneLoader.LoadScene(SceneLoader.OpeningScene);			// lobby scene
-//
-//				fightManager.ModeSelectChoice = MenuType.ArcadeFighterSelect;		// triggers fade to black and new menu
-//				fightManager.ShowLobby();			// matchmaker / LAN connect
 			}
 		}
 

@@ -69,8 +69,8 @@ namespace Prototype.NetworkLobby
 			_lobbyHooks = GetComponent<Prototype.NetworkLobby.LobbyHook>();
 			currentPanel = mainMenuPanel;
 
-			backButton.gameObject.SetActive(false);
-			backDelegate = ExitLobby;
+			backButton.gameObject.SetActive(true);
+			backDelegate = QuitLobby;
 
 			GetComponent<Canvas>().enabled = true;
 
@@ -97,7 +97,7 @@ namespace Prototype.NetworkLobby
 				GetComponent<Animator>().SetTrigger("LobbyEntry");
 			}
 
-			backDelegate = ExitLobby;
+			backDelegate = QuitLobby;
 
 			localUserId = FightManager.SavedGameStatus.UserId;
 			if (userID != null)
@@ -121,7 +121,7 @@ namespace Prototype.NetworkLobby
 		}
 
 		// back button
-		private void ExitLobby()
+		private void QuitLobby()
 		{
 			StopClientClbk();
 			StopHostClbk();
@@ -129,14 +129,14 @@ namespace Prototype.NetworkLobby
 
 			HideLobbyUI();
 
+			SceneLoader.LoadScene(SceneLoader.CombatScene);
+			//			if (opening != null)
+			//				StartCoroutine(opening.ActivateWhenPreloaded());
+
 			FightManager.IsNetworkFight = false;
 
 			SceneSettings.ShowLobbyUI = false;
 			SceneSettings.DirectToFighterSelect = false;
-
-			SceneLoader.LoadScene(SceneLoader.CombatScene);
-//			if (opening != null)
-//				StartCoroutine(opening.ActivateWhenPreloaded());
 
 //			Network.Disconnect();		// TODO: ok?
 		}
@@ -193,7 +193,7 @@ namespace Prototype.NetworkLobby
 
 				Destroy(GameObject.Find("MainMenuUI(Clone)"));
 
-				backDelegate = ExitLobby;
+				backDelegate = QuitLobby;
 				topPanel.isInGame = true;
 				topPanel.ToggleVisibility(false);
 			}

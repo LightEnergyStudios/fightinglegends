@@ -54,7 +54,7 @@ namespace FightingLegends
 		{
 			musicSource = GetComponent<AudioSource>();
 
-			if (SceneSettings.OpeningSequencePlayed)
+			if (SceneSettings.ShowLobbyUI || SceneSettings.OpeningSequencePlayed)
 			{
 				musicSource.clip = lobbyMusic;
 				StartMusic();
@@ -68,10 +68,10 @@ namespace FightingLegends
 
 		public void Start()
 		{
-			if (SceneSettings.OpeningSequencePlayed)
+			if (SceneSettings.ShowLobbyUI || SceneSettings.OpeningSequencePlayed)
 				return;
 			
-			TriggerLogo();
+			TriggerCompanyLogo();
 		}
 
 		public void Update()
@@ -85,7 +85,7 @@ namespace FightingLegends
 			}
 		}
 
-		public void TriggerLogo()
+		private void TriggerCompanyLogo()
 		{
 			SceneSettings.OpeningSequencePlayed = true;
 			

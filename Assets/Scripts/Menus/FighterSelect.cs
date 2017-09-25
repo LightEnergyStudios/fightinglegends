@@ -76,7 +76,7 @@ namespace FightingLegends
 		private List<float> insertCoinBottomPosition;		// original x position of animated text x3
 
 		private float insertCoinXOffset = 200.0f;			// looping coin entry from right
-		private float insertCoinTextWidth = 210.0f;			// cycling text entry from right
+		private float insertCoinTextWidth = 200.0f;			// cycling text entry from right
 		private const int insertCoinTextRepeats = 3;
 
 		private IEnumerator coinCoroutine = null;
@@ -681,50 +681,53 @@ namespace FightingLegends
 
 			StopInsertCoinAnimation();
 
-			insertCoinTopCoroutine = InsertCoinText(InsertCoinTop, SelectedName.transform.position.x);
+			insertCoinTopCoroutine = LoopInsertCoinText(InsertCoinTop); //, SelectedName.rectTransform.position.x);
 			StartCoroutine(insertCoinTopCoroutine);
 
-			insertCoinBottomCoroutine = InsertCoinText(InsertCoinBottom, SelectedClass.transform.position.x);
+			insertCoinBottomCoroutine = LoopInsertCoinText(InsertCoinBottom); //, SelectedClass.rectTransform.position.x);
 			StartCoroutine(insertCoinBottomCoroutine);
 		}
 
-		protected IEnumerator InsertCoinText(List<Text> coinTextList, float xLimit)
+		protected IEnumerator LoopInsertCoinText(List<Text> coinTextList) //, float xReturnPoint)
 		{
+			float xReturnPoint = coinTextList[0].rectTransform.position.x - insertCoinTextWidth;
+
 			while (true)			// loop until coroutine stopped externally
 			{
 				foreach (var coinText in coinTextList)
 				{
-					StartCoroutine(AnimateCoinText(coinText, xLimit));
+					StartCoroutine(AnimateCoinText(coinText, xReturnPoint));
 				}
 
 				yield return new WaitForSeconds(insertCoinTextTime);
 			}
 		}
 
-		protected IEnumerator AnimateCoinText(Text coinText, float xLimit)
+		protected IEnumerator AnimateCoinText(Text coinText, float xReturnPoint)
 		{
 			float t = 0;
 
-			var startPosition = coinText.transform.localPosition;
+			var startPosition = coinText.rectTransform.localPosition;
 			var targetPosition = new Vector3(startPosition.x - insertCoinTextWidth, startPosition.y, startPosition.z);
 
 			while (t < 1.0f)
 			{
 				t += Time.deltaTime * (Time.timeScale / insertCoinTextTime); 
 
-				coinText.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+				coinText.rectTransform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
 				yield return null;
 			}
 
 			// loop back to start position if beyond return point
-			var currentPosition = coinText.transform.localPosition;
-//			var currentPosition = coinText.transform.position;
+//			var currentPosition = coinText.transform.localPosition;
+			var currentLocalPosition = coinText.rectTransform.localPosition;
+			var currentPosition = coinText.rectTransform.position;
 
 //			float distanceMoved = coinText.transform.localPosition.x - startPosition.x;
 
-			if (currentPosition.x <= -(insertCoinTextWidth * 2))
-//			if (currentPosition.x <= xLimit)
-				coinText.transform.localPosition = new Vector3(currentPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentPosition.y, currentPosition.z);
+//			if (currentPosition.x <= -(insertCoinTextWidth * 2))
+			if (currentPosition.x <= xReturnPoint)
+				coinText.rectTransform.localPosition = new Vector3(currentLocalPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentLocalPosition.y, currentLocalPosition.z);
 		}
 
 

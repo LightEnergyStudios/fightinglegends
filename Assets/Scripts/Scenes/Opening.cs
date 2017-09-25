@@ -53,6 +53,8 @@ namespace FightingLegends
 			}
 			else
 				Debug.Log("Opening.OnEnable: lobbyManager not found!");
+//
+//			BHS.gameObject.SetActive(!SceneSettings.ShowLobbyUI && !SceneSettings.OpeningSequencePlayed);
 
 			OnPreloadComplete += PreloadComplete;
 			BHS.OnDrums += OnLogoDrums;
