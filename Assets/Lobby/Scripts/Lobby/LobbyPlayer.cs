@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace Prototype.NetworkLobby
 {
-    //Player entry in the lobby. Handle selecting color/setting name & getting ready for the game
-    //Any LobbyHook can then grab it and pass those value to the game player prefab (see the Pong Example in the Samples Scenes)
+    // Player entry in the lobby. Handle selecting number / name & getting ready for the game
+    // Any LobbyHook can then pass those values to the game player prefab
     public class LobbyPlayer : NetworkLobbyPlayer
     {
 		public Text playerNumberText;
@@ -20,17 +20,17 @@ namespace Prototype.NetworkLobby
         public GameObject localIcone;
         public GameObject remoteIcone;
 
-		//OnPlayerNumber function will be invoked on clients when server changes the value of playerNumber
+		// OnPlayerNumber function will be invoked on clients when server changes the value of playerNumber
 		[SyncVar(hook = "OnPlayerNumber")]
 		public int playerNumber = 0;
 
-		//OnPlayerName function will be invoked on clients when server changes the value of playerName
+		// OnPlayerName function will be invoked on clients when server changes the value of playerName
         [SyncVar(hook = "OnPlayerName")]
 		public string playerName = "";
 
-		static Color JoinColor = Color.white; //  new Color(255.0f/255.0f, 0.0f, 101.0f/255.0f,1.0f);
-        static Color NotReadyColor = new Color(34.0f / 255.0f, 44 / 255.0f, 55.0f / 255.0f, 1.0f);
-        static Color ReadyColor = new Color(0.0f, 204.0f / 255.0f, 204.0f / 255.0f, 1.0f);
+		static Color JoinColor = Color.white;
+//        static Color NotReadyColor = new Color(34.0f / 255.0f, 44 / 255.0f, 55.0f / 255.0f, 1.0f);
+		static Color ReadyColor = Color.cyan; // new Color(0.0f, 204.0f / 255.0f, 204.0f / 255.0f, 1.0f);
         static Color TransparentColor = new Color(0, 0, 0, 0);
 
 
@@ -83,7 +83,7 @@ namespace Prototype.NetworkLobby
         {
             removePlayerButton.interactable = NetworkServer.active;
 
-            ChangeJoinButtonColor(NotReadyColor);
+			ChangeJoinButtonColor(TransparentColor); // (NotReadyColor);
 
             joinButton.transform.GetChild(0).GetComponent<Text>().text = "...";
             joinButton.interactable = false;
@@ -117,10 +117,8 @@ namespace Prototype.NetworkLobby
             joinButton.onClick.RemoveAllListeners();
             joinButton.onClick.AddListener(OnReadyClicked);
 
-//			Debug.Log("SetupLocalPlayer: " + playerNumber + " / " + playerName);
-
-            //when OnClientEnterLobby is called, the local PlayerController is not yet created, so we need to redo that here to disable
-            //the add button if we reach maxLocalPlayer. We pass 0, as it was already counted on OnClientEnterLobby
+            // when OnClientEnterLobby is called, the local PlayerController is not yet created, so we need to redo that here to disable
+            // the add button if we reach maxLocalPlayer. We pass 0, as it was already counted on OnClientEnterLobby
             if (LobbyManager.s_Singleton != null)
 				LobbyManager.s_Singleton.OnPlayersNumberModified(0);
         }
@@ -161,23 +159,23 @@ namespace Prototype.NetworkLobby
         }
 			
 
-        ///===== callback from sync var
+        ///===== callbacks from sync var
 
 	
         public void OnPlayerName(string newName)
         {
            	playerName = newName;
-//			nameInput.text = playerName;
             playerUserId.text = playerName;
         }
 
 		public void OnPlayerNumber(int playerNum)
 		{
+			playerNumber = playerNum;
 			playerNumberText.text = playerNum.ToString();
 		}
 
 
-        //===== UI Handler
+        //===== UI Handlers
 
         //Note that those handler use Command function, as we need to change the value on the server not locally
         //so that all client get the new value throught syncvar
@@ -205,12 +203,12 @@ namespace Prototype.NetworkLobby
 			waitingPlayerButton.gameObject.SetActive(!enabled);
         }
 
-        [ClientRpc]
-        public void RpcUpdateCountdown(int countdown)
-        {
-            LobbyManager.s_Singleton.countdownPanel.UIText.text = "Match Starting in " + countdown;
-            LobbyManager.s_Singleton.countdownPanel.gameObject.SetActive(countdown != 0);
-        }
+//        [ClientRpc]
+//        public void RpcUpdateCountdown(int countdown)
+//        {
+//            LobbyManager.s_Singleton.countdownPanel.UIText.text = "Match Starting in " + countdown;
+//            LobbyManager.s_Singleton.countdownPanel.gameObject.SetActive(countdown != 0);
+//        }
 
         [ClientRpc]
         public void RpcUpdateRemoveButton()
@@ -219,10 +217,8 @@ namespace Prototype.NetworkLobby
         }
 			
 
-        //====== Server Command
-
-
-
+        //====== Server Commands
+	
         [Command]
 		public void CmdNameChanged(string name)
         {

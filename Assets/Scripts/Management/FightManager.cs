@@ -4239,18 +4239,20 @@ namespace FightingLegends
 				StartCoroutine(newFightCoroutine);	
 			}
 
+			GameUIVisible(SavedGameStatus.ShowHud);
+
 			if (curtain != null)
 			{
 				yield return StartCoroutine(curtain.CurtainUp());
 				curtain.gameObject.SetActive(false);
 			}
-
+				
 			if (animateEntry)
 			{
-				GameUIVisible(SavedGameStatus.ShowHud);
+//				GameUIVisible(SavedGameStatus.ShowHud);
 				gameUI.TriggerEntry();
 			}
-
+				
 			PauseFight(false);
 			UnfreezeFight();
 

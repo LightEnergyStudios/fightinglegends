@@ -77,6 +77,12 @@ namespace Prototype.NetworkLobby
 			DontDestroyOnLoad(gameObject);
 
 			SetServerInfo("Offline", "None");
+
+//			var openingObject = GameObject.Find("Opening");
+//			if (openingObject != null)
+//				opening = openingObject.GetComponent<Opening>();
+			
+//			Opening.OnPreloadComplete += PreloadCombatComplete;
 		}
 
 		public void ShowLobbyUI()
@@ -99,7 +105,7 @@ namespace Prototype.NetworkLobby
 
 			ChangeTo(mainMenuPanel);
 
-			Network.Disconnect();		// TODO: ok?
+//			Network.Disconnect();		// TODO: ok?
 
 //			// start reloading combat scene asap
 //			if (opening != null)
@@ -128,18 +134,9 @@ namespace Prototype.NetworkLobby
 			SceneSettings.ShowLobbyUI = false;
 			SceneSettings.DirectToFighterSelect = false;
 
-//			if (opening != null)
-//			{
-//				Opening.OnPreloadComplete += PreloadCombatComplete;
-//				opening.PreloadCombat();
-//			}
-
 			SceneLoader.LoadScene(SceneLoader.CombatScene);
 //			if (opening != null)
 //				StartCoroutine(opening.ActivateWhenPreloaded());
-			
-//			if (OnExitLobby != null)
-//				OnExitLobby();
 
 //			Network.Disconnect();		// TODO: ok?
 		}
@@ -150,6 +147,7 @@ namespace Prototype.NetworkLobby
 			if (EntrySound != null)
 				AudioSource.PlayClipAtPoint(EntrySound, Vector3.zero, FightManager.SFXVolume);
 		}
+			
 
 		public override void OnLobbyClientSceneChanged(NetworkConnection conn)
 		{
@@ -305,10 +303,7 @@ namespace Prototype.NetworkLobby
 		{
 			conn.Send(MsgKicked, new KickMsg());
 		}
-
-
-
-
+	
 		public void KickedMessageHandler(NetworkMessage netMsg)
 		{
 			infoPanel.Display("Kicked by Server", "Close", null);
@@ -517,14 +512,6 @@ namespace Prototype.NetworkLobby
 }
 	
 
-//using UnityEngine;
-//using UnityEngine.UI;
-//using UnityEngine.SceneManagement;
-//using UnityEngine.Networking;
-//using UnityEngine.Networking.Types;
-//using UnityEngine.Networking.Match;
-//using System.Collections;
-//using FightingLegends;
 //
 //
 //namespace Prototype.NetworkLobby

@@ -64,9 +64,6 @@ namespace FightingLegends
 		{
 			if (! FightManager.IsNetworkFight)
 				return;
-			
-//			var fightManagerObject = GameObject.Find("FightManager");
-//			fightManager = fightManagerObject.GetComponent<FightManager>();
 
 //			Debug.Log("NetworkFighter.Start: IsPlayer1 = " + IsPlayer1 + " - " + PlayerNumber + " / " + PlayerName + " isLocalPlayer = " + isLocalPlayer);
 
@@ -110,7 +107,6 @@ namespace FightingLegends
 			WorldMap.OnLocationSelected += LocationSelected;
 
 			FightManager.OnQuitFight += QuitFight;
-//			FightManager.OnFightFrozen += FreezeFight;
 			FightManager.OnFightPaused += PauseFight;
 		}
 
@@ -138,7 +134,6 @@ namespace FightingLegends
 			WorldMap.OnLocationSelected -= LocationSelected;
 
 			FightManager.OnQuitFight -= QuitFight;
-//			FightManager.OnFightFrozen -= FreezeFight;
 			FightManager.OnFightPaused -= PauseFight;
 		}
 			
