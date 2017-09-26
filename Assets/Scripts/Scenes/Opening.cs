@@ -46,7 +46,7 @@ namespace FightingLegends
 				if (SceneSettings.ShowLobbyUI)
 					lobbyManager.ShowLobbyUI();
 				else
-					lobbyManager.HideLobbyUI();
+					lobbyManager.HideLobbyUI(false);
 			}
 			else
 				Debug.Log("Opening.OnEnable: LobbyManager not found!");
@@ -64,18 +64,18 @@ namespace FightingLegends
 			BHS.OnDrums -= OnLogoDrums;
 		}
 
-//		private IEnumerator WhiteFlash()
-//		{
-//			whiteFlash.gameObject.SetActive(true);
-//			yield return StartCoroutine(whiteFlash.PlayHitFlash());
-//			yield return StartCoroutine(whiteFlash.PlayHitFlash());
-//			whiteFlash.gameObject.SetActive(false);
-//		}
+		private IEnumerator WhiteFlash()
+		{
+			whiteFlash.gameObject.SetActive(true);
+			yield return StartCoroutine(whiteFlash.PlayHitFlash());
+			yield return StartCoroutine(whiteFlash.PlayHitFlash());
+			whiteFlash.gameObject.SetActive(false);
+		}
 
 		private void OnLogoDrums()
 		{
 //			Debug.Log("OnLogoDrums");
-//			StartCoroutine(WhiteFlash());
+			StartCoroutine(WhiteFlash());
 
 			PreloadCombat();	
 			fightingLegends.enabled = true;	
@@ -132,5 +132,6 @@ namespace FightingLegends
 			if (! SceneSettings.ShowLobbyUI)
 				ActivatePreloadedScene();		// ninja school if not completed else mode select
 		}
+
 	}
 }

@@ -20,7 +20,9 @@ namespace Prototype.NetworkLobby
 		[Header("Custom UI")]
 		public Image lobbyUIPanel;			// entire lobby UI
 		public Text userID;					// used for matchmaker game name 
+		public Text IPAddress;				// display only
 		public AudioClip EntrySound;
+		public Image curtain;				// blackout
 
 		[Header("Unity UI Lobby")]
 		[Tooltip("Time in second between all players ready & match start")]
@@ -44,8 +46,8 @@ namespace Prototype.NetworkLobby
 		public Text statusInfo;
 		public Text hostInfo;
 
-		//Client numPlayers from NetworkManager is always 0, so we count (throught connect/destroy in LobbyPlayer) the number
-		//of players, so that even client know how many player there is.
+		// Client numPlayers from NetworkManager is always 0, so we count (through connect/destroy in LobbyPlayer)
+		// the number of players, so that even client knows how many players there are
 		[HideInInspector]
 		public int _playerNumber = 0;
 
@@ -61,6 +63,9 @@ namespace Prototype.NetworkLobby
 
 		private Opening opening;
 		private string localUserId = "";
+
+		private NetworkPlayer networkPlayer;				// for ip address
+		private const float curtainfadeTime = 0.75f;
 
 
 		void Start()
@@ -78,12 +83,24 @@ namespace Prototype.NetworkLobby
 
 			SetServerInfo("Offline", "None");
 
+			curtain.gameObject.SetActive(false);
+			curtain.color = Color.clear;
+
+			SceneManager.activeSceneChanged += OnActiveSceneChanged;					// on 100% load
+
 //			var openingObject = GameObject.Find("Opening");
 //			if (openingObject != null)
 //				opening = openingObject.GetComponent<Opening>();
 			
 //			Opening.OnPreloadComplete += PreloadCombatComplete;
 		}
+
+		public void OnDestroy()
+		{
+			SceneManager.activeSceneChanged -= OnActiveSceneChanged;					// on 100% load
+		}
+
+		#region UI
 
 		public void ShowLobbyUI()
 		{
@@ -103,6 +120,12 @@ namespace Prototype.NetworkLobby
 			if (userID != null)
 				userID.text = localUserId;
 
+			networkPlayer = Network.player;
+			IPAddress.text = "IP: " + networkPlayer.ipAddress;
+
+			curtain.gameObject.SetActive(false);
+			curtain.color = Color.clear;
+
 			ChangeTo(mainMenuPanel);
 
 //			Network.Disconnect();		// TODO: ok?
@@ -112,12 +135,25 @@ namespace Prototype.NetworkLobby
 //				opening.PreloadCombat();	
 		}
 
-		public void HideLobbyUI()
+		public void HideLobbyUI(bool fade)
 		{
-			ChangeTo(mainMenuPanel);
+			StartCoroutine(FadeLobbyUI(fade));
+		}
 
+		private IEnumerator FadeLobbyUI(bool fade)
+		{
+//			if (fade)
+//				yield return StartCoroutine(FadeToBlack());
+			
 			if (lobbyUIPanel != null)
 				lobbyUIPanel.gameObject.SetActive(false);
+
+			ChangeTo(mainMenuPanel);
+
+//			if (fade)
+//				yield return StartCoroutine(CurtainUp());
+			
+			yield return null;
 		}
 
 		// back button
@@ -127,11 +163,13 @@ namespace Prototype.NetworkLobby
 			StopHostClbk();
 			StopServerClbk();
 
-			HideLobbyUI();
+			HideLobbyUI(true);
 
 			SceneLoader.LoadScene(SceneLoader.CombatScene);
 			//			if (opening != null)
 			//				StartCoroutine(opening.ActivateWhenPreloaded());
+
+//			StartCoroutine(CurtainUp());
 
 			FightManager.IsNetworkFight = false;
 
@@ -141,6 +179,13 @@ namespace Prototype.NetworkLobby
 //			Network.Disconnect();		// TODO: ok?
 		}
 
+		private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
+		{
+//			Debug.Log("OnActiveSceneChanged: " + oldScene.name + " --> " + newScene.name);
+//
+//			if (newScene.name == "Combat")
+//				StartCoroutine(CurtainUp());
+		}
 
 		public void EntryComplete()
 		{
@@ -148,6 +193,47 @@ namespace Prototype.NetworkLobby
 				AudioSource.PlayClipAtPoint(EntrySound, Vector3.zero, FightManager.SFXVolume);
 		}
 			
+		private IEnumerator FadeToBlack()
+		{
+			if (curtain.gameObject.activeSelf)
+				yield break;
+
+			curtain.color = Color.clear;
+			curtain.gameObject.SetActive(true);
+			float t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / curtainfadeTime); 
+
+				curtain.color = Color.Lerp(Color.clear, Color.black, t);
+				yield return null;
+			}
+
+			yield return null;
+		}
+
+		private IEnumerator CurtainUp()
+		{
+			if (!curtain.gameObject.activeSelf)
+				yield break;
+
+			float t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / curtainfadeTime); 
+
+				curtain.color = Color.Lerp(Color.black, Color.clear, t);
+				yield return null;
+			}
+
+			curtain.gameObject.SetActive(false);
+			yield return null;
+		}
+
+		#endregion   // UI
+
 
 		public override void OnLobbyClientSceneChanged(NetworkConnection conn)
 		{
@@ -477,7 +563,7 @@ namespace Prototype.NetworkLobby
 		{
 			base.OnClientSceneChanged(conn);		// calls NetworkFighter.OnStartLocalPlayer!!
 
-			HideLobbyUI();
+			HideLobbyUI(false);
 		}
 
 

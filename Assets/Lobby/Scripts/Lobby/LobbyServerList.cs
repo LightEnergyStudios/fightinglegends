@@ -13,7 +13,8 @@ namespace Prototype.NetworkLobby
 
         public RectTransform serverListRect;
         public GameObject serverEntryPrefab;
-        public GameObject noServerFound;
+		public GameObject noServerFound;
+        public Text title;
 
         protected int currentPage = 0;
         protected int previousPage = 0;
