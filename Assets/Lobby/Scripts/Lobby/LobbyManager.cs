@@ -20,7 +20,7 @@ namespace Prototype.NetworkLobby
 		[Header("Custom UI")]
 		public Image lobbyUIPanel;			// entire lobby UI
 		public Text userID;					// used for matchmaker game name 
-		public Text IPAddress;				// display only
+		public Text IPAddress;				// (own (host) IP - display only
 		public AudioClip EntrySound;
 		public Image curtain;				// blackout
 
@@ -121,7 +121,8 @@ namespace Prototype.NetworkLobby
 				userID.text = localUserId;
 
 			networkPlayer = Network.player;
-			IPAddress.text = "IP: " + networkPlayer.ipAddress;
+			IPAddress.text = networkPlayer.ipAddress;
+//			IPAddress.text = "IP: " + networkPlayer.ipAddress;
 
 			curtain.gameObject.SetActive(false);
 			curtain.color = Color.clear;

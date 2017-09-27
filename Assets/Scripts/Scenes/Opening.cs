@@ -17,6 +17,7 @@ namespace FightingLegends
 		private const string loading = "Loading";
 
 		private const float dotInterval = 0.5f;
+		private const float whiteFlashInterval = 0.75f;
 
 		private IEnumerator preloadCoroutine = null;
 
@@ -68,6 +69,7 @@ namespace FightingLegends
 		{
 			whiteFlash.gameObject.SetActive(true);
 			yield return StartCoroutine(whiteFlash.PlayHitFlash());
+			yield return new WaitForSeconds(whiteFlashInterval);
 			yield return StartCoroutine(whiteFlash.PlayHitFlash());
 			whiteFlash.gameObject.SetActive(false);
 		}

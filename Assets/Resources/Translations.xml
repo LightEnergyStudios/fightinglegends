@@ -16,7 +16,8 @@
 		<string name="trainingTitle">LEARN BASIC TIMING AND TECHNIQUE</string>
 		<string name="networkTitle">TAKE ON A FRIEND IN A LIVE CONTEST!</string>
 
-		<string name="waitingToStart">WAITING TO START</string>
+		<string name="waitingForOpponent">WAITING FOR OPPONENT</string>
+		<string name="opponentReady">OPPONENT READY</string>
 		<string name="fightEnding">FIGHT ENDING</string>
 
         <string name="redLightHeading">RED = BLOCK</string>

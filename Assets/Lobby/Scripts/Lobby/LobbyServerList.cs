@@ -14,7 +14,9 @@ namespace Prototype.NetworkLobby
         public RectTransform serverListRect;
         public GameObject serverEntryPrefab;
 		public GameObject noServerFound;
-        public Text title;
+
+		public Text searchingText;
+        public Text titleText;
 
         protected int currentPage = 0;
         protected int previousPage = 0;
@@ -30,13 +32,17 @@ namespace Prototype.NetworkLobby
             foreach (Transform t in serverListRect)
                 Destroy(t.gameObject);
 
-            noServerFound.SetActive(false);
+			noServerFound.SetActive(false);
+			titleText.gameObject.SetActive(false);
+            searchingText.gameObject.SetActive(false);
 
             RequestPage(0);
         }
 
 		public void OnGUIMatchList(bool success, string extendedInfo, List<MatchInfoSnapshot> matches)
 		{
+			searchingText.gameObject.SetActive(false);
+
 			if (matches.Count == 0)
 			{
                 if (currentPage == 0)
@@ -44,12 +50,13 @@ namespace Prototype.NetworkLobby
                     noServerFound.SetActive(true);
                 }
 
-                currentPage = previousPage;
-               
+				currentPage = previousPage;
                 return;
             }
 
+			titleText.gameObject.SetActive(true);
             noServerFound.SetActive(false);
+
             foreach (Transform t in serverListRect)
                 Destroy(t.gameObject);
 
@@ -58,7 +65,6 @@ namespace Prototype.NetworkLobby
                 GameObject o = Instantiate(serverEntryPrefab) as GameObject;
 
 				o.GetComponent<LobbyServerEntry>().Populate(matches[i], lobbyManager, (i % 2 == 0) ? OddServerColor : EvenServerColor);
-
 				o.transform.SetParent(serverListRect, false);
             }
         }
@@ -78,6 +84,8 @@ namespace Prototype.NetworkLobby
         {
             previousPage = currentPage;
             currentPage = page;
+
+			searchingText.gameObject.SetActive(true);
 			lobbyManager.matchMaker.ListMatches(page, 6, "", true, 0, 0, OnGUIMatchList);
 		}
     }

@@ -15,6 +15,8 @@ namespace Prototype.NetworkLobby
         public InputField ipInput;
         public InputField matchNameInput;
 
+		public Button JoinButton;
+
         public void OnEnable()
         {
             lobbyManager.topPanel.ToggleVisibility(true);
@@ -26,7 +28,14 @@ namespace Prototype.NetworkLobby
             matchNameInput.onEndEdit.AddListener(onEndEditGameName);
 
 			matchNameInput.text = FightingLegends.FightManager.SavedGameStatus.UserId;
+
+			EnableJoin();
         }
+
+		private void EnableJoin()
+		{
+			JoinButton.interactable = !string.IsNullOrEmpty(ipInput.text);
+		}
 
         public void OnClickHost()
         {
@@ -35,6 +44,9 @@ namespace Prototype.NetworkLobby
 
         public void OnClickJoin()
         {
+			if (string.IsNullOrEmpty(ipInput.text))
+				return;
+			
             lobbyManager.ChangeTo(lobbyPanel);
 
             lobbyManager.networkAddress = ipInput.text;
@@ -83,6 +95,8 @@ namespace Prototype.NetworkLobby
 
         void onEndEditIP(string text)
         {
+			EnableJoin();
+
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 OnClickJoin();

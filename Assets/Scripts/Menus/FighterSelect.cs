@@ -190,7 +190,7 @@ namespace FightingLegends
 //			Prototype.NetworkLobby.LobbyManager.OnExitLobby += OnExitLobby;
 			
 			if (fightButton != null)
-				fightButton.onClick.AddListener(delegate { ShowWorldMap(); });
+				fightButton.onClick.AddListener(delegate { FighterSelected(); });
 
 //				fightButton.onClick.AddListener(delegate { CombatInsertCoin(); });
 //			if (storeButton != null)
@@ -240,7 +240,7 @@ namespace FightingLegends
 			DestroyPreview();
 
 			if (fightButton != null)
-				fightButton.onClick.RemoveListener(delegate { ShowWorldMap(); });
+				fightButton.onClick.RemoveListener(delegate { FighterSelected(); });
 //			if (storeButton != null)
 //				storeButton.onClick.RemoveListener(delegate { ShowStore(); });
 //			if (powerUpButton != null)
@@ -376,7 +376,7 @@ namespace FightingLegends
 //				FightManager.InsertCoinToPlay(ShowCombat);
 //		}
 			
-		private void ShowWorldMap()
+		private void FighterSelected()
 		{
 			if (animatingCardEntry)
 				return;

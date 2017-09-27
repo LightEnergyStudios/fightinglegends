@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.Networking;
+using System;
 
 namespace FightingLegends
 {
@@ -15,16 +16,74 @@ namespace FightingLegends
 		public int PlayerNumber = 0;	
 		public string PlayerName = "";			// user id
 	
-		// fighters set via FighterSelect delegate - server only
-		private static string Fighter1Name = "";
-		private static string Fighter1Colour = "";
-		private static string Fighter2Name = "";
-		private static string Fighter2Colour = "";
+		// SyncVar hooks invoked on clients when server changes the value
+//		[SyncVar(hook = "SetNetworkFighters")]
+//		private NetworkFighters fighters;
 
-		// location set via WorldMap delegate - server only
-		private static string SelectedLocation = "";
+		// fighters set via FighterSelect delegate
+//		[SyncVar(hook = "SetFighter1Name")]
+		private static string Fighter1Name; 		// server only
 
-		private const float exitFightPause = 3.0f;
+//		[SyncVar(hook = "SetFighter1Colour")]
+		private static string Fighter1Colour; 		// server only
+
+//		[SyncVar(hook = "SetFighter2Name")]
+		private static string Fighter2Name; 		// server only
+
+//		[SyncVar(hook = "SetFighter2Colour")]
+		private static string Fighter2Colour; 		// server only
+
+		// location set via WorldMap delegate
+//		[SyncVar(hook = "SetSelectedLocation")]
+		private static string SelectedLocation; 	// server only
+
+
+
+		// events invoked on client when the event is called on the server
+//		public delegate void StartFightDelegate(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location);
+//		public delegate void Fighter1Delegate(string fighter1Name, string fighter1Colour);
+//		public delegate void Fighter2Delegate(string fighter2Name, string fighter2Colour);
+//		public delegate void LocationDelegate(string location);
+
+//		[SyncEvent]
+//		public event StartFightDelegate EventStartFight;
+
+//		[SyncEvent]
+//		public event Fighter1Delegate EventFighter1;
+//
+//		[SyncEvent]
+//		public event Fighter1Delegate EventFighter2;
+//
+//		[SyncEvent]
+//		public event LocationDelegate EventLocation;
+
+
+//		[Command]
+//		public void CmdFighter1(string name, string colour)
+//		{
+//			EventFighter1(name, colour);
+//		}
+//
+//		[Command]
+//		public void CmdFighter2(string name, string colour)
+//		{
+//			EventFighter2(name, colour);
+//		}
+//
+//		[Command]
+//		public void CmdLocation(string location)
+//		{
+//			EventLocation(location);
+//		}
+
+//		[Command]
+//		public void CmdStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
+//		{
+//			EventStartFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
+//		}
+
+
+		private const float exitFightPause = 3.0f;		// network message displayed
 
 		private FightManager fightManager;
 
@@ -44,6 +103,12 @@ namespace FightingLegends
 		{			
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
+
+			if (isServer)
+			{
+				ResetFighters();
+				fightStarted = false;
+			}
 		}
 
 		public void Start()
@@ -56,6 +121,18 @@ namespace FightingLegends
 			if (PlayerNumber == 0)		// ie. not set via lobby (game creator == Player1)
 				PlayerNumber = isServer ? 1 : 2;
 		}
+
+//		// invoked when a client is started
+//		public override void OnStartClient ()
+//		{
+//			base.OnStartClient ();
+//
+//			SetFighter1Name(Fighter1Name);
+//			SetFighter1Colour(Fighter1Colour);
+//			SetFighter2Name(Fighter2Name);
+//			SetFighter2Colour(Fighter2Colour);
+//			SetSelectedLocation(SelectedLocation);
+//		}
 
 		public override void OnStartLocalPlayer()
 		{
@@ -161,55 +238,105 @@ namespace FightingLegends
 
 		#endregion
 
-		#region fight construction
 
-		private bool CanStartFight { get { return !string.IsNullOrEmpty(Fighter1Name) && !string.IsNullOrEmpty(Fighter1Colour) &&
-													!string.IsNullOrEmpty(Fighter2Name) && !string.IsNullOrEmpty(Fighter2Colour) &&
-														!string.IsNullOrEmpty(SelectedLocation); }}
+		#region assemble fighters and location
+
+		private bool fightStarted = false;
+
+		private bool Player1Set { get { return !string.IsNullOrEmpty(Fighter1Name) && !string.IsNullOrEmpty(Fighter1Colour); }}
+		private bool Player2Set { get { return !string.IsNullOrEmpty(Fighter2Name) && !string.IsNullOrEmpty(Fighter2Colour); }}
+		private bool LocationSet { get { return !string.IsNullOrEmpty(SelectedLocation); }}
+		private bool CanStartFight { get { return !fightStarted && Player1Set && Player2Set && LocationSet; }}
+
+		private bool IsPlayerReady { get { return IsPlayer1 ? Player1Set : Player2Set; } }
+
+//		private bool NetworkPlayer1Ready { get { return !string.IsNullOrEmpty(fighters.Fighter1Name) && !string.IsNullOrEmpty(fighters.Fighter1Colour); }}
+//		private bool NetworkPlayer2Ready { get { return !string.IsNullOrEmpty(fighters.Fighter2Name) && !string.IsNullOrEmpty(fighters.Fighter2Colour); }}
+//		private bool NetworkCanStartFight { get { return NetworkPlayer1Ready && NetworkPlayer2Ready && !string.IsNullOrEmpty(fighters.Location); }}
+//		private bool NetworkIsPlayerReady { get { return IsPlayer1 ? NetworkPlayer1Ready : NetworkPlayer2Ready; } }
 
 
 		// FighterSelect.OnFighterSelected
 		private void FighterSelected(Fighter fighter)
 		{
-			if (isLocalPlayer)
-			{
-				CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);
-//				Debug.Log("FighterSelected: IsPlayer1 = " + IsPlayer1 + " - " + fighter.FighterName + " / " + fighter.ColourScheme);
-			}
-		}
+			if (!isLocalPlayer)
+				return;
+			
+			Debug.Log("FighterSelected: IsPlayer1 = " + IsPlayer1 + " : " + fighter.FighterName + " / " + fighter.ColourScheme);
 
+			if (IsPlayer1)
+				CmdSetFighter1(fighter.FighterName, fighter.ColourScheme);
+			else
+				CmdSetFighter2(fighter.FighterName, fighter.ColourScheme);
+		}
 
 		[Command]
 		// called from client, runs on server
-		private void CmdSetFighter(bool player1, string fighterName, string fighterColour)
+		public void CmdSetFighter1(string name, string colour)
 		{
 			if (!isServer)
 				return;
 
-			if (player1)
-			{
-				Fighter1Name = fighterName;	
-				Fighter1Colour = fighterColour;	
-			}
-			else
-			{
-				Fighter2Name = fighterName;	
-				Fighter2Colour = fighterColour;	
-			}
+			if (fightStarted)
+				return;
+			
+			Fighter1Name = name;
+			Fighter1Colour = colour;
 
-			TryStartFight();		// if both fighters and location set
+			Debug.Log("CmdSetFighter1: Fighter1 = " + Fighter1Name + " " + Fighter1Colour + ", Fighter2 = " + Fighter2Name + " " + Fighter2Colour + ", Location = " + SelectedLocation);
+
+			fightStarted = TryStartFight();
 		}
 
+		[Command]
+		// called from client, runs on server
+		public void CmdSetFighter2(string name, string colour)
+		{
+			if (!isServer)
+				return;
+
+			if (fightStarted)
+				return;
+
+			Fighter2Name = name;
+			Fighter2Colour = colour;
+
+			Debug.Log("CmdSetFighter2: Fighter1 = " + Fighter1Name + " " + Fighter1Colour + ", Fighter2 = " + Fighter2Name + " " + Fighter2Colour + ", Location = " + SelectedLocation);
+
+			fightStarted = TryStartFight();
+		}
+
+//		[Command]
+//		// called from client, runs on server
+//		public void CmdSetNetworkFighter(bool isPlayer1, string name, string colour)
+//		{
+//			if (!isServer)
+//				return;
+//
+//			if (isPlayer1)
+//			{
+//				fighters.Fighter1Name = name;
+//				fighters.Fighter1Colour = colour;
+//			}
+//			else
+//			{			
+//				fighters.Fighter2Name = name;
+//				fighters.Fighter2Colour = colour;
+//			}
+//
+//			Debug.Log("CmdSetNetworkFighter: isPlayer1 = " + isPlayer1 + ", Player1 = " + fighters.Fighter1Name + " " + fighters.Fighter1Colour + ", Player2 = " + fighters.Fighter2Name + " " + fighters.Fighter2Colour + ", Location = " + fighters.Location);
+//		}
+			
 
 		// WorldMap.OnLocationSelected
 		private void LocationSelected(string location)
 		{
-			if (isLocalPlayer)
-			{
-				CmdSetLocation(location);	
-//				Debug.Log("LocationSelected: IsPlayer1 = " + IsPlayer1 + " - " + location);
-			}
+			if (!isLocalPlayer)
+				return;
+			
+			CmdSetLocation(location);
 		}
+
 
 		[Command]
 		// called from client, runs on server
@@ -218,13 +345,117 @@ namespace FightingLegends
 			if (!isServer)
 				return;
 
-			SelectedLocation = location;
+			if (fightStarted)
+				return;
 
-			if (! TryStartFight()) 		// if both fighters and location set
-				RpcNetworkMessage(NetworkMessageType.WaitingToStart);
+			if (LocationSet)		// opponent got there first! (shouldn't get this far)
+				return;
+
+			SelectedLocation = location;		// SyncVar hook tries to start fight
+
+			Debug.Log("CmdSetLocation: " + "Player1 = " + Fighter1Name + " " + Fighter1Colour + ", Player2 = " + Fighter2Name + " " + Fighter2Colour + ", Location = " + SelectedLocation);
+
+			fightStarted = TryStartFight();
 		}
 
+//		[Command]
+//		// called from client, runs on server
+//		private void CmdSetNetworkLocation(string location)
+//		{
+//			if (!isServer)
+//				return;
+//
+//			//			SetLocation(location);
+//
+//			fighters.Location = location;		// SyncVar hook tries to start fight
+//
+//			Debug.Log("CmdSetNetworkLocation: " + "Player1 = " + fighters.Fighter1Name + " " + fighters.Fighter1Colour + ", Player2 = " + fighters.Fighter2Name + " " + fighters.Fighter2Colour + ", Location = " + fighters.Location);
+//
+////			TryStartFightRpc();
+//		}
+//			
+//
+//		// SyncVar hook - called on client
+//		private void SetNetworkFighters(NetworkFighters networkFighters)
+//		{
+//			fighters = networkFighters;
+//
+//			Debug.Log("SetNetworkFighters: " + "Player1 = " + fighters.Fighter1Name + " " + fighters.Fighter1Colour + ", Player2 = " + fighters.Fighter2Name + " " + fighters.Fighter2Colour + ", Location = " + fighters.Location);
+//
+//			NetworkTryStartFight();
+//		}
 
+// 		// client (SynVar hook) version
+//		private bool NetworkTryStartFight()
+//		{
+////			if (!isLocalPlayer)
+////				return false;
+//			
+////			Debug.Log("TryStartFight: CanStartFight = " + CanStartFight);
+//
+//			if (NetworkCanStartFight)
+//			{
+//				if (IsPlayer1)
+//					fightManager.StartNetworkArcadeFight(fighters.Fighter1Name, fighters.Fighter1Colour, fighters.Fighter2Name, fighters.Fighter2Colour, fighters.Location);
+//				else
+//					fightManager.StartNetworkArcadeFight(fighters.Fighter2Name, fighters.Fighter2Colour, fighters.Fighter1Name, fighters.Fighter1Colour, fighters.Location);
+//				
+//				// reset for next fight
+//				ResetFighters();
+//				return true;
+//			}
+//			else
+//				Debug.Log("NetworkTryStartFight: " + "Player1 = " + fighters.Fighter1Name + " " + fighters.Fighter1Colour + ", Player2 = " + fighters.Fighter2Name + " " + fighters.Fighter2Colour + ", Location = " + fighters.Location);
+//
+//			return false;
+//		}
+
+//		// SyncVar hook - called on client
+//		public void SetFighter1Name(string name)
+//		{
+//			Debug.Log("SetFighter1Name: " + name);
+//			Fighter1Name = name;
+//
+//			fightStarted = TryStartClientFight();
+//		}
+//
+//		// SyncVar hook - called on client
+//		public void SetFighter1Colour(string colour)
+//		{
+//			Debug.Log("SetFighter1Colour: " + colour);
+//			Fighter1Colour = colour;
+//
+//			fightStarted = TryStartClientFight();
+//		}
+//
+//		// SyncVar hook - called on client
+//		public void SetFighter2Name(string name)
+//		{
+//			Debug.Log("SetFighter2Name: " + name);
+//			Fighter2Name = name;
+//
+//			fightStarted = TryStartClientFight();
+//		}
+//
+//		// SyncVar hook - called on client
+//		public void SetFighter2Colour(string colour)
+//		{
+//			Debug.Log("SetFighter2Colour: " + colour);
+//			Fighter2Colour = colour;
+//
+//			fightStarted = TryStartClientFight();
+//		}
+//
+//		// SyncVar hook - called on client
+//		public void SetSelectedLocation(string location)
+//		{
+//			Debug.Log("SetSelectedLocation: " + location);
+//			SelectedLocation = location;
+//
+//			fightStarted = TryStartClientFight();
+//		}
+
+		// server (client RPC) version
 		private bool TryStartFight()
 		{
 			if (!isServer)
@@ -235,29 +466,69 @@ namespace FightingLegends
 				RpcStartFight(Fighter1Name, Fighter1Colour, Fighter2Name, Fighter2Colour, SelectedLocation);
 
 				// reset for next fight
-				Fighter1Name = null;
-				Fighter1Colour = null;
-				Fighter2Name = null;
-				Fighter2Colour = null;
-				SelectedLocation = null;
+				ResetFighters();
 
 				RpcNetworkMessage(NetworkMessageType.None);		// disable
 				return true;
 			}
+			else
+				Debug.Log("TryStartFight: " + "Player1 = " + Fighter1Name + " " + Fighter1Colour + ", Player2 = " + Fighter2Name + " " + Fighter2Colour + ", Location = " + SelectedLocation);
 
 			return false;
+		}
+
+//		// client (SynVar hook) version
+//		private bool TryStartClientFight()
+//		{
+//			if (!isLocalPlayer)
+//				return false;
+//			
+////			Debug.Log("TryStartFight: CanStartFight = " + CanStartFight);
+//
+//			if (CanStartFight)
+//			{
+//				if (IsPlayer1)
+//					fightManager.StartNetworkArcadeFight(Fighter1Name, Fighter1Colour, Fighter2Name, Fighter2Colour, SelectedLocation);
+//				else
+//					fightManager.StartNetworkArcadeFight(Fighter2Name, Fighter2Colour, Fighter1Name, Fighter1Colour, SelectedLocation);
+//				
+//				return true;
+//			}
+//			else
+//				Debug.Log("TryStartClientFight: " + "Player1 = " + Fighter1Name + " " + Fighter1Colour + ", Player2 = " + Fighter2Name + " " + Fighter2Colour + ", Location = " + SelectedLocation);
+//
+//			return false;
+//		}
+
+		private void ResetFighters()
+		{
+			if (!isServer)
+				return;
+			
+			Debug.Log("ResetFighters");
+
+			Fighter1Name = "";
+			Fighter1Colour = "";
+			Fighter2Name = "";
+			Fighter2Colour = "";
+			SelectedLocation = "";
+
+//			fighters = new NetworkFighters();
 		}
 
 		[ClientRpc]
 		// called on server, runs on clients
 		private void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
 		{
-			if (isServer)
+			Debug.Log("RpcStartFight: IsPlayer1 = " + IsPlayer1 + " : " + fighter1Name + "/" + fighter1Colour + " : " + fighter2Name + "/" + fighter2Colour + " : " + location);
+
+//			if (isServer)
+			if (IsPlayer1)
 				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
 			else
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
 		}
-
+			
 
 		[ClientRpc]
 		// called on server, runs on clients
@@ -268,7 +539,7 @@ namespace FightingLegends
 			switch (messageType)
 			{
 				case NetworkMessageType.WaitingToStart:
-					message = FightManager.Translate("waitingToStart") + " ...";
+					message = IsPlayerReady ? (FightManager.Translate("waitingForOpponent") + " ...") : (FightManager.Translate("opponentReady", false, true));
 					break;
 
 				case NetworkMessageType.FightEnding:
@@ -283,6 +554,7 @@ namespace FightingLegends
 		}
 
 		#endregion
+
 
 		#region quit / pause fight
 
@@ -853,8 +1125,18 @@ namespace FightingLegends
 		}
 
 		#endregion
+	}
 
 
+	[Serializable]
+	public struct NetworkFighters
+	{
+		public string Fighter1Name;
+		public string Fighter1Colour;
 
+		public string Fighter2Name;
+		public string Fighter2Colour;
+
+		public string Location;
 	}
 }
