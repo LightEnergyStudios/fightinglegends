@@ -160,7 +160,7 @@ namespace FightingLegends
 		public bool ReadyToFight
 		{ 
 			get { return readyToFight; }
-			private set
+			set
 			{
 				bool changed = (readyToFight != value);
 
@@ -407,6 +407,9 @@ namespace FightingLegends
 
 		public delegate void ReadyToFightDelegate(bool ReadyToFight, bool changed, FightMode fightMode);
 		public static ReadyToFightDelegate OnReadyToFight;
+
+		public delegate void NetworkReadyToFightDelegate(bool ReadyToFight, bool changed);
+		public static NetworkReadyToFightDelegate OnNetworkReadyToFight;
 
 //		public delegate void FighterChangedDelegate(Fighter fighter, bool isPlayer1);
 //		public static FighterChangedDelegate OnFighterChanged;
@@ -2518,11 +2521,15 @@ namespace FightingLegends
 
 			if (OnNextRound != null)
 				OnNextRound(RoundNumber);
-
+//
 //			if (! FightManager.IsNetworkFight)								// start of next round synced by server
 				yield return StartCoroutine(NewRoundFeedback());			// ReadyToFight set to true at end of feedback
-		
-//			yield return null;
+		}
+
+		public void NetworkNextRound()
+		{
+			if (FightManager.IsNetworkFight)
+				StartCoroutine(NewRoundFeedback());
 		}
 
 

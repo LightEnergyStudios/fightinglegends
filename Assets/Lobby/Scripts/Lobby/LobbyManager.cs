@@ -25,7 +25,7 @@ namespace Prototype.NetworkLobby
 		public Image curtain;				// blackout
 
 		public GameObject fightManagerPrefab;		// NetworkFightManager
-
+		public LobbyDiscovery networkDiscovery;
 
 		[Header("Unity UI Lobby")]
 		[Tooltip("Time in second between all players ready & match start")]
@@ -91,6 +91,8 @@ namespace Prototype.NetworkLobby
 			curtain.gameObject.SetActive(false);
 			curtain.color = Color.clear;
 
+//			networkDiscovery.Initialize();
+
 //			SceneManager.activeSceneChanged += OnActiveSceneChanged;					// on 100% load
 
 //			var openingObject = GameObject.Find("Opening");
@@ -102,6 +104,7 @@ namespace Prototype.NetworkLobby
 
 		public void OnDestroy()
 		{
+//			networkDiscovery.StopBroadcast();
 //			SceneManager.activeSceneChanged -= OnActiveSceneChanged;					// on 100% load
 		}
 			
@@ -120,6 +123,8 @@ namespace Prototype.NetworkLobby
 				GetComponent<Animator>().SetTrigger("LobbyEntry");
 			}
 
+			networkDiscovery.Initialize();
+
 			backDelegate = QuitLobby;
 
 			localUserId = FightManager.SavedGameStatus.UserId;
@@ -127,14 +132,12 @@ namespace Prototype.NetworkLobby
 				userID.text = localUserId;
 
 			networkPlayer = Network.player;
-			IPAddress.text = "IP: " + networkPlayer.ipAddress;		// own (host IP address)
+			IPAddress.text = networkPlayer.ipAddress;		// own (host IP address)
 
 			curtain.gameObject.SetActive(false);
 			curtain.color = Color.clear;
 
 			ChangeTo(mainMenuPanel);
-
-//			Network.Disconnect();		// TODO: ok?
 
 //			// start reloading combat scene asap
 //			if (opening != null)
@@ -143,7 +146,12 @@ namespace Prototype.NetworkLobby
 
 		public void HideLobbyUI(bool fadeToBlack)
 		{
+			if (networkDiscovery.running)
+				networkDiscovery.StopBroadcast();
+
 			StartCoroutine(FadeLobbyUI(fadeToBlack));
+
+//			Network.Disconnect();		// TODO: ok?
 		}
 
 		private IEnumerator FadeLobbyUI(bool fadeToBlack)
@@ -183,6 +191,16 @@ namespace Prototype.NetworkLobby
 			SceneSettings.DirectToFighterSelect = false;
 
 //			Network.Disconnect();		// TODO: ok?
+		}
+
+		public void BroadcastHostIP()
+		{
+			networkDiscovery.StartAsServer();
+		}
+
+		public void DiscoverHostIP()
+		{
+			networkDiscovery.StartAsClient();
 		}
 
 //		private void OnActiveSceneChanged(Scene oldScene, Scene newScene)

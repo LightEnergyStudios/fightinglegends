@@ -1677,11 +1677,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 114100979285267856, guid: 5163035e57b1f45a3979807416bcada3,
-        type: 2}
-      propertyPath: m_SpawnPrefabs.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 224975789007968010, guid: 5163035e57b1f45a3979807416bcada3,
         type: 2}
       propertyPath: m_LocalPosition.x
@@ -1777,24 +1772,6 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 93}
-    - target: {fileID: 114100979285267856, guid: 5163035e57b1f45a3979807416bcada3,
-        type: 2}
-      propertyPath: m_SpawnPrefabs.Array.data[0]
-      value: 
-      objectReference: {fileID: 1326031939578868, guid: 6f36d76e3fa7e4522be0674f5f729cc3,
-        type: 2}
-    - target: {fileID: 114100979285267856, guid: 5163035e57b1f45a3979807416bcada3,
-        type: 2}
-      propertyPath: networkManagerPrefab
-      value: 
-      objectReference: {fileID: 1326031939578868, guid: 6f36d76e3fa7e4522be0674f5f729cc3,
-        type: 2}
-    - target: {fileID: 114100979285267856, guid: 5163035e57b1f45a3979807416bcada3,
-        type: 2}
-      propertyPath: fightManagerPrefab
-      value: 
-      objectReference: {fileID: 1326031939578868, guid: 6f36d76e3fa7e4522be0674f5f729cc3,
-        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5163035e57b1f45a3979807416bcada3, type: 2}
   m_IsPrefabParent: 0

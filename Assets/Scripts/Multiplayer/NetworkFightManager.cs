@@ -30,6 +30,10 @@ namespace FightingLegends
 		private bool CanStartFight { get { return HasPlayers && !fightStarted && Fighter1Set && Fighter2Set && LocationSet; }}
 
 
+		private bool Player1ReadyToFight = false;
+		private bool Player2ReadyToFight = false;
+
+
 		[Server]
 		public void SetPlayer(NetworkFighter player)
 		{
@@ -73,7 +77,7 @@ namespace FightingLegends
 			if (CanStartFight)
 				fightStarted = SyncStartFight();
 		}
-			
+
 
 		[Server]
 		private bool SyncStartFight()
@@ -88,8 +92,32 @@ namespace FightingLegends
 			// reset for next fight
 			ResetFighters();
 
+			Player1ReadyToFight = false;
+			Player2ReadyToFight = false;
+
 //				RpcNetworkMessage(NetworkMessageType.None);		// disable
 			return true;
+		}
+
+
+		[Server]
+		public void ReadyToFight(bool isPlayer1, bool ready)
+		{
+			if (isPlayer1)
+				Player1ReadyToFight = true;
+			else
+				Player2ReadyToFight = true;
+
+			if (Player1ReadyToFight && Player2ReadyToFight)
+				SyncReadyToFight(ready);
+		}
+
+		[Server]
+		private void SyncReadyToFight(bool ready)
+		{
+			// doesn't matter which player invokes the RPC
+			// might as well be player1 as the host / initiator...
+			player1.RpcReadyToFight(ready);
 		}
 
 
@@ -108,12 +136,24 @@ namespace FightingLegends
 		}
 
 
-		[Server]
-		private void SyncNextRound(int roundNumber)
-		{
-			// doesn't matter which player invokes the RPC
-			// might as well be player1 as the host / initiator...
-			player1.RpcNextRound(roundNumber);
-		}
+//		[Server]
+//		public void ReadyForNextRound(bool isPlayer1, int roundNumber)
+//		{
+//			if (isPlayer1)
+//				Player1ReadyToStart = true;
+//			else
+//				Player2ReadyForNextRound = true;
+//
+//			if (Player1ReadyToStart && Player2ReadyForNextRound)
+//				SyncNextRound(roundNumber);
+//		}
+//
+//		[Server]
+//		private void SyncNextRound(int roundNumber)
+//		{
+//			// doesn't matter which player invokes the RPC
+//			// might as well be player1 as the host / initiator...
+//			player1.RpcNextRound(roundNumber);
+//		}
 	}
 }

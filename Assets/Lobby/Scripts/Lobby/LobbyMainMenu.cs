@@ -15,7 +15,9 @@ namespace Prototype.NetworkLobby
         public InputField ipInput;
         public InputField matchNameInput;
 
-		public Button JoinButton;
+		public Button HostButton;	// LAN
+		public Button JoinButton;	// LAN
+		public Text JoinText;		// find -> join
 
         public void OnEnable()
         {
@@ -29,23 +31,50 @@ namespace Prototype.NetworkLobby
 
 			matchNameInput.text = FightingLegends.FightManager.SavedGameStatus.UserId;
 
-			EnableJoin();
+			lobbyManager.networkDiscovery.OnHostIP += HostIPReceived;
+
+			ipInput.text = "";
+			EnableHostButton();
+			ConfigJoinButton();
         }
 
-		private void EnableJoin()
+		public void OnDisable()
 		{
-			JoinButton.interactable = !string.IsNullOrEmpty(ipInput.text);
+			lobbyManager.networkDiscovery.OnHostIP -= HostIPReceived;
+		}
+
+		private void EnableHostButton()
+		{
+			HostButton.interactable = !lobbyManager.networkDiscovery.isClient;		// can't host if listening for host broadcast
+		}
+
+		private void ConfigJoinButton()
+		{
+			JoinText.text = string.IsNullOrEmpty(ipInput.text) ? "FIND A GAME" : "JOIN GAME";
+//			JoinButton.interactable = !string.IsNullOrEmpty(ipInput.text);
 		}
 
         public void OnClickHost()
         {
             lobbyManager.StartHost();
+			lobbyManager.BroadcastHostIP();			// SM
         }
+
+		private void HostIPReceived(string hostIP)
+		{
+			ipInput.text = hostIP;
+
+			ConfigJoinButton();			// join game
+		}
 
         public void OnClickJoin()
         {
-			if (string.IsNullOrEmpty(ipInput.text))
+			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game
+			{
+				lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
+				EnableHostButton();					// can't host if listening for host broadcast
 				return;
+			}
 			
             lobbyManager.ChangeTo(lobbyPanel);
 
@@ -95,7 +124,7 @@ namespace Prototype.NetworkLobby
 
         void onEndEditIP(string text)
         {
-			EnableJoin();
+			ConfigJoinButton();
 
             if (Input.GetKeyDown(KeyCode.Return))
             {

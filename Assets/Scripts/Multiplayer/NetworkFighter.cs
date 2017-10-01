@@ -95,7 +95,8 @@ namespace FightingLegends
 			FighterSelect.OnFighterSelected += FighterSelected;
 			WorldMap.OnLocationSelected += LocationSelected;
 
-			FightManager.OnNextRound += NextRound;
+//			FightManager.OnNextRound += NextRound;
+			FightManager.OnNetworkReadyToFight += ReadyToFight;
 			FightManager.OnQuitFight += QuitFight;
 //			FightManager.OnFightPaused += PauseFight;
 		}
@@ -123,7 +124,8 @@ namespace FightingLegends
 			FighterSelect.OnFighterSelected -= FighterSelected;
 			WorldMap.OnLocationSelected -= LocationSelected;
 
-			FightManager.OnNextRound -= NextRound;
+//			FightManager.OnNextRound -= NextRound;
+			FightManager.OnNetworkReadyToFight -= ReadyToFight;
 			FightManager.OnQuitFight -= QuitFight;
 //			FightManager.OnFightPaused -= PauseFight;
 		}
@@ -210,7 +212,7 @@ namespace FightingLegends
 			if (!isServer)
 				return;
 
-			networkFightManager.SetLocation(isPlayer1, location);		// starts fight (rpc) if all set
+			networkFightManager.SetLocation(isPlayer1, location);		// starts fight (rpc) if all set (fighters and location)
 		}
 
 
@@ -218,12 +220,45 @@ namespace FightingLegends
 		// called on server, runs on clients
 		public void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
 		{
-			Debug.Log("RpcStartFight: isPlayer1 = " + IsPlayer1 + " : " + fighter1Name + "/" + fighter1Colour + " : " + fighter2Name + "/" + fighter2Colour + " : " + location);
+//			Debug.Log("RpcStartFight: isPlayer1 = " + IsPlayer1 + " : " + fighter1Name + "/" + fighter1Colour + " : " + fighter2Name + "/" + fighter2Colour + " : " + location);
 
 			if (IsPlayer1)
 				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
 			else
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
+		}
+
+
+
+		// FightManager.OnNetworkReadyToFight
+		[Client]
+		private void ReadyToFight(bool ready, bool changed)
+		{
+			if (!isLocalPlayer)
+				return;
+
+			CmdReadyToFight(IsPlayer1, ready);
+		}
+
+		[Command]
+		// called from client, runs on server
+		private void CmdReadyToFight(bool isPlayer1, bool ready)
+		{
+			if (!isServer)
+				return;
+
+			networkFightManager.ReadyToFight(isPlayer1, ready);		// sets both fighters (rpc) if both ready
+		}
+
+
+		[ClientRpc]
+		// called on server, runs on clients
+		public void RpcReadyToFight(bool ready)
+		{
+			if (!isLocalPlayer)
+				return;
+
+			fightManager.ReadyToFight = ready;
 		}
 
 
@@ -252,35 +287,36 @@ namespace FightingLegends
 
 		#endregion
 
-
-		[Client]
-		private void NextRound(int roundNumber)
-		{
-			CmdNextRound(roundNumber);
-		}
-
-		[Command]
-		// called from client, runs on server
-		private void CmdNextRound(int roundNumber)
-		{
-			if (!isServer)
-				return;
-
-//			networkFightManager.NextRound(roundNumber);
-		}
-			
-		[ClientRpc]
-		// called on server, runs on clients
-		public void RpcNextRound(int roundNumber)
-		{
-			if (!isLocalPlayer)
-				return;
-
-//			fightManager.NextRound();
-		}
+		// FightManager.OnNextRound
+//		[Client]
+//		private void NextRound(int roundNumber)
+//		{
+////			CmdNextRound(roundNumber);			// check with NetworkFightManager, which will call RpcNextRound if both players ready
+//		}
+//
+//		[Command]
+//		// called from client, runs on server
+//		private void CmdNextRound(int roundNumber)
+//		{
+//			if (!isServer)
+//				return;
+//
+//			networkFightManager.ReadyForNextRound(IsPlayer1, roundNumber);
+//		}
+//			
+//		[ClientRpc]
+//		// called on server, runs on clients
+//		public void RpcNextRound(int roundNumber)
+//		{
+//			if (!isLocalPlayer)
+//				return;
+//
+//			fightManager.NetworkNextRound();
+//		}
 
 		#region quit / pause fight
 
+		// FightManager.OnQuitFight
 		[Client]
 		private void QuitFight()
 		{
