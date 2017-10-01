@@ -226,7 +226,6 @@ namespace FightingLegends
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
 		}
 
-			
 
 //		[ClientRpc]
 //		// called on server, runs on clients
@@ -267,12 +266,12 @@ namespace FightingLegends
 			if (!isServer)
 				return;
 
-			RpcQuitFight();
+//			networkFightManager.NextRound(roundNumber);
 		}
 			
 		[ClientRpc]
 		// called on server, runs on clients
-		private void RpcNextRound(int roundNumber)
+		public void RpcNextRound(int roundNumber)
 		{
 			if (!isLocalPlayer)
 				return;

@@ -58,7 +58,8 @@ namespace FightingLegends
 				Fighter2Colour = colour;
 			}
 
-			fightStarted = TrySyncStartFight();
+			if (CanStartFight)
+				fightStarted = SyncStartFight();
 		}
 
 		[Server]
@@ -69,27 +70,26 @@ namespace FightingLegends
 			
 			SelectedLocation = location;
 
-			fightStarted = TrySyncStartFight();
+			if (CanStartFight)
+				fightStarted = SyncStartFight();
 		}
 			
 
 		[Server]
-		private bool TrySyncStartFight()
+		private bool SyncStartFight()
 		{
-			if (CanStartFight)
-			{
-				// doesn't matter which player invokes the RPC
-				// might as well be player1 as the host / initiator...
-				player1.RpcStartFight(Fighter1Name, Fighter1Colour, Fighter2Name, Fighter2Colour, SelectedLocation);
+			if (!CanStartFight)
+				return false;
 
-				// reset for next fight
-				ResetFighters();
+			// doesn't matter which player invokes the RPC
+			// might as well be player1 as the host / initiator...
+			player1.RpcStartFight(Fighter1Name, Fighter1Colour, Fighter2Name, Fighter2Colour, SelectedLocation);
+
+			// reset for next fight
+			ResetFighters();
 
 //				RpcNetworkMessage(NetworkMessageType.None);		// disable
-				return true;
-			}
-
-			return false;
+			return true;
 		}
 
 
@@ -105,6 +105,15 @@ namespace FightingLegends
 			SelectedLocation = "";
 
 			fightStarted = false;
+		}
+
+
+		[Server]
+		private void SyncNextRound(int roundNumber)
+		{
+			// doesn't matter which player invokes the RPC
+			// might as well be player1 as the host / initiator...
+			player1.RpcNextRound(roundNumber);
 		}
 	}
 }
