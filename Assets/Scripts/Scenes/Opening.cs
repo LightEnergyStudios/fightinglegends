@@ -77,7 +77,7 @@ namespace FightingLegends
 		private void OnLogoDrums()
 		{
 //			Debug.Log("OnLogoDrums");
-			StartCoroutine(WhiteFlash());
+//			StartCoroutine(WhiteFlash());
 
 			PreloadCombat();	
 			fightingLegends.enabled = true;	

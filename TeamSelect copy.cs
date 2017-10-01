@@ -84,7 +84,7 @@ namespace FightingLegends
 			set
 			{
 				upLoadingChallenge = value;
-				uploadButton.interactable = CanUploadChallenge; // !upLoadingChallenge;	
+				uploadButton.interactable = CanUpload; //!upLoadingChallenge;	
 
 				if (upLoadingChallenge)
 				{
@@ -98,13 +98,13 @@ namespace FightingLegends
 				}
 			}
 		}
-
-		private bool CanUploadChallenge
+			
+		private bool CanUpload
 		{
 			get
 			{
 				bool challengeUploaded = FightManager.UserLoginProfile != null && FightManager.UserLoginProfile.ChallengeKey != "";
-				return internetReachable && selectedTeam.Count > 0 && !upLoadingChallenge && !challengeUploaded;
+				return internetReachable && selectedTeam.Count > 0 && !UpLoadingChallenge && !challengeUploaded;
 			}
 		}
 
@@ -319,7 +319,7 @@ namespace FightingLegends
 				var profile = Profile.GetFighterProfile(card.FighterName);
 				if (profile != null)
 				{
-					Debug.Log("SetDeckProfiles: " + card.FighterName + ", StaticPowerUp = " + profile.StaticPowerUp + ", TriggerPowerUp = " + profile.TriggerPowerUp);
+//					Debug.Log("SetDeckProfiles: " + card.FighterName + ", StaticPowerUp = " + profile.StaticPowerUp + ", TriggerPowerUp = " + profile.TriggerPowerUp);
 					card.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(card.FighterName),
 								profile.IsLocked, profile.CanUnlock, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
@@ -450,7 +450,7 @@ namespace FightingLegends
 			if (FightManager.SavedGameStatus.UserId == "")		// button will register user if not already registered
 				uploadButton.interactable = true;
 			else
-				uploadButton.interactable = false;				// until user profile retrieved - checks for existing challenge
+				uploadButton.interactable = false;				// until user profile retrieved (CheckForChallengeResult) - checks for existing challenge
 		}
 
 		private void RemoveListeners()
@@ -770,7 +770,7 @@ namespace FightingLegends
 		{
 			bool fightersInTeam = selectedTeam.Count > 0;
 			fightButton.interactable = fightersInTeam;
-			uploadButton.interactable = CanUploadChallenge; //internetReachable && fightersInTeam;
+			uploadButton.interactable = CanUpload; //internetReachable && fightersInTeam;
 			resultButton.interactable = fightersInTeam;
 		}
 
@@ -987,6 +987,15 @@ namespace FightingLegends
 			// categories = 0;
 			StartCoroutine(HideOverlay(ChallengesOverlay));			// challenge categories
 		}
+
+		//TODO: implement!
+		private void PlayerChallenges()
+		{
+			fightManager.PlayerCreatedChallenges = true;
+
+			SetChallengesTitle();
+			StartCoroutine(RevealOverlay(ChallengesOverlay));		// challenge categories
+		}
 			
 
 		public static int ChallengePot(ChallengeData challenge)
@@ -1010,6 +1019,40 @@ namespace FightingLegends
 				var fighterRect = fighterButtonObject.GetComponent<RectTransform>();
 
 				fighterButton.SetFighterCard(FighterSprite(fighterCard.FighterName), fighterCard);
+
+//				switch (fighterCard.FighterName)
+//				{
+//					case "Shiro":
+//						fighterButton.SetFighterCard(shiroSprite, fighterCard);
+//						break;
+//					case "Natalya":
+//						fighterButton.SetFighterCard(natalyaSprite, fighterCard);
+//						break;
+//					case "Hoi Lun":
+//						fighterButton.SetFighterCard(hoiLunSprite, fighterCard);
+//						break;
+//					case "Leoni":
+//						fighterButton.SetFighterCard(leoniSprite, fighterCard);
+//						break;
+//					case "Danjuma":
+//						fighterButton.SetFighterCard(danjumaSprite, fighterCard);
+//						break;
+//					case "Jackson":
+//						fighterButton.SetFighterCard(jacksonSprite, fighterCard);
+//						break;
+//					case "Alazne":
+//						fighterButton.SetFighterCard(alazneSprite, fighterCard);
+//						break;
+//					case "Shiyang":
+//						fighterButton.SetFighterCard(shiyangSprite, fighterCard);
+//						break;
+//					case "Ninja":
+//						fighterButton.SetFighterCard(ninjaSprite, fighterCard);
+//						break;
+//					case "Skeletron":
+//						fighterButton.SetFighterCard(skeletronSprite, fighterCard);
+//						break;
+//				}
 
 				// currently clicking a fighter button has the same effect as clicking the challenge button
 				fighterCard.CardButton.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });
@@ -1348,6 +1391,8 @@ namespace FightingLegends
 				return;
 			
 			UpLoadingChallenge = true;
+			uploadButton.interactable = false;
+
 			FirebaseManager.SaveChallenge(ChallengeUploading, CategoryUploading, true); 
 		}
 
@@ -1375,7 +1420,8 @@ namespace FightingLegends
 
 			if (profile != null && userId == FightManager.SavedGameStatus.UserId)	
 			{
-				uploadButton.interactable = CanUploadChallenge; 		// one at a time
+				FightManager.UserLoginProfile = profile;
+				uploadButton.interactable = CanUpload; 		// one at a time
 
 				if (profile.ChallengeKey == "")			// no challenge uploaded
 				{
@@ -1385,7 +1431,6 @@ namespace FightingLegends
 					
 				statusText.text = FightManager.Translate("challengeUploaded");
 					
-
 				if (profile.ChallengeResult == "Won")
 					resultText.text = FightManager.Translate("youWon", false, true);
 				else if (profile.ChallengeResult == "Lost")
@@ -1490,6 +1535,9 @@ namespace FightingLegends
 
 					uploadText.text = FightManager.Translate("uploaded");
 					uploadButton.interactable = false;
+
+					// force change to user profile ChallengeKey to disallow further uploads
+					FightManager.UserLoginProfile.ChallengeKey = challenge.Key;
 				}
 				else 		// uploaded by someone else - refresh list
 				{

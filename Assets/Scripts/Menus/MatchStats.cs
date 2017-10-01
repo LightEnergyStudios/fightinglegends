@@ -91,10 +91,10 @@ namespace FightingLegends
 			{
 				if (FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)
 				{
-					if (winner != null && !winner.UnderAI)							// player won - back to mode select (eg. dojo)
-						fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
-//					if (winner != null && !winner.UnderAI)							// player won - choose next location
-//						fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
+//					if (winner != null && !winner.UnderAI)							// player won - back to mode select (eg. dojo)
+//						fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
+					if (winner != null && !winner.UnderAI)							// player won - choose next location
+						fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
 
 					// else AI won - wait for countdown or insert coin to continue
 				}

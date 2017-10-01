@@ -9,31 +9,31 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1174483276631344}
+  m_RootGameObject: {fileID: 1326031939578868}
   m_IsPrefabParent: 1
---- !u!1 &1174483276631344
+--- !u!1 &1326031939578868
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4622864489358346}
-  - component: {fileID: 114534711804142662}
-  - component: {fileID: 114760339218774768}
+  - component: {fileID: 4830068308059350}
+  - component: {fileID: 114411779173172294}
+  - component: {fileID: 114048875004514004}
   m_Layer: 0
-  m_Name: NetworkFighter
+  m_Name: NetworkFightManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4622864489358346
+--- !u!4 &4830068308059350
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1174483276631344}
+  m_GameObject: {fileID: 1326031939578868}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -41,12 +41,30 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114534711804142662
+--- !u!114 &114048875004514004
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1174483276631344}
+  m_GameObject: {fileID: 1326031939578868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ca67b072aeb24249a0d33afc1c536a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fighter1Name: 
+  Fighter1Colour: 
+  Fighter2Name: 
+  Fighter2Colour: 
+  SelectedLocation: 
+  player1: {fileID: 0}
+  player2: {fileID: 0}
+--- !u!114 &114411779173172294
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1326031939578868}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
@@ -55,36 +73,21 @@ MonoBehaviour:
   m_SceneId:
     m_Value: 0
   m_AssetId:
-    i0: 161
-    i1: 126
-    i2: 167
-    i3: 70
-    i4: 20
-    i5: 94
-    i6: 68
-    i7: 221
-    i8: 137
-    i9: 155
-    i10: 168
-    i11: 45
-    i12: 16
-    i13: 147
-    i14: 169
-    i15: 163
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
---- !u!114 &114760339218774768
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1174483276631344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fca6ed10a763c4c808d23cc59737a9b1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerNumber: 0
-  PlayerName: 
-  networkManagerPrefab: {fileID: 1326031939578868, guid: 6f36d76e3fa7e4522be0674f5f729cc3,
-    type: 2}
+    i0: 111
+    i1: 54
+    i2: 215
+    i3: 110
+    i4: 63
+    i5: 167
+    i6: 228
+    i7: 82
+    i8: 43
+    i9: 224
+    i10: 103
+    i11: 79
+    i12: 95
+    i13: 114
+    i14: 156
+    i15: 195
+  m_ServerOnly: 1
+  m_LocalPlayerAuthority: 0

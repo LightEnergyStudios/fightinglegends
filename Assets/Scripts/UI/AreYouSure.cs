@@ -28,6 +28,9 @@ namespace FightingLegends
 		public Button noButton;
 		public Text noText;
 
+		public Button okButton;
+		public Text okText;
+
 		private Action actionOnYes;
 
 		private Image hilight;			// animated
@@ -70,18 +73,21 @@ namespace FightingLegends
 //			yesText.text = FightManager.Translate("yesPlease", false, true);
 			yesText.text = FightManager.Translate("yes", false, true);
 			noText.text = FightManager.Translate("noThanks", false, true);
+			okText.text = FightManager.Translate("ok", false, true);
 		}
 
 		private void OnEnable()
 		{
 			yesButton.onClick.AddListener(YesClicked);
 			noButton.onClick.AddListener(NoClicked);
+			okButton.onClick.AddListener(OkClicked);
 		}
 
 		private void OnDisable()
 		{
 			yesButton.onClick.RemoveListener(YesClicked);
 			noButton.onClick.RemoveListener(NoClicked);
+			okButton.onClick.RemoveListener(OkClicked);
 
 			ClearPowerUpDetails();
 		}
@@ -89,7 +95,7 @@ namespace FightingLegends
 		public void Confirm(string message, int coins, Action onConfirm)
 		{
 			actionOnYes = onConfirm;
-			StartCoroutine(Show(message, coins));
+			StartCoroutine(Show(message, coins, false));
 		}
 
 		public void Confirm(PowerUpDetails powerUpDetails, Action onConfirm)
@@ -97,13 +103,22 @@ namespace FightingLegends
 			actionOnYes = onConfirm;
 			StartCoroutine(Show(powerUpDetails));
 		}
+
+		public void ConfirmOk(string message, int coins)
+		{
+			StartCoroutine(Show(message, coins, true));
+		}
 			
-		private IEnumerator Show(string message, int coins)
+		private IEnumerator Show(string message, int coins, bool okOnly)
 		{
 			if (string.IsNullOrEmpty(message))
 				ConfirmMessage.text = "Are you sure?";
 			else
 				ConfirmMessage.text = message;
+
+			yesButton.gameObject.SetActive(!okOnly);
+			noButton.gameObject.SetActive(!okOnly);
+			okButton.gameObject.SetActive(okOnly);
 
 			background.enabled = true;
 			panel.gameObject.SetActive(true);
@@ -139,6 +154,8 @@ namespace FightingLegends
 		{
 			if (powerUpDetails == null)
 				yield break;
+
+			okButton.gameObject.SetActive(false);
 
 			PowerUpIcon.sprite = powerUpDetails.Icon;
 			PowerUpName.text = powerUpDetails.Name;
@@ -252,6 +269,17 @@ namespace FightingLegends
 			if (NoSound != null)
 				AudioSource.PlayClipAtPoint(NoSound, Vector3.zero, FightManager.SFXVolume);
 			
+			StartCoroutine(Hide());
+
+			if (OnCancelConfirm != null)
+				OnCancelConfirm();
+		}
+
+		private void OkClicked()
+		{
+			if (YesSound != null)
+				AudioSource.PlayClipAtPoint(YesSound, Vector3.zero, FightManager.SFXVolume);
+
 			StartCoroutine(Hide());
 
 			if (OnCancelConfirm != null)

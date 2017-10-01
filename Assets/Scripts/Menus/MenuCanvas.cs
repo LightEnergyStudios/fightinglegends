@@ -139,7 +139,7 @@ namespace FightingLegends
 
 			SetOverlayTheme(overlay, FightManager.SavedGameStatus.Theme, FightManager.ThemeHeader, FightManager.ThemeFooter);
 
-			yield return StartCoroutine(FightManager.FadeImage(overlay, overlayFadeTime, false, FadeSound, Color.white));
+			yield return StartCoroutine(FightManager.FadePanel(overlay, overlayFadeTime, false, FadeSound, Color.white));
 			revealingPanel = false;
 		
 			if (OnOverlayRevealed != null)
@@ -157,15 +157,6 @@ namespace FightingLegends
 				OnOverlayHiding(overlay, OverlayStack.Count);
 			else
 				StartCoroutine(FadeOverlay(overlay));
-			
-//			OverlayStack.Pop();
-//
-//			hidingPanel = true;
-//			yield return StartCoroutine(FightManager.FadeImage(overlay, overlayFadeTime, true, FadeSound, Color.white));
-//			hidingPanel = false;
-//
-//			if (OnOverlayHidden != null)
-//				OnOverlayHidden(overlay, OverlayStack.Count);
 				
 			yield return null;
 		}
@@ -175,7 +166,7 @@ namespace FightingLegends
 			OverlayStack.Pop();
 
 			hidingPanel = true;
-			yield return StartCoroutine(FightManager.FadeImage(overlay, overlayFadeTime, true, FadeSound, Color.white));
+			yield return StartCoroutine(FightManager.FadePanel(overlay, overlayFadeTime, true, FadeSound, Color.white));
 			hidingPanel = false;
 
 			if (OnOverlayHidden != null)

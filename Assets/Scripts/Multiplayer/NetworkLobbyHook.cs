@@ -8,6 +8,7 @@ namespace Prototype.NetworkLobby
 {
 	public class NetworkLobbyHook : LobbyHook
 	{
+		// transfer player number and name from lobby player to game player
 		public override void OnLobbyServerSceneLoadedForPlayer(NetworkManager networkManager, GameObject lobbyPlayer, GameObject gamePlayer)
 		{
 			LobbyPlayer lobby = lobbyPlayer.GetComponent<LobbyPlayer>();

@@ -77,9 +77,9 @@ namespace FightingLegends
 			coinsPanel.gameObject.SetActive(showCoins);
 			kudosPanel.gameObject.SetActive(showKudos);
 
-			if (newMenu == MenuType.Combat)
-				backButton.image.sprite = FightManager.IsNetworkFight ? backImage : pauseImage;		// confirm quit fight
-			else
+//			if (newMenu == MenuType.Combat)
+//				backButton.image.sprite = FightManager.IsNetworkFight ? backImage : pauseImage;		// confirm quit fight
+//			else
 				backButton.image.sprite = backImage;
 
 //			settingsButton.image.sprite = settingsImage;

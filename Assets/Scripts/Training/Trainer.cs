@@ -564,7 +564,7 @@ namespace FightingLegends
 				}
 
 				// fade in
-				StartCoroutine(FightManager.FadeImage(feedbackUI.NarrativePanel, narrativeFadeTime, false, null, narrativeColour));
+				StartCoroutine(FightManager.FadePanel(feedbackUI.NarrativePanel, narrativeFadeTime, false, null, narrativeColour));
 				yield return StartCoroutine(FightManager.FadeText(feedbackUI.TrainingNarrative, narrativeFadeTime, false));
 
 				// flash traffic light
@@ -604,7 +604,7 @@ namespace FightingLegends
 				feedbackUI.TrainingImage.sprite = null;
 
 				StartCoroutine(FightManager.FadeText(feedbackUI.TrainingNarrative, narrativeFadeTime, true));
-				yield return StartCoroutine(FightManager.FadeImage(feedbackUI.NarrativePanel, narrativeFadeTime, true, null, narrativeColour));
+				yield return StartCoroutine(FightManager.FadePanel(feedbackUI.NarrativePanel, narrativeFadeTime, true, null, narrativeColour));
 			}
 
 			yield return null;

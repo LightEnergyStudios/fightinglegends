@@ -157,6 +157,9 @@ namespace FightingLegends
 			if (ok && OnProfileLoaded != null)
 				OnProfileLoaded(profile);
 
+//			if (ok)
+//				Debug.Log("LoadProfile: " + fighterName + ", StaticPowerUp = " + profile.StaticPowerUp + ", TriggerPowerUp = " + profile.TriggerPowerUp);
+
 			return ok;
 		}
 
@@ -168,7 +171,7 @@ namespace FightingLegends
 		}
 
 
-		public static void InitFighterProfile(string fighterName, bool isLocked, int unlockOrder, int unlockCoins, int unlockDefeats, AIDifficulty unlockDifficulty, int Level, float XP)
+		public static void InitFighterLockStatus(string fighterName, bool isLocked, int unlockOrder, int unlockCoins, int unlockDefeats, AIDifficulty unlockDifficulty) //, int Level, float XP)
 		{
 			var profile = new SavedProfile();
 
@@ -182,8 +185,8 @@ namespace FightingLegends
 			profile.UnlockDefeats = unlockDefeats;
 			profile.UnlockDifficulty = unlockDifficulty;
 
-			profile.Level = Level;
-			profile.XP = profile.TotalXP = XP;
+			profile.Level = 1; // Level;
+			profile.XP = profile.TotalXP = 0; // XP;
 
 //			// TODO: remove!
 //			profile.StaticPowerUp = Store.RandomStaticPowerUp;

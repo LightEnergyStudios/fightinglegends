@@ -2519,7 +2519,10 @@ namespace FightingLegends
 			if (OnNextRound != null)
 				OnNextRound(RoundNumber);
 
-			yield return StartCoroutine(NewRoundFeedback());						// ReadyToFight set to true at end of feedback
+//			if (! FightManager.IsNetworkFight)								// start of next round synced by server
+				yield return StartCoroutine(NewRoundFeedback());			// ReadyToFight set to true at end of feedback
+		
+//			yield return null;
 		}
 
 
@@ -2573,12 +2576,14 @@ namespace FightingLegends
 			var nextFighter = CreateFighter(nextFighterCard.FighterName, player1 ? nextFighterCard.FighterColour : AIFighterColour, !player1, false);
 			nextFighter.transform.position = GetFighterPosition(player1, true, false);
 			nextFighter.transform.localScale = player1 ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
-			nextFighter.ResetHealth();			// set initial health
+//			nextFighter.ResetHealth();			// set initial health
 
 			nextFighter.Level = nextFighterCard.Level;
 			nextFighter.XP = nextFighterCard.XP;
 			nextFighter.TriggerPowerUp = nextFighterCard.TriggerPowerUp;
 			nextFighter.StaticPowerUp = nextFighterCard.StaticPowerUp;
+
+			nextFighter.ResetHealth();			// set initial health - according to level
 
 			// put next fighter into Player1 / Player2 slot
 			if (player1)
@@ -3182,7 +3187,7 @@ namespace FightingLegends
 		}
 
 
-		public static IEnumerator FadeImage(Image panel, float fadeTime, bool fadeOut, AudioClip fadeSound, Color background)
+		public static IEnumerator FadePanel(Image panel, float fadeTime, bool fadeOut, AudioClip fadeSound, Color background)
 		{
 			// save colour and scale so they can be restored at the end of lerps
 			var panelColour = background; // Color.white; //  panel.color;
@@ -3645,9 +3650,17 @@ namespace FightingLegends
 		// multiplayer - direct from lobby
 		private void NetworkFighterSelect()
 		{
+//			if (curtain != null)
+//			{
+//				curtain.gameObject.SetActive(true);
+//				yield return StartCoroutine(curtain.FadeToBlack());
+//			}
+//
 			BaseModeSelectMenu();			// not shown / broadcast
+
 			ActivateMenu(MenuType.ArcadeFighterSelect); 
 			SceneSettings.DirectToFighterSelect = false;
+//			yield return null;
 		}
 			
 		private IEnumerator FirstPlayerExperience()
@@ -3844,7 +3857,7 @@ namespace FightingLegends
 			ActivateMenu(MenuPeek(), false, backClicked);
 		}
 
-		private bool ActivateMenu(MenuType menu, bool push = true, bool navigatingBack = false) //, bool fromModeSelect = false)
+		private bool ActivateMenu(MenuType menu, bool push = true, bool navigatingBack = false)
 		{
 			if (menu == MenuType.Combat)				// fight music according to location
 				sceneryManager.PlayCurrentSceneryTrack();
@@ -3859,9 +3872,6 @@ namespace FightingLegends
 
 			DeactivateCurrentMenu();
 			CurrentMenuCanvas = menu;		// not necessarily on stack (eg. pauseSettings)
-
-//			if (fromModeSelect)							// direct from lobby (opening scene)
-//				navigatedFrom = MenuType.ModeSelect;			// to enable back button
 			
 			if (!navigatingBack)
 				CurrentMenu.NavigatedFrom = navigatedFrom;
@@ -4062,6 +4072,11 @@ namespace FightingLegends
 		public static void GetPowerUpConfirmation(PowerUpDetails powerUpDetails, Action actionOnYes)
 		{
 			areYouSure.Confirm(powerUpDetails, actionOnYes);
+		}
+
+		public static void GetOkConfirmation(string message, int coins)
+		{
+			areYouSure.ConfirmOk(message, coins);
 		}
 
 		public static void InsertCoinToPlay(Action actionOnYes, string message = "", int coins = 1)
@@ -4997,19 +5012,19 @@ namespace FightingLegends
 			Profile.DeleteFighterProfile("Skeletron");	
 
 			// all but Leoni and Shiro locked
-			Profile.InitFighterProfile("Leoni", false, 0, 0, 0, AIDifficulty.Easy, 12, 80.0f);	
-			Profile.InitFighterProfile("Shiro", false, 0, 0, 0, AIDifficulty.Easy, 6, 30.0f);	
+			Profile.InitFighterLockStatus("Leoni", false, 0, 0, 0, AIDifficulty.Easy); // 12, 80.0f);	
+			Profile.InitFighterLockStatus("Shiro", false, 0, 0, 0, AIDifficulty.Easy); // 6, 30.0f);	
 
-			Profile.InitFighterProfile("Danjuma", false, 1, 200, 3, AIDifficulty.Easy, 1, 16.0f);	
-			Profile.InitFighterProfile("Natalya", false, 1, 200, 3, AIDifficulty.Easy, 4, 75.0f);	
-			Profile.InitFighterProfile("Hoi Lun", false, 2, 500, 5, AIDifficulty.Medium, 1, 4.0f);	
-			Profile.InitFighterProfile("Jackson", false, 2, 500, 5, AIDifficulty.Medium, 8, 42.0f);
+			Profile.InitFighterLockStatus("Danjuma", false, 1, 200, 3, AIDifficulty.Easy); // 1, 16.0f);	
+			Profile.InitFighterLockStatus("Natalya", false, 1, 200, 3, AIDifficulty.Easy); // 4, 75.0f);	
+			Profile.InitFighterLockStatus("Hoi Lun", false, 2, 500, 5, AIDifficulty.Medium); // 1, 4.0f);	
+			Profile.InitFighterLockStatus("Jackson", false, 2, 500, 5, AIDifficulty.Medium); // 8, 42.0f);
 
-			Profile.InitFighterProfile("Alazne", false, 3, 700, 7, AIDifficulty.Hard, 2, 62.0f);	
-			Profile.InitFighterProfile("Shiyang", false, 3, 700, 7, AIDifficulty.Hard, 3, 12.0f);	
+			Profile.InitFighterLockStatus("Alazne", false, 3, 700, 7, AIDifficulty.Hard); // 2, 62.0f);	
+			Profile.InitFighterLockStatus("Shiyang", false, 3, 700, 7, AIDifficulty.Hard); //  3, 12.0f);	
 
-			Profile.InitFighterProfile("Ninja", false, 4, 900, 9, AIDifficulty.Brutal, 1, 0);	
-			Profile.InitFighterProfile("Skeletron", false, 5, 1100, 11, AIDifficulty.Brutal, 1, 0);	
+			Profile.InitFighterLockStatus("Ninja", false, 4, 900, 9, AIDifficulty.Brutal); //  1, 0);	
+			Profile.InitFighterLockStatus("Skeletron", false, 5, 1100, 11, AIDifficulty.Brutal); //  1, 0);	
 
 			CleanupFighters();
 			StartGame();

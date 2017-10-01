@@ -34,6 +34,7 @@ namespace FightingLegends
 		private Animator animator;
 		bool entryTriggered = false;
 
+		private bool internetReachable = false;
 
 
 		public void Awake()
@@ -46,6 +47,8 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
+			CheckInternet();
+
 			arcadeModeButton.onClick.AddListener(ArcadeMode);
 			survivalModeButton.onClick.AddListener(SurvivalMode);
 			challengeModeButton.onClick.AddListener(ChallengeMode);
@@ -53,17 +56,8 @@ namespace FightingLegends
 //			trainingButton.onClick.AddListener(Training);
 			networkFightButton.onClick.AddListener(NetworkFight);
 
-//			if (SceneSettings.DirectToFighterSelect)
-//			{
-//				SceneSettings.DirectToFighterSelect = false;
-//				FightManager.IsNetworkFight = true;
-//				ArcadeMode();
-//			}
-//			else
-			{
-				animator.SetTrigger("EnterModes");
-				entryTriggered = true;
-			}
+			animator.SetTrigger("EnterModes");
+			entryTriggered = true;
 
 			if (entryAudio != null)
 				AudioSource.PlayClipAtPoint(entryAudio, Vector3.zero, FightManager.SFXVolume);
@@ -115,6 +109,12 @@ namespace FightingLegends
 		public void OnDestroy()
 		{
 			FightManager.OnThemeChanged -= SetTheme;
+		}
+
+		private void CheckInternet()
+		{
+			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
+			networkFightButton.interactable = internetReachable;
 		}
 
 		private void ArcadeMode()

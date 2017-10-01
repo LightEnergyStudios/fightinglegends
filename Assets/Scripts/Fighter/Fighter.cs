@@ -5702,12 +5702,13 @@ namespace FightingLegends
 					FightManager.SavedGameStatus.NinjaSchoolFight = false;
 				}
 				else
+				{
 					yield return StartCoroutine(fightManager.NextRound(false));		// return to default with same fighters and scenery
+				}
 			}
 
 			yield return null;
 		}
-			
 			
 		protected virtual void ReadyToKO(HitFrameData hitData)
 		{
