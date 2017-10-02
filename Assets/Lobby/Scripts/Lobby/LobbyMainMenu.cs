@@ -19,6 +19,8 @@ namespace Prototype.NetworkLobby
 		public Button JoinButton;	// LAN
 		public Text JoinText;		// find -> join
 
+		private bool listeningforHost = false;		// so can cancel if no host found
+
         public void OnEnable()
         {
             lobbyManager.topPanel.ToggleVisibility(true);
@@ -45,13 +47,15 @@ namespace Prototype.NetworkLobby
 
 		private void EnableHostButton()
 		{
-			HostButton.interactable = !lobbyManager.networkDiscovery.isClient;		// can't host if listening for host broadcast
+			HostButton.interactable = !listeningforHost && !lobbyManager.networkDiscovery.isClient;		// can't host if listening for host broadcast
 		}
 
 		private void ConfigJoinButton()
 		{
-			JoinText.text = string.IsNullOrEmpty(ipInput.text) ? "FIND A GAME" : "JOIN GAME";
-//			JoinButton.interactable = !string.IsNullOrEmpty(ipInput.text);
+			if (listeningforHost)
+				JoinText.text = "STOP LISTENING";
+			else
+				JoinText.text = string.IsNullOrEmpty(ipInput.text) ? "FIND A GAME" : "JOIN GAME";
 		}
 
         public void OnClickHost()
@@ -63,15 +67,32 @@ namespace Prototype.NetworkLobby
 		private void HostIPReceived(string hostIP)
 		{
 			ipInput.text = hostIP;
+			listeningforHost = false;
 
-			ConfigJoinButton();			// join game
+			// join game immediately host ip received
+			OnClickJoin();				// start client
+
+			// click button again to join game
+//			ConfigJoinButton();			
+//			EnableHostButton();
 		}
 
         public void OnClickJoin()
         {
+			if (listeningforHost)
+			{
+				lobbyManager.networkDiscovery.StopBroadcast();
+				listeningforHost = false;
+				ConfigJoinButton();
+				EnableHostButton();	
+				return;
+			}
+
 			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game
 			{
 				lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
+				listeningforHost = true;
+				ConfigJoinButton();
 				EnableHostButton();					// can't host if listening for host broadcast
 				return;
 			}
@@ -84,7 +105,7 @@ namespace Prototype.NetworkLobby
             lobbyManager.backDelegate = lobbyManager.StopClientClbk;
             lobbyManager.DisplayIsConnecting();
 
-            lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
+            lobbyManager.SetServerInfo("CONNECTING...", lobbyManager.networkAddress);
         }
 	
 

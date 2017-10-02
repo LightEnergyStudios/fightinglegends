@@ -29,11 +29,16 @@ namespace FightingLegends
 		private bool HasPlayers { get { return player1 != null && player2 != null; }}
 		private bool CanStartFight { get { return HasPlayers && !fightStarted && Fighter1Set && Fighter2Set && LocationSet; }}
 
-
 		private bool Player1ReadyToFight = false;
 		private bool Player2ReadyToFight = false;
 
+		private const int StartFightTimeout = 30;		// once NetworkFighters spawned - waiting to select fighters and location
+		private const int StartFightWarning = 5;		// on-screen countdown
 
+		private IEnumerator startFightCoroutine = null;
+
+
+		// called from lobby -> combat scene change hook
 		[Server]
 		public void SetPlayer(NetworkFighter player)
 		{
@@ -42,6 +47,15 @@ namespace FightingLegends
 				player1 = player;
 			else
 				player2 = player;
+
+			if (HasPlayers)
+			{
+				if (startFightCoroutine != null)
+					StopCoroutine(startFightCoroutine);
+
+				startFightCoroutine = StartFightCountdown();
+				StartCoroutine(startFightCoroutine);
+			}
 		}
 
 
@@ -82,8 +96,12 @@ namespace FightingLegends
 		[Server]
 		private bool SyncStartFight()
 		{
-			if (!CanStartFight)
+			if (! CanStartFight)
 				return false;
+
+			// stop timeout countdown
+			if (startFightCoroutine != null)
+				StopCoroutine(startFightCoroutine);
 
 			// doesn't matter which player invokes the RPC
 			// might as well be player1 as the host / initiator...
@@ -99,6 +117,21 @@ namespace FightingLegends
 			return true;
 		}
 
+		[Server]
+		private IEnumerator StartFightCountdown()
+		{
+			for (int i = StartFightTimeout; i >= 0; i--)
+			{
+				if (i <= StartFightWarning)
+					player1.RpcStartExpiryCounter(i);				// on-screen countdown for last few seconds of timeout
+
+				yield return new WaitForSeconds(1.0f);
+			}
+				
+			player1.RpcExpireStartFight();							// back to mode select
+			yield return null;
+		}
+
 
 		[Server]
 		public void ReadyToFight(bool isPlayer1, bool ready)
@@ -109,7 +142,12 @@ namespace FightingLegends
 				Player2ReadyToFight = true;
 
 			if (Player1ReadyToFight && Player2ReadyToFight)
+			{
+				Player1ReadyToFight = false;
+				Player2ReadyToFight = false;
+
 				SyncReadyToFight(ready);
+			}
 		}
 
 		[Server]

@@ -72,6 +72,9 @@ namespace Prototype.NetworkLobby
 
 		private NetworkFightManager networkFightManager;
 
+		private const int LobbyTimeout = 30;			// once NetworkFighters spawned - waiting to select fighters and location
+		private IEnumerator expiryCountdownCoroutine = null;
+
 
 		void Start()
 		{
@@ -90,8 +93,6 @@ namespace Prototype.NetworkLobby
 
 			curtain.gameObject.SetActive(false);
 			curtain.color = Color.clear;
-
-//			networkDiscovery.Initialize();
 
 //			SceneManager.activeSceneChanged += OnActiveSceneChanged;					// on 100% load
 
@@ -122,8 +123,6 @@ namespace Prototype.NetworkLobby
 				lobbyUIPanel.gameObject.SetActive(true);
 				GetComponent<Animator>().SetTrigger("LobbyEntry");
 			}
-
-			networkDiscovery.Initialize();
 
 			backDelegate = QuitLobby;
 
@@ -190,17 +189,42 @@ namespace Prototype.NetworkLobby
 			SceneSettings.ShowLobbyUI = false;
 			SceneSettings.DirectToFighterSelect = false;
 
-//			Network.Disconnect();		// TODO: ok?
+			NetworkServer.Shutdown();		// TODO: ok?
 		}
 
+		// broadcast for client to discover
 		public void BroadcastHostIP()
 		{
+			networkDiscovery.Initialize();
 			networkDiscovery.StartAsServer();
 		}
 
+		// start listening for host IP broadcast
 		public void DiscoverHostIP()
 		{
+			networkDiscovery.Initialize();
 			networkDiscovery.StartAsClient();
+		}
+
+		private void StartTimeoutCountdown()
+		{
+			if (expiryCountdownCoroutine != null)
+				StopCoroutine(expiryCountdownCoroutine);
+
+			expiryCountdownCoroutine = StartExpiryCountdown();
+			StartCoroutine(expiryCountdownCoroutine);
+		}
+
+		private IEnumerator StartExpiryCountdown()
+		{
+			for (int i = LobbyTimeout; i >= 0; i--)
+			{
+				Debug.Log("StartLobbyCountdown: " + i);
+				yield return new WaitForSeconds(1.0f);
+			}
+
+			NetworkServer.Shutdown();
+			yield return null;
 		}
 
 //		private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
@@ -385,8 +409,7 @@ namespace Prototype.NetworkLobby
 			{
 				StopHost();
 			}
-
-
+				
 			ChangeTo(mainMenuPanel);
 		}
 
@@ -429,6 +452,8 @@ namespace Prototype.NetworkLobby
 			ChangeTo(lobbyPanel);
 			backDelegate = StopHostClbk;
 			SetServerInfo("Hosting", networkAddress);
+
+			StartTimeoutCountdown();		// TODO: here??
 		}
 
 		public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
@@ -540,7 +565,7 @@ namespace Prototype.NetworkLobby
 				_lobbyHooks.OnLobbyServerSceneLoadedForPlayer(this, lobbyPlayer, gamePlayer);
 
 			if (networkFightManager == null)
-				SpawnNetworkFightManager();			// server only - to sync start fight / round / quit fight etc.
+				SpawnNetworkFightManager();			// server only - to sync start fight / ready to fight / quit fight etc.
 
 			NetworkFighter localPlayer = gamePlayer.GetComponent<NetworkFighter>();
 			localPlayer.SetFightManager(networkFightManager);
@@ -560,8 +585,13 @@ namespace Prototype.NetworkLobby
 			}
 
 			if (allready)
+			{
+				if (expiryCountdownCoroutine != null)
+					StopCoroutine(expiryCountdownCoroutine);
+				
 				ServerChangeScene(playScene);
 //				StartCoroutine(ServerCountdownCoroutine());
+			}
 		}
 
 
@@ -622,6 +652,8 @@ namespace Prototype.NetworkLobby
 			infoPanel.gameObject.SetActive(false);
 
 			conn.RegisterHandler(MsgKicked, KickedMessageHandler);
+
+			StartTimeoutCountdown();		// TODO: here???
 
 			if (!NetworkServer.active)
 			{

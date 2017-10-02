@@ -34,7 +34,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013258189770}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -113,6 +113,7 @@ MonoBehaviour:
   KOSound: {fileID: 8300000, guid: 72640739509dd47c78c5187bc81a3dc6, type: 3}
   SuccessSound: {fileID: 8300000, guid: 9a22579c1e42648719e5e8838683ad2a, type: 3}
   RoundSound: {fileID: 8300000, guid: c2e8bf39937ab4722b2adc328479646b, type: 3}
+  ReadyToFightSound: {fileID: 8300000, guid: dd7abd2dcffeb4fd1a19e2711d965fd4, type: 3}
   FightSound: {fileID: 8300000, guid: dce43835534fa49deb83667241d910d6, type: 3}
   OKSound: {fileID: 8300000, guid: 775d400e6e76d4e08b05a038bcf2fd4e, type: 3}
   BlingSound: {fileID: 8300000, guid: 8b77febbd0579426fbee857dd2928daf, type: 3}
@@ -136,7 +137,6 @@ MonoBehaviour:
   TrainingPromptSound: {fileID: 8300000, guid: fa441a6ed23df4467b1d430d83a214b3, type: 3}
   Player1: {fileID: 0}
   Player2: {fileID: 0}
-  IsMobileDevice: 1
   CurrentMenuCanvas: 0
   matchStats: {fileID: 0}
   MatchStatsChoice: 0

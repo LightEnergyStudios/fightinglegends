@@ -19,6 +19,7 @@ namespace FightingLegends
 
 		private NetworkFightManager networkFightManager;	// server only
 
+		private const string feedbackLayer = "Curtain";		// so curtain camera picks it up
 		private const float exitFightPause = 3.0f;		// network message displayed
 
 		private FightManager fightManager;
@@ -228,11 +229,25 @@ namespace FightingLegends
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
 		}
 
+		[ClientRpc]
+		// called on server, runs on clients
+		public void RpcStartExpiryCounter(int counter)
+		{
+//			Debug.Log("RpcStartExpiryCounter: " + counter);
+			fightManager.TriggerNumberFX(counter, 0, 0, feedbackLayer, false);		// beep sound
+		}
 
+		[ClientRpc]
+		// called on server, runs on clients
+		public void RpcExpireStartFight()
+		{
+//			Debug.Log("RpcExpireStartFight");
+			fightManager.StartNetworkFightTimeout();		// players failed to start fight - back to mode select
+		}
 
 		// FightManager.OnNetworkReadyToFight
 		[Client]
-		private void ReadyToFight(bool ready, bool changed)
+		private void ReadyToFight(bool ready)
 		{
 			if (!isLocalPlayer)
 				return;
@@ -386,6 +401,7 @@ namespace FightingLegends
 
 		#region gesture handlers
 
+		[Client]
 		private void SingleFingerTap()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -395,6 +411,7 @@ namespace FightingLegends
 				CmdSingleFingerTap(IsPlayer1);	
 		}
 
+		[Client]
 		private void HoldDown()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -404,6 +421,7 @@ namespace FightingLegends
 				CmdHoldDown(IsPlayer1);	
 		}
 
+		[Client]
 		private void HoldRelease()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -413,6 +431,7 @@ namespace FightingLegends
 				CmdHoldRelease(IsPlayer1);	
 		}
 
+		[Client]
 		private void SwipeLeft()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -422,6 +441,7 @@ namespace FightingLegends
 				CmdSwipeLeft(IsPlayer1);	
 		}
 
+		[Client]
 		private void SwipeRight()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -431,6 +451,7 @@ namespace FightingLegends
 				CmdSwipeRight(IsPlayer1);	
 		}
 
+		[Client]
 		private void SwipeLeftRight()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -440,6 +461,7 @@ namespace FightingLegends
 				CmdSwipeLeftRight(IsPlayer1);	
 		}
 
+		[Client]
 		private void SwipeDown()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -449,6 +471,7 @@ namespace FightingLegends
 				CmdSwipeDown(IsPlayer1);	
 		}
 
+		[Client]
 		private void SwipeUp()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -458,6 +481,7 @@ namespace FightingLegends
 				CmdSwipeUp(IsPlayer1);	
 		}
 
+		[Client]
 		private void TwoFingerTap()
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -467,6 +491,7 @@ namespace FightingLegends
 				CmdTwoFingerTap(IsPlayer1);	
 		}
 
+		[Client]
 		private void FingerTouch(Vector3 position)
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)
@@ -476,6 +501,7 @@ namespace FightingLegends
 				CmdFingerTouch(IsPlayer1);	
 		}
 
+		[Client]
 		private void FingerRelease(Vector3 position)
 		{
 //			if (! FightManager.SavedGameStatus.FightInProgress)

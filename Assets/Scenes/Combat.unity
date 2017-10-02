@@ -4229,31 +4229,6 @@ Prefab:
       propertyPath: options
       value: 
       objectReference: {fileID: 4182}
-    - target: {fileID: 114000011511193482, guid: eec7f291c2c2242b69e216344e171c29,
-        type: 2}
-      propertyPath: MultiPlayerFight
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000011511193482, guid: eec7f291c2c2242b69e216344e171c29,
-        type: 2}
-      propertyPath: NetworkFight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000011511193482, guid: eec7f291c2c2242b69e216344e171c29,
-        type: 2}
-      propertyPath: MatchBestOf
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 114000011511193482, guid: eec7f291c2c2242b69e216344e171c29,
-        type: 2}
-      propertyPath: IsNetworkFight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 81000013090207800, guid: eec7f291c2c2242b69e216344e171c29,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eec7f291c2c2242b69e216344e171c29, type: 2}
   m_IsPrefabParent: 0

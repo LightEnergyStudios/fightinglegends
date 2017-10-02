@@ -466,6 +466,8 @@ namespace FightingLegends
 			var player1 = fightManager.Player1;
 			var player2 = fightManager.Player2;
 
+//			Debug.Log("SetStateTrafficLight player1 = " + player1.FighterName + "/" + player1.ColourScheme + " player2 = " + player2.FighterName + "/" + player2.ColourScheme);
+
 			bool fighterCanCounter = player1.HasCounterGauge && (player1.IsIdle || player1.IsDashing || player1.IsBlockIdle || player1.IsBlockStunned);
 
 			bool AIapproaching = player2.CurrentState == State.Light_Windup || player2.CurrentState == State.Medium_Windup ||

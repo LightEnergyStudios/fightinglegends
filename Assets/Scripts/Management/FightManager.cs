@@ -107,6 +107,7 @@ namespace FightingLegends
 		public AudioClip KOSound;
 		public AudioClip SuccessSound;
 		public AudioClip RoundSound;
+		public AudioClip ReadyToFightSound;
 		public AudioClip FightSound;
 		public AudioClip OKSound;
 		public AudioClip BlingSound;
@@ -166,7 +167,10 @@ namespace FightingLegends
 
 				if (changed)
 					readyToFight = value;
-				
+
+				if (readyToFight && ReadyToFightSound != null)
+					AudioSource.PlayClipAtPoint(ReadyToFightSound, Vector3.zero, SFXVolume);
+
 				if (OnReadyToFight != null)
 					OnReadyToFight(readyToFight, changed, CombatMode);
 			}
@@ -408,7 +412,7 @@ namespace FightingLegends
 		public delegate void ReadyToFightDelegate(bool ReadyToFight, bool changed, FightMode fightMode);
 		public static ReadyToFightDelegate OnReadyToFight;
 
-		public delegate void NetworkReadyToFightDelegate(bool ReadyToFight, bool changed);
+		public delegate void NetworkReadyToFightDelegate(bool readyToFight);
 		public static NetworkReadyToFightDelegate OnNetworkReadyToFight;
 
 //		public delegate void FighterChangedDelegate(Fighter fighter, bool isPlayer1);
@@ -1965,6 +1969,13 @@ namespace FightingLegends
 			yield return null;
 		}
 
+		// took too long for both fighters to be selected
+		public void StartNetworkFightTimeout()
+		{
+			IsNetworkFight = false;
+			ActivateMenu(MenuType.ModeSelect);
+		}
+
 		public void Arcade()
 		{
 			ModeSelectChoice = MenuType.ArcadeFighterSelect;
@@ -2104,7 +2115,13 @@ namespace FightingLegends
 			if (OnNewFight != null)
 				OnNewFight(CombatMode);
 				
-			ReadyToFight = true;		// just to make sure (set by NewRoundFeedback)
+			if (IsNetworkFight)
+			{
+				if (OnNetworkReadyToFight != null)
+					OnNetworkReadyToFight(true);
+			}
+			else
+				ReadyToFight = true;		// just to make sure (set by NewRoundFeedback)
 
 			yield return null;
 		}
@@ -2669,7 +2686,15 @@ namespace FightingLegends
 			yield return StartCoroutine(NextFighterDashIn(loser.IsPlayer1, false));
 
 			Player2.StartWatching();
-			ReadyToFight = true;
+
+			if (IsNetworkFight)
+			{
+				if (OnNetworkReadyToFight != null)
+					OnNetworkReadyToFight(true);
+			}
+			else
+				ReadyToFight = true;
+			
 			yield return null;
 		}
 
@@ -2689,7 +2714,14 @@ namespace FightingLegends
 
 			Player2.StartWatching();
 
-			ReadyToFight = true;
+			if (IsNetworkFight)
+			{
+				if (OnNetworkReadyToFight != null)
+					OnNetworkReadyToFight(true);
+			}
+			else
+				ReadyToFight = true;
+			
 			yield return null;
 		}
 
@@ -3395,10 +3427,13 @@ namespace FightingLegends
 				StartCoroutine(gestureListener.FeedbackFXSparks(feedback));
 		}
 
-		public void TriggerNumberFX(int number, float xOffset = 0.0f, float yOffset = 0.0f, string layer = null)
+		public void TriggerNumberFX(int number, float xOffset = 0.0f, float yOffset = 0.0f, string layer = null, bool silent = true)
 		{
 			if (feedbackUI != null)
 				feedbackUI.TriggerNumberFX(number, xOffset, yOffset, layer);
+
+			if (!silent && ReadyToFightSound != null)
+				AudioSource.PlayClipAtPoint(ReadyToFightSound, Vector3.zero, SFXVolume);
 		}
 
 		public void TriggerRoundFX(float xOffset = 0.0f, float yOffset = 0.0f)
@@ -3466,7 +3501,14 @@ namespace FightingLegends
 			if (CombatMode == FightMode.Training)
 				yield return new WaitForSeconds(newRoundTime);			// time for fight! to play out
 
-			ReadyToFight = true;
+			if (IsNetworkFight)
+			{
+				if (OnNetworkReadyToFight != null)
+					OnNetworkReadyToFight(true);
+			}
+			else
+				ReadyToFight = true;
+			
 			yield return null;
 		}
 
