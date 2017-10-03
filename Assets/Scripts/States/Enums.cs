@@ -375,7 +375,8 @@ namespace FightingLegends
 	{
 		None = 0,
 		WaitingToStart = 1,
-		FightEnding = 2
+		FightEnding = 2,
+		Timeout = 3
 	}
 
 

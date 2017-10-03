@@ -73,7 +73,7 @@ namespace FightingLegends
 //			yesText.text = FightManager.Translate("yesPlease", false, true);
 			yesText.text = FightManager.Translate("yes", false, true);
 			noText.text = FightManager.Translate("noThanks", false, true);
-			okText.text = FightManager.Translate("ok", false, true);
+			okText.text = FightManager.Translate("ok");
 		}
 
 		private void OnEnable()

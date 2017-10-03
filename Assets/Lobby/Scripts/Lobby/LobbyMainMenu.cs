@@ -15,14 +15,31 @@ namespace Prototype.NetworkLobby
         public InputField ipInput;
         public InputField matchNameInput;
 
+		public Button StartServerButton;	// internet
+		public Text StartServerText;	
+
+		public Button FindServerButton;		// internet
+		public Text FindServerText;	
+
 		public Button HostButton;	// LAN
+		public Text HostText;
+
 		public Button JoinButton;	// LAN
 		public Text JoinText;		// find -> join
 
 		private bool listeningforHost = false;		// so can cancel if no host found
+		private bool internetReachable = false;
 
         public void OnEnable()
         {
+			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
+//			localNetworkReachable = (Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork);
+
+			StartServerButton.interactable = internetReachable;
+			FindServerButton.interactable = internetReachable;
+//			HostButton.interactable = localNetworkReachable;
+//			JoinButton.interactable = localNetworkReachable;
+			
             lobbyManager.topPanel.ToggleVisibility(true);
 
             ipInput.onEndEdit.RemoveAllListeners();
@@ -53,7 +70,7 @@ namespace Prototype.NetworkLobby
 		private void ConfigJoinButton()
 		{
 			if (listeningforHost)
-				JoinText.text = "STOP LISTENING";
+				JoinText.text = "STOP SEARCH";
 			else
 				JoinText.text = string.IsNullOrEmpty(ipInput.text) ? "FIND A GAME" : "JOIN GAME";
 		}
@@ -105,7 +122,7 @@ namespace Prototype.NetworkLobby
             lobbyManager.backDelegate = lobbyManager.StopClientClbk;
             lobbyManager.DisplayIsConnecting();
 
-            lobbyManager.SetServerInfo("CONNECTING...", lobbyManager.networkAddress);
+            lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
         }
 	
 

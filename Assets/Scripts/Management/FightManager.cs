@@ -168,6 +168,8 @@ namespace FightingLegends
 				if (changed)
 					readyToFight = value;
 
+				Debug.Log("ReadyToFight = " + readyToFight);
+
 				if (readyToFight && ReadyToFightSound != null)
 					AudioSource.PlayClipAtPoint(ReadyToFightSound, Vector3.zero, SFXVolume);
 
@@ -2462,7 +2464,7 @@ namespace FightingLegends
 				}
 			}
 
-			if (winner.UnderAI)
+			if (winner.IsPlayer2)
 			{
 				SavedGameStatus.MatchesLost++;
 				MatchWonKudos(true);

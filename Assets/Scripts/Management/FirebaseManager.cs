@@ -223,6 +223,9 @@ namespace FightingLegends
 
 					if (OnChallengeRemoved != null)
 						OnChallengeRemoved(category, challengeKey, true);	
+
+					FightManager.UserLoginProfile.ChallengeKey = "";
+					SaveUserProfile(FightManager.UserLoginProfile);
 				}
 				else
 				{

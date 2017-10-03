@@ -1452,7 +1452,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000011600005350
 GameObject:
   m_ObjectHideFlags: 1
@@ -13340,6 +13340,7 @@ MonoBehaviour:
   enterCardsAudio: {fileID: 8300000, guid: fa441a6ed23df4467b1d430d83a214b3, type: 3}
   ChallengesOverlay: {fileID: 114000012988957364}
   challengesTitle: {fileID: 114000013886099714}
+  OwnChallengeColour: {r: 1, g: 0, b: 0.29946518, a: 1}
   UploadingMessage: {fileID: 114066038582650060}
   diamondButton: {fileID: 114000011706969594}
   goldButton: {fileID: 114000012240034066}
@@ -20895,7 +20896,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000011598281824}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:

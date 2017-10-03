@@ -124,6 +124,8 @@ namespace Prototype.NetworkLobby
 				GetComponent<Animator>().SetTrigger("LobbyEntry");
 			}
 
+
+
 			backDelegate = QuitLobby;
 
 			localUserId = FightManager.SavedGameStatus.UserId;
@@ -149,8 +151,6 @@ namespace Prototype.NetworkLobby
 				networkDiscovery.StopBroadcast();
 
 			StartCoroutine(FadeLobbyUI(fadeToBlack));
-
-//			Network.Disconnect();		// TODO: ok?
 		}
 
 		private IEnumerator FadeLobbyUI(bool fadeToBlack)
@@ -188,8 +188,6 @@ namespace Prototype.NetworkLobby
 
 			SceneSettings.ShowLobbyUI = false;
 			SceneSettings.DirectToFighterSelect = false;
-
-			NetworkServer.Shutdown();		// TODO: ok?
 		}
 
 		// broadcast for client to discover
@@ -206,26 +204,26 @@ namespace Prototype.NetworkLobby
 			networkDiscovery.StartAsClient();
 		}
 
-		private void StartTimeoutCountdown()
-		{
-			if (expiryCountdownCoroutine != null)
-				StopCoroutine(expiryCountdownCoroutine);
-
-			expiryCountdownCoroutine = StartExpiryCountdown();
-			StartCoroutine(expiryCountdownCoroutine);
-		}
-
-		private IEnumerator StartExpiryCountdown()
-		{
-			for (int i = LobbyTimeout; i >= 0; i--)
-			{
-				Debug.Log("StartLobbyCountdown: " + i);
-				yield return new WaitForSeconds(1.0f);
-			}
-
-			NetworkServer.Shutdown();
-			yield return null;
-		}
+//		private void StartTimeoutCountdown()
+//		{
+//			if (expiryCountdownCoroutine != null)
+//				StopCoroutine(expiryCountdownCoroutine);
+//
+//			expiryCountdownCoroutine = StartExpiryCountdown();
+//			StartCoroutine(expiryCountdownCoroutine);
+//		}
+//
+//		private IEnumerator StartExpiryCountdown()
+//		{
+//			for (int i = LobbyTimeout; i >= 0; i--)
+//			{
+//				Debug.Log("StartLobbyCountdown: " + i);
+//				yield return new WaitForSeconds(1.0f);
+//			}
+//
+//			NetworkServer.DisconnectAll();
+//			yield return null;
+//		}
 
 //		private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
 //		{
@@ -453,7 +451,7 @@ namespace Prototype.NetworkLobby
 			backDelegate = StopHostClbk;
 			SetServerInfo("Hosting", networkAddress);
 
-			StartTimeoutCountdown();		// TODO: here??
+//			StartTimeoutCountdown();		// TODO: here??
 		}
 
 		public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
@@ -653,7 +651,7 @@ namespace Prototype.NetworkLobby
 
 			conn.RegisterHandler(MsgKicked, KickedMessageHandler);
 
-			StartTimeoutCountdown();		// TODO: here???
+//			StartTimeoutCountdown();		// TODO: here???
 
 			if (!NetworkServer.active)
 			{

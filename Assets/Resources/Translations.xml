@@ -19,6 +19,7 @@
 		<string name="waitingForOpponent">WAITING FOR OPPONENT</string>
 		<string name="opponentReady">OPPONENT READY</string>
 		<string name="fightEnding">FIGHT ENDING</string>
+		<string name="timeOut">TIMEOUT</string>
 
         <string name="redLightHeading">RED = BLOCK</string>
         <string name="greenLightHeading">GREEN = FIGHT</string>
@@ -296,11 +297,13 @@
 		<string name="youWon">YOU WON</string>
 		<string name="youLost">YOU LOST</string>
 		<string name="challengeExpires">Challenge expires</string>
-		<string name="confirmUploadChallenge">UPLOAD your challenge? Only one at a time!</string>
+		<string name="confirmUploadChallenge">UPLOAD your challenge? One at a time only!</string>
 		<string name="confirmFightChallenge">ACCEPT this challenge? There's no going back!</string>
 		<string name="confirmRemoveChallenge">REMOVE your challenge and forfeit your coins?</string>
 		<string name="uploadingChallenge">Uploading challenge</string>
 		<string name="challengeUploaded">CHALLENGE UPLOADED</string>
+		<string name="challengeAlreadyUploaded">You have already uploaded a challenge to the arena</string>
+		
 		<string name="congratulations">CONGRATULATIONS</string>
 		<string name="betterLuckNextTime">BETTER LUCK NEXT TIME</string>
 		<string name="yourTeamWon">YOUR TEAM WON THE CHALLENGE</string>

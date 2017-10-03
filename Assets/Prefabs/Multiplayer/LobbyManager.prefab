@@ -3284,7 +3284,12 @@ MonoBehaviour:
   lobbyPanel: {fileID: 224492886482346424}
   ipInput: {fileID: 114379767175402508}
   matchNameInput: {fileID: 114143572795048066}
+  StartServerButton: {fileID: 114081830095310406}
+  StartServerText: {fileID: 114691061742207416}
+  FindServerButton: {fileID: 114217727655536592}
+  FindServerText: {fileID: 114245011425667602}
   HostButton: {fileID: 114703125983681122}
+  HostText: {fileID: 114689497659452472}
   JoinButton: {fileID: 114591516279143240}
   JoinText: {fileID: 114991610573030130}
 --- !u!114 &114455576926811476

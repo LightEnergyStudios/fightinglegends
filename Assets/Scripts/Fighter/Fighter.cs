@@ -752,7 +752,7 @@ namespace FightingLegends
 					OnTopOfOpponent();
 
 				// more kudos for higher priority states
-				if (!UnderAI && increased)
+				if (IsPlayer1 && increased)
 					FightManager.IncreaseKudos(CurrentPriority);
 			}
 		}
@@ -2413,14 +2413,15 @@ namespace FightingLegends
 					StartCoroutine(colourFlashCoroutine);
 				}
 					
-				if (!UnderAI && ! IsDojoShadow)
+				if (!UnderAI && !IsDojoShadow)
 				{
 					moveCuedOk = true;
 					fightManager.MoveCuedFeedback(moveCuedOk);
+				}
 
 					// more kudos for more expensive power-ups
+				if (IsPlayer1)
 					FightManager.IncreaseKudos(ProfileData.SavedData.TriggerPowerUpCost); // * FightManager.KudosPowerUpFactor);
-				}
 
 				if (OnPowerUpTriggered != null)
 					OnPowerUpTriggered(this, TriggerPowerUp, CurrentState == State.Idle);		// stars + cool-off countdown
@@ -4644,22 +4645,26 @@ namespace FightingLegends
 				if (HitComboCount == 20)
 				{
 					IncreaseXP(FightManager.Combo20XP);
-					FightManager.IncreaseKudos(FightManager.KudosCombo20);
+					if (IsPlayer1)
+						FightManager.IncreaseKudos(FightManager.KudosCombo20);
 				}
 				else if (HitComboCount == 30)
 				{
 					IncreaseXP(FightManager.Combo30XP);
-					FightManager.IncreaseKudos(FightManager.KudosCombo30);
+					if (IsPlayer1)
+						FightManager.IncreaseKudos(FightManager.KudosCombo30);
 				}
 				else if (HitComboCount == 40)
 				{
 					IncreaseXP(FightManager.Combo40XP);
-					FightManager.IncreaseKudos(FightManager.KudosCombo40);
+					if (IsPlayer1)
+						FightManager.IncreaseKudos(FightManager.KudosCombo40);
 				}
 				else if (HitComboCount == 50)
 				{
 					IncreaseXP(FightManager.Combo50XP);
-					FightManager.IncreaseKudos(FightManager.KudosCombo50);
+					if (IsPlayer1)
+						FightManager.IncreaseKudos(FightManager.KudosCombo50);
 				}
 			}
 		}
@@ -4684,10 +4689,10 @@ namespace FightingLegends
 			if (hitData.SoundEffect != null)
 				AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
 
-			if (UnderAI)
-				fightManager.ShoveKudos(false);		// shoving AI
+			if (IsPlayer2)
+				fightManager.ShoveKudos(false);		// shoving opponent
 			else
-				fightManager.ShoveKudos(true);		// receiving shove from AI
+				fightManager.ShoveKudos(true);		// receiving shove from opponent
 		}
 			
 		private float LevelDamage(HitFrameData hitData)
@@ -4751,10 +4756,10 @@ namespace FightingLegends
 				fighterUI.FighterUIText(IsPlayer1, Mathf.RoundToInt(damage).ToString());
 
 			// update kudos (for both delivering and receiving hit), factoring in priority
-			if (UnderAI)
-				fightManager.DamageKudos(damage, CurrentPriority, false);		// more kudos for attacker (AI received hit)
+			if (IsPlayer2)
+				fightManager.DamageKudos(damage, CurrentPriority, false);		// more kudos for attacker (opponent received hit)
 			else
-				fightManager.DamageKudos(damage, CurrentPriority, true);		// less kudos if on receiving end of AI hit
+				fightManager.DamageKudos(damage, CurrentPriority, true);		// less kudos if on receiving end of opponent hit
 
 			if (Opponent.OnDamageInflicted != null)
 				Opponent.OnDamageInflicted(damage);
@@ -5549,10 +5554,10 @@ namespace FightingLegends
 			}
 
 			// update kudos - for winning or losing
-			if (UnderAI)
-				fightManager.KnockOutKudos(false);			// more kudos for KO'ing AI
+			if (IsPlayer2)
+				fightManager.KnockOutKudos(false);			// more kudos for KO'ing opponent
 			else
-				fightManager.KnockOutKudos(true);			// less kudos for being knocked out by AI
+				fightManager.KnockOutKudos(true);			// less kudos for being knocked out by opponent
 
 			var winner = Opponent;
 

@@ -608,7 +608,7 @@ namespace FightingLegends
 //			expiryDate.text = FightManager.Translate("challengeExpires") + ":\n" + expiry.ToShortDateString() + " " + expiry.ToShortTimeString();
 
 			if (string.IsNullOrEmpty(uploadChallenge.Location))
-				uploadChallenge.Location = FightManager.dojo;
+				uploadChallenge.Location = FightManager.hawaii;
 
 			SetLocation(uploadChallenge.Location);		// set as per current location
 			SetTeamCoins(true);

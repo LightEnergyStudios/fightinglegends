@@ -24,6 +24,9 @@ namespace FightingLegends
 
 		private FightManager fightManager;
 
+		private bool fighterSelected = false;			// client only
+		private bool locationSelected = false;			// client only
+
 
 		public bool IsPlayer1
 		{
@@ -43,7 +46,6 @@ namespace FightingLegends
 			fightManager = fightManagerObject.GetComponent<FightManager>();
 		}
 			
-
 
 		public void SetFightManager(NetworkFightManager fightManager)
 		{
@@ -93,13 +95,11 @@ namespace FightingLegends
 			GestureListener.OnFingerTouch += FingerTouch;			// reset moveCuedOk
 			GestureListener.OnFingerRelease += FingerRelease;		// to ensure block released
 
-			FighterSelect.OnFighterSelected += FighterSelected;
+			FighterSelect.OnFighterSelected += FighterSelected;		
 			WorldMap.OnLocationSelected += LocationSelected;
 
-//			FightManager.OnNextRound += NextRound;
-			FightManager.OnNetworkReadyToFight += ReadyToFight;
+			FightManager.OnNetworkReadyToFight += ReadyToFight;		// sync'ed via NetworkFightManager
 			FightManager.OnQuitFight += QuitFight;
-//			FightManager.OnFightPaused += PauseFight;
 		}
 
 		[Client]
@@ -125,10 +125,8 @@ namespace FightingLegends
 			FighterSelect.OnFighterSelected -= FighterSelected;
 			WorldMap.OnLocationSelected -= LocationSelected;
 
-//			FightManager.OnNextRound -= NextRound;
 			FightManager.OnNetworkReadyToFight -= ReadyToFight;
 			FightManager.OnQuitFight -= QuitFight;
-//			FightManager.OnFightPaused -= PauseFight;
 		}
 			
 		#region animation
@@ -173,15 +171,14 @@ namespace FightingLegends
 
 		#region assemble fighters and location
 
-
 		// FighterSelect.OnFighterSelected
 		[Client]
 		private void FighterSelected(Fighter fighter)
 		{
 			if (!isLocalPlayer)
 				return;
-			
-//			Debug.Log("FighterSelected: IsPlayer1 = " + IsPlayer1 + " : " + fighter.FighterName + " / " + fighter.ColourScheme);
+
+			fighterSelected = true;
 			CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);
 		}
 			
@@ -202,7 +199,8 @@ namespace FightingLegends
 		{
 			if (!isLocalPlayer)
 				return;
-			
+
+			locationSelected = true;
 			CmdSetLocation(IsPlayer1, location);
 		}
 			
@@ -216,6 +214,9 @@ namespace FightingLegends
 			networkFightManager.SetLocation(isPlayer1, location);		// starts fight (rpc) if all set (fighters and location)
 		}
 
+		#endregion
+
+		#region start fight
 
 		[ClientRpc]
 		// called on server, runs on clients
@@ -227,12 +228,15 @@ namespace FightingLegends
 				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
 			else
 				fightManager.StartNetworkArcadeFight(fighter2Name, fighter2Colour, fighter1Name, fighter1Colour, location);
+
+			fightManager.NetworkMessage("");		// disabled
 		}
 
 		[ClientRpc]
 		// called on server, runs on clients
-		public void RpcStartExpiryCounter(int counter)
+		public void RpcStartFightExpiryCounter(int counter)
 		{
+			fightManager.NetworkMessage(FightManager.Translate("timeOut"));
 //			Debug.Log("RpcStartExpiryCounter: " + counter);
 			fightManager.TriggerNumberFX(counter, 0, 0, feedbackLayer, false);		// beep sound
 		}
@@ -242,6 +246,7 @@ namespace FightingLegends
 		public void RpcExpireStartFight()
 		{
 //			Debug.Log("RpcExpireStartFight");
+			fightManager.NetworkMessage("");
 			fightManager.StartNetworkFightTimeout();		// players failed to start fight - back to mode select
 		}
 
@@ -270,66 +275,13 @@ namespace FightingLegends
 		// called on server, runs on clients
 		public void RpcReadyToFight(bool ready)
 		{
-			if (!isLocalPlayer)
-				return;
-
 			fightManager.ReadyToFight = ready;
 		}
 
-
-//		[ClientRpc]
-//		// called on server, runs on clients
-//		private void RpcNetworkMessage(NetworkMessageType messageType)
-//		{
-//			string message = "";
-//
-//			switch (messageType)
-//			{
-//				case NetworkMessageType.WaitingToStart:
-//					message = IsPlayerReady ? (FightManager.Translate("waitingForOpponent") + " ...") : (FightManager.Translate("opponentReady", false, true));
-//					break;
-//
-//				case NetworkMessageType.FightEnding:
-//					message = FightManager.Translate("fightEnding") + " ...";
-//					break;
-//
-//				default:
-//					break;
-//			}
-//
-//			fightManager.NetworkMessage(message);		// disabled if null or empty
-//		}
-
 		#endregion
 
-		// FightManager.OnNextRound
-//		[Client]
-//		private void NextRound(int roundNumber)
-//		{
-////			CmdNextRound(roundNumber);			// check with NetworkFightManager, which will call RpcNextRound if both players ready
-//		}
-//
-//		[Command]
-//		// called from client, runs on server
-//		private void CmdNextRound(int roundNumber)
-//		{
-//			if (!isServer)
-//				return;
-//
-//			networkFightManager.ReadyForNextRound(IsPlayer1, roundNumber);
-//		}
-//			
-//		[ClientRpc]
-//		// called on server, runs on clients
-//		public void RpcNextRound(int roundNumber)
-//		{
-//			if (!isLocalPlayer)
-//				return;
-//
-//			fightManager.NetworkNextRound();
-//		}
 
-		#region quit / pause fight
+		#region quit fight
 
 		// FightManager.OnQuitFight
 		[Client]
@@ -371,30 +323,38 @@ namespace FightingLegends
 			fightManager.NetworkMessage("");
 			fightManager.ExitFight();
 		}
-			
 
-//		private void PauseFight(bool paused)
-//		{
-//			if (isLocalPlayer)
-//				CmdPauseFight(paused);
-//		}
-	
-//		[Command]
-//		// called from client, runs on server
-//		private void CmdPauseFight(bool paused)
-//		{
-//			if (!isServer)
-//				return;
-//
-//			RpcPauseFight(paused);
-//		}
+		#endregion
 
-//		[ClientRpc]
-//		// called on server, runs on clients
-//		private void RpcPauseFight(bool paused)
-//		{
-//			fightManager.PauseFight(paused, false);
-//		}
+
+		#region network message
+
+		[ClientRpc]
+		// called on server, runs on clients
+		public void RpcNetworkMessage(NetworkMessageType messageType)
+		{
+			string message = "";
+
+			switch (messageType)
+			{
+				case NetworkMessageType.WaitingToStart:
+					message = locationSelected ? (FightManager.Translate("waitingForOpponent") + " ...") : (FightManager.Translate("opponentReady", false, true));
+					break;
+
+				case NetworkMessageType.FightEnding:
+					message = FightManager.Translate("fightEnding") + " ...";
+					break;
+
+				case NetworkMessageType.Timeout:
+					message = FightManager.Translate("timeOut") + " ...";
+					break;
+
+				default:
+					break;
+			}
+
+			fightManager.NetworkMessage(message);		// disabled if null or empty
+		}
 
 		#endregion
 

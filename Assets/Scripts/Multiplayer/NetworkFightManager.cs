@@ -35,7 +35,7 @@ namespace FightingLegends
 		private const int StartFightTimeout = 30;		// once NetworkFighters spawned - waiting to select fighters and location
 		private const int StartFightWarning = 5;		// on-screen countdown
 
-		private IEnumerator startFightCoroutine = null;
+		private IEnumerator startFightTimeoutCoroutine = null;
 
 
 		// called from lobby -> combat scene change hook
@@ -50,11 +50,11 @@ namespace FightingLegends
 
 			if (HasPlayers)
 			{
-				if (startFightCoroutine != null)
-					StopCoroutine(startFightCoroutine);
+				if (startFightTimeoutCoroutine != null)
+					StopCoroutine(startFightTimeoutCoroutine);
 
-				startFightCoroutine = StartFightCountdown();
-				StartCoroutine(startFightCoroutine);
+				startFightTimeoutCoroutine = StartFightTimeoutCountdown();
+				StartCoroutine(startFightTimeoutCoroutine);
 			}
 		}
 
@@ -77,7 +77,9 @@ namespace FightingLegends
 			}
 
 			if (CanStartFight)
-				fightStarted = SyncStartFight();
+				SyncStartFight();
+//			else
+//				player1.RpcNetworkMessage(NetworkMessageType.WaitingToStart);
 		}
 
 		[Server]
@@ -89,19 +91,21 @@ namespace FightingLegends
 			SelectedLocation = location;
 
 			if (CanStartFight)
-				fightStarted = SyncStartFight();
+				SyncStartFight();
+			else
+				player1.RpcNetworkMessage(NetworkMessageType.WaitingToStart);
 		}
 
 
 		[Server]
-		private bool SyncStartFight()
+		private void SyncStartFight()
 		{
 			if (! CanStartFight)
-				return false;
+				return;
 
 			// stop timeout countdown
-			if (startFightCoroutine != null)
-				StopCoroutine(startFightCoroutine);
+			if (startFightTimeoutCoroutine != null)
+				StopCoroutine(startFightTimeoutCoroutine);
 
 			// doesn't matter which player invokes the RPC
 			// might as well be player1 as the host / initiator...
@@ -113,17 +117,19 @@ namespace FightingLegends
 			Player1ReadyToFight = false;
 			Player2ReadyToFight = false;
 
-//				RpcNetworkMessage(NetworkMessageType.None);		// disable
-			return true;
+			fightStarted = true;
 		}
 
 		[Server]
-		private IEnumerator StartFightCountdown()
+		private IEnumerator StartFightTimeoutCountdown()
 		{
 			for (int i = StartFightTimeout; i >= 0; i--)
 			{
+				if (fightStarted)
+					yield break;
+				
 				if (i <= StartFightWarning)
-					player1.RpcStartExpiryCounter(i);				// on-screen countdown for last few seconds of timeout
+					player1.RpcStartFightExpiryCounter(i);			// on-screen countdown for last few seconds of timeout
 
 				yield return new WaitForSeconds(1.0f);
 			}
