@@ -9,7 +9,8 @@ namespace FightingLegends
 {
 	public class TeamSelect : MenuCanvas
 	{
-		public Button fightButton;			// select challenge category, then challenge to take on
+		public Button fightHouseButton;				// select challenge category, then house challenge to take on
+		public Button fightPlayerButton;			// select challenge category, then player challenge to take on
 		public Button uploadButton;
 		public Button resultButton;
 //		public Button powerUpButton;
@@ -19,7 +20,8 @@ namespace FightingLegends
 		public Image coin;
 		public Text costToField;
 		public Text titleText;
-		public Text fightText;
+		public Text fightHouseText;
+		public Text fightPlayerText;
 		public Text uploadText;
 		public Text resultText;
 		public Text statusText;
@@ -251,7 +253,8 @@ namespace FightingLegends
 
 			titleText.text = FightManager.Translate("pickYourTeam");
 //			fightText.text = FightManager.Translate("chooseChallenge");
-			fightText.text = FightManager.Translate("fight", false, true);
+			fightHouseText.text = FightManager.Translate("houseChallenges", true);
+			fightPlayerText.text = FightManager.Translate("playerChallenges", true);
 			uploadText.text = FightManager.Translate("upload");
 			resultText.text = FightManager.Translate("result");
 
@@ -410,7 +413,8 @@ namespace FightingLegends
 //			Debug.Log("TeamSelect.AddListeners");
 			OnOverlayHidden += OverlayHidden;
 
-			fightButton.onClick.AddListener(delegate { ShowChallengesOverlay(); });
+			fightHouseButton.onClick.AddListener(delegate { ShowChallengesOverlay(false); });
+			fightPlayerButton.onClick.AddListener(delegate { ShowChallengesOverlay(true); });
 			uploadButton.onClick.AddListener(delegate { ConfirmUploadSelectedTeam(); });
 			resultButton.onClick.AddListener(delegate { DummyChallengeRoundResults(); });
 //			powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
@@ -469,7 +473,9 @@ namespace FightingLegends
 //			Debug.Log("TeamSelect.RemoveListeners");
 			OnOverlayHidden -= OverlayHidden;
 
-			fightButton.onClick.RemoveListener(delegate { ShowChallengesOverlay(); });
+			fightHouseButton.onClick.RemoveListener(delegate { ShowChallengesOverlay(false); });
+			fightPlayerButton.onClick.AddListener(delegate { ShowChallengesOverlay(true); });
+
 			uploadButton.onClick.RemoveListener(delegate { ConfirmUploadSelectedTeam(); });
 			resultButton.onClick.RemoveListener(delegate { DummyChallengeRoundResults(); });
 
@@ -770,7 +776,8 @@ namespace FightingLegends
 		private void EnableActionButtons()
 		{
 			bool fightersInTeam = selectedTeam.Count > 0;
-			fightButton.interactable = fightersInTeam;
+			fightHouseButton.interactable = fightersInTeam;
+			fightPlayerButton.interactable = fightersInTeam;
 			uploadButton.interactable = CanUploadChallenge;
 			resultButton.interactable = fightersInTeam;
 		}
@@ -833,30 +840,33 @@ namespace FightingLegends
 
 		private void SetChallengesTitle()
 		{
+			challengesTitle.text = fightManager.PlayerCreatedChallenges ? FightManager.Translate("player") : FightManager.Translate("house");
+			challengesTitle.text += ": ";
+
 			switch (selectedCategory)
 			{
 				case ChallengeCategory.Diamond:
-					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("diamond"), selectedCategoryCount);
+					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("diamond"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Gold:
-					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("gold"), selectedCategoryCount);
+					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("gold"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Silver:
-					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("silver"), selectedCategoryCount);
+					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("silver"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Bronze:
-					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("bronze"), selectedCategoryCount);
+					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("bronze"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Iron:
-					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("iron"), selectedCategoryCount);
+					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("iron"), selectedCategoryCount);
 					break;
 
 				default:
-					challengesTitle.text = FightManager.Translate("chooseCategory");
+					challengesTitle.text += FightManager.Translate("chooseCategory");
 					break;
 			}
 		}
@@ -983,8 +993,10 @@ namespace FightingLegends
 				Debug.Log("OnChallengeAccepted: Challenge not currently available");
 		}
 
-		public void ShowChallengesOverlay()
+		public void ShowChallengesOverlay(bool playerChallenges)	// house challenges if false
 		{
+			fightManager.PlayerCreatedChallenges = playerChallenges;
+
 			SetChallengesTitle();
 			StartCoroutine(RevealOverlay(ChallengesOverlay));		// challenge categories
 		}

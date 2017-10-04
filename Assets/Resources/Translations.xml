@@ -12,7 +12,7 @@
 		<string name="challengeMode">CHALLENGE MODE</string>
 		<string name="vs">VS</string>
 		<string name="challengeTitle">LEAD A TEAM OF CHAMPIONS TO VICTORY!</string>
-		<string name="dojoTitle">TRAINING, POWER-UP AND COMMUNITY HUB</string>
+		<string name="dojoTitle">TRAINING, POWER-UPS AND LEADERBOARDS</string>
 		<string name="trainingTitle">LEARN BASIC TIMING AND TECHNIQUE</string>
 		<string name="networkTitle">LIVE CONTEST VERSUS A FRIEND!</string>
 
@@ -293,6 +293,10 @@
 		<string name="chooseCategory">CHOOSE A CATEGORY!</string>
 		<string name="upload">UPLOAD</string>
 		<string name="uploaded">UPLOADED</string>
+		<string name="house">HOUSE</string>
+		<string name="player">PLAYER</string>
+		<string name="houseChallenges">HOUSE CHALLENGES</string>
+		<string name="playerChallenges">PLAYER CHALLENGES</string>
 		<string name="result">RESULT</string>
 		<string name="youWon">YOU WON</string>
 		<string name="youLost">YOU LOST</string>
@@ -302,6 +306,7 @@
 		<string name="confirmRemoveChallenge">REMOVE your challenge and forfeit your coins?</string>
 		<string name="uploadingChallenge">Uploading challenge</string>
 		<string name="challengeUploaded">CHALLENGE UPLOADED</string>
+		<string name="replaceChallenge">Replace the challenge you previously uploaded?</string>
 		<string name="challengeAlreadyUploaded">You have already uploaded a challenge to the arena</string>
 		
 		<string name="congratulations">CONGRATULATIONS</string>

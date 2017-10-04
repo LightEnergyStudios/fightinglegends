@@ -168,7 +168,7 @@ namespace FightingLegends
 				if (changed)
 					readyToFight = value;
 
-				Debug.Log("ReadyToFight = " + readyToFight);
+//				Debug.Log("ReadyToFight = " + readyToFight);
 
 				if (readyToFight && ReadyToFightSound != null)
 					AudioSource.PlayClipAtPoint(ReadyToFightSound, Vector3.zero, SFXVolume);
@@ -1885,7 +1885,8 @@ namespace FightingLegends
 
 		private void OnConfirmNo()
 		{
-			UnfreezeFight();
+			if (SavedGameStatus.FightInProgress)
+				UnfreezeFight();
 		}
 
 
@@ -3660,7 +3661,7 @@ namespace FightingLegends
 			// restore coins, kudos, settings, inventory, fight status, etc
 			if (RestoreStatus())
 			{
-				Coins = InitialCoins;		// TODO: remove this!!
+				Coins = 100000;		// TODO: remove this!!
 				
 				// TODO: restore fight status (2 fighters)
 			}
