@@ -905,11 +905,13 @@ namespace FightingLegends
 				return;
 			}
 
-			if (OwnChallenge(chosenChallenge))
-			{
-				ConfirmRemoveChallenge();
-			}
-			else
+//			if (OwnChallenge(chosenChallenge))
+//			{
+//				ConfirmRemoveChallenge();
+//			}
+//			else
+				
+			if (!OwnChallenge(chosenChallenge))
 			{
 				selectedCategoryCount = 0;
 				HideAllOverlays();
@@ -1032,7 +1034,7 @@ namespace FightingLegends
 
 				// currently clicking a fighter button has the same effect as clicking the challenge button
 				fighterCard.CardButton.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });
-//				fighterCard.CardButton.interactable = ! OwnChallenge(challengeButton.Challenge);	// can't fight own challenge!
+				fighterCard.CardButton.interactable = ! OwnChallenge(challengeButton.Challenge);	// can't fight own challenge!
 
 				// set fighter button position within container challenge button viewport
 				var yOffset = fighterCardYOffset - (IsOdd(fighterIndex) ? fighterCardOddOffset : 0);
@@ -1199,19 +1201,19 @@ namespace FightingLegends
 
 				challengeBackground.sprite = categorySprite;
 				challengeButton.PrizeCoins.text = string.Format("{0:N0}", challenge.PrizeCoins);		// thousands separator, for clarity
-				challengeButton.Name.text = OwnChallenge(challenge) ? FightManager.SavedGameStatus.UserId : challenge.Name;
+				challengeButton.Name.text = challenge.Name;
 				challengeButton.Date.text = challenge.DateCreated;
 
 				if (OwnChallenge(challenge))
 				{
 					challengeButton.Name.color = OwnChallengeColour;
 					challengeButton.Date.color = OwnChallengeColour;
-					challengeButton.PrizeCoins.color = OwnChallengeColour;
+//					challengeButton.PrizeCoins.color = OwnChallengeColour;
 				}
 
 				var button = challengeButtonObject.GetComponent<Button>();
 				button.onClick.AddListener(delegate { ChallengeChosen(challengeButton); });		// ref to challenge data, not data in this loop
-//				button.interactable = ! OwnChallenge(challenge);
+				button.interactable = ! OwnChallenge(challenge);
 
 				// populate challenge button fighters viewport by instantiating fighter buttons	
 				FillChallengeFighterButtons(challengeButton);		
@@ -1323,11 +1325,11 @@ namespace FightingLegends
 				FightManager.RegisterNewUser();
 				return;
 			}
-			else if (FightManager.UserLoginProfile.ChallengeKey != "")
-			{
-				FightManager.GetOkConfirmation(FightManager.Translate("challengeAlreadyUploaded", false, true), 0);
-				return;
-			}
+//			else if (FightManager.UserLoginProfile.ChallengeKey != "")
+//			{
+//				FightManager.GetOkConfirmation(FightManager.Translate("challengeAlreadyUploaded", false, true), 0);
+//				return;
+//			}
 
 			if (upLoadingChallenge)
 				return;
@@ -1363,7 +1365,14 @@ namespace FightingLegends
 			ChallengeUploading.ParentCategory = CategoryUploading.ToString();
 
 //			FightManager.GetConfirmation(FightManager.Translate("confirmUploadChallenge"), ChallengeUploading.PrizeCoins, UploadChallenge);
-			FightManager.ConfirmChallengeUpload(ChallengeUploading, UploadChallenge);
+
+			if (FightManager.UserLoginProfile.ChallengeKey != "")
+			{
+				ChallengeUploading.Key = FightManager.UserLoginProfile.ChallengeKey;			// reuse same key (saves deleting old challenge)
+				FightManager.ConfirmChallengeUpload(ChallengeUploading, ReplaceChallenge);
+			}
+			else
+				FightManager.ConfirmChallengeUpload(ChallengeUploading, UploadChallenge);
 		}
 
 
@@ -1380,6 +1389,21 @@ namespace FightingLegends
 			
 			UpLoadingChallenge = true;
 			FirebaseManager.SaveChallenge(ChallengeUploading, CategoryUploading, true); 
+		}
+
+		private void ReplaceChallenge()
+		{
+			if (challengeUploaded)
+				return;
+
+			if (ChallengeUploading == null)
+				return;
+
+			if (CategoryUploading == ChallengeCategory.None)
+				return;
+
+			UpLoadingChallenge = true;
+			FirebaseManager.SaveChallenge(ChallengeUploading, CategoryUploading, false); 
 		}
 
 		private void OnUploadCancelled(AIDifficulty difficulty, string location)

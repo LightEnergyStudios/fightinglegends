@@ -3661,7 +3661,7 @@ namespace FightingLegends
 			// restore coins, kudos, settings, inventory, fight status, etc
 			if (RestoreStatus())
 			{
-				Coins = 100000;		// TODO: remove this!!
+				Coins = 10000;		// TODO: remove this!!
 				
 				// TODO: restore fight status (2 fighters)
 			}

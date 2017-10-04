@@ -8,7 +8,7 @@ using System;
 namespace FightingLegends
 {
 	// network fight manager spawned by Network(Lobby)Manager on server change to combat scene
-	// server only - to sync start fight / round / quit fight etc. via NetworkFighter rpc calls
+	// server only - to sync start fight / ready to fight / quit fight etc. via NetworkFighter rpc calls
 	public class NetworkFightManager : NetworkBehaviour
 	{
 		private string Fighter1Name = "";
@@ -178,26 +178,5 @@ namespace FightingLegends
 
 			fightStarted = false;
 		}
-
-
-//		[Server]
-//		public void ReadyForNextRound(bool isPlayer1, int roundNumber)
-//		{
-//			if (isPlayer1)
-//				Player1ReadyToStart = true;
-//			else
-//				Player2ReadyForNextRound = true;
-//
-//			if (Player1ReadyToStart && Player2ReadyForNextRound)
-//				SyncNextRound(roundNumber);
-//		}
-//
-//		[Server]
-//		private void SyncNextRound(int roundNumber)
-//		{
-//			// doesn't matter which player invokes the RPC
-//			// might as well be player1 as the host / initiator...
-//			player1.RpcNextRound(roundNumber);
-//		}
 	}
 }

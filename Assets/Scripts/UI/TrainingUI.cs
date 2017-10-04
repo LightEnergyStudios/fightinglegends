@@ -17,6 +17,9 @@ namespace FightingLegends
 		public Text ComboPrompt;			// tap! etc. (child of panel)
 		public Text ComboText;				// eg. for testing (child of panel)
 
+		public Button SkipButton;
+		public Text SkipText;
+
 		// images for combo steps
 		public Sprite tapSprite;
 		public Sprite holdSprite;
@@ -96,6 +99,9 @@ namespace FightingLegends
 //			FightManager.OnMenuChanged += MenuInfoBubble;
 			FightManager.OnInfoBubbleRead += OnInfoBubbleRead;
 			GestureListener.OnSwipeCount += SwipeCountInfoBubble;
+
+			EnableSkip(false);
+			SkipText.text = FightManager.Translate("skip");
 		}
 
 		private void OnDestroy()
@@ -132,6 +138,8 @@ namespace FightingLegends
 				trainer.OnComboRestart += OnComboRestart;
 				trainer.OnComboUpdated += OnComboUpdated;
 				trainer.OnComboCompleted += OnComboCompleted;
+
+				SkipButton.onClick.AddListener(() => { SkipTraining(); });
 			}
 		}
 
@@ -144,7 +152,22 @@ namespace FightingLegends
 				trainer.OnComboRestart -= OnComboRestart;
 				trainer.OnComboUpdated -= OnComboUpdated;
 				trainer.OnComboCompleted -= OnComboCompleted;
+
+				SkipButton.onClick.RemoveAllListeners();
 			}
+		}
+
+
+		public void EnableSkip(bool enable)
+		{
+			SkipButton.gameObject.SetActive(enable);
+		}
+
+
+		private void SkipTraining()
+		{
+			fightManager.BackClicked();
+			FightManager.SavedGameStatus.CompletedBasicTraining = true;		// to prevent auto repeat
 		}
 			
 		private void SetComboStepImage(ComboStep step, Image stepImage)

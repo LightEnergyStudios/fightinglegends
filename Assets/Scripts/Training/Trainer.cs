@@ -260,6 +260,7 @@ namespace FightingLegends
 //			Debug.Log("StartTraining: " + fighter.FullName);
 
 			fighter.InTraining = true;
+			trainingUI.EnableSkip(true);
 
 			PopulateScript();
 			CombosStartListening();				// any combos in the training script listen to fighter state start events
@@ -276,6 +277,8 @@ namespace FightingLegends
 
 			if (TrainingScript != null)
 				TrainingScript.Clear();
+
+			trainingUI.EnableSkip(false);
 
 //			if (SetTrafficLightColour != null)
 //				SetTrafficLightColour(TrafficLight.None);			// GameUI

@@ -247,6 +247,7 @@
 		<string name="resetHints">RESET HINTS</string>
 		<string name="on">ON</string>
 		<string name="off">OFF</string>
+		<string name="skip">SKIP</string>
 
 		<string name="arcade">ARCADE</string>
 		<string name="survival">SURVIVAL</string>
@@ -306,7 +307,7 @@
 		<string name="confirmRemoveChallenge">REMOVE your challenge and forfeit your coins?</string>
 		<string name="uploadingChallenge">Uploading challenge</string>
 		<string name="challengeUploaded">CHALLENGE UPLOADED</string>
-		<string name="replaceChallenge">Replace the challenge you previously uploaded?</string>
+		<string name="replaceChallenge">YOUR CURRENT CHALLENGE WILL BE REPLACED</string>
 		<string name="challengeAlreadyUploaded">You have already uploaded a challenge to the arena</string>
 		
 		<string name="congratulations">CONGRATULATIONS</string>

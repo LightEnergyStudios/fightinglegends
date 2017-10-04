@@ -7087,6 +7087,10 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1314}
+    - target: {fileID: 1000011598281824, guid: 47ae9ee17ea9b48eab256a598ae71320, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 47ae9ee17ea9b48eab256a598ae71320, type: 2}
   m_IsPrefabParent: 0
@@ -8299,17 +8303,17 @@ Prefab:
     - target: {fileID: 224000011172485046, guid: 2b071a1ad822b47d0934c593a2b8f184,
         type: 2}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000011172485046, guid: 2b071a1ad822b47d0934c593a2b8f184,
         type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000011172485046, guid: 2b071a1ad822b47d0934c593a2b8f184,
         type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000011172485046, guid: 2b071a1ad822b47d0934c593a2b8f184,
         type: 2}
@@ -8371,12 +8375,7 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 223513740745664494, guid: 2b071a1ad822b47d0934c593a2b8f184,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1314}
-    - target: {fileID: 223000010188262072, guid: 2b071a1ad822b47d0934c593a2b8f184,
+    - target: {fileID: 223000011238361024, guid: 2b071a1ad822b47d0934c593a2b8f184,
         type: 2}
       propertyPath: m_Camera
       value: 
@@ -8386,7 +8385,12 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1314}
-    - target: {fileID: 223000011238361024, guid: 2b071a1ad822b47d0934c593a2b8f184,
+    - target: {fileID: 223000010188262072, guid: 2b071a1ad822b47d0934c593a2b8f184,
+        type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1314}
+    - target: {fileID: 223513740745664494, guid: 2b071a1ad822b47d0934c593a2b8f184,
         type: 2}
       propertyPath: m_Camera
       value: 
