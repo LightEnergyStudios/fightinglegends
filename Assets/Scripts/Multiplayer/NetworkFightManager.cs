@@ -32,10 +32,10 @@ namespace FightingLegends
 		private bool Player1ReadyToFight = false;
 		private bool Player2ReadyToFight = false;
 
-		private const int StartFightTimeout = 30;		// once NetworkFighters spawned - waiting to select fighters and location
-		private const int StartFightWarning = 5;		// on-screen countdown
+//		private const int StartFightTimeout = 30;		// once NetworkFighters spawned - waiting to select fighters and location
+//		private const int StartFightWarning = 5;		// on-screen countdown
 
-		private IEnumerator startFightTimeoutCoroutine = null;
+//		private IEnumerator startFightTimeoutCoroutine = null;
 
 
 		// called from lobby -> combat scene change hook
@@ -48,14 +48,14 @@ namespace FightingLegends
 			else
 				player2 = player;
 
-			if (HasPlayers)
-			{
-				if (startFightTimeoutCoroutine != null)
-					StopCoroutine(startFightTimeoutCoroutine);
+//			if (HasPlayers)
+//			{
+//				if (startFightTimeoutCoroutine != null)
+//					StopCoroutine(startFightTimeoutCoroutine);
 
-				startFightTimeoutCoroutine = StartFightTimeoutCountdown();
-				StartCoroutine(startFightTimeoutCoroutine);
-			}
+//				startFightTimeoutCoroutine = StartFightTimeoutCountdown();
+//				StartCoroutine(startFightTimeoutCoroutine);
+//			}
 		}
 
 
@@ -104,8 +104,8 @@ namespace FightingLegends
 				return;
 
 			// stop timeout countdown
-			if (startFightTimeoutCoroutine != null)
-				StopCoroutine(startFightTimeoutCoroutine);
+//			if (startFightTimeoutCoroutine != null)
+//				StopCoroutine(startFightTimeoutCoroutine);
 
 			// doesn't matter which player invokes the RPC
 			// might as well be player1 as the host / initiator...
@@ -120,23 +120,23 @@ namespace FightingLegends
 			fightStarted = true;
 		}
 
-		[Server]
-		private IEnumerator StartFightTimeoutCountdown()
-		{
-			for (int i = StartFightTimeout; i >= 0; i--)
-			{
-				if (fightStarted)
-					yield break;
-				
-				if (i <= StartFightWarning)
-					player1.RpcStartFightExpiryCounter(i);			// on-screen countdown for last few seconds of timeout
-
-				yield return new WaitForSeconds(1.0f);
-			}
-				
-			player1.RpcExpireStartFight();							// back to mode select
-			yield return null;
-		}
+//		[Server]
+//		private IEnumerator StartFightTimeoutCountdown()
+//		{
+//			for (int i = StartFightTimeout; i >= 0; i--)
+//			{
+//				if (fightStarted)
+//					yield break;
+//				
+//				if (i <= StartFightWarning)
+//					player1.RpcStartFightExpiryCounter(i);			// on-screen countdown for last few seconds of timeout
+//
+//				yield return new WaitForSeconds(1.0f);
+//			}
+//				
+//			player1.RpcExpireStartFight();							// back to mode select
+//			yield return null;
+//		}
 
 
 		[Server]
@@ -168,15 +168,13 @@ namespace FightingLegends
 		[Server]
 		private void ResetFighters()
 		{
-			Debug.Log("ResetFighters");
+//			Debug.Log("ResetFighters");
 
 			Fighter1Name = "";
 			Fighter1Colour = "";
 			Fighter2Name = "";
 			Fighter2Colour = "";
 			SelectedLocation = "";
-
-			fightStarted = false;
 		}
 	}
 }

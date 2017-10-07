@@ -210,7 +210,7 @@ namespace FightingLegends
 			fighter.OnStateEnded += OnStateEnd;
 			fighter.OnLastHit += OnLastHit;
 
-			PauseSettings.OnQuitFight += OnQuitFight;
+			FightManager.OnQuitFight += OnQuitFight;
 				
 			if (feedbackUI != null)
 			{
@@ -228,7 +228,7 @@ namespace FightingLegends
 			fighter.OnStateEnded -= OnStateEnd;
 			fighter.OnLastHit -= OnLastHit;
 
-			PauseSettings.OnQuitFight -= OnQuitFight;
+			FightManager.OnQuitFight -= OnQuitFight;
 
 			if (feedbackUI != null)
 			{

@@ -56,6 +56,8 @@ namespace FightingLegends
 		public AudioClip powerUpSweepAudio;
 		public AudioClip powerUpFireworksAudio;
 
+		public Animator powerUpAnimator;
+
 		// trigger power-ups
 		public Image TriggerPowerUp;				// displayed with feedback
 		public Sprite VengeanceBooster;
@@ -437,19 +439,19 @@ namespace FightingLegends
 			switch (powerUp)
 			{
 				case FightingLegends.PowerUp.SecondLife:
-					return FightManager.Translate("secondLife", true, true);
+					return FightManager.Translate("secondLife", false, true);
 
 				case FightingLegends.PowerUp.Ignite:
 					return FightManager.Translate("ignite", false, true);
 
 				case FightingLegends.PowerUp.HealthBooster:
-					return FightManager.Translate("healthBoost", true, true);
+					return FightManager.Translate("healthBoost", false, true);
 
 				case FightingLegends.PowerUp.PowerAttack:
-					return FightManager.Translate("powerAttack", true, true);
+					return FightManager.Translate("powerAttack", false, true);
 
 				case FightingLegends.PowerUp.VengeanceBooster:
-					return FightManager.Translate("vengeanceBoost", true, true);
+					return FightManager.Translate("vengeanceBoost", false, true);
 
 				case FightingLegends.PowerUp.None:
 				default:
@@ -492,63 +494,20 @@ namespace FightingLegends
 		public IEnumerator PowerUpFeedback(PowerUp powerUp, float displayTime, bool stars, bool silent)
 		{
 			SetPowerUpImage(powerUp);
-
 			PowerUpText.text = TriggerPowerUpText(powerUp);
-
-			var powerUpStartScale = new Vector3(0, 1, 1);				// expands along y
-			var powerUpLargeScale = new Vector3(1.5f, 1.5f, 1.5f);		// enlarged temporarily
-			PowerUpPanel.transform.localScale = powerUpStartScale;
 			PowerUpPanel.gameObject.SetActive(true);
 
-			float t = 0;
-
-			// scale in panel - expand along y
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / powerUpEntryTime);
-
-				PowerUpPanel.transform.localScale = Vector3.Lerp(powerUpStartScale, powerUpLargeScale, t);
-				yield return null;
-			}
-
-			t = 0;
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / (powerUpEntryTime / 2.0f));
-
-				PowerUpPanel.transform.localScale = Vector3.Lerp(powerUpLargeScale, Vector3.one, t);
-				yield return null;
-			}
-				
-			// power-up image animation
-			t = 0;
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / powerUpImageTime);
-
-				TriggerPowerUp.transform.localScale = Vector3.Lerp(Vector3.zero, powerUpLargeScale, t);
-				yield return null;
-			}
+			powerUpAnimator.SetTrigger("PowerUpTrigger");
 
 			// stars and fireworks
 			if (stars)
 			{
 				float textWidth =  (float)PowerUpText.text.Length * stateCharWidth;
 				StartCoroutine(PowerUpStarSweep(textWidth, silent));
-//				yield return StartCoroutine(PowerUpStarSweep(textWidth, silent));
-			}
-
-			t = 0;
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / (powerUpImageTime / 2.0f));
-
-				TriggerPowerUp.transform.localScale = Vector3.Lerp(powerUpLargeScale, Vector3.one, t);
-				yield return null;
 			}
 				
 			yield return new WaitForSeconds(displayTime);
-			StartCoroutine(ClearPowerUpFeedback());
+			ClearPowerUpFeedback();
 		}
 
 		private void SetPowerUpImage(PowerUp powerUp)
@@ -581,31 +540,14 @@ namespace FightingLegends
 			}
 
 			TriggerPowerUp.gameObject.SetActive(TriggerPowerUp.sprite != null);
-			TriggerPowerUp.transform.localScale = Vector3.zero;
+//			TriggerPowerUp.transform.localScale = Vector3.zero;
 		}
 
 			
-		public IEnumerator ClearPowerUpFeedback()
+		public void ClearPowerUpFeedback()
 		{
-			if (! PowerUpPanel.gameObject.activeSelf)
-				yield break;
-
-			float t = 0;
-			var targetScale = new Vector3(0,1,1);			// scale out along y
-
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / powerUpEntryTime);
-
-				PowerUpPanel.transform.localScale = Vector3.Lerp(Vector3.one, targetScale, t);
-				TriggerPowerUp.transform.localScale = Vector3.Lerp(Vector3.one, targetScale, t);
-				yield return null;
-			}
-
 			PowerUpPanel.gameObject.SetActive(false);
-			PowerUpPanel.transform.localScale = Vector3.one;		// reset
 			PowerUpText.text = "";
-			yield return null;
 		}
 
 

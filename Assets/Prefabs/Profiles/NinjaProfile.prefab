@@ -79,6 +79,7 @@ MonoBehaviour:
     RecoilTravelTime: 0.1
     AttackDistance: 150
     RomanCancelFreezeFrames: 6
+    PowerUpFreezeFrames: 15
     ExpiryTime: 4
     ExpiryDistance: 750
     AIDoNothingFactor: 1

@@ -60,7 +60,7 @@ namespace FightingLegends
 			if (! fightManager.ReadyToFight)
 				return;
 
-			if (fightManager.FightPaused)
+			if (FightManager.FightPaused)
 				return;
 
 			if (fightManager.PreviewMode)
@@ -75,7 +75,7 @@ namespace FightingLegends
 			var P1Position = fightManager.Player1.transform.position;
 			var P2Position = fightManager.Player2.transform.position;
 
-			if (fightManager.FightPaused && (TrackLeft || TrackRight))			// rolling through scenery (demo only)
+			if (FightManager.FightPaused && (TrackLeft || TrackRight))			// rolling through scenery (demo only)
 			{
 				var distance = (TrackRight) ? trackSpeed : -trackSpeed;
 				var newCameraPosition = new Vector3(transform.position.x + distance, originalPosition.y, originalPosition.z);

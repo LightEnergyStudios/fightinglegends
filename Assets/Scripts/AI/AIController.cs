@@ -123,7 +123,7 @@ namespace FightingLegends
 			if (fighter.Opponent.InTraining)
 				return;
 
-			if (fighter.PreviewIdle || fighter.PreviewMoves)
+			if (fighter.PreviewIdle)
 				return;
 
 			// subscribe to fighter changed events
@@ -183,7 +183,7 @@ namespace FightingLegends
 
 		private void OnDestroy()
 		{
-			if (! fighter.PreviewIdle && !fighter.PreviewMoves)
+//			if (! fighter.PreviewIdle && !fighter.PreviewMoves)
 			{
 //				Debug.Log(fighter.FullName + ": OnDestroy -> StopWatching");
 				StopWatching();
@@ -209,7 +209,7 @@ namespace FightingLegends
 //			if (fighter.Opponent != null && fighter.Opponent.InTraining)
 //				return;
 
-			if (fighter.PreviewIdle || fighter.PreviewMoves)
+			if (fighter.PreviewIdle)
 				return;
 
 			var opponent = fighter.Opponent;

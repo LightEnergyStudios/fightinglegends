@@ -72,7 +72,8 @@ namespace FightingLegends
 
 //			yesText.text = FightManager.Translate("yesPlease", false, true);
 			yesText.text = FightManager.Translate("yes", false, true);
-			noText.text = FightManager.Translate("noThanks", false, true);
+//			noText.text = FightManager.Translate("noThanks", false, true);
+			noText.text = FightManager.Translate("cancel");
 			okText.text = FightManager.Translate("ok");
 		}
 
@@ -176,7 +177,7 @@ namespace FightingLegends
 			background.color = Color.clear;
 			background.enabled = true;
 			panel.gameObject.SetActive(true);
-			PowerUpPanel.gameObject.SetActive(true);
+//			PowerUpPanel.gameObject.SetActive(true);
 
 			if (FadeSound != null)
 				AudioSource.PlayClipAtPoint(FadeSound, Vector3.zero, FightManager.SFXVolume);
@@ -191,6 +192,11 @@ namespace FightingLegends
 				background.color = Color.Lerp(Color.clear, backgroundColour, t);
 				yield return null;
 			}
+
+			PowerUpPanel.gameObject.SetActive(true);
+
+			var animator = PowerUpPanel.GetComponent<Animator>();
+			animator.SetTrigger("EnterConfirm");
 
 			yield return null;
 		}

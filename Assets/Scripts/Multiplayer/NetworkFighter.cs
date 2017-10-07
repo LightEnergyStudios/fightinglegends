@@ -44,6 +44,9 @@ namespace FightingLegends
 		{			
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
+
+			fighterSelected = false;
+			locationSelected = false;
 		}
 			
 
@@ -232,23 +235,23 @@ namespace FightingLegends
 			fightManager.NetworkMessage("");		// disabled
 		}
 
-		[ClientRpc]
-		// called on server, runs on clients
-		public void RpcStartFightExpiryCounter(int counter)
-		{
-			fightManager.NetworkMessage(FightManager.Translate("timeOut"));
-//			Debug.Log("RpcStartExpiryCounter: " + counter);
-			fightManager.TriggerNumberFX(counter, 0, 0, feedbackLayer, false);		// beep sound
-		}
-
-		[ClientRpc]
-		// called on server, runs on clients
-		public void RpcExpireStartFight()
-		{
-//			Debug.Log("RpcExpireStartFight");
-			fightManager.NetworkMessage("");
-			fightManager.StartNetworkFightTimeout();		// players failed to start fight - back to mode select
-		}
+//		[ClientRpc]
+//		// called on server, runs on clients
+//		public void RpcStartFightExpiryCounter(int counter)
+//		{
+//			fightManager.NetworkMessage(FightManager.Translate("timeOut"));
+////			Debug.Log("RpcStartExpiryCounter: " + counter);
+//			fightManager.TriggerNumberFX(counter, 0, 0, feedbackLayer, false);		// beep sound
+//		}
+//
+//		[ClientRpc]
+//		// called on server, runs on clients
+//		public void RpcExpireStartFight()
+//		{
+////			Debug.Log("RpcExpireStartFight");
+//			fightManager.NetworkMessage("");
+//			fightManager.StartNetworkFightTimeout();		// players failed to start fight - back to mode select
+//		}
 
 		// FightManager.OnNetworkReadyToFight
 		[Client]

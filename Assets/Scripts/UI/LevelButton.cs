@@ -140,6 +140,7 @@ namespace FightingLegends
 		private void ShowTriggerCoolDown(bool show)
 		{
 			TriggerCoolDown.gameObject.SetActive(show);
+			TriggerPowerUpCoolDown.gameObject.SetActive(show);
 		}
 
 
@@ -164,6 +165,9 @@ namespace FightingLegends
 
 			while (triggerCoolDownRemaining > 0 && !fighter.ExpiredHealth)	
 			{
+				if (FightManager.FightPaused)
+					yield return null;
+				
 				// counter counts down!
 				if (TriggerPowerUpCoolDown.gameObject.activeSelf)
 				{

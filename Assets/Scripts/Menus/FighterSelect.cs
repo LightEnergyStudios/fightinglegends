@@ -533,7 +533,7 @@ namespace FightingLegends
 		public Vector3 PreviewPosition(float xOffset = 0)
 		{
 			//TODO: test preview fighter position
-			var cameraX = fightManager.CameraPosition.x;
+			var cameraX = fightManager.CameraSnapshot.x;
 			return new Vector3(cameraX - (Math.Abs(xOffset) > 0 ? xOffset : previewX), previewY, previewZ);
 		}
 

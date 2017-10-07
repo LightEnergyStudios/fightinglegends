@@ -112,9 +112,6 @@ namespace FightingLegends
 
 		private FightManager fightManager;
 
-		public delegate void QuitFightDelegate();
-		public static QuitFightDelegate OnQuitFight;
-
 
 		public void Start()
 		{

@@ -581,5 +581,17 @@ namespace FightingLegends
 		ChallengeWinnings,
 		WorldTours,
 	}
+
+	public enum StatusEffect
+	{
+		None,
+		KnockOut,
+		OnFire,
+		HealthUp,
+		ArmourUp,
+		ArmourDown,
+//		OK
+	}
+
 }
 

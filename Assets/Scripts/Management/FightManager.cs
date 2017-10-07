@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using Prototype.NetworkLobby;
- 
+
 
 namespace FightingLegends
 {
@@ -178,7 +178,7 @@ namespace FightingLegends
 			}
 		}
 			
-		public bool FightPaused { get; private set; }
+		public static bool FightPaused { get; private set; }
 
 		public const float xOffset = 750; 					// when instantiated in default fight position
 		public const float yOffset = 525;
@@ -356,7 +356,7 @@ namespace FightingLegends
 		// camera
 
 		private CameraController cameraController;
-		public Vector3 CameraPosition { get { return cameraController.SnapshotPosition; } }
+		public Vector3 CameraSnapshot { get { return cameraController.SnapshotPosition; } }
 		private Curtain curtain;
 
 		private HitFlash hitFlash;
@@ -1258,53 +1258,96 @@ namespace FightingLegends
 //		}
 
 
+		private void EndKnockOutFreeze()
+		{
+			expiryCameraPosition = CameraSnapshot;
+
+//			Debug.Log("EndKnockOutFreeze: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
+			UnfreezeFight();
+
+			if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
+				Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
+			else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
+				Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
+		}
+
+//		private void StopArmourDown()
+//		{
+//			Player1.StopArmourDown();
+//			Player2.StopArmourDown();
+//		}
+//
+//		private void StopArmourUp()
+//		{
+//			Player1.StopArmourUp();
+//			Player2.StopArmourUp();
+//		}
+//
+//		private void StopOnFire()
+//		{
+//			Player1.StopOnFire();
+//			Player2.StopOnFire();
+//		}
+//
+//		private void StopHealthUp()
+//		{
+//			Player1.StopHealthUp();
+//			Player2.StopHealthUp();
+//		}
+
+		public void SnapshotCameraPosition()
+		{
+			expiryCameraPosition = CameraSnapshot;
+//			UnfreezeFight();
+		}
+
 		private void FeedbackStateEnd(AnimationState endingState)
 		{
 //			Debug.Log("FightManager.FeedbackStateEnd: " + endingState.StateLabel);
 
-			if (endingState.StateLabel == FeedbackFXType.KO.ToString().ToUpper())
-			{
-				expiryCameraPosition = CameraPosition;
+//			if (endingState.StateLabel == FeedbackFXType.KO.ToString().ToUpper())
+//			{
+//				expiryCameraPosition = CameraPosition;
+//
+////				Debug.Log("KO FeedbackStateEnd: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
+//				UnfreezeFight();
+//
+//				if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
+//					Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
+//				else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
+//					Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
+//			}
 
-//				Debug.Log("KO FeedbackStateEnd: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
-				UnfreezeFight();
-
-//				if (Player1.ExpiredHealth)
-				if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
-					Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-//				else if (Player2.ExpiredHealth)
-				else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
-					Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-			}
-
-			else if (endingState.StateLabel == FeedbackFXType.Armour_Down.ToString().ToUpper())
-			{
-				Player1.StopArmourDown();
-				Player2.StopArmourDown();
-			}
-			else if (endingState.StateLabel == FeedbackFXType.Armour_Up.ToString().ToUpper())
-			{
-				Player1.StopArmourUp();
-				Player2.StopArmourUp();
-			}
-			else if (endingState.StateLabel == FeedbackFXType.On_Fire.ToString().ToUpper())
-			{
-				Player1.StopOnFire();
-				Player2.StopOnFire();
-			}
-			else if (endingState.StateLabel == FeedbackFXType.Health_Up.ToString().ToUpper())
-			{
-				Player1.StopHealthUp();
-				Player2.StopHealthUp();
-			}
+//			else if (endingState.StateLabel == FeedbackFXType.Armour_Down.ToString().ToUpper())
+//			{
+//				Player1.StopArmourDown();
+//				Player2.StopArmourDown();
+//			}
+//			else if (endingState.StateLabel == FeedbackFXType.Armour_Up.ToString().ToUpper())
+//			{
+//				Player1.StopArmourUp();
+//				Player2.StopArmourUp();
+//			}
+//			else if (endingState.StateLabel == FeedbackFXType.On_Fire.ToString().ToUpper())
+//			{
+//				Player1.StopOnFire();
+//				Player2.StopOnFire();
+//			}
+//			else if (endingState.StateLabel == FeedbackFXType.Health_Up.ToString().ToUpper())
+//			{
+//				Player1.StopHealthUp();
+//				Player2.StopHealthUp();
+//			}
 //			else if (endingState.StateLabel == FeedbackFXType.Round.ToString().ToUpper())
 //			{
 //				round number fx / sound?
 //			}
-			else
-			{
-				CancelFeedbackFX();
-			}
+//			else
+//			{
+//				CancelFeedbackFX();
+//			}
+
+			CancelFeedbackFX();
 
 			// relay event to any subscribers
 			if (OnFeedbackStateEnd != null)
@@ -2504,10 +2547,12 @@ namespace FightingLegends
 
 			if (CombatMode == FightMode.Challenge)
 			{
+				UnfreezeFight();		// TODO: is this necessary / working?
 				yield return StartCoroutine(ReplaceLoserFromTeam());
 			}
 			else if (CombatMode == FightMode.Survival)		
 			{
+				UnfreezeFight();		// TODO: is this necessary / working?
 				yield return StartCoroutine(RandomAIDashIn());
 			}
 			else 		// arcade, training or dojo mode - same fighters and location
@@ -3108,7 +3153,7 @@ namespace FightingLegends
 				StopCoroutine(powerUpWhiteOut);
 
 			if (feedbackUI != null)
-				StartCoroutine(feedbackUI.ClearPowerUpFeedback());
+				feedbackUI.ClearPowerUpFeedback();
 		}
 
 
@@ -3468,7 +3513,13 @@ namespace FightingLegends
 				yield break;
 			}
 
-			ReadyToFight = false;
+//			if (IsNetworkFight)
+//			{
+//				if (OnNetworkReadyToFight != null)
+//					OnNetworkReadyToFight(false);
+//			}
+//			else
+				ReadyToFight = false;
 
 			if (delay > 0.0f)
 				yield return new WaitForSeconds(delay);

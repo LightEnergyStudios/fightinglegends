@@ -52,7 +52,7 @@ namespace FightingLegends
 		{
 			ManagementText.color = fightManager.EitherFighterExpiredState ? Color.red :
 									(fightManager.FightFrozen ? Color.blue : 
-									(fightManager.FightPaused ? Color.magenta :
+									(FightManager.FightPaused ? Color.magenta :
 									(FightManager.SavedGameStatus.CompletedBasicTraining ? Color.white : Color.yellow)));
 
 			if (! FightManager.SavedGameStatus.CompletedBasicTraining)
@@ -69,7 +69,7 @@ namespace FightingLegends
 				
 //				ManagementText.text += "\n" + fightManager.CurrentSceneryName;
 
-				ManagementText.text += string.Format("\n{0:0.##} FPS", fightManager.FightPaused ? 0.0f : fightManager.AnimationFPS);
+				ManagementText.text += string.Format("\n{0:0.##} FPS", FightManager.FightPaused ? 0.0f : fightManager.AnimationFPS);
 
 //				ManagementText.text += "\n[ FRAME " + fightManager.AnimationFrameCount + " ]";
 

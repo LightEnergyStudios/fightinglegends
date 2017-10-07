@@ -297,7 +297,7 @@ namespace FightingLegends
 			if (ActivatedOverlayCount == 0)
 				StartSwipeFeedback();
 
-			ChallengesButton.gameObject.SetActive(internetReachable);
+//			ChallengesButton.gameObject.SetActive(internetReachable);
 			FriendsButton.gameObject.SetActive(internetReachable);
 			LeaderboardsButton.gameObject.SetActive(internetReachable);
 
@@ -360,7 +360,7 @@ namespace FightingLegends
 			ResetLevelButton.onClick.AddListener(delegate { ConfirmResetLevel(); });
 			LevelUpButton.onClick.AddListener(delegate { ConfirmLevelUp(); });
 			FriendsButton.onClick.AddListener(delegate { Facebook(); });
-			ChallengesButton.onClick.AddListener(delegate { Challenges(); });
+//			ChallengesButton.onClick.AddListener(delegate { Challenges(); });
 			LeaderboardsButton.onClick.AddListener(delegate { Leaderboards(); });
 			PowerUpButton.onClick.AddListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, PowerUp.None, true); });
 			StaticPowerUpButton.onClick.AddListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, fighterSelect.previewFighter.ProfileData.SavedData.StaticPowerUp, true); });
@@ -414,7 +414,7 @@ namespace FightingLegends
 			ResetLevelButton.onClick.RemoveListener(delegate { ConfirmResetLevel(); });
 			LevelUpButton.onClick.RemoveListener(delegate { ConfirmLevelUp(); });
 			FriendsButton.onClick.RemoveListener(delegate { Facebook(); });
-			ChallengesButton.onClick.RemoveListener(delegate { Challenges(); });
+//			ChallengesButton.onClick.RemoveListener(delegate { Challenges(); });
 			LeaderboardsButton.onClick.RemoveListener(delegate { Leaderboards(); });
 			PowerUpButton.onClick.RemoveListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, PowerUp.None, true); });
 			StaticPowerUpButton.onClick.RemoveListener(delegate { ShowPowerUpOverlay(fighterSelect.previewFighter, fighterSelect.previewFighter.ProfileData.SavedData.StaticPowerUp, true); });

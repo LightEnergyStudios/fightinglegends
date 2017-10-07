@@ -56,21 +56,6 @@ namespace FightingLegends
 			ProfileData.SavedData.SavedTime = DateTime.Now;
 
 			Save(ProfileData.SavedData);
-
-//			try
-//			{
-//				bf.Serialize(file, ProfileData.SavedData);
-//			}
-//			catch (Exception ex)
-//			{
-//				Debug.Log("Save " + fighterName + " failed: " + ex.Message);
-//			}
-//			finally
-//			{
-//				file.Close();
-//			}
-
-//			Debug.Log("Save: " + fighterName + ", Level " + ProfileData.SavedData.Level + ", Trigger Power-up = " + ProfileData.SavedData.TriggerPowerUp + ", Static Power-up = " + ProfileData.SavedData.StaticPowerUp);
 		}
 
 		public static void Save(SavedProfile profile)
@@ -81,6 +66,7 @@ namespace FightingLegends
 			try
 			{
 				bf.Serialize(file, profile);
+//				Debug.Log("Save ok: " + profile.FighterName + ", Level " + profile.Level + ", Trigger Power-up = " + profile.TriggerPowerUp + ", Static Power-up = " + profile.StaticPowerUp);
 			}
 			catch (Exception ex)
 			{

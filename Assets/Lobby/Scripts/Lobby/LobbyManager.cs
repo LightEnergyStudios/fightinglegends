@@ -124,8 +124,6 @@ namespace Prototype.NetworkLobby
 				GetComponent<Animator>().SetTrigger("LobbyEntry");
 			}
 
-
-
 			backDelegate = QuitLobby;
 
 			localUserId = FightManager.SavedGameStatus.UserId;
@@ -155,8 +153,9 @@ namespace Prototype.NetworkLobby
 
 		private IEnumerator FadeLobbyUI(bool fadeToBlack)
 		{
-			if (fadeToBlack)
-				yield return StartCoroutine(FadeToBlack());
+			// TODO: reinstate fade to black and curtain up in Combat scene
+//			if (fadeToBlack)
+//				yield return StartCoroutine(FadeToBlack());
 			
 			if (lobbyUIPanel != null)
 				lobbyUIPanel.gameObject.SetActive(false);
@@ -182,10 +181,8 @@ namespace Prototype.NetworkLobby
 			//			if (opening != null)
 			//				StartCoroutine(opening.ActivateWhenPreloaded());
 
-//			StartCoroutine(CurtainUp());
 
 			FightManager.IsNetworkFight = false;
-
 			SceneSettings.ShowLobbyUI = false;
 			SceneSettings.DirectToFighterSelect = false;
 		}
@@ -225,6 +222,7 @@ namespace Prototype.NetworkLobby
 //			yield return null;
 //		}
 
+		// TODO: restore?
 //		private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
 //		{
 //			Debug.Log("OnActiveSceneChanged: " + oldScene.name + " --> " + newScene.name);
