@@ -103,6 +103,7 @@ namespace FightingLegends
 
 			FightManager.OnNetworkReadyToFight += ReadyToFight;		// sync'ed via NetworkFightManager
 			FightManager.OnQuitFight += QuitFight;
+			FightManager.OnBackClicked += ExitFighterSelect;
 		}
 
 		[Client]
@@ -130,6 +131,7 @@ namespace FightingLegends
 
 			FightManager.OnNetworkReadyToFight -= ReadyToFight;
 			FightManager.OnQuitFight -= QuitFight;
+			FightManager.OnBackClicked -= ExitFighterSelect;
 		}
 			
 		#region animation
@@ -243,15 +245,46 @@ namespace FightingLegends
 ////			Debug.Log("RpcStartExpiryCounter: " + counter);
 //			fightManager.TriggerNumberFX(counter, 0, 0, feedbackLayer, false);		// beep sound
 //		}
-//
-//		[ClientRpc]
-//		// called on server, runs on clients
-//		public void RpcExpireStartFight()
-//		{
-////			Debug.Log("RpcExpireStartFight");
-//			fightManager.NetworkMessage("");
-//			fightManager.StartNetworkFightTimeout();		// players failed to start fight - back to mode select
-//		}
+
+
+		// FightManager.OnBackClicked
+		[Client]
+		private void ExitFighterSelect(MenuType menu)
+		{
+			if (!isLocalPlayer)
+				return;
+
+			if (menu == MenuType.ArcadeFighterSelect)
+				CmdExitFighterSelect(IsPlayer1);
+		}
+
+		[Command]
+		// called from client, runs on server
+		private void CmdExitFighterSelect(bool isPlayer1)
+		{
+			if (!isServer)
+				return;
+
+			networkFightManager.ExitFighterSelect(isPlayer1);		// exits both players via rpc below
+		}
+			
+		[ClientRpc]
+		// called on server, runs on clients
+		public void RpcExitFighterSelect()
+		{
+//			Debug.Log("RpcExitFighterSelect");
+			StartCoroutine(ExitFighterSelectAfterPause());
+		}
+
+		[Client]
+		private IEnumerator ExitFighterSelectAfterPause()
+		{
+			fightManager.ExitNetworkFighterSelect();		// one player exited FighterSelect, so sync both
+
+			fightManager.NetworkMessage(FightManager.Translate("fightEnded"));
+			yield return new WaitForSeconds(exitFightPause);
+			fightManager.NetworkMessage("");
+		}
 
 		// FightManager.OnNetworkReadyToFight
 		[Client]
@@ -280,6 +313,7 @@ namespace FightingLegends
 		{
 			fightManager.ReadyToFight = ready;
 		}
+
 
 		#endregion
 

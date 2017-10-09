@@ -108,6 +108,12 @@ namespace FightingLegends
 			NewGauge = newGauge;
 		}
 			
+		public void Hit(State state)
+		{
+			ChangeType = FighterChangeType.Hit;
+			NewState = state;
+		}
+
 		public void LastHit(State state)
 		{
 			ChangeType = FighterChangeType.LastHit;

@@ -32,6 +32,9 @@ namespace FightingLegends
 
 		public delegate void ProfileLoadedDelegate(SavedProfile fighterProfile);
 		public static ProfileLoadedDelegate OnProfileLoaded;
+
+		public delegate void ProfileSavedDelegate(SavedProfile fighterProfile);
+		public static ProfileSavedDelegate OnProfileSaved;
 	
 
 		public bool IsElement(FighterElement element)
@@ -67,6 +70,9 @@ namespace FightingLegends
 			{
 				bf.Serialize(file, profile);
 //				Debug.Log("Save ok: " + profile.FighterName + ", Level " + profile.Level + ", Trigger Power-up = " + profile.TriggerPowerUp + ", Static Power-up = " + profile.StaticPowerUp);
+
+				if (OnProfileSaved != null)
+					OnProfileSaved(profile);
 			}
 			catch (Exception ex)
 			{

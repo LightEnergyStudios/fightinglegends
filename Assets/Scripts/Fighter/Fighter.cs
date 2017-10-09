@@ -339,6 +339,9 @@ namespace FightingLegends
 		public delegate void LastHitDelegate(FighterChangedData newState);
 		public LastHitDelegate OnLastHit;
 
+//		public delegate void HitDelegate(FighterChangedData newState);
+//		public HitDelegate OnHit;
+
 		public delegate void HitStunDelegate(FighterChangedData newState);
 		public HitStunDelegate OnHitStun;
 
@@ -722,8 +725,10 @@ namespace FightingLegends
 
 		public int MoveFrameCount { get; private set; }		// frame count for move (eg. strike, special, etc)
 		public int StateFrameCount { get; private set; }	// frame count for each state (eg. windup, hit, recovery, cutoff)
+		public int HitFrameCount { get; private set; }	// frame count for each state, reset on each hit
 
 		private const int AIStateFrameTimeout = 90;			// 6 seconds at 15 FPS
+		private const int AIHitFrameTimeout = 30;			// 2 seconds at 15 FPS
 
 		[HideInInspector]
 		public Move CurrentMove = Move.Idle;
@@ -771,7 +776,7 @@ namespace FightingLegends
 			get
 			{
 //				Debug.Log(FullName + ": CanTriggerPowerUp - powerUpTriggered: " + powerUpTriggered + ", CanPowerUp = " + CanPowerUp);
-				if (ExpiredHealth)
+				if (ExpiredHealth && TriggerPowerUp != FightingLegends.PowerUp.SecondLife)
 					return false;
 
 				if (fightManager.PowerUpFeedbackActive)
@@ -814,7 +819,7 @@ namespace FightingLegends
 			}
 		}
 
-		public bool inPowerAttack { get; private set; }
+		public bool performingPowerAttack { get; private set; }			// powerup
 
 		[HideInInspector]
 		public bool TriggerCoolingDown = false;		// trigger power-up
@@ -2033,6 +2038,7 @@ namespace FightingLegends
 				
 			MoveFrameCount++;		
 			StateFrameCount++;		// frame number used to determine hit frames, etc.
+			HitFrameCount++;		// state frame count, reset on every hit
 
 			if ((IsHitStunned || IsShoveStunned) && hitStunFramesRemaining >= 0)
 				HitStunCountdown();		// countdown to zero and then return to idle
@@ -2048,7 +2054,8 @@ namespace FightingLegends
 			if (! IsIdle)
 			{
 				// catch-all in case AI stuck in a non-idle state for too long
-				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && StateFrameCount > AIStateFrameTimeout)
+//				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && StateFrameCount > AIStateFrameTimeout)
+				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && HitFrameCount > AIHitFrameTimeout)
 				{
 					var timeOut = "TIMEOUT: " + CurrentState + ", Continuation: " + NextContinuation + ", isFrozen: " + isFrozen;
 					Debug.Log(FullName + ": " + timeOut);
@@ -2097,7 +2104,16 @@ namespace FightingLegends
 
 					case FrameAction.Hit:		// hit frame!
 					{
-						ActionHit(hitData, false);
+						bool hitMissed = !ActionHit(hitData, false);
+						if (!hitMissed)
+							HitFrameCount = 0;		// reset AI timeout on each hit
+
+//						if (!hitMissed && OnHit != null)
+//						{
+//							var newState = new FighterChangedData(this);
+//							newState.LastHit(CurrentState);
+//							OnHit(newState);
+//						}
 						break;
 					}
 
@@ -2456,7 +2472,7 @@ namespace FightingLegends
 					
 			if (powerUpTriggered)
 			{
-				if (!inPowerAttack)
+				if (!performingPowerAttack)
 					PowerUpFeedback();
 			}
 
@@ -2539,7 +2555,7 @@ namespace FightingLegends
 				CueMove(Move.Power_Attack);
 			
 			powerUpTriggered = true;
-			inPowerAttack = true;
+			performingPowerAttack = true;
 			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("powerAttack", false, true), true, false);
 		}
 
@@ -2575,6 +2591,7 @@ namespace FightingLegends
 			
 			CanContinue = false;		// ie. at end of all states
 			StateFrameCount = 0;		// reset for next state
+			HitFrameCount = 0;		// reset for next state
 
 			takenLastHit = false;
 			lastHitFrameCount = 0;
@@ -2866,7 +2883,7 @@ namespace FightingLegends
 
 				CanContinue = true;				// TODO: conflict with combo/chain?
 				CurrentPriority = Default_Priority;
-				inPowerAttack = false;
+				performingPowerAttack = false;
 
 				if (Opponent != null)
 					Opponent.ReturnToDefaultDistance();
@@ -3577,6 +3594,7 @@ namespace FightingLegends
 		{
 			MoveFrameCount = 0;
 			StateFrameCount = 0;
+			HitFrameCount = 0;
 		}
 
 		public void Reset()
@@ -3722,7 +3740,7 @@ namespace FightingLegends
 			secondLifeTriggered = false;
 
 			powerUpTriggered = false;
-			inPowerAttack = false;
+			performingPowerAttack = false;
 
 			// AI trigger frame counts
 			idleFrameCount = 0; 
@@ -4408,7 +4426,7 @@ namespace FightingLegends
 					break;
 
 				case State.Heavy_HitFrame:
-					CurrentPriority = inPowerAttack ? Power_Attack_Priority : Strike_Heavy_Priority;
+					CurrentPriority = performingPowerAttack ? Power_Attack_Priority : Strike_Heavy_Priority;
 					break;
 			}
 
@@ -4642,11 +4660,11 @@ namespace FightingLegends
 						// armour/health up/down only if survived last hit
 						if (lastHit)
 						{
-							// last counter attack hit invokes opponent armour down / armour up
+							// last counter attack hit invokes opponent armour down or armour up
 							if (hitData.State == State.Counter_Attack)
 								Opponent.ArmourUpDown();
 
-							// last special extra hit invokes opponent on fire / health up
+							// last special extra hit invokes opponent on fire or health up
 							if (hitData.State == State.Special_Extra)
 								Opponent.OnFireHealthUp();
 						}
@@ -5336,22 +5354,22 @@ namespace FightingLegends
 			{
 				case HitType.Hook:
 					CurrentState = State.Hit_Stun_Hook;
-					TriggerSmoke(Opponent.inPowerAttack ? SmokeFXType.Counter : SmokeFXType.Hook);
+					TriggerSmoke(Opponent.performingPowerAttack ? SmokeFXType.Counter : SmokeFXType.Hook);
 					break;
 
 				case HitType.Mid:
 					CurrentState = State.Hit_Stun_Mid;
-					TriggerSmoke(Opponent.inPowerAttack ? SmokeFXType.Counter : SmokeFXType.Mid);
+					TriggerSmoke(Opponent.performingPowerAttack ? SmokeFXType.Counter : SmokeFXType.Mid);
 					break;
 
 				case HitType.Straight:
 					CurrentState = State.Hit_Stun_Straight;
-					TriggerSmoke(Opponent.inPowerAttack ? SmokeFXType.Counter : SmokeFXType.Straight);
+					TriggerSmoke(Opponent.performingPowerAttack ? SmokeFXType.Counter : SmokeFXType.Straight);
 					break;
 
 				case HitType.Uppercut:
 					CurrentState = State.Hit_Stun_Uppercut;
-					TriggerSmoke(Opponent.inPowerAttack ? SmokeFXType.Counter : SmokeFXType.Uppercut);
+					TriggerSmoke(Opponent.performingPowerAttack ? SmokeFXType.Counter : SmokeFXType.Uppercut);
 					break;
 
 				case HitType.None:
@@ -5897,6 +5915,8 @@ namespace FightingLegends
 			SetFreezeFrames(expiryFreezeFrames);	
 
 			secondLifeOpportunity = true;   		// reset by EndKnockOutFreeze
+
+			StartStatusEffect(StatusEffect.KnockOut);
 
 			if (OnKnockOutFreeze != null)			// for AI to trigger second life (if equipped)
 				OnKnockOutFreeze(this);

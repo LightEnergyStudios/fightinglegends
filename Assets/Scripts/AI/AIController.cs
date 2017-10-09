@@ -61,7 +61,7 @@ namespace FightingLegends
 		public int IterationRepeat = 10;			// number of times to activate each iterated strategy
 		private int iterationCount = 0;				// number of times each iterated strategy activated
 
-		public Fighter fighter;
+		public Fighter fighter;						// set in inspector (fighter prefab)
 		private FightManager fightManager;
 
 

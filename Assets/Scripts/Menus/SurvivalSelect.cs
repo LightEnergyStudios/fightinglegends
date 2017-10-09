@@ -35,13 +35,11 @@ namespace FightingLegends
 				var fighterName = card.Key;
 				var fighterCard = card.Value;
 
-				var profile = Profile.GetFighterProfile(fighterName);
+				var profile = GetFighterProfile(fighterName);
 				if (profile != null)
 				{
-//					fighterCard.SetProfileData(fighterCard.Level, fighterCard.XP, PowerUpSprite(fighterCard.StaticPowerUp), PowerUpSprite(fighterCard.TriggerPowerUp), CardFrame(fighterName));
 					fighterCard.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(fighterName),
 										profile.IsLocked, profile.CanUnlock, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
-//					Debug.Log("SetProfileData: " + fighterName + " - static = " + profile.StaticPowerUp + ", trigger = " + profile.TriggerPowerUp);
 				}
 			}
 		}

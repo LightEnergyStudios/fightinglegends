@@ -350,16 +350,17 @@ namespace FightingLegends
 		Health = 6,
 		Gauge = 7,
 		RomanCancel = 8,
-		LastHit = 9,
-		Stun = 10, 					// hook, mid, straight or uppercut + shove + block
-		CanContinue = 11,			// at start
-		IdleFrame = 12,				// every frame in idle state
-		BlockIdleFrame = 13,		// every frame in block idle state
-		CanContinueFrame = 14,		// every frame in CanContinue state
-		VengeanceFrame = 15,		// every frame in vengeance state
-		GaugeIncreaseFrame = 16,	// every frame since increase in gauge
-		StunnedFrame = 17,			// every frame since hit / block / shove stun
-		LastHitFrame = 18,			// every frame since last hit until end of state
+		Hit = 9,
+		LastHit = 10,
+		Stun = 11, 					// hook, mid, straight or uppercut + shove + block
+		CanContinue = 12,			// at start
+		IdleFrame = 13,				// every frame in idle state
+		BlockIdleFrame = 14,		// every frame in block idle state
+		CanContinueFrame = 15,		// every frame in CanContinue state
+		VengeanceFrame = 16,		// every frame in vengeance state
+		GaugeIncreaseFrame = 17,	// every frame since increase in gauge
+		StunnedFrame = 18,			// every frame since hit / block / shove stun
+		LastHitFrame = 19,			// every frame since last hit until end of state
 	}
 			
 	public enum FightMode

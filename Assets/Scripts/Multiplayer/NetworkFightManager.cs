@@ -138,6 +138,11 @@ namespace FightingLegends
 //			yield return null;
 //		}
 
+		[Server]
+		public void ExitFighterSelect(bool isPlayer1)
+		{
+			player1.RpcExitFighterSelect();							// back to mode select
+		}
 
 		[Server]
 		public void ReadyToFight(bool isPlayer1, bool ready)

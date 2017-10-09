@@ -19,6 +19,7 @@
 		<string name="waitingForOpponent">WAITING FOR OPPONENT</string>
 		<string name="opponentReady">OPPONENT READY</string>
 		<string name="fightEnding">FIGHT ENDING</string>
+		<string name="fightEnded">FIGHT ENDED</string>
 		<string name="timeOut">TIMEOUT</string>
 
         <string name="redLightHeading">RED = BLOCK</string>

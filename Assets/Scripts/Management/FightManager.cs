@@ -384,6 +384,9 @@ namespace FightingLegends
 		public delegate void MenuDelegate(MenuType newMenu, bool canGoBack, bool canPause, bool coinsVisible, bool kudosVisible);
 		public static MenuDelegate OnMenuChanged;
 
+		public delegate void BackClickedDelegate(MenuType menu);
+		public static BackClickedDelegate OnBackClicked;
+
 		public delegate void MusicVolumeDelegate(float volume);
 		public static MusicVolumeDelegate OnMusicVolumeChanged;
 
@@ -2016,7 +2019,7 @@ namespace FightingLegends
 		}
 
 		// took too long for both fighters to be selected
-		public void StartNetworkFightTimeout()
+		public void ExitNetworkFighterSelect()
 		{
 			IsNetworkFight = false;
 			ActivateMenu(MenuType.ModeSelect);
@@ -3674,12 +3677,12 @@ namespace FightingLegends
 				{
 					if (CurrentMenuCanvas == MenuType.Combat)
 						ConfirmQuitFight();
-					else
+					else if (! (CurrentMenuCanvas == MenuType.ArcadeFighterSelect && IsNetworkFight))		// synced by NetworkFightManager
 						ActivatePreviousMenu(true, true);
 				}
 
-//				if (OnBackClicked != null)
-//					OnBackClicked(CurrentMenuCanvas);
+				if (OnBackClicked != null)
+					OnBackClicked(CurrentMenuCanvas);
 			}
 		}
 
@@ -3887,6 +3890,8 @@ namespace FightingLegends
 			if (menuStack.Count < 1)		// make sure there is something to pop!
 				return;
 
+			var currentMenu = CurrentMenuCanvas;
+
 			if (backClicked)		// if the current menu has an active overlay, simply hide it
 			{
 //				Debug.Log("ActivatePreviousMenu: backClicked = " + backClicked + ", pop = " + pop);
@@ -3958,6 +3963,9 @@ namespace FightingLegends
 				MenuPop();
 				
 			ActivateMenu(MenuPeek(), false, backClicked);
+
+//			if (OnPreviousMenu != null)
+//				OnPreviousMenu(currentMenu, backClicked);
 		}
 
 		private bool ActivateMenu(MenuType menu, bool push = true, bool navigatingBack = false)

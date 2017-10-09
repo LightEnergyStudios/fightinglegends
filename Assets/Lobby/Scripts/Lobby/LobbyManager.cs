@@ -20,7 +20,7 @@ namespace Prototype.NetworkLobby
 		[Header("Custom UI")]
 		public Image lobbyUIPanel;			// entire lobby UI
 		public Text userID;					// used for matchmaker game name 
-		public Text IPAddress;				// (own (host) IP - display only
+		public Text IPAddress;				// own (host) IP - display only
 		public AudioClip EntrySound;
 		public Image curtain;				// blackout
 
@@ -138,6 +138,8 @@ namespace Prototype.NetworkLobby
 
 			ChangeTo(mainMenuPanel);
 
+//			StopAll();		// TODO: best way to initialise?
+
 //			// start reloading combat scene asap
 //			if (opening != null)
 //				opening.PreloadCombat();	
@@ -171,9 +173,7 @@ namespace Prototype.NetworkLobby
 		// back button
 		private void QuitLobby()
 		{
-			StopClientClbk();
-			StopHostClbk();
-			StopServerClbk();
+			StopAll();
 
 			HideLobbyUI(true);
 
@@ -392,6 +392,13 @@ namespace Prototype.NetworkLobby
 		public void SimpleBackClbk()
 		{
 			ChangeTo(mainMenuPanel);
+		}
+
+		private void StopAll()
+		{
+			StopClientClbk();
+			StopHostClbk();
+//			StopServerClbk();
 		}
 
 		public void StopHostClbk()

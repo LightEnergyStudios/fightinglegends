@@ -89,6 +89,20 @@ namespace FightingLegends
 		private bool animatedEntry = false;
 		private const float animatePauseTime = 0.5f;		// pause before animated card entry
 
+		// fighter profile buffers to save re-reading files
+		// updated on OnFighterProfileSaved event
+		private SavedProfile danjumaProfile = null;	
+		private SavedProfile leoniProfile = null;
+		private SavedProfile shiroProfile = null;
+		private SavedProfile natalyaProfile = null;
+		private SavedProfile hoiLunProfile = null;
+		private SavedProfile alazneProfile = null;
+		private SavedProfile shiyangProfile = null;
+		private SavedProfile jacksonProfile = null;
+		private SavedProfile skeletronProfile = null;
+		private SavedProfile ninjaProfile = null;
+
+
 		public delegate void PreviewCreatedDelegate(Fighter previewFighter, bool fighterChanged);
 		public static PreviewCreatedDelegate OnPreviewCreated;
 
@@ -219,6 +233,8 @@ namespace FightingLegends
 			if (ninjaButton != null)
 				ninjaButton.onClick.AddListener(delegate { CreatePreview("Ninja", "P1", true, true); });
 
+			Profile.OnProfileSaved += OnFighterProfileSaved;
+
 			listening = true;
 		}
 
@@ -259,6 +275,8 @@ namespace FightingLegends
 				skeletronButton.onClick.RemoveListener(delegate { CreatePreview("Skeletron", "P1", true, true); });
 			if (ninjaButton != null)
 				ninjaButton.onClick.RemoveListener(delegate { CreatePreview("Ninja", "P1", true, true); });
+
+			Profile.OnProfileSaved -= OnFighterProfileSaved;
 
 			listening = false;
 		}
@@ -312,12 +330,127 @@ namespace FightingLegends
 				var fighterName = card.Key;
 				var fighterCard = card.Value;
 
-				var profile = Profile.GetFighterProfile(fighterName);
+				var profile = GetFighterProfile(fighterName);
 				if (profile != null)
 				{
 					fighterCard.SetProfileData(1, 0, null, null, CardFrame(fighterName),
 						profile.IsLocked, profile.CanUnlock, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
+			}
+		}
+
+
+		protected SavedProfile GetFighterProfile(string fighterName)
+		{
+			switch (fighterName)
+			{
+				case "Leoni":
+					if (leoniProfile == null)
+						leoniProfile = Profile.GetFighterProfile(fighterName);
+					return leoniProfile;
+
+				case "Shiro":
+					if (shiroProfile == null)
+						shiroProfile = Profile.GetFighterProfile(fighterName);
+					return shiroProfile;
+
+				case "Danjuma":
+					if (danjumaProfile == null)
+						danjumaProfile = Profile.GetFighterProfile(fighterName);
+					return danjumaProfile;
+
+				case "Natalya":
+					if (natalyaProfile == null)
+						natalyaProfile = Profile.GetFighterProfile(fighterName);
+					return natalyaProfile;
+
+				case "Hoi Lun":
+					if (hoiLunProfile == null)
+						hoiLunProfile = Profile.GetFighterProfile(fighterName);
+					return hoiLunProfile;
+
+				case "Jackson":
+					if (jacksonProfile == null)
+						jacksonProfile = Profile.GetFighterProfile(fighterName);
+					return jacksonProfile;
+
+				case "Alazne":
+					if (alazneProfile == null)
+						alazneProfile = Profile.GetFighterProfile(fighterName);
+					return alazneProfile;
+
+				case "Shiyang":
+					if (shiyangProfile == null)
+						shiyangProfile = Profile.GetFighterProfile(fighterName);
+					return shiyangProfile;
+
+				case "Skeletron":
+					if (skeletronProfile == null)
+						skeletronProfile = Profile.GetFighterProfile(fighterName);
+					return skeletronProfile;
+
+				case "Ninja":
+					if (ninjaProfile == null)
+						ninjaProfile = Profile.GetFighterProfile(fighterName);
+					return ninjaProfile;
+
+				default:
+					return null;
+			}
+		}
+
+		private void OnFighterProfileSaved(SavedProfile fighterProfile)
+		{
+			UpdateFighterProfile(fighterProfile.FighterName, fighterProfile);
+		}
+
+
+		private SavedProfile UpdateFighterProfile(string fighterName, SavedProfile fighterProfile)
+		{
+			switch (fighterName)
+			{
+				case "Leoni":
+					leoniProfile = fighterProfile;
+					return leoniProfile;
+
+				case "Shiro":
+					shiroProfile = fighterProfile;
+					return shiroProfile;
+
+				case "Danjuma":
+					danjumaProfile = fighterProfile;
+					return danjumaProfile;
+
+				case "Natalya":
+					natalyaProfile = fighterProfile;
+					return natalyaProfile;
+
+				case "Hoi Lun":
+					hoiLunProfile = fighterProfile;
+					return hoiLunProfile;
+
+				case "Jackson":
+					jacksonProfile = fighterProfile;
+					return jacksonProfile;
+
+				case "Alazne":
+					alazneProfile = fighterProfile;
+					return alazneProfile;
+
+				case "Shiyang":
+					shiyangProfile = fighterProfile;
+					return shiyangProfile;
+
+				case "Skeletron":
+					skeletronProfile = fighterProfile;
+					return skeletronProfile;
+
+				case "Ninja":
+					ninjaProfile = fighterProfile;
+					return ninjaProfile;
+
+				default:
+					return null;
 			}
 		}
 	
