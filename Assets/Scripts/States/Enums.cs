@@ -580,7 +580,8 @@ namespace FightingLegends
 		DojoDamage,
 		SurvivalRounds,
 		ChallengeWinnings,
-		WorldTours,
+		ArcadeWorldTours,
+		VSVictoryPoints,
 	}
 
 	public enum StatusEffect

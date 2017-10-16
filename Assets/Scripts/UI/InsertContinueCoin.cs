@@ -26,8 +26,8 @@ namespace FightingLegends
 		private const float countdownPause = 3.0f;			// before countdown starts
 		private const float exitPause = 2.0f;				// before countdown exits
 
-		private const float feedbackX = -140.0f;
-		private const float feedbackY = -50.0f;
+		private const float feedbackX = 0;
+		private const float feedbackY = -58.0f;
 		private const string feedbackLayer = "Curtain";		// so curtain camera picks it up
 
 		private FightManager fightManager;

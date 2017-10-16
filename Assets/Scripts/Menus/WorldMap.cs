@@ -69,8 +69,10 @@ namespace FightingLegends
 		{
 //			Debug.Log("WorldMap OnEnable: WorldMapPosition1 = " + fightManager.WorldMapPosition);
 
-			if (fightManager.WorldMapPosition == Vector3.zero)
-				fightManager.WorldMapPosition = new Vector3(hawaiiDot.rectTransform.localPosition.x, hawaiiDot.rectTransform.localPosition.y, hawaiiDot.rectTransform.localPosition.z + currentZOffset);
+//			if (fightManager.WorldMapPosition == Vector3.zero)
+//				fightManager.WorldMapPosition = new Vector3(hawaiiDot.rectTransform.localPosition.x, hawaiiDot.rectTransform.localPosition.y, hawaiiDot.rectTransform.localPosition.z + currentZOffset);
+
+			InitWorldMapPosition();
 
 //			Debug.Log("WorldMap OnEnable: WorldMapPosition2 = " + fightManager.WorldMapPosition);
 
@@ -91,7 +93,8 @@ namespace FightingLegends
 			if (showSpaceStation)
 				antarcticaButton.onClick.AddListener(FlyToAntarctica);
 
-			TickCompletedLocations();
+			if (! FightManager.IsNetworkFight)
+				TickCompletedLocations();
 		}
 
 		private void OnDisable()
@@ -117,6 +120,57 @@ namespace FightingLegends
 //		public override bool CanNavigateBack { get { return base.CanNavigateBack && NavigatedFrom != MenuType.MatchStats; } }
 		public override bool CanNavigateBack { get { return base.CanNavigateBack && 
 								(NavigatedFrom == MenuType.ArcadeFighterSelect || NavigatedFrom == MenuType.SurvivalFighterSelect); } }
+
+
+		private void InitWorldMapPosition()
+		{
+			if (string.IsNullOrEmpty(fightManager.SelectedLocation))
+				fightManager.SelectedLocation = FightManager.hawaii;
+
+			switch (fightManager.SelectedLocation)
+			{
+				case FightManager.hawaii:
+					fightManager.WorldMapPosition = hawaiiDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.china:
+					fightManager.WorldMapPosition = chinaDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.tokyo:
+					fightManager.WorldMapPosition = tokyoDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.ghetto:
+					fightManager.WorldMapPosition = ghettoDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.cuba:
+					fightManager.WorldMapPosition = cubaDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.nigeria:
+					fightManager.WorldMapPosition = nigeriaDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.soviet:
+					fightManager.WorldMapPosition = sovietDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.hongKong:
+					currentLocale.rectTransform.localPosition = hongKongDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.spaceStation:
+					fightManager.WorldMapPosition = antarcticaDot.rectTransform.localPosition;
+					break;
+
+				case FightManager.dojo:
+				default:
+					break;
+			}
+		}
+
 
 		private void FlyToTokyo()
 		{

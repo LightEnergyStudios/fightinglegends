@@ -573,6 +573,9 @@ namespace FightingLegends
 				bool loopColour = cycleColour && previewFighter.FighterName == name;		// cycle colours if the current fighter selected again
 				idleFrameNumber = previewFighter.MovieClipFrame;
 
+				if (previewFighter.AtLastFrame)
+					idleFrameNumber = 0;
+				
 //				Debug.Log("CreatePreview: " + name + " " + currentColour + ", previewFighter.FighterName = " + previewFighter.FighterName + ", loopColour = " + loopColour);
 
 				if (loopColour)

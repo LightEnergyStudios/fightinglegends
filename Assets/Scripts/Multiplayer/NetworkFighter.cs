@@ -104,6 +104,7 @@ namespace FightingLegends
 			FightManager.OnNetworkReadyToFight += ReadyToFight;		// sync'ed via NetworkFightManager
 			FightManager.OnQuitFight += QuitFight;
 			FightManager.OnBackClicked += ExitFighterSelect;
+			FightManager.OnKnockOut += KnockOut;
 		}
 
 		[Client]
@@ -132,6 +133,7 @@ namespace FightingLegends
 			FightManager.OnNetworkReadyToFight -= ReadyToFight;
 			FightManager.OnQuitFight -= QuitFight;
 			FightManager.OnBackClicked -= ExitFighterSelect;
+			FightManager.OnKnockOut -= KnockOut;
 		}
 			
 		#region animation
@@ -218,6 +220,13 @@ namespace FightingLegends
 
 			networkFightManager.SetLocation(isPlayer1, location);		// starts fight (rpc) if all set (fighters and location)
 		}
+
+		[ClientRpc]
+		public void RpcSelectLocation(string location)
+		{
+			fightManager.SelectedLocation = location;
+		}
+
 
 		#endregion
 
@@ -313,7 +322,36 @@ namespace FightingLegends
 		{
 			fightManager.ReadyToFight = ready;
 		}
+			
+		#endregion
+	
 
+		#region knock out  (not currently used)
+
+		// FightManager.OnKnockout
+		[Client]
+		private void KnockOut(bool isPlayer1)
+		{
+			if (isLocalPlayer)
+				CmdKnockout(isPlayer1);
+		}
+
+		[Command]
+		// called from client, runs on server
+		private void CmdKnockout(bool isPlayer1)
+		{
+			if (!isServer)
+				return;
+
+			RpcKnockout(isPlayer1);
+		}
+
+		[ClientRpc]
+		// called on server, runs on clients
+		private void RpcKnockout(bool isPlayer1)
+		{
+			fightManager.KnockOutFighter(isPlayer1);
+		}
 
 		#endregion
 
@@ -343,9 +381,6 @@ namespace FightingLegends
 		// called on server, runs on clients
 		private void RpcQuitFight()
 		{
-			if (!isLocalPlayer)
-				return;
-			
 			StartCoroutine(ExitFightAfterPause());
 		}
 			
@@ -375,7 +410,7 @@ namespace FightingLegends
 			switch (messageType)
 			{
 				case NetworkMessageType.WaitingToStart:
-					message = locationSelected ? (FightManager.Translate("waitingForOpponent") + " ...") : (FightManager.Translate("opponentReady", false, true));
+//					message = locationSelected ? (FightManager.Translate("waitingForOpponent") + " ...") : (FightManager.Translate("opponentReady", false, true));
 					break;
 
 				case NetworkMessageType.FightEnding:
@@ -909,18 +944,5 @@ namespace FightingLegends
 		}
 
 		#endregion
-	}
-
-
-	[Serializable]
-	public struct FightContenders
-	{
-		public string Fighter1Name;
-		public string Fighter1Colour;
-
-		public string Fighter2Name;
-		public string Fighter2Colour;
-
-		public string Location;
 	}
 }

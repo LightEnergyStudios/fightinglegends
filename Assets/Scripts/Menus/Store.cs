@@ -655,7 +655,8 @@ namespace FightingLegends
 			get
 			{
 				var fighter = fighterSelect.previewFighter;
-				return (int)(fighter.LevelUpXP * levelUpCoinsPerXP);
+//				return (int)(fighter.LevelUpXP * levelUpCoinsPerXP);
+				return Mathf.RoundToInt(fighter.LevelUpXP * levelUpCoinsPerXP);
 			}
 		}
 

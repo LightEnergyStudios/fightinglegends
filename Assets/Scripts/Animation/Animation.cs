@@ -74,6 +74,11 @@ namespace FightingLegends
 			}
 		}
 
+		public bool AtLastFrame
+		{
+			get { return MovieClipFrame >= currentAnimation.LastFrame; }
+		}
+
 
 		protected void InitAnimation()
 		{

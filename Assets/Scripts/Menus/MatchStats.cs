@@ -93,10 +93,13 @@ namespace FightingLegends
 				{
 //					if (winner != null && !winner.UnderAI)							// player won - back to mode select (eg. dojo)
 //						fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
-					if (winner != null && !winner.UnderAI)							// player won - choose next location
-						fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
-
-					// else AI won - wait for countdown or insert coin to continue
+					if (winner != null)
+					{
+						if (!winner.UnderAI)							// player won - choose next location
+							fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
+						else   // AI won - didn't wait for countdown or insert coin to continue
+							fightManager.MatchStatsChoice = MenuType.ModeSelect;
+					}
 				}
 				else
 				{

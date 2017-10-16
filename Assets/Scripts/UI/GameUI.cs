@@ -13,6 +13,8 @@ namespace FightingLegends
 	
 		public Text CombatMode;
 		public Text ScoreDash;
+		public Text Player1Debug;
+		public Text Player2Debug;
 
 		// score
 		public Color ScoreColour;				// arcade and training
@@ -109,7 +111,6 @@ namespace FightingLegends
 		public delegate void GaugeIncreasedDelegate(int newGauge);
 		public static GaugeIncreasedDelegate OnGaugeIncreased;
 
-
 		private FightManager fightManager;
 		private CameraController cameraController;
 
@@ -189,15 +190,32 @@ namespace FightingLegends
 				ScoreDash.color = DojoColour;	
 				CombatMode.color = DojoColour;
 			}
-			else  		// arcade / training
+			else if (FightManager.CombatMode == FightMode.Training)
 			{
-				bool trainingCompleted = FightManager.SavedGameStatus.CompletedBasicTraining;
+				Player1Health.ShowScore(false);
+				Player2Health.ShowScore(false);
+				ScoreDash.gameObject.SetActive(false);
 
-				Player1Health.ShowScore(trainingCompleted);
-				Player2Health.ShowScore(trainingCompleted);
-				ScoreDash.gameObject.SetActive(trainingCompleted);
+				CombatMode.text = FightManager.Translate("ninjaSchool");
 
-				if (trainingCompleted)
+				Player1Health.SetScoreColour(ScoreColour);
+				Player2Health.SetScoreColour(ScoreColour);
+				ScoreDash.color = ScoreColour;
+				CombatMode.color = ScoreColour;
+			}
+			else  		// arcade
+			{
+//				bool trainingCompleted = FightManager.SavedGameStatus.CompletedBasicTraining;
+//
+//				Player1Health.ShowScore(trainingCompleted);
+//				Player2Health.ShowScore(trainingCompleted);
+//				ScoreDash.gameObject.SetActive(trainingCompleted);
+
+				Player1Health.ShowScore(true);
+				Player2Health.ShowScore(true);
+				ScoreDash.gameObject.SetActive(true);
+
+//				if (trainingCompleted)
 				{
 					var mode = FightManager.CombatMode.ToString().ToLower();
 					var difficulty = FightManager.SavedGameStatus.Difficulty.ToString().ToLower();
@@ -208,8 +226,8 @@ namespace FightingLegends
 						CombatMode.text = FightManager.SavedGameStatus.NinjaSchoolFight ? FightManager.Translate("ninjaSchool")
 												: string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate(difficulty));
 				}
-				else
-					CombatMode.text = FightManager.Translate("ninjaSchool");
+//				else
+//					CombatMode.text = FightManager.Translate("ninjaSchool");
 
 				if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
 				{
@@ -259,13 +277,14 @@ namespace FightingLegends
 			// listen to player2 powerup changes for when AI executes powerups
 			if (Player2Health.Fighter != null)
 			{
-				Player2Health.Fighter.OnTriggerPowerUpChanged += Player2SetTriggerPowerUp;
-				Player2Health.Fighter.OnStaticPowerUpChanged += Player2SetStaticPowerUp;
+				var player2 = Player2Health.Fighter;
+
+				player2.OnTriggerPowerUpChanged += Player2SetTriggerPowerUp;
+				player2.OnStaticPowerUpChanged += Player2SetStaticPowerUp;
 
 				// traffic light listeners
-				Player2Health.Fighter.OnStateStarted += OnStateStarted;
-				Player2Health.Fighter.OnLastHit += OnLastHit;
-//				Player2Health.Fighter.OnKnockOut += OnKnockOut;
+				player2.OnStateStarted += OnStateStarted;
+				player2.OnLastHit += OnLastHit;
 			}
 
 			FightManager.OnReadyToFight += OnReadyToFight;
@@ -303,13 +322,14 @@ namespace FightingLegends
 				
 			if (Player2Health.Fighter != null)
 			{
-				Player2Health.Fighter.OnTriggerPowerUpChanged -= Player2SetTriggerPowerUp;
-				Player2Health.Fighter.OnStaticPowerUpChanged -= Player2SetStaticPowerUp;
+				var player2 = Player2Health.Fighter;
+
+				player2.OnTriggerPowerUpChanged -= Player2SetTriggerPowerUp;
+				player2.OnStaticPowerUpChanged -= Player2SetStaticPowerUp;
 
 				// traffic light listeners
-				Player2Health.Fighter.OnStateStarted -= OnStateStarted;
-				Player2Health.Fighter.OnLastHit -= OnLastHit;
-//				Player2Health.Fighter.OnKnockOut -= OnKnockOut;		// turn off traffic lights
+				player2.OnStateStarted -= OnStateStarted;
+				player2.OnLastHit -= OnLastHit;
 			}
 
 			FightManager.OnReadyToFight -= OnReadyToFight;
@@ -576,12 +596,6 @@ namespace FightingLegends
 			else
 				SetTrafficLightColour(TrafficLight.None);
 		}
-
-//		private void OnKnockOut(Fighter fighter)
-//		{
-//			SetTrafficLightColour(TrafficLight.None);
-//		}
-
 
 		private void EnableTrafficLights(bool enabled)
 		{

@@ -666,7 +666,7 @@ GameObject:
   - component: {fileID: 114018984199400612}
   - component: {fileID: 114915655933460730}
   m_Layer: 14
-  m_Name: Board5
+  m_Name: VSVictories
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -992,7 +992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1.0350887, g: 1.0294118, b: 1.0521194, a: 1}
+  m_Color: {r: 1, g: 0.33333334, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1356,6 +1356,7 @@ MonoBehaviour:
   survivalLeaderboardButton: {fileID: 114229249002270034}
   challengeLeaderboardButton: {fileID: 114514284673397486}
   worldTourLeaderboardButton: {fileID: 114661481610589282}
+  vsVictoriesLeaderboardButton: {fileID: 114915655933460730}
   refreshButton: {fileID: 114992141855245566}
   newUserButton: {fileID: 114798460353628406}
   titleLabel: {fileID: 114027626709383410}
@@ -1367,6 +1368,7 @@ MonoBehaviour:
   survivalLeaderboardLabel: {fileID: 114001320668063882}
   challengeLeaderboardLabel: {fileID: 114323161715079260}
   worldTourLeaderboardLabel: {fileID: 114740036674414006}
+  vsVictoriesLeaderboardLabel: {fileID: 114842726417625684}
   ScoresContent: {fileID: 1101441094057098}
   ScoreEntryPrefab: {fileID: 1000011174126790, guid: 0feebeb90332248a79e4821472504444,
     type: 2}
@@ -3303,7 +3305,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: BOARD 5
+  m_Text: VS VICTORY POINTS
 --- !u!114 &114849416713527238
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3452,7 +3454,7 @@ MonoBehaviour:
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 114018984199400612}
   m_OnClick:
     m_PersistentCalls:

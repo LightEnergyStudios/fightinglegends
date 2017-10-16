@@ -329,18 +329,20 @@
 		<string name="survivalEndurance">SURVIVAL ENDURANCE</string>
 		<string name="challengeWinnings">CHALLENGE WINNINGS</string>
 		<string name="worldTours">WORLD TOURS</string>
+		<string name="vsVictoryPoints">VS VICTORY POINTS</string>
 		<string name="topKudos">KUDOS TOP</string>
 		<string name="topDojoDamage">DOJO DAMAGE TOP</string>
 		<string name="topSurvivalEndurance">SURVIVAL ENDURANCE TOP</string>
 		<string name="topChallengeWinnings">CHALLENGE WINNINGS TOP</string>
 		<string name="topWorldTours">WORLD TOUR TOP</string>
+		<string name="topVsVictories">VS VICTORY POINTS TOP</string>
 
 		<string name="chooseLocation">CHOOSE FIGHT LOCATION</string>
 
 		<string name="wins">WINS!</string>
-		<string name="insertContinueCoin">INSERT COIN TO CONTINUE...!</string>
+		<string name="insertContinueCoin">insert coin to continue...!</string>
 		<string name="continue">CONTINUE</string>
-		<string name="insertCoinToPlay">INSERT COIN TO PLAY!</string>
+		<string name="insertCoinToPlay">insert coin to play!</string>
 
 	</English>
 

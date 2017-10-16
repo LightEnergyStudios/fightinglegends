@@ -27,7 +27,8 @@ namespace FightingLegends
 		public int BestDojoDamage = 0;					// PB damage from chain in Dojo mode
 		public int BestSurvivalEndurance = 0;			// PB rounds won in survival mode
 		public int TotalChallengeWinnings = 0;			// total challenge mode coins won 
-		public int WorldTourCompletions = 0;			// for all fighters
+		public int WorldTourCompletions = 0;			// arcade mode - for all fighters
+		public int VSVictoryPoints = 0;					// network fight
 
 		public bool CompletedBasicTraining = false;	
 

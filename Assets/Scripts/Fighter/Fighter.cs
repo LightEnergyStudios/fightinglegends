@@ -69,12 +69,13 @@ namespace FightingLegends
 		public bool OnFire { get; private set; }			// health reduced each second while true
 		public bool HealthUp { get; private set; }			// single health boost
 
-		private const int StatusEffectFrames = 50;			// on fire, armour up, armour down
+		private const int StatusEffectFrames = 50;			// on fire, armour up, armour down, health up
 //		private const int OKEffectFrames = 18;				// second life triggered
 //		private const int HealthUpEffectFrames = 50;
 		private const int KnockOutFreezeFrames = 30;
-		private int StatusEffectFramesRemaining = 0;
+//		private int StatusEffectFramesRemaining = 0;
 		private StatusEffect currentStatusEffect = StatusEffect.None;
+		private int StatusEffectStartFrame = 0;
 
 		private const float levelUpXPBase = 100.0f;				// XP required to increase from level 1 to 2
 		public const int maxLevel = 100;
@@ -300,6 +301,9 @@ namespace FightingLegends
 		public delegate void RoundWonDelegate(int roundsWon);
 		public RoundWonDelegate OnScoreChanged;
 
+		public delegate void UpdateHealthDelegate(float damage, bool updateGauge);
+		public UpdateHealthDelegate OnUpdateHealth;
+
 		public delegate void HealthChangedDelegate(FighterChangedData newState);
 		public HealthChangedDelegate OnHealthChanged;
 
@@ -427,8 +431,6 @@ namespace FightingLegends
 		#region fighter select scene
 
 		public bool PreviewIdle { get; private set; }		// idle only - for preview in fighter select menus
-//		public bool PreviewMoves { get; private set; }		// execute moves in training / preview mode
-//		public bool PreviewUseGauge { get; private set; }	// preview moves use gauge (restored on idle)
 
 		#endregion 		// fighter select scene
 
@@ -544,13 +546,13 @@ namespace FightingLegends
 		// NOT called when returning from background
 		void Start()
 		{
-			if (!PreviewIdle) // && !PreviewMoves)
+			if (!PreviewIdle)
 			{
 				MovieClipFrame = 0;
 //				Debug.Log(FullName + ": Start MovieClipFrame = " + MovieClipFrame + ", StateLabel " + currentAnimation.StateLabel + ", StateLength " + currentAnimation.StateLength);
 				SetToFighterLayer();
 
-				LevelXPTest();
+//				LevelXPTest();
 //				LevelDamageTest();
 			}
 			else
@@ -604,9 +606,11 @@ namespace FightingLegends
 		public void StartListeningForInput()
 		{
 //			Debug.Log(FullName + ": StartListeningForInput");
-
 			if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
+			{
+				FightManager.OnNetworkReadyToFight += OnNetworkReadyToFight;
 				return;
+			}
 			
 			// subscribe to touch events
 			if (UnderAI || IsDojoShadow)
@@ -628,14 +632,18 @@ namespace FightingLegends
 
 			TrainingUI.OnInfoBubble += InterruptFightBubble;
 			Trainer.OnFailedInput += OnLogFailedInput;
+
+			FightManager.OnReadyToFight += OnReadyToFight;
 		}
 
 		private void StopListeningForInput()
 		{
 //			Debug.Log(FullName + ": StopListeningForInput");
-
 			if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)		// handled by FighterController
+			{
+				FightManager.OnNetworkReadyToFight -= OnNetworkReadyToFight;
 				return;
+			}
 			
 			if (UnderAI || IsDojoShadow)
 				return;
@@ -658,6 +666,8 @@ namespace FightingLegends
 
 			TrainingUI.OnInfoBubble -= InterruptFightBubble;
 			Trainer.OnFailedInput -= OnLogFailedInput;
+
+			FightManager.OnReadyToFight -= OnReadyToFight;
 		}
 
 		#region animation
@@ -727,14 +737,16 @@ namespace FightingLegends
 		public int StateFrameCount { get; private set; }	// frame count for each state (eg. windup, hit, recovery, cutoff)
 		public int HitFrameCount { get; private set; }	// frame count for each state, reset on each hit
 
-		private const int AIStateFrameTimeout = 90;			// 6 seconds at 15 FPS
-		private const int AIHitFrameTimeout = 30;			// 2 seconds at 15 FPS
+		// TODO: reinstte? private const int AIStateFrameTimeout = 90;			// 6 seconds at 15 FPS
+		private const int AIHitFrameTimeout = 25;	
 
 		[HideInInspector]
 		public Move CurrentMove = Move.Idle;
 
 		public int AnimationFrameCount { get { return fightManager.AnimationFrameCount; } }
+//		public int GameFrameCount { get { return fightManager.FightFrameCount; } }
 
+		private int FightFrameCount = 0;
 
 		private int currentPriority = Default_Priority;
 		public int CurrentPriority
@@ -1102,10 +1114,7 @@ namespace FightingLegends
 							CurrentState == State.Hit_Straight_Die || CurrentState == State.Hit_Uppercut_Die; }
 		}
 			
-		protected virtual bool FallenState	
-		{
-			get { return false; }		// skeletron only
-		}
+		protected virtual bool FallenState { get { return false; }}	// skeletron only
 			
 		public bool ExpiredHealth { get { return ProfileData.SavedData.Health <= 0; } }
 
@@ -1159,7 +1168,18 @@ namespace FightingLegends
 			get { return IsPlayer1 || IsPlayer2; }
 		}
 
+		private void OnReadyToFight(bool ready, bool changed, FightMode fightMode)
+		{
+			if (ready)
+				FightFrameCount = 0;
+		}
 
+		private void OnNetworkReadyToFight(bool ready)
+		{
+			if (ready)
+				FightFrameCount = 0;
+		}
+			
 		private void OnTopOfOpponent()
 		{
 			if (IsOnTop)
@@ -1733,20 +1753,8 @@ namespace FightingLegends
 					TwoFingerTap();				// roman cancel (requires gauge)
 				}
 			}
-				
-			// in the dojo, the shadow fighter constantly regenerates health
-			bool dojoRegenerate = FightManager.CombatMode == FightMode.Dojo && IsDojoShadow
-											&& !ExpiredHealth && !ExpiredState && !FallenState && !fightManager.FightFrozen;
-
-			// constantly increase health if fighter has the regenerator power-up
-			bool powerUpRegenerate = FightManager.CombatMode != FightMode.Arcade && StaticPowerUp == FightingLegends.PowerUp.Regenerator &&
-			                         !ExpiredHealth && !Opponent.ExpiredHealth && !fightManager.FightFrozen;
-			
-			if (ProfileData.SavedData.Health < ProfileData.LevelHealth && (dojoRegenerate || powerUpRegenerate))
-			{
-				UpdateHealth(-ProfileData.RegeneratorFactor);
-			}
 		}
+
 
 		protected override void OnNextAnimationFrame()
 		{
@@ -1765,58 +1773,70 @@ namespace FightingLegends
 			if (PreviewIdle) 			// eg. for fighter select scene preview idle (not driven by FightManager)
 				NextAnimationFrame();
 		}
-
-		private void StatusEffectCountdown()
-		{
-			if (StatusEffectFramesRemaining == 0)
-				return;
 			
+
+		// driven by UpdateAnimation
+		private void CountStatusEffectFrames()
+		{
+			if (StatusEffectStartFrame == 0)
+				return;
+
 			if (currentStatusEffect == StatusEffect.None)
 			{
-				StatusEffectFramesRemaining = 0;		// shouldn't happen
+				StatusEffectStartFrame = 0;		// shouldn't happen
 				return;
 			}
 
-			StatusEffectFramesRemaining--;
+			int statusEffectFrames = 0;
 
-			if (StatusEffectFramesRemaining == 0)
-				StopCurrentStatusEffect();
-		}
-
-		private void StartStatusEffect(StatusEffect effect)
-		{
-			if (currentStatusEffect != StatusEffect.None)
-				StopCurrentStatusEffect();
-			
-			switch (effect)
+			switch (currentStatusEffect)
 			{
 				case StatusEffect.KnockOut:
-					StatusEffectFramesRemaining = KnockOutFreezeFrames;
+					statusEffectFrames = KnockOutFreezeFrames;
 					break;
-
-//				case StatusEffect.HealthUp:
-//					StatusEffectFramesRemaining = HealthUpEffectFrames;
-//					break;
 
 				case StatusEffect.HealthUp:
 				case StatusEffect.OnFire:
 				case StatusEffect.ArmourUp:
 				case StatusEffect.ArmourDown:
-					StatusEffectFramesRemaining = StatusEffectFrames;
+					statusEffectFrames = StatusEffectFrames;
 					break;
 
 //				case StatusEffect.OK:
 //					StatusEffectFramesRemaining = OKEffectFrames;
 //					break;
 			}
+
+//			Debug.Log(FullName + ": CountStatusEffectFrames: " + (AnimationFrameCount - StatusEffectStartFrame) + " / " + statusEffectFrames);
+//			fightManager.HealthDebugText(IsPlayer1, FightFrameCount + " - " + StatusEffectStartFrame + " / " + statusEffectFrames + " damage: " + damageWhileOnFire);
+
+			if (FightFrameCount - StatusEffectStartFrame == statusEffectFrames)
+				StopCurrentStatusEffect();
+		}
+
+		private void StartStatusEffectFrameCount(StatusEffect effect)
+		{
+			if (currentStatusEffect != StatusEffect.None)
+				StopCurrentStatusEffect();
+
+			StatusEffectStartFrame = FightFrameCount;
+			currentStatusEffect = effect;
+
+//			fightManager.HealthDebugText(IsPlayer1, currentStatusEffect.ToString() + " / " + StatusEffectStartFrame.ToString());
 		}
 
 		private void StopCurrentStatusEffect()
 		{
+//			Debug.Log(FullName + "StopCurrentStatusEffect: damageWhileOnFire = " + damageWhileOnFire);
+
 			switch (currentStatusEffect)
 			{
 				case StatusEffect.KnockOut:
-					EndKnockOutFreeze();
+					fightManager.SnapshotCameraPosition();
+					fightManager.UnfreezeFight();
+
+					if (ExpiredHealth || ExpiredState) 		// TODO: check this! (skeletron) 
+						EndKnockOutFreeze();				// next round if didn't take second life opportunity
 					break;
 
 				case StatusEffect.OnFire:
@@ -1841,8 +1861,17 @@ namespace FightingLegends
 			}
 
 			currentStatusEffect = StatusEffect.None;
-			StatusEffectFramesRemaining = 0;
+			StatusEffectStartFrame = 0;
 		}
+
+//		public void StopAllStatusEffects()
+//		{
+//			Debug.Log(FullName + ": StopAllStatusEffects");
+//			StopOnFire();
+//			StopHealthUp();
+//			StopArmourUp();
+//			StopArmourDown();
+//		}
 
 
 		public void SetPreview(uint idleFrameNumber) 		// for preview in fighter select menus
@@ -1852,8 +1881,7 @@ namespace FightingLegends
 //			Debug.Log(FullName + ": SetIdleFrame MovieClipFrame = " + MovieClipFrame + ", StateLabel " + currentAnimation.StateLabel + ", StateLength " + currentAnimation.StateLength);
 			PreviewIdle = true;
 		}
-
-
+			
 		private void IdleFrameCount()
 		{
 			if (IsIdle)
@@ -1991,10 +2019,20 @@ namespace FightingLegends
 		// character animation is at 15fps by default
 		public void UpdateAnimation()
 		{
-			if (!InFight) // && !PreviewMoves)
+			if (!InFight)
 				return;
 
-			if (fightManager.FightFrozen) // && !PreviewMoves)
+			FightFrameCount++;
+
+			if (OnFire)
+				OnFireDamage();  	// reduce health if on fire
+
+			Regenerate();			// increase health if regenerator static power-up or dojo shadow fighter
+
+			if (StatusEffectStartFrame > 0)			// on fire, health up, armour up, armour down, KO
+				CountStatusEffectFrames();
+			
+			if (fightManager.FightFrozen)
 				return;
 
 			// return if frozen independently..
@@ -2002,15 +2040,12 @@ namespace FightingLegends
 			{
 				if (romanCancelFrozen && romanCancelFreezeFramesRemaining >= 0)
 					RomanCancelFreezeCountdown();		// for set number of frames
-
 				else if (powerUpFrozen && powerUpFreezeFramesRemaining >= 0)
-				{
-//					Debug.Log(FullName + ": powerUpFreezeFramesRemaining = " + powerUpFreezeFramesRemaining);
 					PowerUpFreezeCountdown();		// for set number of frames
-				}
+
 				return;
 			}
-
+				
 			// ..or if fighters are both frozen
 			if (freezeFightFrames > 0)
 			{
@@ -2018,10 +2053,7 @@ namespace FightingLegends
 				freezeFightFrames = 0;
 				return;
 			}
-
-			if (StatusEffectFramesRemaining > 0)			// on fire, health up, armour up, armour down, KO
-				StatusEffectCountdown();
-
+				
 			if (counterTriggerStun)		// deferred from previous frame
 			{
 				StartCounterTriggerStun();
@@ -2071,6 +2103,47 @@ namespace FightingLegends
 
 			if (UnderAI && AIController != null)
 				AIController.StrategyCued = false;		// reset each beat - prevents >1 move triggered by AI receiving events
+		}
+
+		// driven by UpdateAnimation
+		private void OnFireDamage()
+		{	
+			if (! OnFire)
+				return;
+
+			if (ProfileData.SavedData.Health <= 1.0f)			// can't die from being on fire!
+				return;
+
+			var damagePerTick = ProfileData.OnFireDamagePerTick;
+			var damage = damagePerTick + (damagePerTick * ProfileData.LevelFactor);
+
+			if (damage > ProfileData.SavedData.Health - 1.0f)			// can't die from being on fire!
+				damage = ProfileData.SavedData.Health - 1.0f;
+			
+			UpdateHealth(damage);
+			damageWhileOnFire += damage;
+
+//			Debug.Log(FullName + ": OnFireDamage: " + damage + "(" + damageWhileOnFire + ")");
+		}
+
+		// driven by UpdateAnimation
+		private void Regenerate()
+		{
+			// in the dojo, the shadow fighter constantly regenerates health
+			bool dojoRegenerate = FightManager.CombatMode == FightMode.Dojo && IsDojoShadow
+				&& !ExpiredHealth && !ExpiredState && !FallenState && !fightManager.FightFrozen;
+
+			// constantly increase health if fighter has the regenerator power-up
+			bool powerUpRegenerate = FightManager.CombatMode != FightMode.Arcade && StaticPowerUp == FightingLegends.PowerUp.Regenerator &&
+				!ExpiredHealth && !Opponent.ExpiredHealth && !fightManager.FightFrozen;
+
+			if (ProfileData.SavedData.Health < ProfileData.LevelHealth && (dojoRegenerate || powerUpRegenerate))
+			{
+				var regeneratorFactor = ProfileData.RegeneratorFactor * 4;
+				var healthIncrease = regeneratorFactor + (regeneratorFactor * ProfileData.LevelFactor);
+				
+				UpdateHealth(-healthIncrease);
+			}
 		}
 			
 		private bool ActionHit(HitFrameData hitData, bool lastHit)
@@ -2264,14 +2337,14 @@ namespace FightingLegends
 
 		private void LevelXPTest()
 		{
-//			var originalLevel = Level;
-//			for (int level = 1; level <= maxLevel; level++)
-//			{
-//				Level = level;
-//				Debug.Log(FullName + ": LevelXPTest: Level = " + Level + ", LevelUpXP = " + Mathf.RoundToInt(LevelUpXP));
-//			}
-//
-//			Level = originalLevel;
+			var originalLevel = Level;
+			for (int level = 1; level <= maxLevel; level++)
+			{
+				Level = level;
+				Debug.Log(FullName + ": LevelXPTest: Level = " + Level + ", LevelUpXP = " + Mathf.RoundToInt(LevelUpXP));
+			}
+
+			Level = originalLevel;
 		}
 
 //		private void LevelDamageTest()
@@ -3536,7 +3609,7 @@ namespace FightingLegends
 			Attacking = false;
 
 			// if holding down, continue into block idle
-			if (HoldingBlock) // TODO: ? && ! ExpiredHealth)
+			if (HoldingBlock && ! ExpiredHealth)	// TODO: ExpiredHealth ok?
 				CueContinuation(Move.Block);
 			
 			// execute the move continuation if present
@@ -3758,11 +3831,16 @@ namespace FightingLegends
 		// returns true if expired
 		public bool UpdateHealth(float damage, bool updateGauge = true)
 		{
-//			if (PreviewMoves && !PreviewUseGauge)
-//				return false;
-			
 			if (damage == 0)
 				return false;
+
+//			if (FightManager.IsNetworkFight)
+//			{
+//				if (OnUpdateHealth != null)
+//					OnUpdateHealth(damage, updateGauge);
+//
+//				return false;
+//			}
 
 			var newState = new FighterChangedData(this); 		// snapshot before changed
 
@@ -3890,25 +3968,6 @@ namespace FightingLegends
 				newState.ChangedGauge(ProfileData.SavedData.Gauge);
 				OnGaugeChanged(newState, true);
 			}
-		}
-
-		// damage taken every second while OnFire
-		private IEnumerator OnFireDamage()
-		{	
-			if (! OnFire)
-				yield break;
-
-			while (OnFire)
-			{
-				if (ProfileData.SavedData.Health <= 1.0f)			// can't die from being on fire!
-					yield break;
-				
-				UpdateHealth(ProfileData.OnFireDamagePerTick);
-				damageWhileOnFire += ProfileData.OnFireDamagePerTick;
-
-				yield return null;
-			}
-			yield return null;
 		}
 
 		#endregion 		// health updates
@@ -4272,18 +4331,11 @@ namespace FightingLegends
 		{
 			BlockIdleState();				// virtual (for skeletron)
 
-//			CurrentMove = Move.Block;		// from idle to idle block
-//			CurrentState = State.Block_Idle;
-
 			ResetFrameCounts();				// reset (start of move)
 
 			if (UnderAI)
 			{
 				HoldingBlock = true;
-
-				// hold block for fixed number of frames
-//				if (AIController != null && !Opponent.InTraining)
-//					AIController.StartBlockCountdown();
 			}
 		}
 
@@ -4309,21 +4361,6 @@ namespace FightingLegends
 		public virtual bool TutorialPunch(bool continuing)			// Ninja only
 		{
 			return false;
-
-//			if (fightManager.EitherFighterExpiredState)
-//				return false;
-//
-//			if (! CanStrikeLight && ! continuing)
-//				return false;
-//
-//			CurrentMove = Move.Tutorial_Punch;
-//			CurrentState = State.Tutorial_Punch_Start;
-//			CurrentPriority = Tutorial_Punch_Start_Priority;	
-//
-//			ResetFrameCounts();		// reset (start of move)
-//
-//			StartCoroutine(StrikeTravel());
-//			return true;
 		}
 
 		protected virtual SmokeFXType SpecialSmoke
@@ -4340,9 +4377,6 @@ namespace FightingLegends
 		{
 			get
 			{
-//				if (PreviewMoves && !PreviewUseGauge)
-//					return false;
-				
 				if (Opponent != null)
 				{
 					if (Opponent.IsIdle || Opponent.IsStunned)
@@ -4573,6 +4607,9 @@ namespace FightingLegends
 						ReadyToKO(hitData);					// start appropriate expiry animation according to type of hit
 						StartCoroutine(ExpireToNextRound());
 
+						if (FightManager.IsNetworkFight)
+							fightManager.NetworkKnockOut(IsPlayer1);
+						
 						if (OnKnockOut != null)
 							OnKnockOut(this);
 					}
@@ -4602,8 +4639,8 @@ namespace FightingLegends
 					{		
 						takenLastFatalHit = lastHit;	// expire after freeze if last hit
 
-//						Opponent.TriggerSpotEffect(SpotFXType.Guard_Crush);
-//						AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
+						Opponent.TriggerSpotEffect(SpotFXType.Guard_Crush);
+						AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
 
 						if (takenLastFatalHit)
 						{
@@ -4671,7 +4708,8 @@ namespace FightingLegends
 
 						// stop on fire if hit was not blocked
 						if (Opponent.OnFire)
-							Opponent.StopOnFire();		// reset on a successful hit
+//							Opponent.StopOnFire();		// reset on a successful hit
+							Opponent.StopCurrentStatusEffect();		// stops timer (timed in animation frames, so synced in network fight)
 
 						// 'roll dice' for attacker to gain a coin in survival mode for a successful hit
 						if (UnderAI && FightManager.CombatMode == FightMode.Survival && UnityEngine.Random.value <= gainCoinChance)
@@ -4699,13 +4737,9 @@ namespace FightingLegends
 			{
 				if (survivedHit)
 				{
+					Debug.Log("TakeHit hitBlocked = true / survivedHit = true");
 					Opponent.TriggerSpotEffect(SpotFXType.Block);
 					AudioSource.PlayClipAtPoint(ProfileData.blockedHitSound, Vector3.zero, FightManager.SFXVolume);
-				}
-				else
-				{
-					Opponent.TriggerSpotEffect(SpotFXType.Guard_Crush);
-					AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
 				}
 					
 				// blocking a hit increases XP
@@ -4717,11 +4751,14 @@ namespace FightingLegends
 				// attacker gets XP for successful hit
 				if (lastHit)
 					Opponent.LastHitXP(hitData);
-				
-				if (hitData.SoundEffect != null)
-					AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
-				
-				Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
+
+				if (survivedHit)
+				{
+					if (hitData.SoundEffect != null)
+						AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
+					
+					Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
+				}
 
 				// update attacker's combo count if hit not blocked
 				Opponent.IncrementComboCount();
@@ -4832,26 +4869,6 @@ namespace FightingLegends
 //			if (expired)
 //				ReleaseBlock(true);
 
-//			if (fightManager.CompletedBasicTraining)			// TODO: reinstate if don't want damage UI in training
-//			{
-//				if (ProfileData.ShowDamageOnLastHit)
-//				{
-//					hitStringDamage += damage;
-//
-//					// show damage if last or fatal hit
-//					if (hitStringDamage > 0 && (lastHit || expired) && fighterUI != null)
-//						fighterUI.FighterUIText(IsPlayer1, ((int)hitStringDamage).ToString());
-//
-//					if (lastHit)
-//						hitStringDamage = 0.0f;			// reset for next hit
-//				}
-//				else
-//				{
-//					if (damage > 0 && fighterUI != null)
-//						fighterUI.FighterUIText(IsPlayer1, Mathf.RoundToInt(damage).ToString());
-//				}
-//			}
-
 			// show damage taken in UI
 			if (damage > 0 && fighterUI != null)
 				fighterUI.FighterUIText(IsPlayer1, Mathf.RoundToInt(damage).ToString());
@@ -4887,9 +4904,6 @@ namespace FightingLegends
 			if (profile == null)
 				return;
 
-//			if (PreviewMoves)
-//				return;
-			
 			var xOffset = IsPlayer1 ? feedbackOffsetX : -feedbackOffsetX;
 
 			if (IsAirElement)
@@ -4904,69 +4918,62 @@ namespace FightingLegends
 
 		private void StartArmourDown(float xOffset)
 		{
-//			if (PreviewMoves)
-//				return;
-			
 			if (InTraining || Opponent.InTraining)
 				return;
 
-//			textureAnimator.SetTrigger("StartArmourDown");
+//			textureAnimator.SetTrigger("StartArmourDown");p
+			StopCurrentStatusEffect();
 			fightManager.TriggerFeedbackFX(FeedbackFXType.Armour_Down, xOffset, feedbackOffsetY);
 			ArmourDown = true; 
 			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("armourDown"), false, true);
 
-			StartStatusEffect(StatusEffect.ArmourDown);			// timed in animation frames (so synced in network fight)
+			StartStatusEffectFrameCount(StatusEffect.ArmourDown);			// timed in animation frames (so synced in network fight)
 		}
 
 		private void StartArmourUp(float xOffset)
 		{
-//			if (PreviewMoves)
-//				return;
-//
 			if (InTraining || Opponent.InTraining)
 				return;
 
 //			textureAnimator.SetTrigger("StartArmourUp");
+			StopCurrentStatusEffect();
 			fightManager.TriggerFeedbackFX(FeedbackFXType.Armour_Up, xOffset, feedbackOffsetY);
 			ArmourUp = true;
 			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("armourUp"), true, false);
 
-			StartStatusEffect(StatusEffect.ArmourUp);			// timed in animation frames (so synced in network fight)
+			StartStatusEffectFrameCount(StatusEffect.ArmourUp);			// timed in animation frames (so synced in network fight)
 		}
 			
 		private void StartOnFire(float xOffset)
 		{
-//			if (PreviewMoves)
-//				return;
-			
 			if (InTraining || Opponent.InTraining)
 				return;
 
 			textureAnimator.SetTrigger("StartOnFire");
+			StopCurrentStatusEffect();
 			fightManager.TriggerFeedbackFX(FeedbackFXType.On_Fire, xOffset, feedbackOffsetY);
 			OnFire = true;
 			damageWhileOnFire = 0;
 			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("onFire"), false, true);
-			StartCoroutine(OnFireDamage());		// takes damage every second while OnFire
 
-			StartStatusEffect(StatusEffect.OnFire);			// timed in animation frames (so synced in network fight)
+			StartStatusEffectFrameCount(StatusEffect.OnFire);			// timed in animation frames (so synced in network fight)
 		}
 			
 		private void StartHealthUp(float xOffset)
 		{
-//			if (PreviewMoves)
-//				return;
-			
 			if (InTraining || Opponent.InTraining)
 				return;
 
 			textureAnimator.SetTrigger("StartHealthUp");
+			StopCurrentStatusEffect();
 			fightManager.TriggerFeedbackFX(FeedbackFXType.Health_Up, xOffset, feedbackOffsetY);
 			HealthUp = true;
 			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("healthUp"), true, false);
-			UpdateHealth(-ProfileData.HealthUpBoost);		// single one-off boost in health
 
-			StartStatusEffect(StatusEffect.HealthUp);			// timed in animation frames (so synced in network fight)
+			var healthBoost = ProfileData.HealthUpBoost + (ProfileData.HealthUpBoost * ProfileData.LevelFactor);
+			UpdateHealth(-healthBoost);		// single one-off boost in health
+
+			StartStatusEffectFrameCount(StatusEffect.HealthUp);			// timed in animation frames (so synced in network fight)
 		}
 
 		public void StopArmourDown()
@@ -4979,8 +4986,6 @@ namespace FightingLegends
 			fightManager.StopStateFeedback(IsPlayer1);
 			fightManager.ClearStateFeedback(IsPlayer1);
 			ArmourDown = false; 
-
-			StopCurrentStatusEffect();					// stops timer (timed in animation frames, so synced in network fight)
 		}
 
 		public void StopArmourUp()
@@ -4993,8 +4998,6 @@ namespace FightingLegends
 			fightManager.StopStateFeedback(IsPlayer1);
 			fightManager.ClearStateFeedback(IsPlayer1);
 			ArmourUp = false;
-
-			StopCurrentStatusEffect();					// stops timer (timed in animation frames, so synced in network fight)
 		}
 
 		public void StopOnFire()
@@ -5010,13 +5013,12 @@ namespace FightingLegends
 			if (damageWhileOnFire > 0)
 			{
 				if (FightManager.SavedGameStatus.CompletedBasicTraining && fighterUI != null)
-					fighterUI.FighterUIText(IsPlayer1, ((int)damageWhileOnFire).ToString());
+					fighterUI.FighterUIText(IsPlayer1, (Mathf.RoundToInt(damageWhileOnFire)).ToString());
 			}
 
-			damageWhileOnFire = 0;
 			OnFire = false;
-
-			StopCurrentStatusEffect();					// stops timer (timed in animation frames, so synced in network fight)
+//			fightManager.HealthDebugText(IsPlayer1, currentStatusEffect.ToString() + ": " + StatusEffectStartFrame + " - " + AnimationFrameCount + " damage: " + damageWhileOnFire);
+			damageWhileOnFire = 0;
 		}
 
 		public void StopHealthUp()
@@ -5029,17 +5031,8 @@ namespace FightingLegends
 			fightManager.ClearStateFeedback(IsPlayer1);
 			fightManager.CancelFeedbackFX();
 			HealthUp = false;
-
-			StopCurrentStatusEffect();					// stops timer (timed in animation frames, so synced in network fight)
 		}
 
-		public void StopAllFeedback()
-		{
-			StopOnFire();
-			StopHealthUp();
-			StopArmourUp();
-			StopArmourDown();
-		}
 			
 		private void CounterHitElementFX()
 		{
@@ -5125,10 +5118,9 @@ namespace FightingLegends
 
 			if (fightManager.EitherFighterExpiredHealth)
 				return;
-//
-//			if (PreviewMoves)
-//				return;
-//
+
+//			Debug.Log("OnFireHealthUp: IsFireElement = " + IsFireElement);
+
 			var xOffset = IsPlayer1 ? feedbackOffsetX : -feedbackOffsetX;
 
 			if (IsFireElement)
@@ -5787,9 +5779,28 @@ namespace FightingLegends
 					switch (FightManager.CombatMode)
 					{
 						case FightMode.Arcade:
-							if (!winner.UnderAI) 							// player won
-								fightManager.CompleteCurrentLocation();		// sets worldTourCompleted if last location
-							yield return StartCoroutine(fightManager.NextMatch(winner)); 	// show winner/stats then world map to fly to next match location/AI opponent
+							if (FightManager.IsNetworkFight)	// Player2 is always opponent
+							{
+								FightManager.IsNetworkFight = false;
+
+								if (winner.IsPlayer1)
+									FightManager.SavedGameStatus.VSVictoryPoints++;
+								else
+									FightManager.SavedGameStatus.VSVictoryPoints--;
+
+								if (FightManager.SavedGameStatus.VSVictoryPoints < 0)
+									FightManager.SavedGameStatus.VSVictoryPoints = 0;
+								
+								FirebaseManager.PostLeaderboardScore(Leaderboard.VSVictoryPoints, FightManager.SavedGameStatus.VSVictoryPoints);
+
+								yield return StartCoroutine(fightManager.NextMatch(winner)); 	// show winner/stats then back to mode select
+							}
+							else
+							{
+								if (!winner.UnderAI) 							// player won
+									fightManager.CompleteCurrentLocation();		// sets worldTourCompleted if last location
+								yield return StartCoroutine(fightManager.NextMatch(winner)); 	// show winner/stats then world map to fly to next match location/AI opponent
+							}
 							break;
 
 						case FightMode.Training:
@@ -5907,16 +5918,17 @@ namespace FightingLegends
 		protected void KnockOutFreeze()
 		{
 //			Debug.Log(FullName + ": KnockOutFreeze!");
+			Debug.Log(FullName + ": KnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
 
 			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
 			fightManager.TriggerFeedbackFX(FeedbackFXType.KO);
+
+			StartStatusEffectFrameCount(StatusEffect.KnockOut);
 
 			// freeze both fighters for effect ... on next frame - a KO hit will freeze until KO feedback ends
 			SetFreezeFrames(expiryFreezeFrames);	
 
 			secondLifeOpportunity = true;   		// reset by EndKnockOutFreeze
-
-			StartStatusEffect(StatusEffect.KnockOut);
 
 			if (OnKnockOutFreeze != null)			// for AI to trigger second life (if equipped)
 				OnKnockOutFreeze(this);
@@ -5925,7 +5937,7 @@ namespace FightingLegends
 		// called at end of KO feedback / freeze
 		public void EndKnockOutFreeze()
 		{
-//			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
+			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
 
 			if (! ExpiredState && ! takenLastFatalHit)
 				return;
@@ -5937,8 +5949,8 @@ namespace FightingLegends
 				if (! FightManager.SavedGameStatus.CompletedBasicTraining)
 					Trainer.TrainingComplete();				// clear prompt / feedback etc.
 
-				fightManager.SnapshotCameraPosition();
-				fightManager.UnfreezeFight();
+//				fightManager.SnapshotCameraPosition();
+//				fightManager.UnfreezeFight();
 
 //				Debug.Log(FullName + ": EndKnockOutFreeze -> ExpireToNextRound");
 				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match

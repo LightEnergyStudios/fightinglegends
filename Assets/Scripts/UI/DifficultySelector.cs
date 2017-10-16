@@ -54,16 +54,21 @@ namespace FightingLegends
 
 		private void Start()
 		{
-			DefaultDifficulty = AIDifficulty.Medium;
-			SelectedDifficulty = DefaultDifficulty;
-
-			SyncDifficultyButtons();
+//			DefaultDifficulty = AIDifficulty.Medium;
+//			SelectedDifficulty = DefaultDifficulty;
+//
+//			SyncDifficultyButtons();
 
 			simpleButton.onClick.AddListener(delegate { SetDifficulty(AIDifficulty.Simple); });
 			easyButton.onClick.AddListener(delegate { SetDifficulty(AIDifficulty.Easy); });
 			mediumButton.onClick.AddListener(delegate { SetDifficulty(AIDifficulty.Medium); });
 			hardButton.onClick.AddListener(delegate { SetDifficulty(AIDifficulty.Hard); });
 			brutalButton.onClick.AddListener(delegate { SetDifficulty(AIDifficulty.Brutal); });
+		}
+
+		private void OnEnable()
+		{
+			SetDifficulty(FightManager.SavedGameStatus.Difficulty);
 		}
 
 		private void OnDestroy()
@@ -78,9 +83,6 @@ namespace FightingLegends
 
 		private void SetDifficulty(AIDifficulty difficulty)
 		{			
-			if (SelectedDifficulty == difficulty)		// no change
-				return;
-
 			SelectedDifficulty = difficulty;
 			difficultyLabel.text = FightManager.Translate(difficulty.ToString().ToLower());
 

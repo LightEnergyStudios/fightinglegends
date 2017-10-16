@@ -170,8 +170,8 @@ namespace FightingLegends
 
 //				Debug.Log("ReadyToFight = " + readyToFight);
 
-				if (readyToFight && ReadyToFightSound != null)
-					AudioSource.PlayClipAtPoint(ReadyToFightSound, Vector3.zero, SFXVolume);
+//				if (readyToFight && ReadyToFightSound != null)
+//					AudioSource.PlayClipAtPoint(ReadyToFightSound, Vector3.zero, SFXVolume);
 
 				if (OnReadyToFight != null)
 					OnReadyToFight(readyToFight, changed, CombatMode);
@@ -204,6 +204,8 @@ namespace FightingLegends
 		public float AnimationFrameInterval { get { return (1.0f / AnimationFPS); } }  // time between animation frames
 		public int AnimationFrameCount { get; private set; }	// incremented according to AnimationFPS
 		private const int FxTargetFPS = 60;						// for FX
+
+//		public int FightFrameCount { get; private set; }	
 
 		private StatusUI statusUI;
 		private bool statusUIVisible = false;					// by default
@@ -405,9 +407,6 @@ namespace FightingLegends
 		public delegate void MoveCuedOkDelegate(bool ok, Vector3 position);
 		public static MoveCuedOkDelegate OnMoveCuedFeedback;
 
-		public delegate void FeedbackStateStartDelegate(AnimationState startingState);
-		public static FeedbackStateStartDelegate OnFeedbackStateStart;
-
 		public delegate void FeedbackStateEndDelegate(AnimationState endingState);
 		public static FeedbackStateEndDelegate OnFeedbackStateEnd;
 
@@ -425,6 +424,9 @@ namespace FightingLegends
 
 		public delegate void NewFightDelegate(FightMode fightMode);
 		public static NewFightDelegate OnNewFight;
+
+		public delegate void KnockOutDelegate(bool isPlayer1);
+		public static KnockOutDelegate OnKnockOut;
 
 		public delegate void NextRoundDelegate(int roundNumber);
 		public static NextRoundDelegate OnNextRound;
@@ -657,7 +659,6 @@ namespace FightingLegends
 			if (feedbackUIObject != null)
 			{
 				feedbackUI = feedbackUIObject.GetComponent<FeedbackUI>();
-//				feedbackUI.feedbackFX.OnStartState += FeedbackStateStart;		// listening for feedback state starts
 				feedbackUI.feedbackFX.OnEndState += FeedbackStateEnd;			// listening for feedback state ends
 			}
 
@@ -809,6 +810,7 @@ namespace FightingLegends
 //			}
 		}
 			
+		// driven by NetworkFightManager if vs mode
 		public void UpdateAnimation()
 		{
 			if (FightPaused)
@@ -821,19 +823,12 @@ namespace FightingLegends
 			{
 				if (countdownFreeze)
 					FightFreezeCountdown();
-
-				if (HasPlayer1)
-					Player1.UpdateAnimation();
-				if (HasPlayer2)
-					Player2.UpdateAnimation();
 			}
-			else
-			{
-				if (HasPlayer1)
-					Player1.UpdateAnimation();
-				if (HasPlayer2)
-					Player2.UpdateAnimation();
-			}
+				
+			if (HasPlayer1)
+				Player1.UpdateAnimation();
+			if (HasPlayer2)
+				Player2.UpdateAnimation();
 		}
 
 
@@ -880,7 +875,6 @@ namespace FightingLegends
 			if (feedbackUI != null)					// subscribed in Awake()
 			{
 				feedbackUI.feedbackFX.OnEndState -= FeedbackStateEnd;
-//				feedbackUI.feedbackFX.OnStartState -= FeedbackStateStart;
 			}
 				
 			AreYouSure.OnCancelConfirm -= OnConfirmNo;
@@ -1238,41 +1232,25 @@ namespace FightingLegends
 				AudioSource.PlayClipAtPoint(WrongSound, Vector3.zero, SFXVolume);
 		}
 
-		// doh!
-//		public void ErrorAudio()
-//		{
-//			if (ErrorSound != null)
-//				AudioSource.PlayClipAtPoint(ErrorSound, Vector3.zero, SFXVolume);
-//		}
-
 		public void PowerUpAudio()
 		{
 			if (PowerUpSound != null)
 				AudioSource.PlayClipAtPoint(PowerUpSound, Vector3.zero, SFXVolume);
 		}
-			
-//		private void FeedbackStateStart(AnimationState startingState)
+
+
+//		public void EndKnockOutFreeze()
 //		{
-//			Debug.Log("FightManager.FeedbackStateStart: " + startingState.StateLabel);
+//			SnapshotCameraPosition();
 //
-//			// relay event to any subscribers
-//			if (OnFeedbackStateStart != null)
-//				OnFeedbackStateStart(startingState);
+////			Debug.Log("EndKnockOutFreeze: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
+//			UnfreezeFight();
+//
+//			if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
+//				Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
+//			else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
+//				Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
 //		}
-
-
-		private void EndKnockOutFreeze()
-		{
-			expiryCameraPosition = CameraSnapshot;
-
-//			Debug.Log("EndKnockOutFreeze: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
-			UnfreezeFight();
-
-			if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
-				Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-			else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
-				Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-		}
 
 //		private void StopArmourDown()
 //		{
@@ -1301,7 +1279,6 @@ namespace FightingLegends
 		public void SnapshotCameraPosition()
 		{
 			expiryCameraPosition = CameraSnapshot;
-//			UnfreezeFight();
 		}
 
 		private void FeedbackStateEnd(AnimationState endingState)
@@ -1948,17 +1925,18 @@ namespace FightingLegends
 			HideDojoUI();
 
 			SaveGameStatus();
+			GameUIVisible(false);
 
 			ActivateMenu(MenuType.ModeSelect);
 		}
 
 		private void QuitFight()
 		{
+			if (OnQuitFight != null)
+				OnQuitFight();			// stop training / sync network fight quit
+
 			if (! IsNetworkFight)		// synced quit handled by NetworkFighter
 				ExitFight();			
-
-			if (OnQuitFight != null)
-				OnQuitFight();
 		}
 
 		public void CleanupFighters()
@@ -2222,6 +2200,12 @@ namespace FightingLegends
 					yield return StartCoroutine(ShowMatchStatsCanvas(winner, null));		// winner image + fight stats - until user taps
 			}
 
+			if (IsNetworkFight)
+			{
+				yield return StartCoroutine(ShowModeSelectCanvas());
+				yield break;
+			}
+
 			if (CombatMode == FightMode.Arcade && winner.UnderAI)			// player lost - MatchStats offers option to insert coin to continue...
 			{
 				yield break;
@@ -2257,6 +2241,22 @@ namespace FightingLegends
 				else
 					yield return StartCoroutine(ShowModeSelectCanvas());
 			}
+		}
+
+		// called by fighter if network fight
+		public void NetworkKnockOut(bool isPlayer1)
+		{
+			if (OnKnockOut != null)			// NetworkFighter
+				OnKnockOut(isPlayer1);
+		}
+
+		// called by NetworkFighter rpc to sync KO
+		public void KnockOutFighter(bool isPlayer1)
+		{
+//			if (isPlayer1)
+//				Player1.KnockOut()
+//			else
+//				Player2.KnockOut()
 		}
 
 
@@ -2368,7 +2368,7 @@ namespace FightingLegends
 			{
 				Player1.ProfileData.SavedData.WorldTourCompletions++;
 				FightManager.SavedGameStatus.WorldTourCompletions++;		// all fighters
-				FirebaseManager.PostLeaderboardScore(Leaderboard.WorldTours, FightManager.SavedGameStatus.WorldTourCompletions);
+				FirebaseManager.PostLeaderboardScore(Leaderboard.ArcadeWorldTours, FightManager.SavedGameStatus.WorldTourCompletions);
 
 				ResetCompletedLocations();
 				worldTourCompleted = true;					// to prevent returning to world map
@@ -3459,10 +3459,10 @@ namespace FightingLegends
 
 		public void TriggerFeedbackFX(FeedbackFXType feedback, float xOffset = 0.0f, float yOffset = 0.0f, string layer = null)
 		{
-			if (HasPlayer1)
-				Player1.StopAllFeedback();
-			if (HasPlayer2)
-				Player2.StopAllFeedback();
+//			if (HasPlayer1)
+//				Player1.StopAllStatusEffects();
+//			if (HasPlayer2)
+//				Player2.StopAllStatusEffects();
 
 			if (feedbackUI != null)
 				feedbackUI.TriggerFeedbackFX(feedback, xOffset, yOffset, layer);
@@ -4336,9 +4336,11 @@ namespace FightingLegends
 			{
 				StartCoroutine(RestartMatch());
 				MatchStatsRestartMatch = false;
+
+				GameUIVisible(SavedGameStatus.ShowHud);
 			}
 
-			GameUIVisible(SavedGameStatus.ShowHud);
+//			GameUIVisible(SavedGameStatus.ShowHud);
 		}
 
 
@@ -4995,6 +4997,7 @@ namespace FightingLegends
 			PlayerPrefs.SetInt("FL_BestSurvivalEndurance", SavedGameStatus.BestSurvivalEndurance);
 			PlayerPrefs.SetInt("FL_TotalChallengeWinnings", SavedGameStatus.TotalChallengeWinnings);
 			PlayerPrefs.SetInt("FL_WorldTourCompletions", SavedGameStatus.WorldTourCompletions);
+			PlayerPrefs.SetInt("FL_VSVictoryPoints", SavedGameStatus.VSVictoryPoints);
 			PlayerPrefs.SetInt("FL_CompletedTraining", SavedGameStatus.CompletedBasicTraining ? 1 : 0);
 			PlayerPrefs.SetString("FL_SelectedFighter", SelectedFighterName);
 			PlayerPrefs.SetString("FL_SelectedColour", SelectedFighterColour);
@@ -5011,7 +5014,8 @@ namespace FightingLegends
 			SavedGameStatus.BestDojoDamage = PlayerPrefs.GetInt("FL_BestDojoDamage", 0);
 			SavedGameStatus.BestSurvivalEndurance = PlayerPrefs.GetInt("FL_BestSurvivalEndurance", 0);
 			SavedGameStatus.TotalChallengeWinnings = PlayerPrefs.GetInt("FL_TotalChallengeWinnings", 0);
-			SavedGameStatus.TotalChallengeWinnings = PlayerPrefs.GetInt("FL_WorldTourCompletions", 0);
+			SavedGameStatus.WorldTourCompletions = PlayerPrefs.GetInt("FL_WorldTourCompletions", 0);
+			SavedGameStatus.VSVictoryPoints = PlayerPrefs.GetInt("FL_VSVictoryPoints", 0);
 			SavedGameStatus.CompletedBasicTraining = PlayerPrefs.GetInt("FL_CompletedTraining", 0) != 0;
 			SelectedFighterName = PlayerPrefs.GetString("FL_SelectedFighter", "Leoni");
 			SelectedFighterColour = PlayerPrefs.GetString("FL_SelectedColour", "P1");
@@ -5126,16 +5130,16 @@ namespace FightingLegends
 			Profile.InitFighterLockStatus("Leoni", false, 0, 0, 0, AIDifficulty.Easy); // 12, 80.0f);	
 			Profile.InitFighterLockStatus("Shiro", false, 0, 0, 0, AIDifficulty.Easy); // 6, 30.0f);	
 
-			Profile.InitFighterLockStatus("Danjuma", false, 1, 200, 3, AIDifficulty.Easy); // 1, 16.0f);	
-			Profile.InitFighterLockStatus("Natalya", false, 1, 200, 3, AIDifficulty.Easy); // 4, 75.0f);	
-			Profile.InitFighterLockStatus("Hoi Lun", false, 2, 500, 5, AIDifficulty.Medium); // 1, 4.0f);	
-			Profile.InitFighterLockStatus("Jackson", false, 2, 500, 5, AIDifficulty.Medium); // 8, 42.0f);
+			Profile.InitFighterLockStatus("Danjuma", true, 1, 200, 3, AIDifficulty.Easy); // 1, 16.0f);	
+			Profile.InitFighterLockStatus("Natalya", true, 1, 200, 3, AIDifficulty.Easy); // 4, 75.0f);	
 
-			Profile.InitFighterLockStatus("Alazne", false, 3, 700, 7, AIDifficulty.Hard); // 2, 62.0f);	
-			Profile.InitFighterLockStatus("Shiyang", false, 3, 700, 7, AIDifficulty.Hard); //  3, 12.0f);	
+			Profile.InitFighterLockStatus("Hoi Lun", true, 2, 500, 5, AIDifficulty.Medium); // 1, 4.0f);	
+			Profile.InitFighterLockStatus("Jackson", true, 2, 500, 5, AIDifficulty.Medium); // 8, 42.0f);
+			Profile.InitFighterLockStatus("Alazne", true, 2, 500, 5, AIDifficulty.Medium); // 2, 62.0f);	
+			Profile.InitFighterLockStatus("Shiyang", true, 2, 500, 5, AIDifficulty.Medium); //  3, 12.0f);	
 
-			Profile.InitFighterLockStatus("Ninja", false, 4, 900, 9, AIDifficulty.Brutal); //  1, 0);	
-			Profile.InitFighterLockStatus("Skeletron", false, 5, 1100, 11, AIDifficulty.Brutal); //  1, 0);	
+			Profile.InitFighterLockStatus("Ninja", true, 3, 900, 9, AIDifficulty.Hard); //  1, 0);	
+			Profile.InitFighterLockStatus("Skeletron", true, 4, 50000, 3, AIDifficulty.Hard); //  1, 0);	
 
 			CleanupFighters();
 			StartGame();
@@ -5188,15 +5192,12 @@ namespace FightingLegends
 		}
 			
 
-//		public void ShowLobby()
-//		{
-//			if (!IsNetworkFight)
-//				return;
-//			
-//			if (lobbyManager != null)
-//				lobbyManager.ShowLobbyUI();
-//			else
-//				Debug.Log("SwitchToLobby: lobbyManager not found!");
-//		}
+		public void HealthDebugText(bool player1, string text)
+		{
+			if (player1)
+				gameUI.Player1Debug.text = text;
+			else
+				gameUI.Player2Debug.text = text;
+		}
 	}
 }

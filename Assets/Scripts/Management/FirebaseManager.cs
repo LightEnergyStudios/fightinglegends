@@ -416,7 +416,7 @@ namespace FightingLegends
 			if (string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
 				return;
 			
-			if (leaderboard == Leaderboard.None || score <= 0)
+			if (leaderboard == Leaderboard.None || (score <= 0 && leaderboard != Leaderboard.VSVictoryPoints))
 				return;
 			
 			string leaderboardName = leaderboard.ToString();

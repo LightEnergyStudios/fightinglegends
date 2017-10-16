@@ -791,7 +791,7 @@ namespace FightingLegends
 			Sprite bubbleImage = CrystalSprite;
 
 			if (! FightManager.WasInfoBubbleMessageRead(message))
-				StartCoroutine(ShowInfoBubble(Vector3.zero, message, bubbleHeading, bubbleText, bubbleImage, false));
+				StartCoroutine(ShowInfoBubble(Vector3.zero, message, bubbleHeading, bubbleText, bubbleImage, FightManager.CombatMode != FightMode.Training));
 		}
 
 
