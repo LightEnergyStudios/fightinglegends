@@ -220,6 +220,8 @@ namespace FightingLegends
 		public static Sprite ThemeHeader;
 		public static Sprite ThemeFooter;
 
+		private static int SurvivalPowerUpRound = 5;			// AI powerups not used until this many rounds won
+
 		#region menu canvases
 
 		private List<MenuType> menuStack;						// index 0 is treated as top of stack, etc
@@ -440,8 +442,9 @@ namespace FightingLegends
 		public delegate void GameResetDelegate();
 		public static GameResetDelegate OnGameReset;
 
-
 		public int InitialCoins;
+	
+		public float HitDamageFactor;			// increase for more damage globally
 
 
 		public static int Coins
@@ -1185,9 +1188,9 @@ namespace FightingLegends
 				OnMusicVolumeChanged(MusicVolume);
 		}
 
-		public void Success(float yOffset = 0.0f)
+		public void Success(float yOffset = 0.0f, string layer = null)
 		{
-			TriggerFeedbackFX(FeedbackFXType.Success, 0.0f, yOffset); 
+			TriggerFeedbackFX(FeedbackFXType.Success, 0.0f, yOffset, layer); 
 
 			BlingAudio();
 
@@ -1340,9 +1343,15 @@ namespace FightingLegends
 			CancelRoundFX();
 
 			if (HasPlayer1)
+			{
 				Player1.CancelElementFX();
+				Player1.CancelSpotFX();
+			}
 			if (HasPlayer2)
+			{
 				Player2.CancelElementFX();
+				Player2.CancelSpotFX();
+			}
 		}
 
 		#region fighter recycling 
@@ -2181,6 +2190,7 @@ namespace FightingLegends
 	
 		public IEnumerator NextMatch(Fighter winner) 
 		{
+//			Debug.Log("NextMatch: winner = " + winner.FullName);
 			// deliberately no fade to black!
 
 			// track to expiry position and reveal winner simultaneously
@@ -2194,8 +2204,10 @@ namespace FightingLegends
 				if (CombatMode == FightMode.Challenge)
 				{
 					PayoutChallengePot(winner);
-					yield return StartCoroutine(ShowMatchStatsCanvas(winner, ChallengeRoundResults));	// loop thru round resuts (FighterCards)
+					yield return StartCoroutine(ShowMatchStatsCanvas(winner, ChallengeRoundResults));	// loop thru round results (FighterCards)
 				}
+				else if (CombatMode == FightMode.Arcade && worldTourCompleted) 		
+					yield return StartCoroutine(ShowMatchStatsCanvas(winner, null, true));		// winner image + congrats - until user taps
 				else if (! fighterUnlocked)
 					yield return StartCoroutine(ShowMatchStatsCanvas(winner, null));		// winner image + fight stats - until user taps
 			}
@@ -2385,6 +2397,7 @@ namespace FightingLegends
 				return;
 			
 			Player1.ProfileData.SavedData.CompletedLocations.Clear();
+			Player1.SaveProfile();
 		}
 
 
@@ -2760,7 +2773,6 @@ namespace FightingLegends
 
 			// each new AI fighter increases in level (based on Player1 level)
 			SetSurvivalAILevel(true);
-
 			SetAIRandomPowerUps();
 
 			Player2.StartWatching();
@@ -2787,6 +2799,10 @@ namespace FightingLegends
 
 		private void SetAIRandomPowerUps()
 		{
+			// no AI powerups until 5 wins
+			if (Player1.ProfileData.SavedData.MatchRoundsWon < SurvivalPowerUpRound)
+				return;
+			
 			Player2.StaticPowerUp = Store.RandomStaticPowerUp;
 			Player2.TriggerPowerUp = Store.RandomTriggerPowerUp;
 
@@ -3459,11 +3475,6 @@ namespace FightingLegends
 
 		public void TriggerFeedbackFX(FeedbackFXType feedback, float xOffset = 0.0f, float yOffset = 0.0f, string layer = null)
 		{
-//			if (HasPlayer1)
-//				Player1.StopAllStatusEffects();
-//			if (HasPlayer2)
-//				Player2.StopAllStatusEffects();
-
 			if (feedbackUI != null)
 				feedbackUI.TriggerFeedbackFX(feedback, xOffset, yOffset, layer);
 
@@ -3501,12 +3512,12 @@ namespace FightingLegends
 //			HideSplatPaintStroke();
 		}
 
-
 		public void CancelRoundFX()
 		{
 			if (feedbackUI != null)
 				feedbackUI.CancelRoundFX();
 		}
+
 
 		private IEnumerator NewRoundFeedback(float delay = 0.0f)
 		{
@@ -4293,7 +4304,7 @@ namespace FightingLegends
 
 		#region match stats 
 
-		private IEnumerator MatchEndStats(Fighter winner, List<ChallengeRoundResult> roundResults)
+		private IEnumerator MatchEndStats(Fighter winner, List<ChallengeRoundResult> roundResults, bool completedWorldTour)
 		{
 //			Debug.Log("MatchEndStats: winner = " + (winner == null ? " NULL!" : winner.FullName));
 
@@ -4309,8 +4320,8 @@ namespace FightingLegends
 			if (CombatMode == FightMode.Challenge)
 				StartCoroutine(matchStats.ShowChallengeResults(roundResults));	// loop through round results, showing FighterCards
 			else
-				matchStats.RevealWinner(winner);		// set image and animate entry from side
-
+				matchStats.RevealWinner(winner, completedWorldTour);		// set image and animate entry from side
+			
 			if (curtain != null)
 			{
 				yield return StartCoroutine(curtain.CurtainUp());
@@ -4339,14 +4350,12 @@ namespace FightingLegends
 
 				GameUIVisible(SavedGameStatus.ShowHud);
 			}
-
-//			GameUIVisible(SavedGameStatus.ShowHud);
 		}
 
 
-		private IEnumerator ShowMatchStatsCanvas(Fighter winner, List<ChallengeRoundResult> roundResults)
+		private IEnumerator ShowMatchStatsCanvas(Fighter winner, List<ChallengeRoundResult> roundResults, bool completedWorldTour = false)
 		{
-			yield return StartCoroutine(MatchEndStats(winner, roundResults));
+			yield return StartCoroutine(MatchEndStats(winner, roundResults, completedWorldTour));
 		}
 
 		private void HideMatchStats()
@@ -4429,6 +4438,7 @@ namespace FightingLegends
 
 		private IEnumerator SelectWorldLocation()
 		{
+			Debug.Log("SelectWorldLocation");
 			FreezeFight();
 			worldMap.Show();
 
@@ -4457,7 +4467,7 @@ namespace FightingLegends
 
 			yield return StartCoroutine(cameraController.TrackHome(true, true));			// track back to zero, load selected scenery
 
-//			Debug.Log("SelectWorldLocation: WorldMapChoice = " + WorldMapChoice);
+			Debug.Log("SelectWorldLocation: WorldMapChoice = " + WorldMapChoice);
 			ActivateMenu(WorldMapChoice);					// combat (new match)
 			HideWorldMapCanvas();
 		}

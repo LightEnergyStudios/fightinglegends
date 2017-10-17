@@ -1819,7 +1819,7 @@ MonoBehaviour:
   DirectToOverlay: 0
   NavigatedFrom: 0
   ParentCanvas: {fileID: 0}
-  MusicTrack: {fileID: 8300000, guid: 3db49433dbf5a46348772463dbecfcab, type: 3}
+  MusicTrack: {fileID: 8300000, guid: b0546c545b1a84c1f96e1cf832aa31e8, type: 3}
   FadeSound: {fileID: 0}
   UserName: {fileID: 114000013455488998}
   ProfilePic: {fileID: 114000011694911096}
@@ -2733,7 +2733,7 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012819703248}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:

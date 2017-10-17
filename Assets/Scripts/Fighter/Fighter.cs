@@ -738,7 +738,7 @@ namespace FightingLegends
 		public int HitFrameCount { get; private set; }	// frame count for each state, reset on each hit
 
 		// TODO: reinstte? private const int AIStateFrameTimeout = 90;			// 6 seconds at 15 FPS
-		private const int AIHitFrameTimeout = 25;	
+		private const int AIHitFrameTimeout = 30; //25;	
 
 		[HideInInspector]
 		public Move CurrentMove = Move.Idle;
@@ -2239,7 +2239,7 @@ namespace FightingLegends
 //						break;
 
 					case FrameAction.SpecialFX:
-						TriggerSpotEffect(hitData.SpotEffect, false);
+						TriggerSpotFX(hitData.SpotEffect, false);
 						break;
 
 					default:
@@ -2886,7 +2886,7 @@ namespace FightingLegends
 				CounterAttack(true);
 				chainedCounter = false;
 
-				TriggerSpotEffect(SpotFXType.Chain);
+				TriggerSpotFX(SpotFXType.Chain);
 			}
 			else if (chainedSpecial)
 			{
@@ -2894,7 +2894,7 @@ namespace FightingLegends
 
 				chainedSpecial = false;
 
-				TriggerSpotEffect(SpotFXType.Chain);
+				TriggerSpotFX(SpotFXType.Chain);
 
 				CurrentMove = Move.Special;
 				CurrentState = State.Special;
@@ -2931,14 +2931,14 @@ namespace FightingLegends
 					Opponent.ReturnToDefaultDistance();
 
 				CounterAttack(true);
-				TriggerSpotEffect(SpotFXType.Chain);
+				TriggerSpotFX(SpotFXType.Chain);
 			}
 			else if (chainedSpecial)
 			{
 				ResetFrameCounts();
 				chainedSpecial = false;
 
-				TriggerSpotEffect(SpotFXType.Chain);
+				TriggerSpotFX(SpotFXType.Chain);
 
 				CurrentMove = Move.Special;
 				CurrentState = State.Special;
@@ -3222,10 +3222,12 @@ namespace FightingLegends
 
 		#region spot FX
 
-		private void TriggerSpotEffect(SpotFXType FXType, bool x2 = false, bool randomRotation = true)
+		private void TriggerSpotFX(SpotFXType FXType, bool x2 = false, bool randomRotation = true)
 		{
 //			if (fightManager.IsKnockOut)
 //				return;
+
+//			Debug.Log(FullName + ": TriggerSpotEffect " + FXType);
 			
 			if (x2)
 			{
@@ -3243,8 +3245,13 @@ namespace FightingLegends
 //					}
 					spotFX.TriggerEffect(FXType);	
 				}
-	
 			}
+		}
+
+		public void CancelSpotFX()
+		{
+			if (spotFX != null)
+				spotFX.VoidState();
 		}
 
 		#endregion  // spot FX
@@ -3463,7 +3470,7 @@ namespace FightingLegends
 			// clear continuations + cued move, even if move failed
 			// continuation may be cued immediately on roman cancel for dojo playback at end of freeze, so don't clear it here
 			bool dojoShadowContinuation = IsDojoShadow && move == Move.Roman_Cancel && HasContinuation;		
-			ClearCuedMoves(!dojoShadowContinuation && move != Move.ReleaseBlock);  		// TODO: text ReleaseBlock condition
+			ClearCuedMoves(!dojoShadowContinuation && move != Move.ReleaseBlock);  		// TODO: test ReleaseBlock condition
 
 			return MoveOk;
 		}
@@ -3846,6 +3853,7 @@ namespace FightingLegends
 
 			// global damage factor to change damage for all hits
 			damage *= ProfileData.HitDamageFactor;
+			damage *= fightManager.HitDamageFactor;
 
 			if (Opponent != null && Opponent.CurrentMove == Move.Power_Attack)
 				damage *= ProfileData.PowerAttackDamageFactor;
@@ -4112,7 +4120,7 @@ namespace FightingLegends
 
 			StartCoroutine(StrikeTravel());
 
-			TriggerSpotEffect(SpotFXType.Vengeance);
+			TriggerSpotFX(SpotFXType.Vengeance);
 			TriggerSmoke(VengeanceSmoke);		// virtual
 
 			if (ProfileData.vengeanceWhiff != null)
@@ -4137,7 +4145,7 @@ namespace FightingLegends
 						
 			DeductGauge(ProfileData.RomanCancelGauge);
 
-			TriggerSpotEffect(SpotFXType.Roman_Cancel, true);
+			TriggerSpotFX(SpotFXType.Roman_Cancel, true);
 			fightManager.CancelFeedbackFX();
 
 			if (hitFlash != null)
@@ -4468,7 +4476,7 @@ namespace FightingLegends
 
 			if (HitMissed) 		// priority lower than opponent
 			{
-				TriggerSpotEffect(SpotFXType.Miss);
+				TriggerSpotFX(SpotFXType.Miss);
 				fightManager.StateFeedback(IsPlayer1, FightManager.Translate("missed"), false, true);
 
 				if (ProfileData.missSound != null)
@@ -4517,7 +4525,7 @@ namespace FightingLegends
 
 			if (ShoveMissed) 		// priority lower than opponent
 			{
-				TriggerSpotEffect(SpotFXType.Miss);		// no need for miss! text feedback .. it's just a shove
+				TriggerSpotFX(SpotFXType.Miss);		// no need for miss! text feedback .. it's just a shove
 				if (ProfileData.missSound != null)
 					AudioSource.PlayClipAtPoint(ProfileData.missSound, Vector3.zero, FightManager.SFXVolume);
 				return false;
@@ -4531,8 +4539,7 @@ namespace FightingLegends
 			}
 		}
 
-			
-		// set appropriate hit stun state and start stun timer
+
 		// returns false if hit was fatal
 		private bool TakeHit(HitFrameData hitData, float travelDistance, bool lastHit)
 		{
@@ -4554,13 +4561,13 @@ namespace FightingLegends
 				if (hitData.SoundEffect != null)
 					AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
 
-				Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
+				Opponent.TriggerSpotFX(hitData.SpotEffect, false);
 			}
 			else if (CurrentState == State.Ready_To_Die)		// one last hit to FINISH HIM
 			{
 				takenLastFatalHit = lastHit;
 
-//				Debug.Log(FullName + " Ready_To_Die: takenLastFatalHit = " + takenLastFatalHit);
+				//				Debug.Log(FullName + " Ready_To_Die: takenLastFatalHit = " + takenLastFatalHit);
 
 				if (takenLastFatalHit)
 					KnockOut(); 	// virtual
@@ -4569,12 +4576,12 @@ namespace FightingLegends
 					if (hitData.SoundEffect != null)
 						AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
 
-					Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
+					Opponent.TriggerSpotFX(hitData.SpotEffect, false);
 				}
 			}
 			else if (CurrentState == State.Counter_Taunt && Opponent.CurrentMove != Move.Power_Attack)			// struck during taunt (not shove)
 			{
-//				Debug.Log(FighterFullName + " hit while counter taunting (" + stateData.HitDamage + ") [ " + fightManager.AnimationFrameCount + " ]");
+				//				Debug.Log(FighterFullName + " hit while counter taunting (" + stateData.HitDamage + ") [ " + fightManager.AnimationFrameCount + " ]");
 
 				if (UnderAI && AIController != null)
 					AIController.MoveCountdownSuspended = true;
@@ -4585,7 +4592,7 @@ namespace FightingLegends
 				// attacker gets XP for a successful, unblocked hit
 				Opponent.IncreaseXP(FightManager.CounterTriggerXP);
 
-				TriggerSpotEffect(SpotFXType.Counter);
+				TriggerSpotFX(SpotFXType.Counter);
 				TriggerSmoke(SmokeFXType.Counter);
 
 				if (ProfileData.counterTriggerSound != null)
@@ -4607,9 +4614,6 @@ namespace FightingLegends
 						ReadyToKO(hitData);					// start appropriate expiry animation according to type of hit
 						StartCoroutine(ExpireToNextRound());
 
-						if (FightManager.IsNetworkFight)
-							fightManager.NetworkKnockOut(IsPlayer1);
-						
 						if (OnKnockOut != null)
 							OnKnockOut(this);
 					}
@@ -4639,7 +4643,7 @@ namespace FightingLegends
 					{		
 						takenLastFatalHit = lastHit;	// expire after freeze if last hit
 
-						Opponent.TriggerSpotEffect(SpotFXType.Guard_Crush);
+						Opponent.TriggerSpotFX(SpotFXType.Guard_Crush);
 						AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
 
 						if (takenLastFatalHit)
@@ -4659,8 +4663,8 @@ namespace FightingLegends
 			}
 			else		// hit not blocked - sustain hit damage and go into hit stun
 			{
-//				LastMoveUI = hitData.TypeOfHit.ToString().ToUpper() + " (" + hitData.HitDamage + ") TAKEN [ " + fightManager.AnimationFrameCount + " ]";
-//				Debug.Log(FighterFullName + " hit TAKEN (" + hitData.TypeOfHit + ") at frame " + fightManager.AnimationFrameCount + ", moveFrameCount: " + MoveFrameCount + ", stun duration: " + hitData.HitStunFrames + ", damage: " + hitData.HitDamage);
+				//				LastMoveUI = hitData.TypeOfHit.ToString().ToUpper() + " (" + hitData.HitDamage + ") TAKEN [ " + fightManager.AnimationFrameCount + " ]";
+				//				Debug.Log(FighterFullName + " hit TAKEN (" + hitData.TypeOfHit + ") at frame " + fightManager.AnimationFrameCount + ", moveFrameCount: " + MoveFrameCount + ", stun duration: " + hitData.HitStunFrames + ", damage: " + hitData.HitDamage);
 
 				if (alreadyExpired)		// aleady expired, don't take damage
 				{
@@ -4668,7 +4672,7 @@ namespace FightingLegends
 
 					if (lastHit)				// last hit is not fatal blow
 					{
-//						Debug.Log(FullName + ": last hit! (alreadyExpired) -> ReadyToExpire / ExpireToNextRound");
+						//						Debug.Log(FullName + ": last hit! (alreadyExpired) -> ReadyToExpire / ExpireToNextRound");
 						ReadyToKO(hitData);						// start appropriate expiry animation according to type of hit
 						StartCoroutine(ExpireToNextRound());
 
@@ -4688,7 +4692,7 @@ namespace FightingLegends
 						FightManager.SavedGameStatus.HitsTaken++;				// hits taken
 					else
 						FightManager.SavedGameStatus.SuccessfulHits++;			// successful hits delivered
-						
+
 					if (survivedHit = TakeDamage(hitData, false, lastHit, false) && hitData.HitStunFrames > 0)	// survived hit damage
 					{
 						// start appropriate hit stun animation according to type of hit
@@ -4697,25 +4701,24 @@ namespace FightingLegends
 						// armour/health up/down only if survived last hit
 						if (lastHit)
 						{
-							// last counter attack hit invokes opponent armour down or armour up
+							// last counter attack hit invokes opponent armour down / armour up
 							if (hitData.State == State.Counter_Attack)
 								Opponent.ArmourUpDown();
 
-							// last special extra hit invokes opponent on fire or health up
+							// last special extra hit invokes opponent on fire / health up
 							if (hitData.State == State.Special_Extra)
 								Opponent.OnFireHealthUp();
 						}
 
 						// stop on fire if hit was not blocked
 						if (Opponent.OnFire)
-//							Opponent.StopOnFire();		// reset on a successful hit
-							Opponent.StopCurrentStatusEffect();		// stops timer (timed in animation frames, so synced in network fight)
+							Opponent.StopOnFire();		// reset on a successful hit
 
 						// 'roll dice' for attacker to gain a coin in survival mode for a successful hit
 						if (UnderAI && FightManager.CombatMode == FightMode.Survival && UnityEngine.Random.value <= gainCoinChance)
 						{
 							Opponent.KnockCoin(true);		// gain coin on player hit
-//							Opponent.KnockCoin(UnderAI);	// gain coin on player hit, lose coin on AI hit
+							//							Opponent.KnockCoin(UnderAI);	// gain coin on player hit, lose coin on AI hit
 						}
 					}
 					else			// this is the fatal blow
@@ -4735,13 +4738,11 @@ namespace FightingLegends
 
 			if (hitBlocked)
 			{
-				if (survivedHit)
-				{
-					Debug.Log("TakeHit hitBlocked = true / survivedHit = true");
-					Opponent.TriggerSpotEffect(SpotFXType.Block);
+				if (ProfileData.blockedHitSound != null)
 					AudioSource.PlayClipAtPoint(ProfileData.blockedHitSound, Vector3.zero, FightManager.SFXVolume);
-				}
-					
+
+				Opponent.TriggerSpotFX(SpotFXType.Block);
+
 				// blocking a hit increases XP
 				if (lastHit)
 					IncreaseXP(FightManager.BlockXP);
@@ -4752,13 +4753,10 @@ namespace FightingLegends
 				if (lastHit)
 					Opponent.LastHitXP(hitData);
 
-				if (survivedHit)
-				{
-					if (hitData.SoundEffect != null)
-						AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
-					
-					Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
-				}
+				if (hitData.SoundEffect != null)
+					AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
+
+				Opponent.TriggerSpotFX(hitData.SpotEffect, false);
 
 				// update attacker's combo count if hit not blocked
 				Opponent.IncrementComboCount();
@@ -4766,6 +4764,244 @@ namespace FightingLegends
 
 			return survivedHit;
 		}
+
+			
+//		// set appropriate hit stun state and start stun timer
+//		// returns false if hit was fatal
+//		private bool TakeHit(HitFrameData hitData, float travelDistance, bool lastHit)
+//		{
+//			if (hitData == null)
+//				return false;
+//
+//			if (hitData.TypeOfHit == HitType.Shove)
+//				return false;
+//
+//			if (hitData.CameraShakes > 0 && cameraController != null)
+//				StartCoroutine(cameraController.Shake(hitData.CameraShakes));
+//
+//			bool alreadyExpired = ExpiredHealth;
+//			bool survivedHit = true;
+//			bool hitBlocked = false;
+//
+//			if (CurrentState == State.Fall) 	// skeletron -> ready to die
+//			{
+//				if (hitData.SoundEffect != null)
+//					AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
+//
+//				Opponent.TriggerSpotFX(hitData.SpotEffect, false);
+//			}
+//			else if (CurrentState == State.Ready_To_Die)		// one last hit to FINISH HIM
+//			{
+//				takenLastFatalHit = lastHit;
+//
+////				Debug.Log(FullName + " Ready_To_Die: takenLastFatalHit = " + takenLastFatalHit);
+//
+//				if (takenLastFatalHit)
+//					KnockOut(); 	// virtual
+//				else
+//				{
+//					if (hitData.SoundEffect != null)
+//						AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
+//
+//					Opponent.TriggerSpotFX(hitData.SpotEffect, false);
+//				}
+//			}
+//			else if (CurrentState == State.Counter_Taunt && Opponent.CurrentMove != Move.Power_Attack)			// struck during taunt (not shove)
+//			{
+////				Debug.Log(FighterFullName + " hit while counter taunting (" + stateData.HitDamage + ") [ " + fightManager.AnimationFrameCount + " ]");
+//
+//				if (UnderAI && AIController != null)
+//					AIController.MoveCountdownSuspended = true;
+//
+//				CurrentState = State.Counter_Trigger;
+//				CurrentPriority = Counter_Priority;
+//
+//				// attacker gets XP for a successful, unblocked hit
+//				Opponent.IncreaseXP(FightManager.CounterTriggerXP);
+//
+//				TriggerSpotFX(SpotFXType.Counter);
+//				TriggerSmoke(SmokeFXType.Counter);
+//
+//				if (ProfileData.counterTriggerSound != null)
+//					AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
+//
+//				// attacker goes into a shove stun .. deferred till next frame
+//				if (Opponent.CanBeShoved)
+//					Opponent.counterTriggerStun = true; 
+//			}
+//			else if (IsBlocking && Opponent.CurrentMove != Move.Power_Attack)		// can't block a power attack
+//			{
+//				// hit blocked - sustain block damage and go into block stun
+//				if (alreadyExpired)		// aleady expired, don't take damage
+//				{
+//					survivedHit = false;
+//
+//					if (lastHit)							// fatal blow was before last hit
+//					{
+//						ReadyToKO(hitData);					// start appropriate expiry animation according to type of hit
+//						StartCoroutine(ExpireToNextRound());
+//
+//						if (FightManager.IsNetworkFight)
+//							fightManager.NetworkKnockOut(IsPlayer1);
+//						
+//						if (OnKnockOut != null)
+//							OnKnockOut(this);
+//					}
+//					else									// expiry on last hit
+//						StartBlockStun(hitData);
+//				}
+//				else 
+//				{
+//					// update profiles
+//					ProfileData.SavedData.HitsBlocked++;					// hits successfully blocked
+//					Opponent.ProfileData.SavedData.BlockedHits++;			// unsuccessful hits (blocked)
+//
+//					if (! UnderAI)
+//						FightManager.SavedGameStatus.HitsBlocked++;					// hits successfully blocked
+//					else
+//						FightManager.SavedGameStatus.BlockedHits++;					// unsuccessful hits (blocked)
+//
+//					if (survivedHit = TakeDamage(hitData, true, lastHit, true))	// survived block damage
+//					{
+//						if (hitData.BlockStunFrames > 0)
+//						{
+//							StartBlockStun(hitData);
+//							hitBlocked = true;
+//						}
+//					}
+//					else			// this is the fatal blow (while blocking)
+//					{		
+//						takenLastFatalHit = lastHit;	// expire after freeze if last hit
+//
+//						Debug.Log(FullName + ": Guard crush!!");
+//
+//						Opponent.TriggerSpotFX(SpotFXType.Guard_Crush);
+//						AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
+//
+//						if (takenLastFatalHit)
+//						{
+//							ReadyToKO(hitData);	// start appropriate expiry animation according to type of hit
+//						}
+//						else
+//						{
+//							ReleaseBlock(true);
+//							StartHitStun(hitData);
+//						}
+//
+//						if (! FallenState)				// skeletron only
+//							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+//					}
+//				}
+//			}
+//			else		// hit not blocked - sustain hit damage and go into hit stun
+//			{
+////				LastMoveUI = hitData.TypeOfHit.ToString().ToUpper() + " (" + hitData.HitDamage + ") TAKEN [ " + fightManager.AnimationFrameCount + " ]";
+////				Debug.Log(FighterFullName + " hit TAKEN (" + hitData.TypeOfHit + ") at frame " + fightManager.AnimationFrameCount + ", moveFrameCount: " + MoveFrameCount + ", stun duration: " + hitData.HitStunFrames + ", damage: " + hitData.HitDamage);
+//
+//				if (alreadyExpired)		// aleady expired, don't take damage
+//				{
+//					survivedHit = false;
+//
+//					if (lastHit)				// last hit is not fatal blow
+//					{
+////						Debug.Log(FullName + ": last hit! (alreadyExpired) -> ReadyToExpire / ExpireToNextRound");
+//						ReadyToKO(hitData);						// start appropriate expiry animation according to type of hit
+//						StartCoroutine(ExpireToNextRound());
+//
+//						if (OnKnockOut != null)
+//							OnKnockOut(this);
+//					}
+//					else										// expiry on last hit
+//						StartHitStun(hitData);
+//				}
+//				else
+//				{
+//					// update profiles
+//					ProfileData.SavedData.HitsTaken++;						// hits taken
+//					Opponent.ProfileData.SavedData.DeliveredHits++;			// successful hits delivered
+//
+//					if (!UnderAI)
+//						FightManager.SavedGameStatus.HitsTaken++;				// hits taken
+//					else
+//						FightManager.SavedGameStatus.SuccessfulHits++;			// successful hits delivered
+//						
+//					if (survivedHit = TakeDamage(hitData, false, lastHit, false) && hitData.HitStunFrames > 0)	// survived hit damage
+//					{
+//						// start appropriate hit stun animation according to type of hit
+//						StartHitStun(hitData);
+//
+//						// armour/health up/down only if survived last hit
+//						if (lastHit)
+//						{
+//							// last counter attack hit invokes opponent armour down or armour up
+//							if (hitData.State == State.Counter_Attack)
+//								Opponent.ArmourUpDown();
+//
+//							// last special extra hit invokes opponent on fire or health up
+//							if (hitData.State == State.Special_Extra)
+//								Opponent.OnFireHealthUp();
+//						}
+//
+//						// stop on fire if hit was not blocked
+//						if (Opponent.OnFire)
+////							Opponent.StopOnFire();		// reset on a successful hit
+//							Opponent.StopCurrentStatusEffect();		// stops timer (timed in animation frames, so synced in network fight)
+//
+//						// 'roll dice' for attacker to gain a coin in survival mode for a successful hit
+//						if (UnderAI && FightManager.CombatMode == FightMode.Survival && UnityEngine.Random.value <= gainCoinChance)
+//						{
+//							Opponent.KnockCoin(true);		// gain coin on player hit
+////							Opponent.KnockCoin(UnderAI);	// gain coin on player hit, lose coin on AI hit
+//						}
+//					}
+//					else			// this is the fatal blow
+//					{		
+//						takenLastFatalHit = lastHit;	// expire after freeze if last hit
+//
+//						if (takenLastFatalHit)
+//							ReadyToKO(hitData);	// start appropriate expiry animation according to type of hit
+//						else
+//							StartHitStun(hitData);	// start appropriate hit stun animation according to type of hit
+//
+//						if (! FallenState)				// skeletron only
+//							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+//					}
+//				}
+//			}
+//
+//			if (hitBlocked)
+//			{
+//				if (survivedHit)
+//				{
+////					Debug.Log("TakeHit hitBlocked = true / survivedHit = true");
+//					Opponent.TriggerSpotFX(SpotFXType.Block);
+//					AudioSource.PlayClipAtPoint(ProfileData.blockedHitSound, Vector3.zero, FightManager.SFXVolume);
+//				}
+//					
+//				// blocking a hit increases XP
+//				if (lastHit)
+//					IncreaseXP(FightManager.BlockXP);
+//			}
+//			else if (! FallenState)
+//			{
+//				// attacker gets XP for successful hit
+//				if (lastHit)
+//					Opponent.LastHitXP(hitData);
+//
+//				if (survivedHit)
+//				{
+//					if (hitData.SoundEffect != null)
+//						AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
+//					
+//					Opponent.TriggerSpotFX(hitData.SpotEffect, false);
+//				}
+//
+//				// update attacker's combo count if hit not blocked
+//				Opponent.IncrementComboCount();
+//			}
+//
+//			return survivedHit;
+//		}
 
 
 		private void IncrementComboCount()
@@ -4822,7 +5058,7 @@ namespace FightingLegends
 			// ... but for longer than usual (uses blockStunFrames)
 			StartShoveStun(hitData, IsBlockIdle);
 
-			Opponent.TriggerSpotEffect(hitData.SpotEffect, false);
+			Opponent.TriggerSpotFX(hitData.SpotEffect, false);
 
 			if (hitData.SoundEffect != null)
 				AudioSource.PlayClipAtPoint(hitData.SoundEffect, Vector3.zero, FightManager.SFXVolume);
@@ -5627,7 +5863,7 @@ namespace FightingLegends
 		// loser departs ...
 		private IEnumerator ExpireToNextRound()
 		{	
-//			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
+			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
 			if (! ExpiredState)
 				yield break;
 
@@ -5766,6 +6002,8 @@ namespace FightingLegends
 						break;
 				}
 
+//				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
+
 				if (endOfMatch)
 				{
 					SaveProfile();				// not if AI
@@ -5833,7 +6071,9 @@ namespace FightingLegends
 			
 		protected virtual void ReadyToKO(HitFrameData hitData)
 		{
-//			Debug.Log(FullName + ": ReadyToKO - State = " + CurrentState + ", CanContinue = " + CanContinue);
+//			ReleaseBlock(true);
+
+			Debug.Log(FullName + ": ReadyToKO - State = " + CurrentState + ", CanContinue = " + CanContinue);
 			Expire(hitData);				// expire immediately by default - skeletron falls to his knees to take one final blow
 		}
 
@@ -5915,9 +6155,9 @@ namespace FightingLegends
 				fightManager.GaugeFeedback(IsPlayer1, FightManager.Translate("needs") + " " + required + " " + (required == 1 ? FightManager.Translate("crystal") : FightManager.Translate("crystals")));
 		}
 
+
 		protected void KnockOutFreeze()
 		{
-//			Debug.Log(FullName + ": KnockOutFreeze!");
 			Debug.Log(FullName + ": KnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
 
 			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
@@ -5937,7 +6177,7 @@ namespace FightingLegends
 		// called at end of KO feedback / freeze
 		public void EndKnockOutFreeze()
 		{
-			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
+			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
 
 			if (! ExpiredState && ! takenLastFatalHit)
 				return;
@@ -5949,22 +6189,61 @@ namespace FightingLegends
 				if (! FightManager.SavedGameStatus.CompletedBasicTraining)
 					Trainer.TrainingComplete();				// clear prompt / feedback etc.
 
-//				fightManager.SnapshotCameraPosition();
-//				fightManager.UnfreezeFight();
-
-//				Debug.Log(FullName + ": EndKnockOutFreeze -> ExpireToNextRound");
+				//				Debug.Log(FullName + ": EndKnockOutFreeze -> ExpireToNextRound");
 				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match
 				takenLastFatalHit = false;
-			
+
 				if (OnKnockOut != null)
 					OnKnockOut(this);
 			}
 		}
-			
 
+//		protected void KnockOutFreeze()
+//		{
+////			Debug.Log(FullName + ": KnockOutFreeze!");
+//			Debug.Log(FullName + ": KnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
+//
+//			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
+//			fightManager.TriggerFeedbackFX(FeedbackFXType.KO);
+//
+//			StartStatusEffectFrameCount(StatusEffect.KnockOut);
+//
+//			// freeze both fighters for effect ... on next frame - a KO hit will freeze until KO feedback ends
+//			SetFreezeFrames(expiryFreezeFrames);	
+//
+//			secondLifeOpportunity = true;   		// reset by EndKnockOutFreeze
+//
+//			if (OnKnockOutFreeze != null)			// for AI to trigger second life (if equipped)
+//				OnKnockOutFreeze(this);
+//		}
+//
+//		// called at end of KO feedback / freeze
+//		public void EndKnockOutFreeze()
+//		{
+//			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock + " takenLastFatalHit " + takenLastFatalHit);
+//
+//			if (! ExpiredState && ! takenLastFatalHit)
+//				return;
+//
+//			secondLifeOpportunity = false;
+//
+//			if (takenLastFatalHit)		// taken last of fatal blows
+//			{
+//				if (! FightManager.SavedGameStatus.CompletedBasicTraining)
+//					Trainer.TrainingComplete();				// clear prompt / feedback etc.
+//
+////				Debug.Log(FullName + ": EndKnockOutFreeze -> ExpireToNextRound");
+//				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match
+//				takenLastFatalHit = false;
+//			
+//				if (OnKnockOut != null)
+//					OnKnockOut(this);
+//			}
+//		}
+			
 		protected virtual void KnockOut()
 		{
-			// final KO - overrides handle any special behaviour (eg. skeletron)
+			// final KO - overrides handle any special behaviour (eg. skeletron)	
 		}
 			
 		protected virtual void CounterAttack(bool chained)

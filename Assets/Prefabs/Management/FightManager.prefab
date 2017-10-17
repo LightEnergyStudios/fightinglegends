@@ -164,12 +164,13 @@ MonoBehaviour:
   LeaderboardsChoice: 0
   options: {fileID: 0}
   SelectedMenuOverlay: 0
-  MatchBestOf: 3
+  MatchBestOf: 1
   countdownFreeze: 1
   dashInAudio: {fileID: 8300000, guid: fa441a6ed23df4467b1d430d83a214b3, type: 3}
   dashInTime: 0.5
   recycleTime: 0.05
   InitialCoins: 1000
+  HitDamageFactor: 1
   waterHeader: {fileID: 21300000, guid: d63f8cb0febeb48f6aedfb5dc7bb6081, type: 3}
   airHeader: {fileID: 21300000, guid: e00f0d1fc106045cf9753528f568d8e2, type: 3}
   fireHeader: {fileID: 21300000, guid: f79c23c9b29f74510a93034d071d2a00, type: 3}

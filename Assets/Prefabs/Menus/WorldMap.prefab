@@ -306,7 +306,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000012348748302
 GameObject:
   m_ObjectHideFlags: 0
@@ -1754,7 +1754,6 @@ MonoBehaviour:
   chinaDot: {fileID: 114000013098219286}
   ghettoDot: {fileID: 114000010983695338}
   antarcticaDot: {fileID: 114000011415738468}
-  NetworkWaiting: {fileID: 114319969710277308}
   showSpaceStation: 1
   currentLocale: {fileID: 114000010723539236}
   flightPath: {fileID: 198000011709456554}

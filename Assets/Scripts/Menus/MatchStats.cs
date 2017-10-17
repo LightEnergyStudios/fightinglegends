@@ -65,7 +65,19 @@ namespace FightingLegends
 //		public FighterCard Player1Card;
 //		public FighterCard Player2Card;
 
+		private FeedbackUI feedbackUI;
+
+		public GameObject WorldTourPanel;
+		public Text CongratsText;
+		public Text WorldTourText;
+		public ParticleSystem WorldTourFireworks;
+		public AudioClip WorldTourSound;
+
+		private const float worldTourCongratsTime = 0.1f;
+
 		private List<ChallengeRoundResult> challengeResults;
+
+		private bool worldTourComplete = false;
 
 
 		public override bool CanNavigateBack { get { return false; } }
@@ -74,15 +86,29 @@ namespace FightingLegends
 		public void Awake()
 		{
 			resultsAnimator = GetComponent<Animator>();
+
+			var fightManagerObject = GameObject.Find("FightManager");
+			fightManager = fightManagerObject.GetComponent<FightManager>();
+
+			var feedbackUIObject = GameObject.Find("FeedbackUI");
+			if (feedbackUIObject != null)
+				feedbackUI = feedbackUIObject.GetComponent<FeedbackUI>();
 		}
 
 		// initialization
 		public void Start()
 		{
-			var fightManagerObject = GameObject.Find("FightManager");
-			fightManager = fightManagerObject.GetComponent<FightManager>();
-
 			inputAllowed = false;
+		}
+
+		private void OnEnable()
+		{
+			feedbackUI.feedbackFX.OnEndState += FeedbackStateEnd;
+		}
+
+		private void OnDisable()
+		{
+			feedbackUI.feedbackFX.OnEndState -= FeedbackStateEnd;
 		}
 
 		private void Update() 
@@ -96,7 +122,12 @@ namespace FightingLegends
 					if (winner != null)
 					{
 						if (!winner.UnderAI)							// player won - choose next location
-							fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
+						{
+							if (worldTourComplete)
+								fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
+							else
+								fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
+						}
 						else   // AI won - didn't wait for countdown or insert coin to continue
 							fightManager.MatchStatsChoice = MenuType.ModeSelect;
 					}
@@ -108,26 +139,12 @@ namespace FightingLegends
 			}
 		}
 
-//		private void Update() 
-//		{
-//			if (inputAllowed && (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetMouseButtonDown(0))	// left button
-//			{
-//				if (FightManager.CombatMode == FightMode.Arcade && winner != null && !winner.UnderAI && !FightManager.SavedStatus.NinjaSchoolFight)
-//				{
-//					// player won - choose next location
-//					fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
-//				}
-//				else
-//				{
-//					fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
-//				}
-//			}
-//		}
-
 		private void InsertCoinCountdown(Action actionOnContinue, Action actionOnExit, string message = null)
 		{
 			insertCoin.gameObject.SetActive(true);
 			insertCoin.Countdown(actionOnContinue, actionOnExit, message);
+
+			inputAllowed = true;		// tap to exit
 		}
 
 		private void ArcadeContinue()
@@ -147,7 +164,7 @@ namespace FightingLegends
 		}
 
 	
-		public void RevealWinner(Fighter victor)
+		public void RevealWinner(Fighter victor, bool completedWorldTour)
 		{
 //			Debug.Log("RevealWinner: winner = " + (victor == null ? " NULL!" : victor.FullName));
 
@@ -156,6 +173,11 @@ namespace FightingLegends
 			
 			winner = victor;
 			var loser = winner.Opponent;
+
+			worldTourComplete = completedWorldTour;
+			WorldTourPanel.SetActive(false);				// animated reveal
+
+			WinnerStatsPanel.SetActive(!worldTourComplete);
 
 			Reset();
 
@@ -409,6 +431,8 @@ namespace FightingLegends
 			LevelLabel.gameObject.SetActive(false);
 			CoinsUp.gameObject.SetActive(false);
 			CoinsLabel.gameObject.SetActive(false);
+
+			WorldTourPanel.gameObject.SetActive(false);
 		}
 
 		public void PhotoAudio()
@@ -430,8 +454,11 @@ namespace FightingLegends
 
 			if (Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && winner.UnderAI && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost - countdown 'insert coin to continue'
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
-			else
+			else if (! worldTourComplete)
 				StartCoroutine(WinnerStats());
+
+			if (worldTourComplete)
+				WorldTourCongrats();
 		}
 
 
@@ -465,6 +492,46 @@ namespace FightingLegends
 					resultsAnimator.SetTrigger("ChallengeP1");		// animate card entry from left
 				
 				yield return new WaitForSeconds(1.0f);
+			}
+		}
+
+		private void WorldTourCongrats()
+		{
+			WinnerStatsPanel.SetActive(false);
+			fightManager.Success(0, "Curtain");		// top layer. AnimateWorldTourCongrats at end
+		}
+
+		private IEnumerator AnimateWorldTourCongrats()
+		{
+			WorldTourPanel.transform.localScale = Vector3.zero;
+			WorldTourPanel.SetActive(true);
+			CongratsText.text = FightManager.Translate("congratulations", false, true, true) + "!!";
+			WorldTourText.text = FightManager.Translate("completedWorldTour", false, true);
+
+			float t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
+
+				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+				yield return null;
+			}
+
+			WorldTourFireworks.Play();
+			if (WorldTourSound != null)
+				AudioSource.PlayClipAtPoint(WorldTourSound, Vector3.zero, FightManager.SFXVolume);
+
+			inputAllowed = true;
+
+			yield return null;
+		}
+
+		private void FeedbackStateEnd(AnimationState endingState)
+		{
+			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
+			{
+				StartCoroutine(AnimateWorldTourCongrats());
 			}
 		}
 	}

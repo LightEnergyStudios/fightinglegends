@@ -315,6 +315,7 @@
 		<string name="betterLuckNextTime">BETTER LUCK NEXT TIME</string>
 		<string name="yourTeamWon">YOUR TEAM WON THE CHALLENGE</string>
 		<string name="yourTeamLost">YOUR TEAM LOST THE CHALLENGE</string>
+		<string name="completedWorldTour">YOU COMPLETED A WORLD TOUR</string>
 
 		<string name="healthPoints">HP</string>
 		<string name="attackRating">AR</string>
