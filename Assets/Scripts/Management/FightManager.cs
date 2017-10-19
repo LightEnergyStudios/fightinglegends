@@ -1936,6 +1936,8 @@ namespace FightingLegends
 			SaveGameStatus();
 			GameUIVisible(false);
 
+			CancelFX();
+
 			ActivateMenu(MenuType.ModeSelect);
 		}
 

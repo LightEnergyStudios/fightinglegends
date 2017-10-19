@@ -33,7 +33,7 @@ namespace FightingLegends
 		public float coinsUpPause;
 		public int kudosBlingInterval;			// bling sound
 
-		public InsertContinueCoin insertCoin;
+		public InsertContinueCoin ContinueCoin;
 
 		public Sprite leoniWin;
 		public Sprite hoiLunWin;
@@ -64,6 +64,17 @@ namespace FightingLegends
 		public FighterButton Player2Button;
 //		public FighterCard Player1Card;
 //		public FighterCard Player2Card;
+
+//		public GameObject InsertCoin;	
+
+		public GameObject InsertCoinTextPanel;	
+		public List<Text> InsertCoinText;					// animated text x3
+		public Image InsertCoinStrip;
+		private const int insertCoinTextWidth = 600;
+		private const float insertCoinTextTime = 3.0f;		// 
+		private const int insertCoinTextRepeats = 3;
+		private IEnumerator insertCoinTextCoroutine = null;
+		private List<float> insertCoinTextPosition;			// original x position of animated text x3
 
 		private FeedbackUI feedbackUI;
 
@@ -104,11 +115,17 @@ namespace FightingLegends
 		private void OnEnable()
 		{
 			feedbackUI.feedbackFX.OnEndState += FeedbackStateEnd;
+			SaveInsertCoinTextPositions();
+			InsertCoinTextPanel.SetActive(false);
+			InsertCoinStrip.gameObject.SetActive(false);
 		}
 
 		private void OnDisable()
 		{
 			feedbackUI.feedbackFX.OnEndState -= FeedbackStateEnd;
+			RestoreInsertCoinTextPositions();
+			InsertCoinTextPanel.SetActive(false);
+			InsertCoinStrip.gameObject.SetActive(false);
 		}
 
 		private void Update() 
@@ -141,8 +158,8 @@ namespace FightingLegends
 
 		private void InsertCoinCountdown(Action actionOnContinue, Action actionOnExit, string message = null)
 		{
-			insertCoin.gameObject.SetActive(true);
-			insertCoin.Countdown(actionOnContinue, actionOnExit, message);
+			ContinueCoin.gameObject.SetActive(true);
+			ContinueCoin.Countdown(actionOnContinue, actionOnExit, message);
 
 			inputAllowed = true;		// tap to exit
 		}
@@ -150,7 +167,7 @@ namespace FightingLegends
 		private void ArcadeContinue()
 		{
 //			Debug.Log("ArcadeContinue");
-			insertCoin.gameObject.SetActive(false);
+			ContinueCoin.gameObject.SetActive(false);
 			fightManager.MatchStatsChoice = MenuType.Combat;			// to exit match stats (same menu canvas, so does nothing else)
 			fightManager.MatchStatsRestartMatch = true;					// same fighters and location
 		}
@@ -158,8 +175,11 @@ namespace FightingLegends
 		private void ArcadeExit()
 		{
 //			Debug.Log("ArcadeExit");
-			insertCoin.gameObject.SetActive(false);
+			ContinueCoin.gameObject.SetActive(false);
+			StopInsertCoinAnimation();
+
 			fightManager.ResetWorldTour();
+			fightManager.CleanupFighters();
 			fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
 		}
 
@@ -432,6 +452,9 @@ namespace FightingLegends
 			CoinsUp.gameObject.SetActive(false);
 			CoinsLabel.gameObject.SetActive(false);
 
+			InsertCoinTextPanel.SetActive(false);
+			InsertCoinStrip.gameObject.SetActive(false);
+
 			WorldTourPanel.gameObject.SetActive(false);
 		}
 
@@ -453,7 +476,10 @@ namespace FightingLegends
 			StartCoroutine(WinQuoteFadeIn());
 
 			if (Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && winner.UnderAI && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost - countdown 'insert coin to continue'
+			{
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
+				CycleInsertCoinText();
+			}
 			else if (! worldTourComplete)
 				StartCoroutine(WinnerStats());
 
@@ -525,6 +551,114 @@ namespace FightingLegends
 			inputAllowed = true;
 
 			yield return null;
+		}
+
+
+//		private IEnumerator AnimateInsertCoin()
+//		{
+//			float t = 0.0f;
+//			Vector3[] startPositions = new Vector3[ InsertCoin.Count-1 ];
+//			Vector3[] targetPositions = new Vector3[ InsertCoin.Count-1 ];
+//
+//			for (int i = 0; i < InsertCoin.Count; i++)
+//			{
+//				startPositions[i] = InsertCoin[i].transform.localPosition;
+//				targetPositions[i] = new Vector3(startPositions[i].x - insertCoinWidth, startPositions[i].y, startPositions[i].z);
+//			}
+//
+//			while (t < 1.0f)
+//			{
+//				t += Time.deltaTime * (Time.timeScale / insertCoinTime); 
+//
+//				for (int i = 0; i < InsertCoin.Count; i++)
+//				{
+//					InsertCoin[i].transform.localPosition = Vector3.Lerp(startPositions[i], targetPositions[i], t);
+//				}
+//
+//				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+//				yield return null;
+//			}
+//		}
+
+		private void CycleInsertCoinText()
+		{
+			StopInsertCoinAnimation();
+
+			InsertCoinTextPanel.SetActive(true);
+			InsertCoinStrip.gameObject.SetActive(true);
+
+			insertCoinTextCoroutine = LoopInsertCoinText();
+			StartCoroutine(insertCoinTextCoroutine);
+		}
+
+		protected IEnumerator LoopInsertCoinText()
+		{
+			float xReturnPoint = InsertCoinText[0].transform.localPosition.x - insertCoinTextWidth;
+
+			while (true)			// loop until coroutine stopped externally
+			{
+				foreach (var coinText in InsertCoinText)
+				{
+					StartCoroutine(AnimateCoinText(coinText, xReturnPoint));
+				}
+
+				yield return new WaitForSeconds(insertCoinTextTime);
+
+				RestoreInsertCoinTextPositions(); 		// need accurate float values
+			}
+		}
+
+		protected IEnumerator AnimateCoinText(Text coinText, float xReturnPoint)
+		{
+			float t = 0;
+
+			var startPosition = coinText.transform.localPosition;
+			var targetPosition = new Vector3(startPosition.x - insertCoinTextWidth, startPosition.y, startPosition.z);
+
+			bool returnAtTarget = targetPosition.x <= xReturnPoint;
+
+//			coinText.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, Time.deltaTime * insertCoinTextTime);
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / insertCoinTextTime); 
+
+				coinText.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+				yield return null;
+			}
+
+			// return back to start position if beyond return point
+			var currentPosition = coinText.transform.localPosition;
+
+			if (returnAtTarget)
+				coinText.transform.localPosition = new Vector3(currentPosition.x + (insertCoinTextWidth * insertCoinTextRepeats), currentPosition.y, currentPosition.z);
+		}
+
+		private void SaveInsertCoinTextPositions()
+		{
+			insertCoinTextPosition = new List<float>();
+
+			for (int i = 0; i < insertCoinTextRepeats; i++)
+			{
+				insertCoinTextPosition.Add(InsertCoinText[i].transform.localPosition.x);
+			}
+		}
+
+		private void RestoreInsertCoinTextPositions()
+		{
+			for (int i = 0; i < insertCoinTextRepeats; i++)
+			{
+				var position = InsertCoinText[i].transform.localPosition;
+				InsertCoinText[i].transform.localPosition = new Vector3(insertCoinTextPosition[i], position.y, position.z);
+			}
+		}
+
+		private void StopInsertCoinAnimation()
+		{
+			InsertCoinTextPanel.SetActive(false);
+			InsertCoinStrip.gameObject.SetActive(false);
+			if (insertCoinTextCoroutine != null)
+				StopCoroutine(insertCoinTextCoroutine);
 		}
 
 		private void FeedbackStateEnd(AnimationState endingState)

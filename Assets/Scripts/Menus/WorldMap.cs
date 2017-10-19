@@ -119,7 +119,8 @@ namespace FightingLegends
 
 //		public override bool CanNavigateBack { get { return base.CanNavigateBack && NavigatedFrom != MenuType.MatchStats; } }
 		public override bool CanNavigateBack { get { return base.CanNavigateBack && 
-								(NavigatedFrom == MenuType.ArcadeFighterSelect || NavigatedFrom == MenuType.SurvivalFighterSelect); } }
+														(NavigatedFrom == MenuType.Combat || NavigatedFrom == MenuType.ArcadeFighterSelect ||
+															NavigatedFrom == MenuType.SurvivalFighterSelect); } }
 
 
 		private void InitWorldMapPosition()
