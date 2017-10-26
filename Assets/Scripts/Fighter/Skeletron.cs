@@ -83,7 +83,7 @@ namespace FightingLegends
 //		}
 
 			
-		protected override void ReadyToKO(HitFrameData hitData)
+		protected override void KOState(HitFrameData hitData)
 		{
 			TriggerFeedbackFX(FeedbackFXType.None);				// eg. to cancel special extra prompt in case end of special opportunity not reached
 

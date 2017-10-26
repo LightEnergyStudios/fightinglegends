@@ -30,7 +30,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1020086661670424
 GameObject:
   m_ObjectHideFlags: 1
@@ -635,7 +635,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1442228408096322
 GameObject:
   m_ObjectHideFlags: 1
@@ -1007,7 +1007,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1594883606901444
 GameObject:
   m_ObjectHideFlags: 1
@@ -1135,7 +1135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1761974243860716
 GameObject:
   m_ObjectHideFlags: 1
@@ -1291,7 +1291,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1876365599690418
 GameObject:
   m_ObjectHideFlags: 1
@@ -1913,6 +1913,7 @@ MonoBehaviour:
   userID: {fileID: 114897747312250326}
   IPAddress: {fileID: 114909886143854492}
   EntrySound: {fileID: 8300000, guid: 358bd814393754479ad28041f603d4f2, type: 3}
+  ButtonEntrySound: {fileID: 0}
   curtain: {fileID: 114926486913796578}
   fightManagerPrefab: {fileID: 1326031939578868, guid: 6f36d76e3fa7e4522be0674f5f729cc3,
     type: 2}
@@ -1927,6 +1928,9 @@ MonoBehaviour:
   backButton: {fileID: 114530611623039566}
   statusInfo: {fileID: 114910883195062384}
   hostInfo: {fileID: 114841557804349272}
+  wiFiConnect: {fileID: 114960754652940050}
+  hostAGame: {fileID: 114689497659452472}
+  findAGame: {fileID: 114991610573030130}
   _playerNumber: 0
   _isMatchmaking: 0
 --- !u!114 &114124038482300286
@@ -5430,18 +5434,18 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 6443d26d5fce046efa1055b2b4df6bb3, type: 3}
-    m_FontSize: 48
+    m_FontSize: 60
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 4
-    m_MaxSize: 52
-    m_Alignment: 6
+    m_MinSize: 0
+    m_MaxSize: 60
+    m_Alignment: 7
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 0
-  m_Text: LOCAL NETWORK
+  m_Text: WI-FI CONNECT!
 --- !u!114 &114960965335703784
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -9094,7 +9098,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -1556, y: -111}
+  m_AnchoredPosition: {x: -1556, y: -186}
   m_SizeDelta: {x: 525, y: 178}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224267408126625846
@@ -9365,7 +9369,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -915, y: -110}
+  m_AnchoredPosition: {x: -915, y: -185}
   m_SizeDelta: {x: 525, y: 178}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224466587707419226
@@ -9419,8 +9423,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 60, y: -22}
-  m_SizeDelta: {x: -230, y: 68}
+  m_AnchoredPosition: {x: 0, y: -39}
+  m_SizeDelta: {x: 0, y: 68}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &224492886482346424
 RectTransform:
@@ -9612,11 +9616,11 @@ RectTransform:
   m_Father: {fileID: 224624595877386252}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -487}
-  m_SizeDelta: {x: 0, y: 328}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 453}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224653330543886130
 RectTransform:
   m_ObjectHideFlags: 1

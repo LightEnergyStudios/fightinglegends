@@ -82,6 +82,15 @@ namespace FightingLegends
 
 		private bool fightersListening = false;
 
+		private bool movesShowing = false;
+
+		public Image MovesPanel;
+		public Toggle ShowMovesButton;
+		public Text ShowMovesText;
+
+		private const float recordPlaybackHighOffsetY = 145.0f;		// move up if moves not showing 
+		private const float recordPlaybackLowOffsetY = 70.0f;		// move down if moves showing 
+
 		private Fighter fighter = null;					// Player1
 		private Fighter shadow = null;					// Player2
 
@@ -119,7 +128,13 @@ namespace FightingLegends
 			recordingInProgress = false;
 			playbackInProgress = false;
 
-//			DisableMoves();
+			movesShowing = FightManager.SavedGameStatus.ShowDojoUI;
+//			MovesPanel.gameObject.SetActive(movesShowing);
+
+			ToggleMovesShowing();
+
+			if (movesShowing)
+				DisableMoves();
 //			GetComponent<Animator>().enabled = true;		// enter prompts
 
 			if (StateFeedbackOnly)							// no recording and playback
@@ -151,11 +166,15 @@ namespace FightingLegends
 			
 			if (ready)
 			{
-//				SetMoveLabels();
+				if (movesShowing)
+					SetMoveLabels();
+				
 				StartListening();
 				SetFighterProfile();
 				ResetRecordedMoves();
-//				SyncStateMoves(true);
+
+				if (movesShowing)
+					SyncStateMoves(true);
 
 				scrollingViewport = false;
 				recordingMove = false;
@@ -163,7 +182,7 @@ namespace FightingLegends
 			else
 			{
 				StopListening();
-//				DisableMoves();
+				DisableMoves();
 			}
 		}
 			
@@ -205,6 +224,8 @@ namespace FightingLegends
 			}
 
 			FightManager.OnNextRound += OnNextRound;
+
+			ShowMovesButton.onValueChanged.AddListener(MovesShowingToggled);
 		}
 
 		private void StopListening()
@@ -242,6 +263,8 @@ namespace FightingLegends
 			}
 
 			FightManager.OnNextRound -= OnNextRound;
+
+			ShowMovesButton.onValueChanged.RemoveListener(MovesShowingToggled);
 		}
 
 		// moves executed at the same move frame as fighter
@@ -290,69 +313,78 @@ namespace FightingLegends
 		}
 
 
-//		private void DisableMoves()
-//		{
-//			ActivateMove(TapMove, false, false, true);
-//			ActivateMove(BothTapMove, false, false, true);
-//			ActivateMove(SwipeLeftMove, false, false, true);
-//			ActivateMove(SwipeRightMove, false, false, true);
-//			ActivateMove(SwipeUpMove, false, false, true);
-//			ActivateMove(SwipeDownMove, false, false, true);
-//			ActivateMove(SwipeLeftRightMove, false, false, true);
-//			ActivateMove(HoldMove, false, false, true);
-//			ActivateMove(FireExtraMove, false, false, true);
-//			ActivateMove(WaterExtraMove, false, false, true);
-//		}
+		private void DisableMoves()
+		{
+			if (! movesShowing)
+				return;
+			
+			ActivateMove(TapMove, false, false, true);
+			ActivateMove(BothTapMove, false, false, true);
+			ActivateMove(SwipeLeftMove, false, false, true);
+			ActivateMove(SwipeRightMove, false, false, true);
+			ActivateMove(SwipeUpMove, false, false, true);
+			ActivateMove(SwipeDownMove, false, false, true);
+			ActivateMove(SwipeLeftRightMove, false, false, true);
+			ActivateMove(HoldMove, false, false, true);
+			ActivateMove(FireExtraMove, false, false, true);
+			ActivateMove(WaterExtraMove, false, false, true);
+		}
 
-//		private void SyncStateMoves(bool animate)
-//		{
-//			var canStrike = (fighter.CanExecuteMove(Move.Strike_Light) || fighter.CanExecuteMove(Move.Strike_Medium) || fighter.CanExecuteMove(Move.Strike_Heavy));
-//			ActivateMove(TapMove, canStrike, animate, true);
-//
-//			var canReset = fighter.CanExecuteMove(Move.Roman_Cancel);
-//			ActivateMove(BothTapMove, canReset, animate, true);
-//
-//			var canCounter = fighter.HasCounter && fighter.CanCounter && (fighter.CanExecuteMove(Move.Counter) || (fighter.IsBlocking && fighter.HasCounterGauge));
-//			ActivateMove(SwipeLeftMove, canCounter, animate, fighter.HasCounter);
-//
-//			var canSpecial = (fighter.CanExecuteMove(Move.Special) && !fighter.CanSpecialExtra) || fighter.IsBlocking;
-//			ActivateMove(SwipeRightMove, canSpecial, animate, true);
-//
-//			var canPowerUp = fighter.CanPowerUp || fighter.IsBlocking;	 // no trigger power-up assigned - dummy only
-//			ActivateMove(SwipeUpMove, canPowerUp, animate, true);
-//
-//			var canShove = fighter.HasShove && (fighter.CanExecuteMove(Move.Shove) || fighter.IsBlocking); 
-//			ActivateMove(SwipeDownMove, canShove, animate, fighter.HasShove);
-//
-//			var canVengeance = (fighter.CanExecuteMove(Move.Vengeance) || (fighter.IsBlocking && fighter.HasVengeanceGauge));
-//			ActivateMove(SwipeLeftRightMove, canVengeance, animate, true);
-//
-//			var canBlock = fighter.HasBlock && fighter.CanExecuteMove(Move.Block); 
-//			ActivateMove(HoldMove, canBlock, animate, fighter.HasBlock);
-//				
-//			ActivateMove(FireExtraMove, fighter.CanSpecialExtraFire, animate, fighter.HasSpecialExtra);
-//			ActivateMove(WaterExtraMove, fighter.CanSpecialExtraWater, animate, fighter.HasSpecialExtra);
-//
-////			Debug.Log("SyncStateMoves: " + "CurrentState = " + player1.CurrentState + ", canStrike = " + canStrike + ", canReset = " + canReset + ", canCounter = " + canCounter + ", canSpecial = " + canSpecial + ", canShove = " + canShove + ", canVengeance = " + canVengeance + ", canBlock = " + canBlock + ", canPowerUp = " + canPowerUp);
-//		}
+		private void SyncStateMoves(bool animate)
+		{
+			if (!movesShowing)
+				return;
+			
+			var canStrike = (fighter.CanExecuteMove(Move.Strike_Light) || fighter.CanExecuteMove(Move.Strike_Medium) || fighter.CanExecuteMove(Move.Strike_Heavy));
+			ActivateMove(TapMove, canStrike, animate, true);
 
-//		private void SetMoveLabels()
-//		{
-//			TapMove.SetLabel(FightManager.Translate("strike"));
-//			SwipeRightMove.SetLabel(FightManager.Translate("special"));
-//			SwipeLeftMove.SetLabel(FightManager.Translate("counter"));
-//			SwipeLeftRightMove.SetLabel(FightManager.Translate("vengeance"));
-//			FireExtraMove.SetLabel(FightManager.Translate("extra"));
-//			WaterExtraMove.SetLabel(FightManager.Translate("extra"));
-//			BothTapMove.SetLabel(FightManager.Translate("reset"));
-//			SwipeDownMove.SetLabel(FightManager.Translate("shove"));
-//			HoldMove.SetLabel(FightManager.Translate("block"));
-//			SwipeUpMove.SetLabel(FightManager.Translate("powerUp"));
-//		}
+			var canReset = fighter.CanExecuteMove(Move.Roman_Cancel);
+			ActivateMove(BothTapMove, canReset, animate, true);
+
+			var canCounter = fighter.HasCounter && fighter.CanCounter && (fighter.CanExecuteMove(Move.Counter) || (fighter.IsBlocking && fighter.HasCounterGauge));
+			ActivateMove(SwipeLeftMove, canCounter, animate, fighter.HasCounter);
+
+			var canSpecial = (fighter.CanExecuteMove(Move.Special) && !fighter.CanSpecialExtra) || fighter.IsBlocking;
+			ActivateMove(SwipeRightMove, canSpecial, animate, true);
+
+			var canPowerUp = fighter.CanPowerUp || fighter.IsBlocking;	 // no trigger power-up assigned - dummy only
+			ActivateMove(SwipeUpMove, canPowerUp, animate, true);
+
+			var canShove = fighter.HasShove && (fighter.CanExecuteMove(Move.Shove) || fighter.IsBlocking); 
+			ActivateMove(SwipeDownMove, canShove, animate, fighter.HasShove);
+
+			var canVengeance = (fighter.CanExecuteMove(Move.Vengeance) || (fighter.IsBlocking && fighter.HasVengeanceGauge));
+			ActivateMove(SwipeLeftRightMove, canVengeance, animate, true);
+
+			var canBlock = fighter.HasBlock && fighter.CanExecuteMove(Move.Block); 
+			ActivateMove(HoldMove, canBlock, animate, fighter.HasBlock);
+				
+			ActivateMove(FireExtraMove, fighter.CanSpecialExtraFire, animate, fighter.HasSpecialExtra);
+			ActivateMove(WaterExtraMove, fighter.CanSpecialExtraWater, animate, fighter.HasSpecialExtra);
+
+//			Debug.Log("SyncStateMoves: " + "CurrentState = " + player1.CurrentState + ", canStrike = " + canStrike + ", canReset = " + canReset + ", canCounter = " + canCounter + ", canSpecial = " + canSpecial + ", canShove = " + canShove + ", canVengeance = " + canVengeance + ", canBlock = " + canBlock + ", canPowerUp = " + canPowerUp);
+		}
+
+		private void SetMoveLabels()
+		{
+			if (!movesShowing)
+				return;
+			
+			TapMove.SetLabel(FightManager.Translate("strike"));
+			SwipeRightMove.SetLabel(FightManager.Translate("special"));
+			SwipeLeftMove.SetLabel(FightManager.Translate("counter"));
+			SwipeLeftRightMove.SetLabel(FightManager.Translate("vengeance"));
+			FireExtraMove.SetLabel(FightManager.Translate("extra"));
+			WaterExtraMove.SetLabel(FightManager.Translate("extra"));
+			BothTapMove.SetLabel(FightManager.Translate("reset"));
+			SwipeDownMove.SetLabel(FightManager.Translate("shove"));
+			HoldMove.SetLabel(FightManager.Translate("block"));
+			SwipeUpMove.SetLabel(FightManager.Translate("powerUp"));
+		}
 
 		private void SetFighterProfile()
 		{
-			if (!shadow.UnderAI)
+			if (! shadow.UnderAI)
 			{
 				string elementsLabel = fightManager.Player1.ElementsLabel;
 				if (elementsLabel == "")
@@ -362,20 +394,26 @@ namespace FightingLegends
 					elementsLabel, fightManager.Player1.ClassLabel);
 			}
 
-//			FireExtraMove.MoveImage.gameObject.SetActive(fightManager.Player1.IsFireElement);
-//			WaterExtraMove.MoveImage.gameObject.SetActive(fightManager.Player1.IsWaterElement
-//				|| fighter.ProfileData.FighterClass == FighterClass.Boss || fightManager.Player1.FighterName == "Ninja");		// TODO: bit clumsy (otherwise both extras not active)
+			if (movesShowing)
+			{
+				FireExtraMove.MoveImage.gameObject.SetActive(fightManager.Player1.IsFireElement);
+				WaterExtraMove.MoveImage.gameObject.SetActive(fightManager.Player1.IsWaterElement
+					|| fighter.ProfileData.FighterClass == FighterClass.Boss || fightManager.Player1.FighterName == "Ninja");		// TODO: bit clumsy (otherwise both extras not active)
+			}
 		}
 
-//		private void ActivateMove(MoveUI move, bool enable, bool animate, bool available)
-//		{
-//			bool enabled = move.Activate(enable, animate, available);
-//
-//			if (available && enabled && animate)
-//				StartCoroutine(PulseMoveText(move));	// if enabled
-//
-//			StartCoroutine(move.ActivateSize());		// enlarge if active
-//		}
+		private void ActivateMove(MoveUI move, bool enable, bool animate, bool available)
+		{
+			if (!movesShowing)
+				return;
+			
+			bool enabled = move.Activate(enable, animate, available);
+
+			if (available && enabled && animate)
+				StartCoroutine(PulseMoveText(move));	// if enabled
+
+			StartCoroutine(move.ActivateSize());		// enlarge if active
+		}
 			
 
 		// CuedMoveFeedback has priority over CanFollowUpFeedback
@@ -758,8 +796,9 @@ namespace FightingLegends
 
 			if (fightManager.EitherFighterExpired)
 				return;
-			
-//			SyncStateMoves(true);				// according to current state of fighter
+
+			if (movesShowing)
+				SyncStateMoves(true);				// according to current state of fighter
 
 			// return to idle - add a null frame number stamp to end of recordedMoves
 			// shadow retaliates with same moves (stop recording - start playback)
@@ -809,7 +848,8 @@ namespace FightingLegends
 
 			if (moveUI != null)
 			{
-//				StartCoroutine(PulseMove(moveUI, pulseScale, false, true));
+				if (movesShowing)
+					StartCoroutine(PulseMove(moveUI, pulseScale, false, true));
 
 				if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 					StartCoroutine(RecordMove(moveUI, state.OldState, !continued, continued, false, false, false));
@@ -823,7 +863,8 @@ namespace FightingLegends
 
 			if (moveUI != null)
 			{
-//				StartCoroutine(PulseMove(moveUI, pulseScale, false, true));
+				if (movesShowing)
+					StartCoroutine(PulseMove(moveUI, pulseScale, false, true));
 
 				if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 				{
@@ -889,7 +930,8 @@ namespace FightingLegends
 			
 			CuedMoveFeedback(FightManager.Translate("cued") + " " + comboLabel + "!");
 
-//			StartCoroutine(PulseMove(TapMove, pulseScale, false, true));
+			if (movesShowing)
+				StartCoroutine(PulseMove(TapMove, pulseScale, false, true));
 
 			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 				StartCoroutine(RecordMove(TapMove, state.OldState, false, false, false, true, false));			// TODO: correct?
@@ -900,7 +942,8 @@ namespace FightingLegends
 		{
 			CuedMoveFeedback(FightManager.Translate("cued") + " " + FightManager.Translate("counterAttack", false, true));
 
-//			StartCoroutine(PulseMove(SwipeLeftMove, pulseScale, false, true));
+			if (movesShowing)
+				StartCoroutine(PulseMove(SwipeLeftMove, pulseScale, false, true));
 
 			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 				StartCoroutine(RecordMove(SwipeLeftMove, state.OldState, false, false, true, false, false));
@@ -911,7 +954,8 @@ namespace FightingLegends
 		{
 			CuedMoveFeedback(FightManager.Translate("cued") + " " + FightManager.Translate("special", false, true));
 
-//			StartCoroutine(PulseMove(SwipeRightMove, pulseScale, false, true));
+			if (movesShowing)
+				StartCoroutine(PulseMove(SwipeRightMove, pulseScale, false, true));
 
 			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 				StartCoroutine(RecordMove(SwipeRightMove, state.OldState, false, false, true, false, false));
@@ -924,7 +968,8 @@ namespace FightingLegends
 
 			var specialExtraMove = state.Fighter.IsWaterElement ? WaterExtraMove : FireExtraMove;
 
-//			StartCoroutine(PulseMove(specialExtraMove, pulseScale, false, true));
+			if (movesShowing)
+				StartCoroutine(PulseMove(specialExtraMove, pulseScale, false, true));
 
 			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 				StartCoroutine(RecordMove(specialExtraMove, state.OldState, false, false, false, false, true));
@@ -936,7 +981,8 @@ namespace FightingLegends
 			if (state.Fighter != fighter)
 				return;
 
-//			StartCoroutine(PulseMove(BothTapMove, pulseScale, false, true));
+			if (movesShowing)
+				StartCoroutine(PulseMove(BothTapMove, pulseScale, false, true));
 
 			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 				StartCoroutine(RecordMove(BothTapMove, state.OldState, false, false, false, false, false));
@@ -955,7 +1001,8 @@ namespace FightingLegends
 			if (powerUpFighter != fighter)
 				return;
 
-//			StartCoroutine(PulseMove(SwipeUpMove, pulseScale, false, true));
+			if (movesShowing)
+				StartCoroutine(PulseMove(SwipeUpMove, pulseScale, false, true));
 
 			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
 				StartCoroutine(RecordPowerUp(powerUpFighter, fromIdle));
@@ -1000,7 +1047,8 @@ namespace FightingLegends
 			if (state.NewCanContinue && !fighter.IsStunned)
 				ChainFeedback();
 
-//			SyncStateMoves(false);
+			if (movesShowing)
+				SyncStateMoves(false);
 		}
 
 		// damage inflicted on shadow by fighter
@@ -1022,13 +1070,15 @@ namespace FightingLegends
 			recordingMove = false;
 
 			ResetRecordedMoves();
-//			DisableMoves();
+			if (movesShowing)
+				DisableMoves();
 		}
 
 		private void OnNextRound(int roundNumber)
 		{
 //			ResetRecordedMoves();
-//			DisableMoves();
+			if (movesShowing)
+				DisableMoves();
 		}
 			
 		// on return to idle - stop playback or start playback if moves are recorded
@@ -1208,26 +1258,29 @@ namespace FightingLegends
 			moveImage.transform.SetParent(transform);
 			moveImage.transform.localScale = Vector3.one;	
 
-//			var startScale = Vector3.one;
-//			var targetScale = new Vector3(recordMoveScale, recordMoveScale, recordMoveScale);
-//
-//			float t = 0;
-//			Vector3 startPosition = move.MoveImage.rectTransform.localPosition;						// position of move button image
-//			Vector3 targetPosition = ChainMovePosition(reverse ? 1 : RecordedMoveCount, true);		// centre of first / next position in viewport
-//			Color startColour = Color.white;
-//			Color targetColour = new Color(moveImage.color.r, moveImage.color.g, moveImage.color.b, moveImage.color.a * playbackMoveAlpha);
-//
 			ScrollViewportIfFull();
-//
-//			while (t < 1.0f)
-//			{
-//				t += Time.deltaTime * (Time.timeScale / recordMoveTime);
-//
-//				moveImage.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
-//				moveImage.transform.localScale = Vector3.Lerp(startScale, targetScale, t);
-//				moveImage.color = Color.Lerp(startColour, targetColour, t);
-//				yield return null;
-//			}
+
+			if (movesShowing)
+			{
+				var startScale = Vector3.one;
+				var targetScale = new Vector3(recordMoveScale, recordMoveScale, recordMoveScale);
+
+				float t = 0;
+				Vector3 startPosition = move.MoveImage.rectTransform.localPosition;						// position of move button image
+				Vector3 targetPosition = ChainMovePosition(reverse ? 1 : RecordedMoveCount, true);		// centre of first / next position in viewport
+				Color startColour = Color.white;
+				Color targetColour = new Color(moveImage.color.r, moveImage.color.g, moveImage.color.b, moveImage.color.a * playbackMoveAlpha);
+
+				while (t < 1.0f)
+				{
+					t += Time.deltaTime * (Time.timeScale / recordMoveTime);
+
+					moveImage.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+					moveImage.transform.localScale = Vector3.Lerp(startScale, targetScale, t);
+					moveImage.color = Color.Lerp(startColour, targetColour, t);
+					yield return null;
+				}
+			}
 
 			if (addToChainSound != null)
 				AudioSource.PlayClipAtPoint(addToChainSound, Vector3.zero, FightManager.SFXVolume);
@@ -1553,32 +1606,71 @@ namespace FightingLegends
 			yield return null;
 		}
 			
-//		private IEnumerator PulseMove(MoveUI move, float scale, bool stars, bool tick)
-//		{
-//			if (move.pulseMoveCoroutine != null)
-//				StopCoroutine(move.pulseMoveCoroutine);
-//
-//			move.pulseMoveCoroutine = move.Pulse(scale, pulseTime, PulseSound, stars, tick);
-//			yield return StartCoroutine(move.pulseMoveCoroutine);
-//		}
+		private IEnumerator PulseMove(MoveUI move, float scale, bool stars, bool tick)
+		{
+			if (!movesShowing)
+				yield break;
+			
+			if (move.pulseMoveCoroutine != null)
+				StopCoroutine(move.pulseMoveCoroutine);
+
+			move.pulseMoveCoroutine = move.Pulse(scale, pulseTime, PulseSound, stars, tick);
+			yield return StartCoroutine(move.pulseMoveCoroutine);
+		}
 	
 
-//		private IEnumerator PulseMoveText(MoveUI move)
-//		{
-//			if (! enabled)
-//				yield break;
-//			
-//			if (move.pulseTextCoroutine != null)
-//				StopCoroutine(move.pulseTextCoroutine);
-//
-//			move.pulseTextCoroutine = move.PulseText(pulseTextScale, pulseTextTime);
-//			yield return StartCoroutine(move.pulseTextCoroutine);
-//		}
+		private IEnumerator PulseMoveText(MoveUI move)
+		{
+			if (! movesShowing)
+				yield break;
+			
+			if (! enabled)
+				yield break;
+			
+			if (move.pulseTextCoroutine != null)
+				StopCoroutine(move.pulseTextCoroutine);
+
+			move.pulseTextCoroutine = move.PulseText(pulseTextScale, pulseTextTime);
+			yield return StartCoroutine(move.pulseTextCoroutine);
+		}
 
 		public void EnterPromptSound()
 		{
 			if (EnterSound != null)
 				AudioSource.PlayClipAtPoint(EnterSound, Vector3.zero, FightManager.SFXVolume);
+		}
+
+		private void MovesShowingToggled(bool isOn)
+		{
+			movesShowing = isOn;
+
+			FightManager.SavedGameStatus.ShowDojoUI = isOn;
+			fightManager.SaveGameStatus();
+
+			ToggleMovesShowing();
+		}
+
+		private void ToggleMovesShowing()
+		{
+			ShowMovesText.text = movesShowing ? FightManager.Translate("hideMoves", true) : FightManager.Translate("showMoves", true);
+			MovesPanel.gameObject.SetActive(movesShowing);
+
+			if (movesShowing)
+			{
+				SyncStateMoves(true);
+
+				RecordingFeedback.transform.localPosition = new Vector3(RecordingFeedback.transform.localPosition.x, recordPlaybackLowOffsetY, RecordingFeedback.transform.localPosition.z);
+				PlaybackFeedback.transform.localPosition = new Vector3(PlaybackFeedback.transform.localPosition.x, recordPlaybackLowOffsetY, PlaybackFeedback.transform.localPosition.z);
+
+				ChainDamagePB.text = FightManager.Translate("best") + " " + FightManager.SavedGameStatus.BestDojoDamage;
+			}
+			else
+			{
+				DisableMoves();
+
+				RecordingFeedback.transform.localPosition = new Vector3(RecordingFeedback.transform.localPosition.x, recordPlaybackHighOffsetY, RecordingFeedback.transform.localPosition.z);
+				PlaybackFeedback.transform.localPosition = new Vector3(PlaybackFeedback.transform.localPosition.x, recordPlaybackHighOffsetY, PlaybackFeedback.transform.localPosition.z);
+			}
 		}
 	}
 

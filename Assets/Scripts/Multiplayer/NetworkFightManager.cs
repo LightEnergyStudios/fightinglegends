@@ -78,8 +78,6 @@ namespace FightingLegends
 
 			if (CanStartFight)
 				SyncStartFight();
-//			else
-//				player1.RpcNetworkMessage(NetworkMessageType.WaitingToStart);
 		}
 
 		[Server]
@@ -95,7 +93,6 @@ namespace FightingLegends
 			else
 			{
 				player1.RpcSelectLocation(location);		// for (opponent) world map
-				player1.RpcNetworkMessage(NetworkMessageType.WaitingToStart);
 			}
 		}
 

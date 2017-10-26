@@ -22,7 +22,8 @@ namespace Prototype.NetworkLobby
 		public Text userID;					// used for matchmaker game name 
 		public Text IPAddress;				// own (host) IP - display only
 		public AudioClip EntrySound;
-		public Image curtain;				// blackout
+		public AudioClip ButtonEntrySound;
+		public Image blackOut;				// fade to black
 
 		public GameObject fightManagerPrefab;		// NetworkFightManager
 		public LobbyDiscovery networkDiscovery;
@@ -49,6 +50,10 @@ namespace Prototype.NetworkLobby
 		public Text statusInfo;
 		public Text hostInfo;
 
+		public Text wiFiConnect;
+		public Text hostAGame;
+		public Text findAGame;
+
 		// Client numPlayers from NetworkManager is always 0, so we count (through connect/destroy in LobbyPlayer)
 		// the number of players, so that even client knows how many players there are
 		[HideInInspector]
@@ -68,7 +73,8 @@ namespace Prototype.NetworkLobby
 		private string localUserId = "";
 
 		private NetworkPlayer networkPlayer;				// for ip address
-		private const float curtainfadeTime = 0.75f;
+		private const float fadeTime = 0.75f;
+		private const float fadePause = 0.25f;
 
 		private NetworkFightManager networkFightManager;
 
@@ -91,15 +97,15 @@ namespace Prototype.NetworkLobby
 
 			SetServerInfo("Offline", "None");
 
-			curtain.gameObject.SetActive(false);
-			curtain.color = Color.clear;
+			blackOut.gameObject.SetActive(false);
+			blackOut.color = Color.clear;
+
+			wiFiConnect.text = FightManager.Translate("wiFiConnect", false, true);
+			hostAGame.text = FightManager.Translate("hostAGame");
+			findAGame.text = FightManager.Translate("findAGame");
 
 //			SceneManager.activeSceneChanged += OnActiveSceneChanged;					// on 100% load
-
-//			var openingObject = GameObject.Find("Opening");
-//			if (openingObject != null)
-//				opening = openingObject.GetComponent<Opening>();
-			
+				
 //			Opening.OnPreloadComplete += PreloadCombatComplete;
 		}
 
@@ -133,58 +139,54 @@ namespace Prototype.NetworkLobby
 			networkPlayer = Network.player;
 			IPAddress.text = networkPlayer.ipAddress;		// own (host IP address)
 
-			curtain.gameObject.SetActive(false);
-			curtain.color = Color.clear;
+			blackOut.gameObject.SetActive(false);
+			blackOut.color = Color.clear;
 
 			ChangeTo(mainMenuPanel);
 
 //			StopAll();		// TODO: best way to initialise?
-
-//			// start reloading combat scene asap
-//			if (opening != null)
-//				opening.PreloadCombat();	
 		}
 
-		public void HideLobbyUI(bool fadeToBlack)
+		public void HideLobbyUI()
 		{
+			StartCoroutine(FadeLobbyUI(false));
+
 			if (networkDiscovery.running)
 				networkDiscovery.StopBroadcast();
-
-			StartCoroutine(FadeLobbyUI(fadeToBlack));
 		}
 
 		private IEnumerator FadeLobbyUI(bool fadeToBlack)
 		{
-			// TODO: reinstate fade to black and curtain up in Combat scene
-//			if (fadeToBlack)
-//				yield return StartCoroutine(FadeToBlack());
+			if (fadeToBlack)
+				yield return StartCoroutine(FadeToBlack());
 			
 			if (lobbyUIPanel != null)
 				lobbyUIPanel.gameObject.SetActive(false);
 
 			ChangeTo(mainMenuPanel);
-
-//			if (fade)
-//				yield return StartCoroutine(CurtainUp());
-			
 			yield return null;
 		}
 
 		// back button
 		private void QuitLobby()
 		{
+			StartCoroutine(FadeQuitLobby());
+		}
+
+		private IEnumerator FadeQuitLobby()
+		{
+			yield return StartCoroutine(FadeLobbyUI(true));
+			HideLobbyUI();
 			StopAll();
 
-			HideLobbyUI(true);
-
 			SceneLoader.LoadScene(SceneLoader.CombatScene);
-			//			if (opening != null)
-			//				StartCoroutine(opening.ActivateWhenPreloaded());
-
 
 			FightManager.IsNetworkFight = false;
 			SceneSettings.ShowLobbyUI = false;
 			SceneSettings.DirectToFighterSelect = false;
+
+//			yield return new WaitForSeconds(fadePause);
+			StartCoroutine(ClearFadeToBlack());
 		}
 
 		// broadcast for client to discover
@@ -236,43 +238,45 @@ namespace Prototype.NetworkLobby
 			if (EntrySound != null)
 				AudioSource.PlayClipAtPoint(EntrySound, Vector3.zero, FightManager.SFXVolume);
 		}
+
+		public void ButtonEntryComplete()
+		{
+			if (ButtonEntrySound != null)
+				AudioSource.PlayClipAtPoint(ButtonEntrySound, Vector3.zero, FightManager.SFXVolume);
+		}
 			
 		private IEnumerator FadeToBlack()
 		{
-			if (curtain.gameObject.activeSelf)
-				yield break;
-
-			curtain.color = Color.clear;
-			curtain.gameObject.SetActive(true);
+			blackOut.color = Color.clear;
+			blackOut.gameObject.SetActive(true);
 			float t = 0.0f;
 
 			while (t < 1.0f)
 			{
-				t += Time.deltaTime * (Time.timeScale / curtainfadeTime); 
+				t += Time.deltaTime * (Time.timeScale / fadeTime); 
 
-				curtain.color = Color.Lerp(Color.clear, Color.black, t);
+				blackOut.color = Color.Lerp(Color.clear, Color.black, t);
 				yield return null;
 			}
 
-			yield return null;
+//			yield return StartCoroutine(ClearFadeToBlack());
 		}
 
-		private IEnumerator CurtainUp()
+		private IEnumerator ClearFadeToBlack()
 		{
-			if (!curtain.gameObject.activeSelf)
-				yield break;
+			blackOut.color = Color.black;
 
 			float t = 0.0f;
 
 			while (t < 1.0f)
 			{
-				t += Time.deltaTime * (Time.timeScale / curtainfadeTime); 
+				t += Time.deltaTime * (Time.timeScale / fadeTime); 
 
-				curtain.color = Color.Lerp(Color.black, Color.clear, t);
+				blackOut.color = Color.Lerp(Color.black, Color.clear, t);
 				yield return null;
 			}
 
-			curtain.gameObject.SetActive(false);
+			blackOut.gameObject.SetActive(false);
 			yield return null;
 		}
 
@@ -644,7 +648,7 @@ namespace Prototype.NetworkLobby
 		{
 			base.OnClientSceneChanged(conn);		// calls NetworkFighter.OnStartLocalPlayer!!
 
-			HideLobbyUI(false);
+			HideLobbyUI();
 		}
 
 

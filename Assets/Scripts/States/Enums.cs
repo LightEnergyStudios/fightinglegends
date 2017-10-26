@@ -372,14 +372,6 @@ namespace FightingLegends
 		Dojo = 4					// training arena - practice move strings and play back to defend
 	}
 
-	public enum NetworkMessageType
-	{
-		None = 0,
-		WaitingToStart = 1,
-		FightEnding = 2,
-		Timeout = 3
-	}
-
 
 	public enum MenuType
 	{

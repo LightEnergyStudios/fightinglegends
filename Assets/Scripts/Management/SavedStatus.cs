@@ -76,6 +76,18 @@ namespace FightingLegends
 		public int FighterUnlockedLevel = 0;		// see UnlockLevel for fighters
 
 		// player stats...
+
+		public int SimpleWins { get; set; }			// times AI fighter defeated in arcade mode
+		public int SimpleLosses { get; set; }		// losses to AI fighter in arcade mode
+		public int EasyWins { get; set; }			// times AI fighter defeated in arcade mode
+		public int EasyLosses { get; set; }			// losses to AI fighter in arcade mode
+		public int MediumWins { get; set; }			// times AI fighter defeated in arcade mode
+		public int MediumLosses { get; set; }		// losses to AI fighter in arcade mode
+		public int HardWins { get; set; }			// times AI fighter defeated in arcade mode
+		public int HardLosses { get; set; }			// losses to AI fighter in arcade mode
+		public int BrutalWins { get; set; }			// times AI fighter defeated in arcade mode
+		public int BrutalLosses { get; set; }		// losses to AI fighter in arcade mode
+
 		public int RoundsWon { get; set; }			// in total
 		public int RoundsLost { get; set; }			// in total
 

@@ -61,6 +61,8 @@ namespace FightingLegends
 
 		private int CoinsToUnlock = 0;
 
+		public delegate void OnFighterUnlockedDelegate(Fighter fighter);
+		public static OnFighterUnlockedDelegate OnFighterUnlocked;
 
 
 		void Awake()
@@ -96,13 +98,26 @@ namespace FightingLegends
 			unlocked = true;
 
 			fighter.ProfileData.SavedData.IsLocked = false;
+			fighter.SaveProfile();
 
-			ShowLockedFighter(unlockedFighter.FighterName, true, true, 0);
+			ShowLockedFighter(unlockedFighter.FighterName, false, false, 0);
+
+			if (OnFighterUnlocked != null)
+				OnFighterUnlocked(fighter);
 		}
+
+//		public void UnlockFighter(SavedProfile profile)
+//		{
+//			profile.IsLocked = false;
+//			Fighter
+//
+//			ShowLockedFighter(profile.FighterName, false, false, 0);
+//		}
 			
-		public void ShowLockedFighter(FighterCard fighter)
+		public void ShowLockedFighter(FighterCard card, Fighter fighter)
 		{
-			fighterCard = fighter;
+			fighterCard = card;
+			unlockedFighter = fighter;
 			unlocked = false;
 
 			ShowLockedFighter(fighterCard.FighterName, fighterCard.IsLocked,

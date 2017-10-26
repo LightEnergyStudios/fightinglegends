@@ -403,28 +403,8 @@ namespace FightingLegends
 
 		[ClientRpc]
 		// called on server, runs on clients
-		public void RpcNetworkMessage(NetworkMessageType messageType)
+		public void RpcNetworkMessage(string message)
 		{
-			string message = "";
-
-			switch (messageType)
-			{
-				case NetworkMessageType.WaitingToStart:
-//					message = locationSelected ? (FightManager.Translate("waitingForOpponent") + " ...") : (FightManager.Translate("opponentReady", false, true));
-					break;
-
-				case NetworkMessageType.FightEnding:
-					message = FightManager.Translate("fightEnding") + " ...";
-					break;
-
-				case NetworkMessageType.Timeout:
-					message = FightManager.Translate("timeOut") + " ...";
-					break;
-
-				default:
-					break;
-			}
-
 			fightManager.NetworkMessage(message);		// disabled if null or empty
 		}
 

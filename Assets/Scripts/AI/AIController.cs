@@ -29,6 +29,8 @@ namespace FightingLegends
 		private const float HardDoNothing = 1.0f;
 		private const float BrutalDoNothing = 0.1f;
 
+		private const float Certainty = 1000.0f;		// ensure strategy is always chosen (no chance of do nothing)
+
 		public string TriggerUI { get; private set; }		// used by StatusUI to show behaviour triggers
 		public string TestStepUI { get; private set; }		// used by StatusUI to show behaviour triggers
 
@@ -451,12 +453,12 @@ namespace FightingLegends
 
 			try
 			{
-			if (!doSomething)		// doing nothing is a possibility... 
-			{
-				// probability of doing nothing decreases with each round lost in a match
-				var roundsLost = fighter.ProfileData.SavedData.MatchRoundsLost > 0 ? fighter.ProfileData.SavedData.MatchRoundsLost : 1;
-				totalProbability += (CurrentAttitude.DoNothingProbability * fighter.ProfileData.AIDoNothingFactor * DifficultyDoNothingFactor) / roundsLost;
-			}
+				if (!doSomething)		// doing nothing is a possibility... 
+				{
+					// probability of doing nothing decreases with each round lost in a match
+					var roundsLost = fighter.ProfileData.SavedData.MatchRoundsLost > 0 ? fighter.ProfileData.SavedData.MatchRoundsLost : 1;
+					totalProbability += (CurrentAttitude.DoNothingProbability * fighter.ProfileData.AIDoNothingFactor * DifficultyDoNothingFactor) / roundsLost;
+				}
 			}
 			catch (Exception)
 			{
@@ -469,6 +471,11 @@ namespace FightingLegends
 		// return value of null represents 'do nothing'
 		private AIPropensity RandomSelectPropensity(IEnumerable<AIPropensity> propensities, bool doSomething = false)
 		{
+			// any propensity with a 'certainty' probability is automatically chosen (ie. no chance of do nothing)
+			var certainPropensity = CheckForCertainPropensity(propensities);
+			if (certainPropensity != null)
+				return certainPropensity;
+				
 			float totalProbability = TotalProbability(propensities, doSomething);
 			int slotNumber = 0;		// index into propensityChoices array
 
@@ -492,6 +499,17 @@ namespace FightingLegends
 			// pick a slot at random
 			SelectedPropensityIndex = UnityEngine.Random.Range(0, numPropensityChoices-1);
 			return PropensityChoices[ SelectedPropensityIndex ];
+		}
+
+		private AIPropensity CheckForCertainPropensity(IEnumerable<AIPropensity> propensities)
+		{
+			foreach (var propensity in propensities)
+			{
+				if (propensity.Probability >= Certainty)
+					return propensity;
+			}
+
+			return null;
 		}
 
 		#endregion 		// propensity selection
@@ -2287,7 +2305,7 @@ namespace FightingLegends
 							},
 						},
 
-						Probability = 1000.0f,		
+						Probability = Certainty,		
 					},
 						
 			
@@ -3350,7 +3368,7 @@ namespace FightingLegends
 						},
 
 						Probability = 100.0f,		
-					}
+					},
 				}
 			};
 		}
@@ -3474,11 +3492,17 @@ namespace FightingLegends
 		{
 			if (! CanExecuteStrategy())
 				return;
+
+			//			Debug.Log("OnStateStarted: " + newState.State);
 			
 			bool opponent = ! newState.Fighter.UnderAI;
 
-//			Debug.Log("OnStateStarted: " + newState.State);
-			ChooseStateStrategy(newState, Condition.StateStart, opponent);
+//			if (opponent && newState.NewState == State.Ready_To_Die)	// skeletron on his knees - final strike to finish him off
+//			{
+//				newState.Fighter.CueMove(Move.Special);
+//			}
+//			else
+				ChooseStateStrategy(newState, Condition.StateStart, opponent);
 		}
 
 		protected void OnStateEnded(FighterChangedData oldState) 				// Fighter.StateEndedDelegate signature

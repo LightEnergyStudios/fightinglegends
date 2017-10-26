@@ -1634,6 +1634,12 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
   m_EffectDistance: {x: -1, y: 1}
   m_UseGraphicAlpha: 1
+--- !u!114 &1166013895 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114926486913796578, guid: 5163035e57b1f45a3979807416bcada3,
+    type: 2}
+  m_PrefabInternal: {fileID: 1880224002}
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &1520136896
 GameObject:
   m_ObjectHideFlags: 0
@@ -1772,6 +1778,20 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 93}
+    - target: {fileID: 1466028649158266, guid: 5163035e57b1f45a3979807416bcada3, type: 2}
+      propertyPath: m_Name
+      value: FadeToBlack
+      objectReference: {fileID: 0}
+    - target: {fileID: 114100979285267856, guid: 5163035e57b1f45a3979807416bcada3,
+        type: 2}
+      propertyPath: ButtonEntrySound
+      value: 
+      objectReference: {fileID: 8300000, guid: a60266e86fa6741e79d9b365c31872c6, type: 3}
+    - target: {fileID: 114100979285267856, guid: 5163035e57b1f45a3979807416bcada3,
+        type: 2}
+      propertyPath: blackOut
+      value: 
+      objectReference: {fileID: 1166013895}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5163035e57b1f45a3979807416bcada3, type: 2}
   m_IsPrefabParent: 0

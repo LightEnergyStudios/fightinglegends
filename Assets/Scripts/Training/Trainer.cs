@@ -623,8 +623,6 @@ namespace FightingLegends
 			}
 
 			StopTraining();
-
-//			Debug.Log("*** TRAINING COMPLETE! ***");
 		}
 
 

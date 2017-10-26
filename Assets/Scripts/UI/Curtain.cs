@@ -45,10 +45,10 @@ namespace FightingLegends
 			yield return null;
 		}
 
-		public IEnumerator CurtainUp()
+		public IEnumerator CurtainUp(bool force = false)
 		{
 //			Debug.Log("CurtainUp start: isBlackedOut = " + isBlackedOut);
-			if (! isBlackedOut)
+			if (!isBlackedOut && !force)
 				yield break;
 
 			float t = 0.0f;

@@ -13,14 +13,16 @@
 		<string name="vs">VS</string>
 		<string name="challengeTitle">LEAD A TEAM OF CHAMPIONS TO VICTORY!</string>
 		<string name="dojoTitle">TRAINING, POWER-UPS AND LEADERBOARDS</string>
-		<string name="trainingTitle">LEARN BASIC TIMING AND TECHNIQUE</string>
 		<string name="networkTitle">LIVE CONTEST VERSUS A FRIEND!</string>
 
-		<string name="waitingForOpponent">WAITING FOR OPPONENT</string>
-		<string name="opponentReady">OPPONENT READY</string>
 		<string name="fightEnding">FIGHT ENDING</string>
 		<string name="fightEnded">FIGHT ENDED</string>
-		<string name="timeOut">TIMEOUT</string>
+
+		<string name="wiFiConnect">WI-FI CONNECT</string>
+		<string name="hostAGame">HOST A GAME</string>
+		<string name="findAGame">FIND A GAME</string>
+		<string name="waitingForOpponent">WAITING FOR OPPONENT</string>
+		<string name="join">JOIN</string>
 
         <string name="redLightHeading">RED = BLOCK</string>
         <string name="greenLightHeading">GREEN = FIGHT</string>
@@ -119,6 +121,8 @@
 		<string name="playback">PLAYBACK</string>
 		<string name="recording">RECORDING</string>
 		<string name="best">BEST</string>
+		<string name="showMoves">SHOW MOVES</string>
+		<string name="hideMoves">HIDE MOVES</string>
 
 		<string name="firstHit">1st HIT!</string>
 		<string name="secondImpact">2nd IMPACT!</string>
@@ -129,7 +133,6 @@
 		<string name="extra">EXTRA</string>
 		<string name="missed">MISSED!</string>
 		<string name="hitCombo">HIT COMBO!</string>
-		<string name="chainMoves">CHAIN MOVES TOGETHER!</string>
 
 		<string name="armourDown">ARMOUR DOWN!</string>
 		<string name="armourUp">ARMOUR UP!</string>
@@ -212,6 +215,7 @@
 
 		<string name="level">Level</string>
 		<string name="lv">Lv</string>
+		<string name="victories">Victories</string>
 
 		<string name="playerId">Player ID</string>
 
@@ -305,11 +309,9 @@
 		<string name="challengeExpires">Challenge expires</string>
 		<string name="confirmUploadChallenge">UPLOAD your challenge? One at a time only!</string>
 		<string name="confirmFightChallenge">ACCEPT this challenge? There's no going back!</string>
-		<string name="confirmRemoveChallenge">REMOVE your challenge and forfeit your coins?</string>
 		<string name="uploadingChallenge">Uploading challenge</string>
 		<string name="challengeUploaded">CHALLENGE UPLOADED</string>
 		<string name="replaceChallenge">YOUR CURRENT CHALLENGE WILL BE REPLACED</string>
-		<string name="challengeAlreadyUploaded">You have already uploaded a challenge to the arena</string>
 		
 		<string name="congratulations">CONGRATULATIONS</string>
 		<string name="betterLuckNextTime">BETTER LUCK NEXT TIME</string>

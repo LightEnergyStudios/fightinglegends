@@ -481,6 +481,9 @@ namespace FightingLegends
 				else
 					selectedFighterIndex--;
 
+//				if (SelectedFighterName == "Skeletron")
+//					return PreviousFighterName;
+
 				return SelectedFighterName;
 			}
 		}
@@ -493,6 +496,9 @@ namespace FightingLegends
 					selectedFighterIndex = 0;
 				else
 					selectedFighterIndex++;
+
+//				if (SelectedFighterName == "Skeletron")
+//					return NextFighterName;
 
 				return SelectedFighterName;
 			}
@@ -564,7 +570,7 @@ namespace FightingLegends
 			FighterHealth.text = FightManager.Translate("healthPoints") + ": " + ((int)previewFighter.ProfileData.LevelHealth).ToString();
 			FighterAttackRating.text = FightManager.Translate("attackRating") + ": " + ((int)previewFighter.ProfileData.LevelAR).ToString();
 
-			TrainingButton.interactable = !previewFighter.IsLocked;
+			TrainingButton.interactable = !previewFighter.IsLocked && previewFighter.FighterName != "Skeletron";
 			PowerUpButton.interactable = !previewFighter.IsLocked;
 			LevelUpButton.interactable = !previewFighter.IsLocked;
 			ResetLevelButton.interactable = !previewFighter.IsLocked;

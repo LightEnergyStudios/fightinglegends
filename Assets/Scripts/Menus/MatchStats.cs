@@ -17,12 +17,15 @@ namespace FightingLegends
 
 		public GameObject WinnerStatsPanel;
 		public Text LevelLabel;
+		public Text VsVictoriesLabel;
 		public Image KudosLabel;
 		public Image CoinsLabel;
 		public Text LevelUp;
+		public Text VsVictoriesUpDown;
 		public Text KudosUp;
 		public Text CoinsUp;
 		public ParticleSystem LevelUpFireworks;
+		public ParticleSystem VsVictoriesFireworks;
 		public ParticleSystem KudosUpFireworks;
 		public ParticleSystem CoinsUpFireworks;
 
@@ -30,6 +33,7 @@ namespace FightingLegends
 
 		public float kudosUpPause;
 		public float levelUpPause;
+		public float vsVictoriesPause;
 		public float coinsUpPause;
 		public int kudosBlingInterval;			// bling sound
 
@@ -66,6 +70,7 @@ namespace FightingLegends
 //		public FighterCard Player2Card;
 
 //		public GameObject InsertCoin;	
+		private const float continuePause = 1.0f;			// before countdown starts
 
 		public GameObject InsertCoinTextPanel;	
 		public List<Text> InsertCoinText;					// animated text x3
@@ -110,6 +115,9 @@ namespace FightingLegends
 		public void Start()
 		{
 			inputAllowed = false;
+
+			LevelLabel.text = FightManager.Translate("level", false, false, true);
+			VsVictoriesLabel.text = FightManager.Translate("victories", false, false, true);
 		}
 
 		private void OnEnable()
@@ -118,6 +126,7 @@ namespace FightingLegends
 			SaveInsertCoinTextPositions();
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
+			ContinueCoin.gameObject.SetActive(false);
 		}
 
 		private void OnDisable()
@@ -126,13 +135,18 @@ namespace FightingLegends
 			RestoreInsertCoinTextPositions();
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
+			ContinueCoin.gameObject.SetActive(false);
 		}
 
 		private void Update() 
 		{
 			if (inputAllowed && ((Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetMouseButtonDown(0)))	// left button
 			{
-				if (FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)
+				if (FightManager.IsNetworkFight)
+				{
+					fightManager.MatchStatsChoice = MenuType.ModeSelect;			// exits match stats
+				}
+				else if (FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)
 				{
 //					if (winner != null && !winner.UnderAI)							// player won - back to mode select (eg. dojo)
 //						fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
@@ -145,8 +159,8 @@ namespace FightingLegends
 							else
 								fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
 						}
-						else   // AI won - didn't wait for countdown or insert coin to continue
-							fightManager.MatchStatsChoice = MenuType.ModeSelect;
+//						else   // AI won - didn't wait for countdown or insert coin to continue
+//							fightManager.MatchStatsChoice = MenuType.ModeSelect;
 					}
 				}
 				else
@@ -158,8 +172,9 @@ namespace FightingLegends
 
 		private void InsertCoinCountdown(Action actionOnContinue, Action actionOnExit, string message = null)
 		{
+			ContinueCoin.continueButton.gameObject.SetActive(false);
 			ContinueCoin.gameObject.SetActive(true);
-			ContinueCoin.Countdown(actionOnContinue, actionOnExit, message);
+			ContinueCoin.Countdown(actionOnContinue, actionOnExit, continuePause, message);
 
 			inputAllowed = true;		// tap to exit
 		}
@@ -360,6 +375,25 @@ namespace FightingLegends
 					}
 				}
 			}
+			else if (FightManager.IsNetworkFight)
+			{
+				bool newVictory = winner.IsPlayer1;
+
+				VsVictoriesLabel.gameObject.SetActive(true);
+				VsVictoriesUpDown.gameObject.SetActive(true);
+				VsVictoriesUpDown.text = newVictory ? (FightManager.SavedGameStatus.VSVictoryPoints - 1).ToString() 	// incremented
+													: (FightManager.SavedGameStatus.VSVictoryPoints + 1).ToString(); 	// decremented
+
+				yield return new WaitForSeconds(levelUpPause);
+
+				VsVictoriesUpDown.text = FightManager.SavedGameStatus.VSVictoryPoints.ToString();
+				fightManager.BlingAudio();
+
+				if (newVictory)						// victories incremented
+					VsVictoriesFireworks.Play();
+
+				FightManager.IsNetworkFight = false;
+			}
 
 			inputAllowed = true;
 			yield return null;
@@ -475,10 +509,10 @@ namespace FightingLegends
 		{
 			StartCoroutine(WinQuoteFadeIn());
 
-			if (Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && winner.UnderAI && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost - countdown 'insert coin to continue'
+			if (Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && winner.UnderAI && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
 			{
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
-				CycleInsertCoinText();
+				StartCoroutine(CycleInsertCoinText());
 			}
 			else if (! worldTourComplete)
 				StartCoroutine(WinnerStats());
@@ -554,41 +588,19 @@ namespace FightingLegends
 		}
 
 
-//		private IEnumerator AnimateInsertCoin()
-//		{
-//			float t = 0.0f;
-//			Vector3[] startPositions = new Vector3[ InsertCoin.Count-1 ];
-//			Vector3[] targetPositions = new Vector3[ InsertCoin.Count-1 ];
-//
-//			for (int i = 0; i < InsertCoin.Count; i++)
-//			{
-//				startPositions[i] = InsertCoin[i].transform.localPosition;
-//				targetPositions[i] = new Vector3(startPositions[i].x - insertCoinWidth, startPositions[i].y, startPositions[i].z);
-//			}
-//
-//			while (t < 1.0f)
-//			{
-//				t += Time.deltaTime * (Time.timeScale / insertCoinTime); 
-//
-//				for (int i = 0; i < InsertCoin.Count; i++)
-//				{
-//					InsertCoin[i].transform.localPosition = Vector3.Lerp(startPositions[i], targetPositions[i], t);
-//				}
-//
-//				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
-//				yield return null;
-//			}
-//		}
-
-		private void CycleInsertCoinText()
+		private IEnumerator CycleInsertCoinText()
 		{
 			StopInsertCoinAnimation();
+
+			yield return new WaitForSeconds(continuePause);
 
 			InsertCoinTextPanel.SetActive(true);
 			InsertCoinStrip.gameObject.SetActive(true);
 
 			insertCoinTextCoroutine = LoopInsertCoinText();
 			StartCoroutine(insertCoinTextCoroutine);
+
+			yield return null;
 		}
 
 		protected IEnumerator LoopInsertCoinText()

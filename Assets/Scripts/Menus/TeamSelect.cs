@@ -281,6 +281,7 @@ namespace FightingLegends
 
 		private void PopulateFighterCards()
 		{
+//			Debug.Log("PopulateFighterCards");
 			fighterDeck.Add(ninjaCard = new FighterCard(ninjaButton, "Ninja", "P1", 1, 0, null, null, null));
 			fighterDeck.Add(leoniCard = new FighterCard(leoniButton, "Leoni", "P1", 1, 0, null, null, null));
 			fighterDeck.Add(shiroCard = new FighterCard(shiroButton, "Shiro", "P1", 1, 0, null, null, null));
@@ -442,6 +443,8 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
+//			Debug.Log("TeamSelect.OnEnable");
+
 			CheckInternet();
 
 			LayerTeam();
@@ -949,19 +952,19 @@ namespace FightingLegends
 		}
 
 
-		private void ConfirmRemoveChallenge()
-		{
-			if (chosenChallenge != null)
-				FightManager.GetConfirmation(FightManager.Translate("confirmRemoveChallenge"), chosenChallenge.PrizeCoins, RemoveChallenge);
-		}
-
-		private void RemoveChallenge()
-		{
-			if (chosenChallenge == null || ! OwnChallenge(chosenChallenge))
-				return;
-
-			FirebaseManager.RemoveChallenge(chosenChallenge.ChallengeCategory.ToString(), chosenChallenge.ChallengeKey);	// callback below
-		}
+//		private void ConfirmRemoveChallenge()
+//		{
+//			if (chosenChallenge != null)
+//				FightManager.GetConfirmation(FightManager.Translate("confirmRemoveChallenge"), chosenChallenge.PrizeCoins, RemoveChallenge);
+//		}
+//
+//		private void RemoveChallenge()
+//		{
+//			if (chosenChallenge == null || ! OwnChallenge(chosenChallenge))
+//				return;
+//
+//			FirebaseManager.RemoveChallenge(chosenChallenge.ChallengeCategory.ToString(), chosenChallenge.ChallengeKey);	// callback below
+//		}
 
 		private void OnChallengeRemoved(string category, string challengeKey, bool success)
 		{
@@ -1637,7 +1640,7 @@ namespace FightingLegends
 						{
 							CreateChallengeCard("Leoni", "P1", 50, 50.0f, AIDifficulty.Medium, ArmourPiercing, HealthBooster),
 							CreateChallengeCard("Leoni", "P2", 61, 61.0f, AIDifficulty.Hard, Regenerator, PowerAttack),
-							CreateChallengeCard("HoiLun", "P3", 33, 33.0f, AIDifficulty.Medium, PoiseMaster, Ignite),
+							CreateChallengeCard("Hoi Lun", "P3", 33, 33.0f, AIDifficulty.Medium, PoiseMaster, Ignite),
 							CreateChallengeCard("Danjuma", "P1", 45, 45.0f, AIDifficulty.Hard, PoiseWrecker, VengeanceBooster),
 							CreateChallengeCard("Leoni", "P3", 70, 70.0f, AIDifficulty.Brutal, Avenger, SecondLife),
 						}
@@ -1676,7 +1679,7 @@ namespace FightingLegends
 							CreateChallengeCard("Shiro", "P1", 100, 80.0f, AIDifficulty.Hard, ArmourPiercing, Ignite),
 							CreateChallengeCard("Danjuma", "P1", 100, 10.0f, AIDifficulty.Hard, PoiseWrecker, PowerAttack),
 							CreateChallengeCard("Natalya", "P1", 100, 80.0f, AIDifficulty.Hard, Regenerator, Ignite),
-							CreateChallengeCard("HoiLun", "P1", 100, 25.0f, AIDifficulty.Hard, PoiseMaster, PowerAttack),
+							CreateChallengeCard("Hoi Lun", "P1", 100, 25.0f, AIDifficulty.Hard, PoiseMaster, PowerAttack),
 							CreateChallengeCard("Jackson", "P1", 100, 80.0f, AIDifficulty.Hard, PoiseWrecker, Ignite),
 							CreateChallengeCard("Alazne", "P1", 100, 10.0f, AIDifficulty.Hard, Avenger, VengeanceBooster),
 							CreateChallengeCard("Shiyang", "P1", 100, 80.0f, AIDifficulty.Hard, ArmourPiercing, Ignite),
@@ -1888,7 +1891,7 @@ namespace FightingLegends
 							CreateChallengeCard("Natalya", "P3", 27, 64.0f, AIDifficulty.Medium, null, null),
 							CreateChallengeCard("Leoni", "P2", 14, 19.0f, AIDifficulty.Medium, null, null),
 							CreateChallengeCard("Shiyang", "P3", 67, 80.0f, AIDifficulty.Medium, null, null),
-							CreateChallengeCard("HoiLun", "P3", 80, 77.0f, AIDifficulty.Medium, null, PowerAttack),
+							CreateChallengeCard("Hoi Lun", "P3", 80, 77.0f, AIDifficulty.Medium, null, PowerAttack),
 						}
 					},
 
@@ -2073,7 +2076,7 @@ namespace FightingLegends
 							CreateChallengeCard("Leoni", "P1", 10, 67.0f, AIDifficulty.Easy, null, null),
 							CreateChallengeCard("Danjuma", "P2", 11, 11.0f, AIDifficulty.Easy, null, null),
 							CreateChallengeCard("Alazne", "P1", 12, 90.0f, AIDifficulty.Medium, null, null),
-							CreateChallengeCard("HoiLun", "P2", 13, 41.0f, AIDifficulty.Medium, ArmourPiercing, null),
+							CreateChallengeCard("Hoi Lun", "P2", 13, 41.0f, AIDifficulty.Medium, ArmourPiercing, null),
 						}
 					},
 

@@ -2117,6 +2117,9 @@ namespace FightingLegends
 			var damagePerTick = ProfileData.OnFireDamagePerTick;
 			var damage = damagePerTick + (damagePerTick * ProfileData.LevelFactor);
 
+			damage *= ProfileData.HitDamageFactor;		// TEMP: remove
+			damage *= fightManager.HitDamageFactor;		// TEMP: remove
+
 			if (damage > ProfileData.SavedData.Health - 1.0f)			// can't die from being on fire!
 				damage = ProfileData.SavedData.Health - 1.0f;
 			
@@ -4608,10 +4611,11 @@ namespace FightingLegends
 				if (alreadyExpired)		// aleady expired, don't take damage
 				{
 					survivedHit = false;
+					takenLastFatalHit = lastHit;			// TODO: this ok???  Steve 24/10
 
 					if (lastHit)							// fatal blow was before last hit
 					{
-						ReadyToKO(hitData);					// start appropriate expiry animation according to type of hit
+						KOState(hitData);					// start appropriate expiry animation according to type of hit
 						StartCoroutine(ExpireToNextRound());
 
 						if (OnKnockOut != null)
@@ -4648,15 +4652,15 @@ namespace FightingLegends
 
 						if (takenLastFatalHit)
 						{
-							ReadyToKO(hitData);	// start appropriate expiry animation according to type of hit
+							KOState(hitData);	// start appropriate expiry animation according to type of hit
 						}
 						else
 						{
-							ReleaseBlock(true);
+//							ReleaseBlock(true);
 							StartHitStun(hitData);
 						}
 
-						if (! FallenState)				// skeletron only
+						if (FighterName != "Skeletron") // && ! FallenState)
 							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
@@ -4669,11 +4673,12 @@ namespace FightingLegends
 				if (alreadyExpired)		// aleady expired, don't take damage
 				{
 					survivedHit = false;
+					takenLastFatalHit = lastHit;			// TODO: this ok???  Steve 24/10
 
-					if (lastHit)				// last hit is not fatal blow
+					if (lastHit)				// fatal blow was before last hit
 					{
 						//						Debug.Log(FullName + ": last hit! (alreadyExpired) -> ReadyToExpire / ExpireToNextRound");
-						ReadyToKO(hitData);						// start appropriate expiry animation according to type of hit
+						KOState(hitData);						// start appropriate expiry animation according to type of hit
 						StartCoroutine(ExpireToNextRound());
 
 						if (OnKnockOut != null)
@@ -4726,11 +4731,11 @@ namespace FightingLegends
 						takenLastFatalHit = lastHit;	// expire after freeze if last hit
 
 						if (takenLastFatalHit)
-							ReadyToKO(hitData);	// start appropriate expiry animation according to type of hit
+							KOState(hitData);	// start appropriate expiry animation according to type of hit
 						else
 							StartHitStun(hitData);	// start appropriate hit stun animation according to type of hit
 
-						if (! FallenState)				// skeletron only
+						if (FighterName != "Skeletron") // && (! FallenState)				// skeletron only
 							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
@@ -6019,8 +6024,6 @@ namespace FightingLegends
 						case FightMode.Arcade:
 							if (FightManager.IsNetworkFight)	// Player2 is always opponent
 							{
-								FightManager.IsNetworkFight = false;
-
 								if (winner.IsPlayer1)
 									FightManager.SavedGameStatus.VSVictoryPoints++;
 								else
@@ -6069,17 +6072,17 @@ namespace FightingLegends
 			yield return null;
 		}
 			
-		protected virtual void ReadyToKO(HitFrameData hitData)
+		protected virtual void KOState(HitFrameData hitData)
 		{
-//			ReleaseBlock(true);
+			ReleaseBlock(true);
 
-			Debug.Log(FullName + ": ReadyToKO - State = " + CurrentState + ", CanContinue = " + CanContinue);
+			Debug.Log(FullName + ": KOState - State = " + CurrentState + ", CanContinue = " + CanContinue);
 			Expire(hitData);				// expire immediately by default - skeletron falls to his knees to take one final blow
 		}
 
 		private void Expire(HitFrameData hitData)
 		{			
-			ReleaseBlock(true);
+//			ReleaseBlock(true);
 			ClearCuedMoves();
 
 			switch (hitData.TypeOfHit)
@@ -6189,7 +6192,6 @@ namespace FightingLegends
 				if (! FightManager.SavedGameStatus.CompletedBasicTraining)
 					Trainer.TrainingComplete();				// clear prompt / feedback etc.
 
-				//				Debug.Log(FullName + ": EndKnockOutFreeze -> ExpireToNextRound");
 				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match
 				takenLastFatalHit = false;
 

@@ -23,7 +23,7 @@ namespace FightingLegends
 		private IEnumerator countdownCoroutine;				// so it can be stopped
 
 		private const float fadeInTime = 0.25f;				// continue message / button
-		private const float countdownPause = 3.0f;			// before countdown starts
+//		private const float countdownPause = 1.0f;			// before countdown starts
 		private const float exitPause = 2.0f;				// before countdown exits
 
 		private const float feedbackX = 0;
@@ -54,7 +54,7 @@ namespace FightingLegends
 		}
 			
 
-		public void Countdown(Action actionOnContinue, Action actionOnExit, string message = null)
+		public void Countdown(Action actionOnContinue, Action actionOnExit, float countdownPause, string message = null)
 		{
 			continueAction = actionOnContinue;
 			exitAction = actionOnExit;
@@ -62,15 +62,16 @@ namespace FightingLegends
 			if (MusicTrack != null)
 				SceneryManager.PlayMusicTrack(MusicTrack);
 
-			StartCoroutine(StartCountdown(message));
+			StartCoroutine(StartCountdown(message, countdownPause));
 		}
 			
 
-		private IEnumerator StartCountdown(string message)
+		private IEnumerator StartCountdown(string message, float countdownPause)
 		{
 			yield return new WaitForSeconds(countdownPause);
 
 //			countdownPanel.gameObject.SetActive(true);
+			continueButton.gameObject.SetActive(true);
 
 			if (ContinueSound != null)
 				AudioSource.PlayClipAtPoint(ContinueSound, Vector3.zero, FightManager.SFXVolume);

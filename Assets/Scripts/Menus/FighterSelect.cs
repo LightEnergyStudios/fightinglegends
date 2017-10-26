@@ -234,6 +234,7 @@ namespace FightingLegends
 				ninjaButton.onClick.AddListener(delegate { CreatePreview("Ninja", "P1", true, true); });
 
 			Profile.OnProfileSaved += OnFighterProfileSaved;
+			FighterUnlock.OnFighterUnlocked += OnFighterUnlocked;
 
 			listening = true;
 		}
@@ -277,6 +278,7 @@ namespace FightingLegends
 				ninjaButton.onClick.RemoveListener(delegate { CreatePreview("Ninja", "P1", true, true); });
 
 			Profile.OnProfileSaved -= OnFighterProfileSaved;
+			FighterUnlock.OnFighterUnlocked -= OnFighterUnlocked;
 
 			listening = false;
 		}
@@ -559,7 +561,11 @@ namespace FightingLegends
 
 			if (showLocked && fighterCard.IsLocked)
 			{
-				FightManager.ShowLockedFighter(fighterCard);
+				var fighter = fightManager.CreateFighter(name, colour, false, false, false);
+
+				FightManager.ShowLockedFighter(fighterCard, fighter);
+
+//				fightManager.DestroyFighter(fighter);
 				return;
 			}
 
@@ -734,6 +740,12 @@ namespace FightingLegends
 		private void LockChanged(Fighter fighter, bool isLocked)
 		{
 
+		}
+
+		private void OnFighterUnlocked(Fighter fighter)
+		{
+			fightManager.DestroyFighter(fighter);
+			InitFighterCards();
 		}
 			
 

@@ -87,8 +87,8 @@ namespace FightingLegends
 			storeLabel.text = FightManager.Translate("dojo");
 			storeText.text = FightManager.Translate("dojoTitle");
 //			trainingLabel.text = FightManager.Translate("training");
-			trainingLabel.text = FightManager.Translate("ninjaSchool");
-			trainingText.text = FightManager.Translate("trainingTitle");
+//			trainingLabel.text = FightManager.Translate("ninjaSchool");
+//			trainingText.text = FightManager.Translate("trainingTitle");
 			networkFightLabel.text = FightManager.Translate("vs");
 			networkFightText.text = FightManager.Translate("networkTitle");
 

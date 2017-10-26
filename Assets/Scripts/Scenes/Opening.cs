@@ -46,8 +46,8 @@ namespace FightingLegends
 			{
 				if (SceneSettings.ShowLobbyUI)
 					lobbyManager.ShowLobbyUI();
-				else
-					lobbyManager.HideLobbyUI(false);
+//				else
+//					lobbyManager.HideLobbyUI(false);
 			}
 			else
 				Debug.Log("Opening.OnEnable: LobbyManager not found!");

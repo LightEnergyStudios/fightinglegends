@@ -33,7 +33,7 @@ namespace FightingLegends
 		private int siblingIndex = 0;						// default
 		private const int pulseSiblingIndex = 100;			// so pulsing move is on top
 
-		private const float activeScale = 1.2f;				// enlarged while active
+		private const float activeScale = 1.0f; //  1.2f;	// TODO: active not working properly	// enlarged while active
 		private float activePulseTime = 0.15f;
 
 
