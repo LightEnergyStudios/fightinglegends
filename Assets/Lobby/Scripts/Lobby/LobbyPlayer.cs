@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FightingLegends;
 
 namespace Prototype.NetworkLobby
 {
@@ -16,6 +17,9 @@ namespace Prototype.NetworkLobby
         public Button joinButton;
         public Button waitingPlayerButton;
         public Button removePlayerButton;
+
+		public Text waitingText;
+		public Text joinText;
 
         public GameObject localIcone;
         public GameObject remoteIcone;
@@ -33,6 +37,12 @@ namespace Prototype.NetworkLobby
 		static Color ReadyColor = Color.cyan; // new Color(0.0f, 204.0f / 255.0f, 204.0f / 255.0f, 1.0f);
         static Color TransparentColor = new Color(0, 0, 0, 0);
 
+
+		private void Start()
+		{
+			waitingText.text = FightManager.Translate("waitingForOpponent");
+			joinText.text = FightManager.Translate("join");
+		}
 
         public override void OnClientEnterLobby()
         {
@@ -143,7 +153,7 @@ namespace Prototype.NetworkLobby
                 ChangeJoinButtonColor(TransparentColor);
 
                 Text textComponent = joinButton.transform.GetChild(0).GetComponent<Text>();
-                textComponent.text = "READY";
+				textComponent.text = FightManager.Translate("ready");
                 textComponent.color = ReadyColor;
                 joinButton.interactable = false;
             }
@@ -152,7 +162,7 @@ namespace Prototype.NetworkLobby
 				ChangeJoinButtonColor(isLocalPlayer ? JoinColor : TransparentColor); // NotReadyColor);
 
                 Text textComponent = joinButton.transform.GetChild(0).GetComponent<Text>();
-                textComponent.text = isLocalPlayer ? "JOIN" : "...";
+				textComponent.text = isLocalPlayer ? FightManager.Translate("join") : "...";
                 textComponent.color = Color.white;
                 joinButton.interactable = isLocalPlayer;
             }
@@ -184,17 +194,13 @@ namespace Prototype.NetworkLobby
         {
             SendReadyToBeginMessage();
         }
-			
 
         public void OnRemovePlayerClick()
         {
             if (isLocalPlayer)
-            {
                 RemovePlayer();
-            }
             else if (isServer)
                 LobbyManager.s_Singleton.KickPlayer(connectionToClient);
-                
         }
 
         public void ToggleJoinButton(bool enabled)
@@ -215,6 +221,12 @@ namespace Prototype.NetworkLobby
         {
             CheckRemoveButton();
         }
+
+		[ClientRpc]
+		public void RpcRemovePlayer()
+		{
+			OnRemovePlayerClick();
+		}
 			
 
         //====== Server Commands

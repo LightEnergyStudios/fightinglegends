@@ -213,24 +213,6 @@ namespace FightingLegends
 			}
 		}
 
-//		// called once when animation is constructed
-//		public override bool StateLoops(string stateLabel)
-//		{
-//			return  false;
-
-			// TODO: find a way to set looping at time of trigger (to override AnimationState.StateLoops
-//			return (stateLabel == "MASH" ||
-//					stateLabel == "HOLD" ||
-//					stateLabel == "PRESS" ||
-//					stateLabel == "PRESS_BOTH" ||
-//					stateLabel == "SWIPE_FORWARD" ||
-//					stateLabel == "SWIPE_BACK" ||
-//					stateLabel == "SWIPE_UP" ||
-//					stateLabel == "SWIPE_DOWN" ||
-//					stateLabel == "SWIPE_VENGEANCE");
-//		}
-			
-
 		public void Reset()
 		{
 			if (animator != null)

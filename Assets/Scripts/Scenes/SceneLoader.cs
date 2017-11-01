@@ -47,7 +47,7 @@ namespace FightingLegends
 			if (OnPreloadStart != null)
 				OnPreloadStart(scene);
 
-			Debug.Log("PreloadSceneAsync: " + scene);
+//			Debug.Log("PreloadSceneAsync: " + scene);
 
 			preloadComplete = false;
 
@@ -79,7 +79,7 @@ namespace FightingLegends
 		// complete load of scene and activate it
 		public void ActivatePreloadedScene()
 		{
-			Debug.Log("ActivatePreloadedScene");
+//			Debug.Log("ActivatePreloadedScene");
 			asyncLoadSceneOp.allowSceneActivation = true;
 		}
 

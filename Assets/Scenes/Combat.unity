@@ -4551,9 +4551,10 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1909}
-    - target: {fileID: 1000010708917046, guid: 23d202ff956f44e6781a46486874f387, type: 2}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 114000012394635406, guid: 23d202ff956f44e6781a46486874f387,
+        type: 2}
+      propertyPath: kudosUpPause
+      value: 0.00005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 23d202ff956f44e6781a46486874f387, type: 2}
@@ -4870,6 +4871,10 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1909}
+    - target: {fileID: 1000012087654740, guid: 9fd442e1e632347878dca6e26a6f0602, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9fd442e1e632347878dca6e26a6f0602, type: 2}
   m_IsPrefabParent: 0
@@ -5500,11 +5505,6 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1914}
-    - target: {fileID: 224722356137086128, guid: 4b4a02f3b10174477bd4305a24f406c5,
-        type: 2}
-      propertyPath: m_AnchoredPosition.y
-      value: 104
-      objectReference: {fileID: 0}
     - target: {fileID: 1470000984683142, guid: 4b4a02f3b10174477bd4305a24f406c5, type: 2}
       propertyPath: m_IsActive
       value: 0
@@ -6058,17 +6058,17 @@ Prefab:
     - target: {fileID: 224000014166009062, guid: f2f9edebe62b947dd91acb01c2917780,
         type: 2}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000014166009062, guid: f2f9edebe62b947dd91acb01c2917780,
         type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000014166009062, guid: f2f9edebe62b947dd91acb01c2917780,
         type: 2}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224000014166009062, guid: f2f9edebe62b947dd91acb01c2917780,
         type: 2}
@@ -6135,6 +6135,10 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1909}
+    - target: {fileID: 1000012819824684, guid: f2f9edebe62b947dd91acb01c2917780, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f2f9edebe62b947dd91acb01c2917780, type: 2}
   m_IsPrefabParent: 0

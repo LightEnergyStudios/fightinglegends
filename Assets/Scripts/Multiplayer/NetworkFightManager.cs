@@ -32,11 +32,6 @@ namespace FightingLegends
 		private bool Player1ReadyToFight = false;
 		private bool Player2ReadyToFight = false;
 
-//		private const int StartFightTimeout = 30;		// once NetworkFighters spawned - waiting to select fighters and location
-//		private const int StartFightWarning = 5;		// on-screen countdown
-
-//		private IEnumerator startFightTimeoutCoroutine = null;
-
 
 		// called from lobby -> combat scene change hook
 		[Server]
@@ -47,15 +42,6 @@ namespace FightingLegends
 				player1 = player;
 			else
 				player2 = player;
-
-//			if (HasPlayers)
-//			{
-//				if (startFightTimeoutCoroutine != null)
-//					StopCoroutine(startFightTimeoutCoroutine);
-
-//				startFightTimeoutCoroutine = StartFightTimeoutCountdown();
-//				StartCoroutine(startFightTimeoutCoroutine);
-//			}
 		}
 
 
@@ -120,23 +106,6 @@ namespace FightingLegends
 			fightStarted = true;
 		}
 
-//		[Server]
-//		private IEnumerator StartFightTimeoutCountdown()
-//		{
-//			for (int i = StartFightTimeout; i >= 0; i--)
-//			{
-//				if (fightStarted)
-//					yield break;
-//				
-//				if (i <= StartFightWarning)
-//					player1.RpcStartFightExpiryCounter(i);			// on-screen countdown for last few seconds of timeout
-//
-//				yield return new WaitForSeconds(1.0f);
-//			}
-//				
-//			player1.RpcExpireStartFight();							// back to mode select
-//			yield return null;
-//		}
 
 		[Server]
 		public void ExitFighterSelect(bool isPlayer1)

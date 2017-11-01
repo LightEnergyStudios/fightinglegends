@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using FightingLegends;
 
 namespace Prototype.NetworkLobby
 {
@@ -27,18 +28,23 @@ namespace Prototype.NetworkLobby
 		public Button JoinButton;	// LAN
 		public Text JoinText;		// find -> join
 
+		public Text scanningText;
+		public Text fightCancelledText;
+
 		private bool listeningforHost = false;		// so can cancel if no host found
+//		private bool playersCancelled = false;		// on back from lobby player list
 		private bool internetReachable = false;
+		private bool localNetworkReachable = false;
 
         public void OnEnable()
         {
 			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
-//			localNetworkReachable = (Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork);
+			localNetworkReachable = (Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork);
 
 			StartServerButton.interactable = internetReachable;
 			FindServerButton.interactable = internetReachable;
-//			HostButton.interactable = localNetworkReachable;
-//			JoinButton.interactable = localNetworkReachable;
+			HostButton.interactable = localNetworkReachable;
+			JoinButton.interactable = localNetworkReachable;
 			
             lobbyManager.topPanel.ToggleVisibility(true);
 
@@ -53,8 +59,15 @@ namespace Prototype.NetworkLobby
 			lobbyManager.networkDiscovery.OnHostIP += HostIPReceived;
 
 			ipInput.text = "";
+			scanningText.text = FightManager.Translate("scanning") + "...";
+			scanningText.gameObject.SetActive(false);
+			fightCancelledText.text = FightManager.Translate("cancelled");
+			fightCancelledText.gameObject.SetActive(false);
+
 			EnableHostButton();
 			ConfigJoinButton();
+
+			lobbyManager.StopBroadcast();  		// stops listening and broadcasting
         }
 
 		public void OnDisable()
@@ -70,13 +83,15 @@ namespace Prototype.NetworkLobby
 		private void ConfigJoinButton()
 		{
 			if (listeningforHost)
-				JoinText.text = "STOP SEARCH";
+				JoinText.text = FightManager.Translate("stopSearch");
 			else
-				JoinText.text = string.IsNullOrEmpty(ipInput.text) ? "FIND A GAME" : "JOIN GAME";
+				JoinText.text = string.IsNullOrEmpty(ipInput.text) ? FightManager.Translate("findAGame") : FightManager.Translate("joinGame");
 		}
 
         public void OnClickHost()
         {
+			fightCancelledText.gameObject.SetActive(false);
+
             lobbyManager.StartHost();
 			lobbyManager.BroadcastHostIP();			// SM
         }
@@ -84,22 +99,28 @@ namespace Prototype.NetworkLobby
 		private void HostIPReceived(string hostIP)
 		{
 			ipInput.text = hostIP;
+
 			listeningforHost = false;
+			scanningText.gameObject.SetActive(false);
 
 			// join game immediately host ip received
 			OnClickJoin();				// start client
 
-			// click button again to join game
-//			ConfigJoinButton();			
-//			EnableHostButton();
+			lobbyManager.StopBroadcast();  		// stops listening and broadcasting
+			ConfigJoinButton();
+			EnableHostButton();	
 		}
+
 
         public void OnClickJoin()
         {
+			fightCancelledText.gameObject.SetActive(false);
+
 			if (listeningforHost)
 			{
-				lobbyManager.networkDiscovery.StopBroadcast();
+				lobbyManager.StopBroadcast();  		// stops listening and broadcasting
 				listeningforHost = false;
+				scanningText.gameObject.SetActive(false);
 				ConfigJoinButton();
 				EnableHostButton();	
 				return;
@@ -109,6 +130,7 @@ namespace Prototype.NetworkLobby
 			{
 				lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
 				listeningforHost = true;
+				scanningText.gameObject.SetActive(true);
 				ConfigJoinButton();
 				EnableHostButton();					// can't host if listening for host broadcast
 				return;
@@ -146,7 +168,7 @@ namespace Prototype.NetworkLobby
 				"", "", "", 0, 0,
 				lobbyManager.OnMatchCreate);
 
-            lobbyManager.backDelegate = lobbyManager.StopHost;
+            lobbyManager.backDelegate = lobbyManager.StopHostClbk;
             lobbyManager._isMatchmaking = true;
             lobbyManager.DisplayIsConnecting();
 
@@ -156,7 +178,7 @@ namespace Prototype.NetworkLobby
         public void OnClickOpenServerList()
         {
             lobbyManager.StartMatchMaker();
-//			lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
+			lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
             lobbyManager.ChangeTo(lobbyServerList);
         }
 

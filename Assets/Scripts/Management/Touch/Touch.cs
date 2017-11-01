@@ -81,7 +81,7 @@
 //
 //            Timeout = new Timer(HoldTimeoutSeconds);
 //
-////			EnableTouch();		// TODO: disable when ! fightManager.ReadyToFight?
+////			EnableTouch();		
 //        }
 //
 ////		private IEnumerator WaitForAnnouncer()

@@ -263,7 +263,7 @@ namespace FightingLegends
 		public const string dojo = "Dojo";
 		public const string spaceStation = "Space Station";
 
-		public const int NumberOfLocations = 8;			// for counting completed world tours
+		public const int NumberOfEarthLocations = 8;	// to enable space station
 		private bool worldTourCompleted = false;		// arcade mode, after winning match at last location or losing to AI
 
 		public bool PlayerCreatedChallenges = false;
@@ -318,6 +318,8 @@ namespace FightingLegends
 		public int EndMatchWins { get { return (MatchBestOf / 2) + 1; }}		// wins required to end match
 		public int RoundNumber { get; private set; }
 		public int MatchCount { get; private set; }
+
+		private const int survivalPowerUpRound = 5;		// AI assigned random power-ups after this round
 
 		public string FrozenStateUI { get; private set; }
 		public bool FightFrozen { get; private set; }		// both fighters together
@@ -587,24 +589,24 @@ namespace FightingLegends
 
 		#region kudos
 
-		public const int KudosTrainingComplete = 10000;			// for completing basic training
-		public const int KudosStartGame = 1000;					// for starting the app
+		public const int KudosTrainingComplete = 1000;			// for completing basic training
+		public const int KudosStartGame = 100;					// for starting the app
 
 		public const float KudosBlockedFactor = 0.5f;			// less kudos if a hit is blocked (applied to damage)
 		public const float KudosReceivedFactor = 0.25f;			// less kudos if receiving damage (applied to damage)
 
 		public const int KudosShove = 5;						// for executing a shove (no damage involved)
 
-		public const int KudosResetLevel = 1000000;				// multiplied by level (also 'curve'/level difficulty factor?)
+		public const int KudosResetLevel = 100000;				// multiplied by level (also 'curve'/level difficulty factor?)
 
-		public const int KudosKnockOut = 10000;					// any combat mode
-		public const int KudosWinMatch = 20000;					// for winning a match
+		public const int KudosKnockOut = 1000;					// any combat mode
+		public const int KudosWinMatch = 2000;					// for winning a match
 		public const float KudosLoserFactor = 0.1f;				// much less kudos if knocked out / lost match
 
-		public const int KudosCombo20 = 2000;
-		public const int KudosCombo30 = 3000;
-		public const int KudosCombo40 = 4000;
-		public const int KudosCombo50 = 5000;
+		public const int KudosCombo20 = 200;
+		public const int KudosCombo30 = 300;
+		public const int KudosCombo40 = 400;
+		public const int KudosCombo50 = 500;
 
 		public const float KudosTrainingFactor = 0.5f;			// less kudos if training
 		public const float KudosDojoFactor = 0.25f;				// less kudos if practicing in dojo
@@ -1241,43 +1243,6 @@ namespace FightingLegends
 		}
 
 
-//		public void EndKnockOutFreeze()
-//		{
-//			SnapshotCameraPosition();
-//
-////			Debug.Log("EndKnockOutFreeze: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
-//			UnfreezeFight();
-//
-//			if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
-//				Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-//			else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
-//				Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-//		}
-
-//		private void StopArmourDown()
-//		{
-//			Player1.StopArmourDown();
-//			Player2.StopArmourDown();
-//		}
-//
-//		private void StopArmourUp()
-//		{
-//			Player1.StopArmourUp();
-//			Player2.StopArmourUp();
-//		}
-//
-//		private void StopOnFire()
-//		{
-//			Player1.StopOnFire();
-//			Player2.StopOnFire();
-//		}
-//
-//		private void StopHealthUp()
-//		{
-//			Player1.StopHealthUp();
-//			Player2.StopHealthUp();
-//		}
-
 		public void SnapshotCameraPosition()
 		{
 			expiryCameraPosition = CameraSnapshot;
@@ -1294,9 +1259,9 @@ namespace FightingLegends
 ////				Debug.Log("KO FeedbackStateEnd: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
 //				UnfreezeFight();
 //
-//				if (Player1.ExpiredHealth || Player1.ExpiredState) 		// TODO: check this! (skeletron) 
+//				if (Player1.ExpiredHealth || Player1.ExpiredState) 	
 //					Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-//				else if (Player2.ExpiredHealth || Player2.ExpiredState) 		// TODO: check this! (skeletron) 
+//				else if (Player2.ExpiredHealth || Player2.ExpiredState) 
 //					Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
 //			}
 
@@ -2004,7 +1969,7 @@ namespace FightingLegends
 				yield return new WaitForSeconds(1.0f);
 			}
 
-			// TODO: safe to assume arcade network fight started from world map?
+			// assume arcade network fight started from world map
 			WorldMapChoice = MenuType.Combat;  // default starts new fight	
 			yield return null;
 		}
@@ -2129,7 +2094,7 @@ namespace FightingLegends
 				if (CombatMode == FightMode.Survival)
 				{
 					SetSurvivalAILevel(false);				// AI same as fighter
-					SetAIRandomPowerUps();
+//					SetAIRandomPowerUps();					// after first 5 rounds
 				}
 
 				Player2.StartWatching();
@@ -2377,10 +2342,9 @@ namespace FightingLegends
 				return;
 
 			Debug.Log("CompleteCurrentLocation: " + SelectedLocation);
-			
 			Player1.ProfileData.SavedData.CompletedLocations.Add(SelectedLocation);
 
-			if (Player1.ProfileData.SavedData.CompletedLocations.Count == NumberOfLocations)		// completed world tour
+			if (SelectedLocation == spaceStation)		// completed world tour
 			{
 				Player1.ProfileData.SavedData.WorldTourCompletions++;
 				FightManager.SavedGameStatus.WorldTourCompletions++;		// all fighters
@@ -2391,8 +2355,17 @@ namespace FightingLegends
 
 				Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
 			}
+			else if (CompletedEarthLocations)		// space station enabled (last location)
+			{
+				
+			}
 
 			Player1.SaveProfile();
+		}
+
+		public bool CompletedEarthLocations
+		{
+			get { return Player1 != null && Player1.ProfileData.SavedData.CompletedLocations.Count == NumberOfEarthLocations; }
 		}
 
 		private void ResetCompletedLocations()
@@ -2425,22 +2398,21 @@ namespace FightingLegends
 						if (winner.UnderAI)
 						{
 							winner.ProfileData.SavedData.SimpleLosses++;
-							FightManager.SavedGameStatus.SimpleLosses++;
+							FightManager.SavedGameStatus.SimpleArcadeLosses++;
 						}
 						else  // loser is AI - unlock if defeated enough times
 						{
-							// TODO: look at logic for updating wins/losses
-							if (loser.CanUnlock && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
-							{
+//							if (loser.CanUnlockOrder && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
+//							{
 								loser.ProfileData.SavedData.SimpleWins++;
-								FightManager.SavedGameStatus.SimpleWins++;
+								FightManager.SavedGameStatus.SimpleArcadeWins++;
 
-								if (loser.ProfileData.SavedData.SimpleWins >= loser.ProfileData.SavedData.UnlockDefeats)
-								{
-									fighterUnlocked = true;
-									FightManager.UnlockFighter(loser);
-								}
-							}
+//								if (loser.ProfileData.SavedData.SimpleWins >= loser.ProfileData.SavedData.UnlockDefeats)
+//								{
+//									fighterUnlocked = true;
+//									FightManager.UnlockFighter(loser);
+//								}
+//							}
 						}
 						break;
 
@@ -2448,22 +2420,21 @@ namespace FightingLegends
 						if (winner.UnderAI)
 						{
 							winner.ProfileData.SavedData.EasyLosses++;
-							FightManager.SavedGameStatus.EasyLosses++;
+							FightManager.SavedGameStatus.EasyArcadeLosses++;
 						}
 						else  // loser is AI - unlock if defeated enough times
 						{
-							// TODO: look at logic for updating wins/losses
-							if (loser.CanUnlock && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
-							{
+//							if (loser.CanUnlockOrder && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
+//							{
 								loser.ProfileData.SavedData.EasyWins++;
-								FightManager.SavedGameStatus.EasyWins++;
+								FightManager.SavedGameStatus.EasyArcadeWins++;
 
-								if (loser.ProfileData.SavedData.EasyWins >= loser.ProfileData.SavedData.UnlockDefeats)
-								{
-									fighterUnlocked = true;
-									FightManager.UnlockFighter(loser);
-								}
-							}
+//								if (loser.ProfileData.SavedData.EasyWins >= loser.ProfileData.SavedData.UnlockDefeats)
+//								{
+//									fighterUnlocked = true;
+//									FightManager.UnlockFighter(loser);
+//								}
+//							}
 						}
 						break;
 
@@ -2471,22 +2442,21 @@ namespace FightingLegends
 						if (winner.UnderAI)
 						{
 							winner.ProfileData.SavedData.MediumLosses++;
-							FightManager.SavedGameStatus.MediumLosses++;
+							FightManager.SavedGameStatus.MediumArcadeLosses++;
 						}
 						else  // loser is AI - unlock if defeated enough times
 						{
-							// TODO: look at logic for updating wins/losses
-							if (loser.CanUnlock && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
-							{
+//							if (loser.CanUnlockOrder && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
+//							{
 								loser.ProfileData.SavedData.MediumWins++;
-								FightManager.SavedGameStatus.MediumWins++;
+								FightManager.SavedGameStatus.MediumArcadeWins++;
 
-								if (loser.ProfileData.SavedData.MediumWins >= loser.ProfileData.SavedData.UnlockDefeats)
-								{
-									fighterUnlocked = true;
-									FightManager.UnlockFighter(loser);
-								}
-							}
+//								if (loser.ProfileData.SavedData.MediumWins >= loser.ProfileData.SavedData.UnlockDefeats)
+//								{
+//									fighterUnlocked = true;
+//									FightManager.UnlockFighter(loser);
+//								}
+//							}
 						}
 						break;
 
@@ -2494,22 +2464,21 @@ namespace FightingLegends
 						if (winner.UnderAI)
 						{
 							winner.ProfileData.SavedData.HardLosses++;
-							FightManager.SavedGameStatus.HardLosses++;
+							FightManager.SavedGameStatus.HardArcadeLosses++;
 						}
 						else  // loser is AI - unlock if defeated enough times
 						{
-							// TODO: look at logic for updating wins/losses
-							if (loser.CanUnlock && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
-							{
+//							if (loser.CanUnlockOrder && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
+//							{
 								loser.ProfileData.SavedData.HardWins++;
-								FightManager.SavedGameStatus.HardWins++;
+								FightManager.SavedGameStatus.HardArcadeWins++;
 
-								if (loser.ProfileData.SavedData.HardWins >= loser.ProfileData.SavedData.UnlockDefeats)
-								{
-									fighterUnlocked = true;
-									FightManager.UnlockFighter(loser);
-								}
-							}
+//								if (loser.ProfileData.SavedData.HardWins >= loser.ProfileData.SavedData.UnlockDefeats)
+//								{
+//									fighterUnlocked = true;
+//									FightManager.UnlockFighter(loser);
+//								}
+//							}
 						}
 						break;
 
@@ -2517,24 +2486,34 @@ namespace FightingLegends
 						if (winner.UnderAI)
 						{
 							winner.ProfileData.SavedData.BrutalLosses++;
-							FightManager.SavedGameStatus.BrutalLosses++;
+							FightManager.SavedGameStatus.BrutalArcadeLosses++;
 						}
 						else  // loser is AI - unlock if defeated enough times
 						{
-							// TODO: look at logic for updating wins/losses
-							if (loser.CanUnlock && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
-							{
+//							if (loser.CanUnlockOrder && FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty)
+//							{
 								loser.ProfileData.SavedData.BrutalWins++;
-								FightManager.SavedGameStatus.BrutalWins++;
+								FightManager.SavedGameStatus.BrutalArcadeWins++;
 
-								if (loser.ProfileData.SavedData.BrutalWins >= loser.ProfileData.SavedData.UnlockDefeats)
-								{
-									fighterUnlocked = true;
-									FightManager.UnlockFighter(loser);
-								}
-							}
+//								if (loser.ProfileData.SavedData.BrutalWins >= loser.ProfileData.SavedData.UnlockDefeats)
+//								{
+//									fighterUnlocked = true;
+//									FightManager.UnlockFighter(loser);
+//								}
+//							}
 						}
 						break;
+				}
+
+				// check if we won and if the AI loser has been defeated enough times to unlock
+				bool canUnlockLoser = !winner.UnderAI && loser.CanUnlockOrder &&
+										FightManager.SavedGameStatus.Difficulty >= loser.ProfileData.SavedData.UnlockDifficulty &&
+										loser.CanUnlockDefeats;
+
+				if (canUnlockLoser)
+				{
+					fighterUnlocked = true;
+					UnlockFighter(loser);
 				}
 			}
 
@@ -2565,51 +2544,60 @@ namespace FightingLegends
 
 			ReadyToFight = false;
 			RoundNumber = 1;
-			MatchCount++;		// TODO: not sure what this will be used for
+			MatchCount++;		// not sure what this will be used for
 
 			return fighterUnlocked;
 		}
 
 
-		private bool CanUnlockNinja()
+		public void CheckUnlockNinja()
 		{
 			var ninjaProfile = Profile.GetFighterProfile("Ninja");
-			var numDefeats = 0;
+
+			if (!ninjaProfile.IsLocked || !ninjaProfile.CanUnlockOrder)
+				return;
+			
+			var totalDefeats = 0;
 
 			switch (ninjaProfile.UnlockDifficulty)
 			{
 				case AIDifficulty.Simple:
-					numDefeats = FightManager.SavedGameStatus.SimpleWins +
-								FightManager.SavedGameStatus.EasyWins +
-								FightManager.SavedGameStatus.MediumWins +
-								FightManager.SavedGameStatus.HardWins +
-								FightManager.SavedGameStatus.BrutalWins;
+					totalDefeats = FightManager.SavedGameStatus.SimpleArcadeWins +
+									FightManager.SavedGameStatus.EasyArcadeWins +
+									FightManager.SavedGameStatus.MediumArcadeWins +
+									FightManager.SavedGameStatus.HardArcadeWins +
+									FightManager.SavedGameStatus.BrutalArcadeWins;
 					break;
 
 				case AIDifficulty.Easy:
-					numDefeats = FightManager.SavedGameStatus.EasyWins +
-								FightManager.SavedGameStatus.MediumWins +
-								FightManager.SavedGameStatus.HardWins +
-								FightManager.SavedGameStatus.BrutalWins;
+					totalDefeats = FightManager.SavedGameStatus.EasyArcadeWins +
+									FightManager.SavedGameStatus.MediumArcadeWins +
+									FightManager.SavedGameStatus.HardArcadeWins +
+									FightManager.SavedGameStatus.BrutalArcadeWins;
 					break;
 
 				case AIDifficulty.Medium:
-					numDefeats = FightManager.SavedGameStatus.MediumWins +
-								FightManager.SavedGameStatus.HardWins +
-								FightManager.SavedGameStatus.BrutalWins;
+					totalDefeats = FightManager.SavedGameStatus.MediumArcadeWins +
+									FightManager.SavedGameStatus.HardArcadeWins +
+									FightManager.SavedGameStatus.BrutalArcadeWins;
 					break;
 
 				case AIDifficulty.Hard:
-					numDefeats = FightManager.SavedGameStatus.HardWins +
-								FightManager.SavedGameStatus.BrutalWins;
+					totalDefeats = FightManager.SavedGameStatus.HardArcadeWins +
+									FightManager.SavedGameStatus.BrutalArcadeWins;
 					break;
 
 				case AIDifficulty.Brutal:
-					numDefeats = FightManager.SavedGameStatus.BrutalWins;
+					totalDefeats = FightManager.SavedGameStatus.BrutalArcadeWins;
 					break;			
 			}
 
-			return (ninjaProfile.CanUnlock && numDefeats >= ninjaProfile.UnlockDefeats);
+			if (totalDefeats >= ninjaProfile.UnlockDefeats)
+			{
+				var ninja = CreateFighter("Ninja", "P1", false, false, false);
+				UnlockFighter(ninja);
+				DestroyFighter(ninja);
+			}
 		}
 
 
@@ -2829,7 +2817,9 @@ namespace FightingLegends
 
 			// each new AI fighter increases in level (based on Player1 level)
 			SetSurvivalAILevel(true);
-			SetAIRandomPowerUps();
+
+			if (RoundNumber == survivalPowerUpRound)
+				SetAIRandomPowerUps();
 
 			Player2.StartWatching();
 
@@ -2957,14 +2947,14 @@ namespace FightingLegends
 
 		#region kudos
 
-		public void DamageKudos(float damage, int priority, bool receivedHit)
+		public void DamageKudos(float damage, int priority, bool receivedHit, bool hitBlocked)
 		{
 			// for kudos, multiply damage by priority to reward harder moves
 			// (damage already factored by level)
 			float kudosDamage = damage * ((priority > 0) ? priority : 1);
 
-//			if (hitBlocked)
-//				kudosDamage *= KudosBlockedFactor;			// less kudos if a hit is blocked
+			if (hitBlocked)
+				kudosDamage *= KudosBlockedFactor;			// less kudos if a hit is blocked
 
 			if (receivedHit)
 				kudosDamage *= KudosReceivedFactor;		// less kudos if receiving damage
@@ -3748,6 +3738,8 @@ namespace FightingLegends
 						ActivatePreviousMenu(true, true);
 				}
 
+//				BackAudio();		// see ActivateMenu()
+
 				if (OnBackClicked != null)
 					OnBackClicked(CurrentMenuCanvas);
 			}
@@ -3755,8 +3747,11 @@ namespace FightingLegends
 
 		public void PauseClicked()
 		{
-			if (CanSettings)	
+			if (CanSettings)
+			{
 				ActivateMenu(MenuType.PauseSettings);
+				ForwardAudio();
+			}
 				
 			SaveGameStatus();
 		}
@@ -4065,8 +4060,13 @@ namespace FightingLegends
 			DeactivateCurrentMenu();
 			CurrentMenuCanvas = menu;		// not necessarily on stack (eg. pauseSettings)
 			
-			if (!navigatingBack)
+			if (! navigatingBack)
+			{
 				CurrentMenu.NavigatedFrom = navigatedFrom;
+				ForwardAudio();
+			}
+			else
+				BackAudio();
 				
 			switch (menu)
 			{
@@ -4104,7 +4104,7 @@ namespace FightingLegends
 
 				case MenuType.WorldMap:
 					StartCoroutine(ShowWorldMapCanvas());
-					push = false;			// TODO: correct?
+					push = false;
 					break;
 
 				case MenuType.Leaderboards:
@@ -4379,9 +4379,10 @@ namespace FightingLegends
 //			Debug.Log("MatchEndStats: winner = " + (winner == null ? " NULL!" : winner.FullName));
 
 			FreezeFight();
-
 			GameUIVisible(false);
+
 			matchStats.Show();
+			matchStats.PlayMusic();
 
 			// doesn't go through ActivateMenu (not part of menu stack)
 			if (OnMenuChanged != null)
@@ -4522,7 +4523,6 @@ namespace FightingLegends
 				curtain.gameObject.SetActive(false);
 			}
 				
-//			SelectedLocation = "";   //TODO: this ok?  Network / Multiplayer
 			WorldMapChoice = MenuType.None;
 			while (WorldMapChoice == MenuType.None)			// set when location selected on world map
 			{
@@ -5123,9 +5123,6 @@ namespace FightingLegends
 						SelectedFighterColour = "P1";
 					}
 
-//					// TODO: implement user registration to get unique user id from player (keyboard)
-//					SavedGameStatus.UserId = "DudosMcKudos" + UnityEngine.Random.Range(1, 99);
-
 //					Debug.Log("RestoreStatus ok: Coins = " + Coins + ", Kudos = " + Kudos);
 					OnSavedStatusChanged();
 					return true;
@@ -5217,7 +5214,7 @@ namespace FightingLegends
 			Profile.InitFighterLockStatus("Alazne", true, 1, 900, 5, AIDifficulty.Medium);	
 			Profile.InitFighterLockStatus("Shiyang", true, 1, 900, 5, AIDifficulty.Medium);	
 
-			Profile.InitFighterLockStatus("Ninja", true, 2, 1000, 100, AIDifficulty.Medium); 	// beat any opponent in arcade mode (never face AI Ninja)
+			Profile.InitFighterLockStatus("Ninja", true, 2, 5000, 100, AIDifficulty.Medium); 	// beat any opponent in arcade mode (never face AI Ninja)
 			Profile.InitFighterLockStatus("Skeletron", true, 3, 90000, 3, AIDifficulty.Hard); 	
 
 			CleanupFighters();

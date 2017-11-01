@@ -681,11 +681,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseStateStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseStateStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-//
-//				strategySelected = false;
 			}
 				
 			// activate next strategy even if DoNothing was chosen
@@ -725,11 +722,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseMoveStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseMoveStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -768,11 +762,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseCanContinueStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseCanContinueStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -810,11 +801,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseLastHitStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseLastHitStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -852,11 +840,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseHitStunStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseHitStunStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -898,11 +883,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseRomanCancelStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseRomanCancelStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -915,7 +897,7 @@ namespace FightingLegends
 			if (StrategyCued)
 				return;
 			
-			// trigger only applies when health falls below the strategy condition	// TODO: correct?
+			// trigger only applies when health falls below the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
 					(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
 					&& x.Strategy.TriggerCondition.Condition == Condition.HealthChanged
@@ -942,11 +924,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseHealthStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseHealthStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -961,7 +940,7 @@ namespace FightingLegends
 				return;
 			
 //			Debug.Log(fighter.FullName + ": ChooseGaugeStrategy - old = " + triggerState.OldGauge + ", new = " + triggerState.NewGauge + ", CanContinue = " + fighter.CanContinue + ", State = " + fighter.CurrentState);
-			// trigger only applies when gauge is equal to the strategy condition	// TODO: correct?
+			// trigger only applies when gauge is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
 					(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
 					&& x.Strategy.TriggerCondition.Condition == Condition.Gauge
@@ -988,11 +967,8 @@ namespace FightingLegends
 					{
 						ErrorUI =  "ChooseGaugeStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseGaugeStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -1036,11 +1012,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChoosePriorityStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChoosePriorityStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -1079,11 +1052,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseIdleFrameStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseIdleFrameStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 				
 			// activate next strategy even if DoNothing was chosen
@@ -1122,11 +1092,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseBlockIdleFrameStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseBlockIdleFrameStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 				
 			// activate next strategy even if DoNothing was chosen
@@ -1165,11 +1132,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseBlockIdleFrameStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseCanContinueFrameStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -1208,11 +1172,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseVengeanceFrameStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseVengeanceFrameStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -1252,11 +1213,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseGaugeIncreasedStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseGaugeIncreasedStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -1295,11 +1253,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseStunnedFrameStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseStunnedFrameStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen
@@ -1340,11 +1295,8 @@ namespace FightingLegends
 					{
 						ErrorUI = "ChooseLastHitFrameStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
 						Debug.Log(fighter.FullName + ": ChooseLastHitFrameStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
-//						fighter.ContinueOrIdle();		// TODO: temporary catch all if a strategy fails
 					}
 				}
-
-//				strategySelected = false;
 			}
 
 			// activate next strategy even if DoNothing was chosen

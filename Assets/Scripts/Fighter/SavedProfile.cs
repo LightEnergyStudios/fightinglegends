@@ -59,11 +59,34 @@ namespace FightingLegends
 		public int BrutalLosses { get; set; }		// losses to AI fighter in arcade mode
 
 		public int UnlockOrder { get; set; }		// to denote order in which fighters are unlocked (see SavedStatus.FighterUnlockedLevel)
-		public int UnlockCoins { get; set; }			// required to unlock
-		public int UnlockDefeats { get; set; }			// number of defeats required to unlock
+		public int UnlockCoins { get; set; }		// required to unlock
+		public int UnlockDefeats { get; set; }		// number of defeats required to unlock
+//		public bool TotalDefeats { get; set; }		// UnlockDefeats applies to total arcade defeats of all fighters (eg. Ninja not faced in arcade mode)
 		public AIDifficulty UnlockDifficulty { get; set; }	// difficulty level for unlock defeats
 
-		public bool CanUnlock
+		public bool CanUnlockDefeats
+		{
+			get
+			{
+				switch (UnlockDifficulty)
+				{
+					case AIDifficulty.Simple:
+						return SimpleWins >= UnlockDefeats;
+					case AIDifficulty.Easy:
+						return EasyWins >= UnlockDefeats;
+					case AIDifficulty.Medium:
+						return MediumWins >= UnlockDefeats;
+					case AIDifficulty.Hard:
+						return HardWins >= UnlockDefeats;
+					case AIDifficulty.Brutal:
+						return BrutalWins >= UnlockDefeats;
+					default:
+						return false;
+				}
+			}
+		}
+
+		public bool CanUnlockOrder
 		{
 			get { return UnlockOrder == FightManager.SavedGameStatus.FighterUnlockedLevel+1; }		// next level to unlock
 		}

@@ -563,7 +563,7 @@ namespace FightingLegends
 			var fighterName = previewFighter.FighterName;
 		
 			fighterCard.SetProfileData(previewFighter.Level, previewFighter.XP, PowerUpSprite(previewFighter.StaticPowerUp), PowerUpSprite(previewFighter.TriggerPowerUp), null,
-				previewFighter.IsLocked, previewFighter.CanUnlock, previewFighter.UnlockCoins, previewFighter.UnlockOrder, previewFighter.UnlockDefeats, previewFighter.UnlockDifficulty);
+				previewFighter.IsLocked, previewFighter.CanUnlockOrder, previewFighter.UnlockCoins, previewFighter.UnlockOrder, previewFighter.UnlockDefeats, previewFighter.UnlockDifficulty);
 			fighterSelect.EnableFighterButton(fighterName, true);
 
 			FighterName.text = fighterName.ToUpper();
@@ -778,13 +778,6 @@ namespace FightingLegends
 		{
 			ShowPowerUpButtons(false);
 //			StartCoroutine(FadeOverlay(PowerUpOverlay))
-		}
-			
-		//TODO: remove this (replace with PurchaseCoins)
-		public void ShowBuyOverlay()
-		{
-			fighterSelect.HideFighter();
-			StartCoroutine(RevealOverlay(PurchaseOverlay));
 		}
 
 		public void PurchaseCoins()

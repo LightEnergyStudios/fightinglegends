@@ -241,10 +241,7 @@ namespace FightingLegends
 
 		private void GetUserData()
 		{
-//			GetDummyUserName();
-//			GetDummyProfilePic();
-			PostKudos();		// TODO: reistate!!		// RefreshScores in callback
-//			StartCoroutine(RefreshDummyScores());		// TODO: remove
+			PostKudos();			// RefreshScores in callback
 		}
 			
 		private void GetUserName()
@@ -264,14 +261,6 @@ namespace FightingLegends
 			}
 		}
 
-//		// TODO: remove!!
-//		private void GetDummyUserName()
-//		{
-//			UserName.text = "Bernie";
-//
-//			if (OnLookupUserName != null)
-//				OnLookupUserName(UserName.text);
-//		}
 
 		private void GetProfilePic()
 		{
@@ -290,21 +279,10 @@ namespace FightingLegends
 			else
 				ProfilePic.sprite = DefaultProfilePic;
 		}
-
-		// TODO: remove!!
-//		private void GetDummyProfilePic()
-//		{
-//			ProfilePic.sprite = DefaultUserPic;		// bhs logo
-//
-//			if (OnLookupProfilePic != null)
-//				OnLookupProfilePic(ProfilePic.sprite);
-//		}
 			
 		private void RefreshScores()
 		{
 //			Debug.Log("GetScores: GettingScores = " + GettingScores);
-
-//			RefreshDummyScores();
 
 			if (GettingScores)
 				return;
@@ -392,18 +370,6 @@ namespace FightingLegends
 			}
 		}
 
-//		private IEnumerator RefreshDummyScores()
-//		{
-//			GettingScores = true;
-//
-//			yield return new WaitForSeconds(1.0f); 		// simulate network latency
-//
-//			PopulateDummyScores();
-//			FillScoreEntries();
-//
-//			GettingScores = false;
-//		}
-
 
 		private void DestroyScoreEntries()
 		{
@@ -488,69 +454,6 @@ namespace FightingLegends
 			// TODO: is this required?
 //			Time.timeScale = isGameShowing ? 1 : 0;
 		}
-
-		// TODO: remove!
-//		private void PopulateDummyScores()
-//		{
-//			scoresList.Clear();
-//
-//			scoresList.Add(new FriendScore
-//			{
-//				Name = "Jacko",
-//				Score = 11500976,
-//			});
-//
-//			scoresList.Add(new FriendScore
-//			{
-//				Name = "Wally",
-//				Score = 10002705,
-//			});
-//
-//			scoresList.Add(new FriendScore
-//			{
-//				Name = "Cheng",
-//				Score = 9992812,
-//			});
-//				
-//			scoresList.Add(new FriendScore
-//			{
-//				Name = "Madeleine",
-//				Score = 9992601,
-//			});
-//
-//			scoresList.Add(new FriendScore
-//			{
-//				Name = "Marty",
-//				Score = 6233964,
-//			});
-//
-//			scoresList.Add(new FriendScore
-//			{
-//				Name = "Shazza",
-//				Score = 2187656,
-//			});
-//
-//			scoresList.Add(new FriendScore
-//			{
-//				Name = "Davo",
-//				Score = 675699,
-//			});
-//
-//			scoresList.Add(new FriendScore {
-//				Name = "Romeo",
-//				Score = 1865,
-//			});
-//		
-//			scoresList.Add(new FriendScore {
-//				Name = "Cheryl",
-//				Score = 0,
-//			});
-//				
-//			scoresList.Add(new FriendScore {
-//				Name = "Mick",
-//				Score = 0,
-//			});
-//		}
 	}
 
 	[Serializable]

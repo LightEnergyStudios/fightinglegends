@@ -29,8 +29,6 @@ namespace FightingLegends
 		public Image ghettoDot;
 		public Image antarcticaDot;
 
-		public bool showSpaceStation;
-
 		public Image currentLocale;						// (yellow dot) plane?
 		private const float currentZOffset = -5.0f;
 	
@@ -53,10 +51,7 @@ namespace FightingLegends
 			fightManager = fightManagerObject.GetComponent<FightManager>();
 
 			FightManager.OnThemeChanged += SetTheme;
-
-			antarcticaButton.gameObject.SetActive(showSpaceStation);
-			antarcticaDot.gameObject.SetActive(showSpaceStation);
-
+		
 			titleLabel.text = FightManager.Translate("chooseLocation");
 		}
 
@@ -90,8 +85,11 @@ namespace FightingLegends
 			chinaButton.onClick.AddListener(FlyToChina);
 			ghettoButton.onClick.AddListener(FlyToGhetto);
 
-			if (showSpaceStation)
-				antarcticaButton.onClick.AddListener(FlyToAntarctica);
+			antarcticaButton.onClick.AddListener(FlyToAntarctica);
+
+			//TODO: reinstate!
+//			antarcticaButton.gameObject.SetActive((fightManager.CompletedEarthLocations));
+//			antarcticaDot.gameObject.SetActive((fightManager.CompletedEarthLocations));
 
 			if (! FightManager.IsNetworkFight)
 				TickCompletedLocations();
@@ -111,8 +109,7 @@ namespace FightingLegends
 			chinaButton.onClick.RemoveListener(FlyToChina);
 			ghettoButton.onClick.RemoveListener(FlyToGhetto);
 
-			if (showSpaceStation)
-				antarcticaButton.onClick.RemoveListener(FlyToAntarctica);
+			antarcticaButton.onClick.RemoveListener(FlyToAntarctica);
 
 			UnTickAllLocations();
 		}
@@ -159,7 +156,7 @@ namespace FightingLegends
 					break;
 
 				case FightManager.hongKong:
-					currentLocale.rectTransform.localPosition = hongKongDot.rectTransform.localPosition;
+					fightManager.WorldMapPosition = hongKongDot.rectTransform.localPosition;
 					break;
 
 				case FightManager.spaceStation:
@@ -325,6 +322,7 @@ namespace FightingLegends
 			TickLocation(FightManager.nigeria, false);
 			TickLocation(FightManager.soviet, false);
 			TickLocation(FightManager.hongKong, false);
+			TickLocation(FightManager.spaceStation, false);
 		}
 
 		private void TickLocation(string location, bool tick)
@@ -356,6 +354,9 @@ namespace FightingLegends
 					break;
 				case FightManager.hongKong:
 					locationDot = hongKongDot;
+					break;
+				case FightManager.spaceStation:
+					locationDot = antarcticaDot;
 					break;
 			}
 

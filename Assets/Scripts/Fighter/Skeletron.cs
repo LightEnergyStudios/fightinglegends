@@ -67,22 +67,12 @@ namespace FightingLegends
 			CompleteMove();	
 		}
 
-//		protected override void EndIdleDamaged()
-//		{
-//			CurrentState = State.Fall;
-//		}
-
 		protected override void EndFalling()
 		{
 			CurrentState = State.Ready_To_Die;
 		}
-
-//		protected override void EndReadyToDie()
-//		{
-//			CurrentState = State.Die;
-//		}
-
 			
+
 		protected override void KOState(HitFrameData hitData)
 		{
 			TriggerFeedbackFX(FeedbackFXType.None);				// eg. to cancel special extra prompt in case end of special opportunity not reached
@@ -92,6 +82,8 @@ namespace FightingLegends
 			takenLastFatalHit = false;
 
 			CurrentState = State.Fall;	// then ready to die
+
+//			Debug.Log(FullName + ": KOState: health = " + ProfileData.SavedData.Health);
 
 			Opponent.ReturnToDefaultDistance();		// default fighting distance
 		}

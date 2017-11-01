@@ -336,7 +336,7 @@ namespace FightingLegends
 				if (profile != null)
 				{
 					fighterCard.SetProfileData(1, 0, null, null, CardFrame(fighterName),
-						profile.IsLocked, profile.CanUnlock, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
+						profile.IsLocked, profile.CanUnlockOrder, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
 			}
 		}
@@ -674,7 +674,6 @@ namespace FightingLegends
 
 		public Vector3 PreviewPosition(float xOffset = 0)
 		{
-			//TODO: test preview fighter position
 			var cameraX = fightManager.CameraSnapshot.x;
 			return new Vector3(cameraX - (Math.Abs(xOffset) > 0 ? xOffset : previewX), previewY, previewZ);
 		}

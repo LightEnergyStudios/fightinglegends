@@ -130,7 +130,7 @@ namespace FightingLegends
 
 		private void PreloadComplete(string scene)
 		{
-			Debug.Log("Opening.PreloadComplete");
+//			Debug.Log("Opening.PreloadComplete");
 			if (! SceneSettings.ShowLobbyUI)
 				ActivatePreloadedScene();		// ninja school if not completed else mode select
 		}

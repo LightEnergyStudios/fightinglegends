@@ -163,7 +163,7 @@ namespace FightingLegends
 		}
 
 
-		public static void InitFighterLockStatus(string fighterName, bool isLocked, int unlockOrder, int unlockCoins, int unlockDefeats, AIDifficulty unlockDifficulty) //, int Level, float XP)
+		public static void InitFighterLockStatus(string fighterName, bool isLocked, int unlockOrder, int unlockCoins, int unlockDefeats, AIDifficulty unlockDifficulty) //, bool totalDefeats = false)
 		{
 			var profile = new SavedProfile();
 
@@ -175,14 +175,11 @@ namespace FightingLegends
 			profile.UnlockOrder = unlockOrder;
 			profile.UnlockCoins = unlockCoins;
 			profile.UnlockDefeats = unlockDefeats;
+//			profile.TotalDefeats = totalDefeats;
 			profile.UnlockDifficulty = unlockDifficulty;
 
 			profile.Level = 1; // Level;
 			profile.XP = profile.TotalXP = 0; // XP;
-
-//			// TODO: remove!
-//			profile.StaticPowerUp = Store.RandomStaticPowerUp;
-//			profile.TriggerPowerUp = Store.RandomTriggerPowerUp;
 
 			Profile.Save(profile);
 		}

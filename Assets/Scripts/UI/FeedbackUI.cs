@@ -277,11 +277,7 @@ namespace FightingLegends
 				float textWidth = (float)text.Length * stateCharWidth;
 				StartCoroutine(StarSweep(player1, textWidth));
 			}
-
-			//TODO: audio too annoying?  remove?
-//			if (!silent && starAudio != null)
-//				AudioSource.PlayClipAtPoint(starAudio, Vector3.zero, FightManager.SFXVolume);
-
+				
 			if (displayTime <= 0.0f)
 				yield break;
 

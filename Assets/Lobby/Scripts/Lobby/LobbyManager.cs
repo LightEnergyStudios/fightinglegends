@@ -28,9 +28,9 @@ namespace Prototype.NetworkLobby
 		public GameObject fightManagerPrefab;		// NetworkFightManager
 		public LobbyDiscovery networkDiscovery;
 
-		[Header("Unity UI Lobby")]
-		[Tooltip("Time in second between all players ready & match start")]
-		public float prematchCountdown = 5.0f;
+//		[Header("Unity UI Lobby")]
+//		[Tooltip("Time in second between all players ready & match start")]
+//		public float prematchCountdown = 5.0f;
 
 		[Space]
 		[Header("UI Reference")]
@@ -69,17 +69,19 @@ namespace Prototype.NetworkLobby
 
 		protected LobbyHook _lobbyHooks;
 
-		private Opening opening;
 		private string localUserId = "";
 
 		private NetworkPlayer networkPlayer;				// for ip address
 		private const float fadeTime = 0.75f;
-		private const float fadePause = 0.25f;
+//		private const float fadePause = 0.25f;
+
+//		private LobbyPlayer lobbyPlayer = null;
+		public bool playersCancelled = false;				// on back from lobby player list
 
 		private NetworkFightManager networkFightManager;
 
-		private const int LobbyTimeout = 30;			// once NetworkFighters spawned - waiting to select fighters and location
-		private IEnumerator expiryCountdownCoroutine = null;
+//		public delegate void LobbyBackDelegate();
+//		public LobbyBackDelegate OnLobbyBack;
 
 
 		void Start()
@@ -103,16 +105,11 @@ namespace Prototype.NetworkLobby
 			wiFiConnect.text = FightManager.Translate("wiFiConnect", false, true);
 			hostAGame.text = FightManager.Translate("hostAGame");
 			findAGame.text = FightManager.Translate("findAGame");
-
-//			SceneManager.activeSceneChanged += OnActiveSceneChanged;					// on 100% load
-				
-//			Opening.OnPreloadComplete += PreloadCombatComplete;
 		}
 
 		public void OnDestroy()
 		{
-//			networkDiscovery.StopBroadcast();
-//			SceneManager.activeSceneChanged -= OnActiveSceneChanged;					// on 100% load
+			StopBroadcast();
 		}
 			
 
@@ -120,10 +117,6 @@ namespace Prototype.NetworkLobby
 
 		public void ShowLobbyUI()
 		{
-			var openingObject = GameObject.Find("Opening");
-			if (openingObject != null)
-				opening = openingObject.GetComponent<Opening>();
-			
 			if (lobbyUIPanel != null)
 			{
 				lobbyUIPanel.gameObject.SetActive(true);
@@ -131,6 +124,7 @@ namespace Prototype.NetworkLobby
 			}
 
 			backDelegate = QuitLobby;
+			playersCancelled = false;
 
 			localUserId = FightManager.SavedGameStatus.UserId;
 			if (userID != null)
@@ -143,16 +137,13 @@ namespace Prototype.NetworkLobby
 			blackOut.color = Color.clear;
 
 			ChangeTo(mainMenuPanel);
-
-//			StopAll();		// TODO: best way to initialise?
 		}
 
 		public void HideLobbyUI()
 		{
 			StartCoroutine(FadeLobbyUI(false));
-
-			if (networkDiscovery.running)
-				networkDiscovery.StopBroadcast();
+			StopBroadcast();		// stops listening and broadcasting
+			StopAll();
 		}
 
 		private IEnumerator FadeLobbyUI(bool fadeToBlack)
@@ -164,6 +155,7 @@ namespace Prototype.NetworkLobby
 				lobbyUIPanel.gameObject.SetActive(false);
 
 			ChangeTo(mainMenuPanel);
+			backDelegate = QuitLobby;
 			yield return null;
 		}
 
@@ -177,7 +169,6 @@ namespace Prototype.NetworkLobby
 		{
 			yield return StartCoroutine(FadeLobbyUI(true));
 			HideLobbyUI();
-			StopAll();
 
 			SceneLoader.LoadScene(SceneLoader.CombatScene);
 
@@ -203,35 +194,11 @@ namespace Prototype.NetworkLobby
 			networkDiscovery.StartAsClient();
 		}
 
-//		private void StartTimeoutCountdown()
-//		{
-//			if (expiryCountdownCoroutine != null)
-//				StopCoroutine(expiryCountdownCoroutine);
-//
-//			expiryCountdownCoroutine = StartExpiryCountdown();
-//			StartCoroutine(expiryCountdownCoroutine);
-//		}
-//
-//		private IEnumerator StartExpiryCountdown()
-//		{
-//			for (int i = LobbyTimeout; i >= 0; i--)
-//			{
-//				Debug.Log("StartLobbyCountdown: " + i);
-//				yield return new WaitForSeconds(1.0f);
-//			}
-//
-//			NetworkServer.DisconnectAll();
-//			yield return null;
-//		}
-
-		// TODO: restore?
-//		private void OnActiveSceneChanged(Scene oldScene, Scene newScene)
-//		{
-//			Debug.Log("OnActiveSceneChanged: " + oldScene.name + " --> " + newScene.name);
-//
-//			if (newScene.name == "Combat")
-//				StartCoroutine(CurtainUp());
-//		}
+		public void StopBroadcast()
+		{
+			if (networkDiscovery.running)
+				networkDiscovery.StopBroadcast();		// stops listening and broadcasting
+		}
 
 		public void EntryComplete()
 		{
@@ -258,8 +225,6 @@ namespace Prototype.NetworkLobby
 				blackOut.color = Color.Lerp(Color.clear, Color.black, t);
 				yield return null;
 			}
-
-//			yield return StartCoroutine(ClearFadeToBlack());
 		}
 
 		private IEnumerator ClearFadeToBlack()
@@ -316,6 +281,7 @@ namespace Prototype.NetworkLobby
 				else
 				{
 					ChangeTo(mainMenuPanel);
+					backDelegate = QuitLobby;
 				}
 
 				topPanel.ToggleVisibility(true);
@@ -348,11 +314,6 @@ namespace Prototype.NetworkLobby
 
             currentPanel = newPanel;
 
-//            if (currentPanel != mainMenuPanel)
-//            {
-//                backButton.gameObject.SetActive(true);
-//            }
-//            else
 			if (currentPanel == mainMenuPanel)
             {
                 SetServerInfo("Offline", "None");
@@ -363,7 +324,7 @@ namespace Prototype.NetworkLobby
 		public void DisplayIsConnecting()
 		{
 			var _this = this;
-			infoPanel.Display("Connecting...", "Cancel", () => { _this.backDelegate(); });
+			infoPanel.Display(FightManager.Translate("connecting") + "...", FightManager.Translate("cancel"), () => { _this.backDelegate(); });
 		}
 
 		public void SetServerInfo(string status, string host)
@@ -388,14 +349,56 @@ namespace Prototype.NetworkLobby
 			TryToAddPlayer();
 		}
 
-		public void RemovePlayer(LobbyPlayer player)
+//		private void RemovePlayer() // LobbyPlayer player)
+//		{
+//			if (lobbyPlayer != null)
+//			{
+////				lobbyPlayer.RemovePlayer();
+//				lobbyPlayer.OnRemovePlayerClick();
+//				lobbyPlayer = null;
+//			}
+//		}
+
+		public void RemoveLocalPlayer()
 		{
-			player.RemovePlayer();
+			for (int i = 0; i < lobbySlots.Length; ++i)
+			{
+				LobbyPlayer player = lobbySlots[i] as LobbyPlayer;
+
+				if (player.isLocalPlayer)
+					player.RemovePlayer();
+//					player.OnRemovePlayerClick();
+				
+//				player.RpcRemovePlayer();
+			}
+		}
+
+		public void RemoveAllPlayers()
+		{
+			for (int i = 0; i < lobbySlots.Length; ++i)
+			{
+				LobbyPlayer player = lobbySlots[i] as LobbyPlayer;
+				player.OnRemovePlayerClick();
+			}
 		}
 
 		public void SimpleBackClbk()
 		{
+			Debug.Log("SimpleBackClbk");
+//			playersCancelled = true;
+//
+//			if (networkDiscovery.running)
+//				networkDiscovery.StopBroadcast();		// stops listening and broadcasting
+//
+//			StopAll();				// TODO: ok?
+//			RemoveAllPlayers();		// TODO: ok?
+//			RemoveLocalPlayer();			// TODO: ok?
+
 			ChangeTo(mainMenuPanel);
+			backDelegate = QuitLobby;
+
+//			if (OnLobbyBack != null)
+//				OnLobbyBack();
 		}
 
 		private void StopAll()
@@ -407,6 +410,7 @@ namespace Prototype.NetworkLobby
 
 		public void StopHostClbk()
 		{
+			Debug.Log("StopHostClbk");
 			if (_isMatchmaking)
 			{
 				matchMaker.DestroyMatch((NetworkID)_currentMatchID, 0, OnDestroyMatch);
@@ -418,24 +422,29 @@ namespace Prototype.NetworkLobby
 			}
 				
 			ChangeTo(mainMenuPanel);
+			backDelegate = QuitLobby;
 		}
 
 		public void StopClientClbk()
 		{
+			Debug.Log("StopClientClbk");
 			StopClient();
 
 			if (_isMatchmaking)
 			{
 				StopMatchMaker();
 			}
-
+				
 			ChangeTo(mainMenuPanel);
+			backDelegate = QuitLobby;
 		}
 
 		public void StopServerClbk()
 		{
+			Debug.Log("StopServerClbk");
 			StopServer();
 			ChangeTo(mainMenuPanel);
+			backDelegate = QuitLobby;
 		}
 
 		class KickMsg : MessageBase { }
@@ -459,8 +468,6 @@ namespace Prototype.NetworkLobby
 			ChangeTo(lobbyPanel);
 			backDelegate = StopHostClbk;
 			SetServerInfo("Hosting", networkAddress);
-
-//			StartTimeoutCountdown();		// TODO: here??
 		}
 
 		public override void OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
@@ -509,8 +516,8 @@ namespace Prototype.NetworkLobby
 			GameObject obj = Instantiate(lobbyPlayerPrefab.gameObject) as GameObject;
 
 			LobbyPlayer newPlayer = obj.GetComponent<LobbyPlayer>();
+			newPlayer = obj.GetComponent<LobbyPlayer>();
 			newPlayer.ToggleJoinButton(numPlayers + 1 >= minPlayers);
-
 
 			for (int i = 0; i < lobbySlots.Length; ++i)
 			{
@@ -538,6 +545,8 @@ namespace Prototype.NetworkLobby
 					p.ToggleJoinButton(numPlayers + 1 >= minPlayers);
 				}
 			}
+
+			SimpleBackClbk();		// TODO: SM ok?
 		}
 
 		public override void OnLobbyServerDisconnect(NetworkConnection conn)
@@ -552,6 +561,8 @@ namespace Prototype.NetworkLobby
 					p.ToggleJoinButton(numPlayers >= minPlayers);
 				}
 			}
+
+			SimpleBackClbk();		// TODO: SM ok?
 		}
 
 
@@ -592,65 +603,68 @@ namespace Prototype.NetworkLobby
 			}
 
 			if (allready)
-			{
-				if (expiryCountdownCoroutine != null)
-					StopCoroutine(expiryCountdownCoroutine);
-				
 				ServerChangeScene(playScene);
-//				StartCoroutine(ServerCountdownCoroutine());
-			}
 		}
 
 
-		// --- Countdown management
-
-//		public IEnumerator ServerCountdownCoroutine()
-//		{
-//			float remainingTime = prematchCountdown;
-//			int floorTime = Mathf.FloorToInt(remainingTime);
-//
-//			while (remainingTime > 0)
-//			{
-//				yield return null;
-//
-//				remainingTime -= Time.deltaTime;
-//				int newFloorTime = Mathf.FloorToInt(remainingTime);
-//
-//				if (newFloorTime != floorTime)
-//				{//to avoid flooding the network of message, we only send a notice to client when the number of plain seconds change.
-//					floorTime = newFloorTime;
-//
-//					for (int i = 0; i < lobbySlots.Length; ++i)
-//					{
-//						if (lobbySlots[i] != null)
-//						{//there is maxPlayer slots, so some could be == null, need to test it before accessing!
-//							(lobbySlots[i] as LobbyPlayer).RpcUpdateCountdown(floorTime);
-//						}
-//					}
-//				}
-//			}
-//
-//			for (int i = 0; i < lobbySlots.Length; ++i)
-//			{
-//				if (lobbySlots[i] != null)
-//				{
-//					(lobbySlots[i] as LobbyPlayer).RpcUpdateCountdown(0);
-//				}
-//			}
-//
-//			ServerChangeScene(playScene);
-//		}
-
 		// ----------------- Client callbacks ------------------
+
+//		// called when a scene has completed loading, when the scene load was initiated by the server
+//		public override void OnClientSceneChanged(NetworkConnection conn)
+//		{
+//			base.OnClientSceneChanged(conn);		// calls NetworkFighter.OnStartLocalPlayer!!
+//
+////			HideLobbyUI();
+//		}
+//
 
 		// called when a scene has completed loading, when the scene load was initiated by the server
 		public override void OnClientSceneChanged(NetworkConnection conn)
 		{
-			base.OnClientSceneChanged(conn);		// calls NetworkFighter.OnStartLocalPlayer!!
+			string loadedSceneName = SceneManager.GetSceneAt(0).name;
+			if (loadedSceneName == lobbyScene)
+			{
+				if (client.isConnected)
+					CallOnClientEnterLobby();
+			}
+			else
+			{
+				CallOnClientExitLobby();
+			}
+
+			/// This call is commented out since it causes a unet "A connection has already been set as ready. There can only be one." error.
+			/// More info: http://answers.unity3d.com/questions/991552/unet-a-connection-has-already-been-set-as-ready-th.html
+			//base.OnClientSceneChanged(conn);
+			OnLobbyClientSceneChanged(conn);
 
 			HideLobbyUI();
 		}
+			
+		void CallOnClientEnterLobby()
+		{
+			OnLobbyClientEnter();
+			foreach (var player in lobbySlots)
+			{
+				if (player == null)
+					continue;
 
+				player.readyToBegin = false;
+				player.OnClientEnterLobby();
+			}
+		}
+
+		void CallOnClientExitLobby()
+		{
+			OnLobbyClientExit();
+			foreach (var player in lobbySlots)
+			{
+				if (player == null)
+					continue;
+
+				player.OnClientExitLobby();
+			}
+		}
+			
 
 		public override void OnClientConnect(NetworkConnection conn)
 		{
@@ -659,8 +673,6 @@ namespace Prototype.NetworkLobby
 			infoPanel.gameObject.SetActive(false);
 
 			conn.RegisterHandler(MsgKicked, KickedMessageHandler);
-
-//			StartTimeoutCountdown();		// TODO: here???
 
 			if (!NetworkServer.active)
 			{
@@ -675,6 +687,7 @@ namespace Prototype.NetworkLobby
 		{
 			base.OnClientDisconnect(conn);
 			ChangeTo(mainMenuPanel);
+			backDelegate = QuitLobby;
 		}
 
 		public override void OnClientError(NetworkConnection conn, int errorCode)

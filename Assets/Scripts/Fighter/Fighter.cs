@@ -737,14 +737,13 @@ namespace FightingLegends
 		public int StateFrameCount { get; private set; }	// frame count for each state (eg. windup, hit, recovery, cutoff)
 		public int HitFrameCount { get; private set; }	// frame count for each state, reset on each hit
 
-		// TODO: reinstte? private const int AIStateFrameTimeout = 90;			// 6 seconds at 15 FPS
+		// TODO: reinstate? private const int AIStateFrameTimeout = 90;			// 6 seconds at 15 FPS
 		private const int AIHitFrameTimeout = 30; //25;	
 
 		[HideInInspector]
 		public Move CurrentMove = Move.Idle;
 
 		public int AnimationFrameCount { get { return fightManager.AnimationFrameCount; } }
-//		public int GameFrameCount { get { return fightManager.FightFrameCount; } }
 
 		private int FightFrameCount = 0;
 
@@ -970,7 +969,7 @@ namespace FightingLegends
 			get
 			{
 				return (CurrentState == State.Medium_HitFrame || CurrentState == State.Medium_Recovery ||
-					CurrentState == State.Heavy_HitFrame || CurrentState == State.Heavy_Recovery) && CurrentMove != Move.Power_Attack; // && !Chained;	// TODO: && !Chained right?
+					CurrentState == State.Heavy_HitFrame || CurrentState == State.Heavy_Recovery) && CurrentMove != Move.Power_Attack;
 			}
 		}
 
@@ -1225,16 +1224,9 @@ namespace FightingLegends
 
 			if (FightManager.CombatMode == FightMode.Training)
 				return;
-
-//			bool isPlayer1 = IsPlayer1 || PreviewMoves;
-//			string layer = PreviewMoves ? previewLayer : null;		// TODO?  not working
 			
 			switch (state)
 			{
-//				case State.Idle:
-//					fightManager.StateFeedback(isPlayer1, "IDLE", false, true, layer);			// TODO: remove
-//					break;
-
 				case State.Light_HitFrame:
 					fightManager.StateFeedback(IsPlayer1, FightManager.Translate("firstHit"), true, false); //, layer);
 					break;
@@ -1683,7 +1675,7 @@ namespace FightingLegends
 			if (UnderAI)  		// listening but not interested in this
 				return;
 
-			if (! InTraining) // && !HasContinuation)			// TODO: is this ok?  execution of a continuation releases block
+			if (! InTraining)
 				CueMove(Move.ReleaseBlock);						// just to make sure!
 		}
 			
@@ -2087,7 +2079,7 @@ namespace FightingLegends
 			{
 				// catch-all in case AI stuck in a non-idle state for too long
 //				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && StateFrameCount > AIStateFrameTimeout)
-				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && HitFrameCount > AIHitFrameTimeout)
+				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && !FallenState && HitFrameCount > AIHitFrameTimeout)
 				{
 					var timeOut = "TIMEOUT: " + CurrentState + ", Continuation: " + NextContinuation + ", isFrozen: " + isFrozen;
 					Debug.Log(FullName + ": " + timeOut);
@@ -2117,8 +2109,8 @@ namespace FightingLegends
 			var damagePerTick = ProfileData.OnFireDamagePerTick;
 			var damage = damagePerTick + (damagePerTick * ProfileData.LevelFactor);
 
-			damage *= ProfileData.HitDamageFactor;		// TEMP: remove
-			damage *= fightManager.HitDamageFactor;		// TEMP: remove
+//			damage *= ProfileData.HitDamageFactor;		// TEMP: remove
+//			damage *= fightManager.HitDamageFactor;		// TEMP: remove
 
 			if (damage > ProfileData.SavedData.Health - 1.0f)			// can't die from being on fire!
 				damage = ProfileData.SavedData.Health - 1.0f;
@@ -2452,9 +2444,14 @@ namespace FightingLegends
 			}
 		}
 
-		public bool CanUnlock
+		public bool CanUnlockOrder
 		{
 			get { return IsLocked && UnlockOrder == FightManager.SavedGameStatus.FighterUnlockedLevel+1; }
+		}
+
+		public bool CanUnlockDefeats
+		{
+			get { return ProfileData.SavedData.CanUnlockDefeats; }
 		}
 
 		public int UnlockCoins
@@ -2565,9 +2562,6 @@ namespace FightingLegends
 				Opponent.PowerUpFreeze();
 
 			StartCoroutine(fightManager.PowerUpFeedback(FightManager.CombatMode == FightMode.Dojo ? FightingLegends.PowerUp.None : TriggerPowerUp, true, false));
-
-			// TODO: delete
-//				StartCoroutine(fightManager.PowerUpFeedback(FightManager.CombatMode == FightMode.Dojo ? FightingLegends.PowerUp.Ignite : TriggerPowerUp, true, false));
 
 			if (hitFlash != null)
 			{
@@ -2859,7 +2853,7 @@ namespace FightingLegends
 				if (Opponent != null && Opponent.IsBlockStunned)
 					Opponent.StopBlockStun();		// return to idle
 
-				CanContinue = true;					// TODO: conflict with combo?
+				CanContinue = true;	
 				CurrentPriority = Default_Priority;
 
 				if (Opponent != null)
@@ -2913,7 +2907,7 @@ namespace FightingLegends
 				if (Opponent != null && Opponent.IsBlockStunned)
 					Opponent.StopBlockStun();		// return to idle
 
-				CanContinue = true;				// TODO: conflict with combo/chain?
+				CanContinue = true;
 				CurrentPriority = Default_Priority;
 
 				if (Opponent != null)
@@ -2957,7 +2951,7 @@ namespace FightingLegends
 				if (Opponent != null && Opponent.IsBlockStunned)
 					Opponent.StopBlockStun();		// return to idle
 
-				CanContinue = true;				// TODO: conflict with combo/chain?
+				CanContinue = true;
 				CurrentPriority = Default_Priority;
 				performingPowerAttack = false;
 
@@ -3473,7 +3467,7 @@ namespace FightingLegends
 			// clear continuations + cued move, even if move failed
 			// continuation may be cued immediately on roman cancel for dojo playback at end of freeze, so don't clear it here
 			bool dojoShadowContinuation = IsDojoShadow && move == Move.Roman_Cancel && HasContinuation;		
-			ClearCuedMoves(!dojoShadowContinuation && move != Move.ReleaseBlock);  		// TODO: test ReleaseBlock condition
+			ClearCuedMoves(!dojoShadowContinuation && move != Move.ReleaseBlock); 
 
 			return MoveOk;
 		}
@@ -3619,7 +3613,7 @@ namespace FightingLegends
 			Attacking = false;
 
 			// if holding down, continue into block idle
-			if (HoldingBlock && ! ExpiredHealth)	// TODO: ExpiredHealth ok?
+			if (HoldingBlock && ! ExpiredHealth)
 				CueContinuation(Move.Block);
 			
 			// execute the move continuation if present
@@ -3629,9 +3623,6 @@ namespace FightingLegends
 
 		private void ContinueOrIdle()
 		{	
-//			if (! UnderAI)
-//				Debug.Log(FullName + " ContinueOrIdle  - HasContinuation = " + (HasContinuation && CheckGauge(NextContinuation)) + " [" + NextContinuation + "]");
-
 			if (HasContinuation && CheckGauge(NextContinuation))	 // final check for sufficient gauge (if required)	
 				ExecuteContinuation();
 			else
@@ -3855,7 +3846,7 @@ namespace FightingLegends
 			var newState = new FighterChangedData(this); 		// snapshot before changed
 
 			// global damage factor to change damage for all hits
-			damage *= ProfileData.HitDamageFactor;
+			damage *= Opponent.ProfileData.HitDamageFactor;
 			damage *= fightManager.HitDamageFactor;
 
 			if (Opponent != null && Opponent.CurrentMove == Move.Power_Attack)
@@ -3996,8 +3987,7 @@ namespace FightingLegends
 				case HitStrength.Light:
 //					if (!UnderAI)
 //						Debug.Log(FullName + ": Strike Light at [" + fightManager.AnimationFrameCount + ", CanStrikeLight = " + CanStrikeLight + ", continuing = " + continuing + ", State = " + CurrentState);
-					if (! CanStrikeLight && ! continuing)			// TODO: !continuing? HERE
-//					if (! (CanStrikeLight || continuing))			// TODO: !continuing? HERE
+					if (! CanStrikeLight && ! continuing)
 						return false;
 					break;
 
@@ -5116,9 +5106,9 @@ namespace FightingLegends
 
 			// update kudos (for both delivering and receiving hit), factoring in priority
 			if (IsPlayer2)
-				fightManager.DamageKudos(damage, CurrentPriority, false);		// more kudos for attacker (opponent received hit)
+				fightManager.DamageKudos(damage, CurrentPriority, false, hitBlocked);		// more kudos for attacker (opponent received hit)
 			else
-				fightManager.DamageKudos(damage, CurrentPriority, true);		// less kudos if on receiving end of opponent hit
+				fightManager.DamageKudos(damage, CurrentPriority, true, hitBlocked);		// less kudos if on receiving end of opponent hit
 
 			if (Opponent.OnDamageInflicted != null)
 				Opponent.OnDamageInflicted(damage);
@@ -6295,7 +6285,6 @@ namespace FightingLegends
 
 				if (hitFrameDictionary.ContainsKey(key))
 				{
-					// TODO: error or override based on priority?
 					Debug.Log(FullName + ": BuildHitFrameDictionary: key = " + key + " already in dictionary");
 				}
 					

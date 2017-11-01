@@ -286,7 +286,7 @@ namespace FightingLegends
 
 			Stats.text = "";
 
-			// TODO: why must P1 and P2 be reversed?
+			// P1 and P2 are reversed... (not sure why)
 			if (winner.IsPlayer1)
 				resultsAnimator.SetTrigger("Player2Winner");		// animate portrait entry from left
 			else
@@ -485,6 +485,8 @@ namespace FightingLegends
 			LevelLabel.gameObject.SetActive(false);
 			CoinsUp.gameObject.SetActive(false);
 			CoinsLabel.gameObject.SetActive(false);
+			VsVictoriesLabel.gameObject.SetActive(false);
+			VsVictoriesUpDown.gameObject.SetActive(false);
 
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);

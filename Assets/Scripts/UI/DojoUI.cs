@@ -398,7 +398,7 @@ namespace FightingLegends
 			{
 				FireExtraMove.MoveImage.gameObject.SetActive(fightManager.Player1.IsFireElement);
 				WaterExtraMove.MoveImage.gameObject.SetActive(fightManager.Player1.IsWaterElement
-					|| fighter.ProfileData.FighterClass == FighterClass.Boss || fightManager.Player1.FighterName == "Ninja");		// TODO: bit clumsy (otherwise both extras not active)
+					|| fighter.ProfileData.FighterClass == FighterClass.Boss || fightManager.Player1.FighterName == "Ninja");		// bit clumsy (otherwise both extras not active)
 			}
 		}
 
@@ -764,7 +764,6 @@ namespace FightingLegends
 			}
 			else
 			{
-//				shadow.WrongFeedbackFX();		// TODO: remove this!
 //				Debug.Log("ShadowExecuteNextMove: NOT EXECUTED nextMove = " + nextMove + ", Continued = " + NextMoveContinued + ", Chained = " + NextMoveChained + ". Comboed = " + NextMoveComboed + ", SpecialExtraTriggered = " + NextMoveSpecialExtra + ", frame = " + playbackFrameCount);
 //				Debug.Log(" --- STATE = " + shadow.CurrentState + ", comboTriggered = " + shadow.comboTriggered + ", chainedCounter = " + shadow.chainedCounter + ", chainedSpecial = " + shadow.chainedSpecial + ", specialExtraTriggered = " + shadow.specialExtraTriggered);
 
@@ -934,7 +933,7 @@ namespace FightingLegends
 				StartCoroutine(PulseMove(TapMove, pulseScale, false, true));
 
 			if (!playbackInProgress)	// don't record if shadow playing back (playback stopped on roman cancel or when shadow stunned or returns to idle)
-				StartCoroutine(RecordMove(TapMove, state.OldState, false, false, false, true, false));			// TODO: correct?
+				StartCoroutine(RecordMove(TapMove, state.OldState, false, false, false, true, false));
 		}
 
 		// record as move

@@ -783,7 +783,7 @@ namespace FightingLegends
 			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
 			{
 //				Debug.Log("FeedbackStateEnd: " + FeedbackFXType.Success.ToString());
-				if (CurrentStep != null && !CurrentStepIsCombo) // ) // TODO: check this!! 
+				if (CurrentStep != null && !CurrentStepIsCombo)
 					StartCoroutine(StartNextStep());	// next step in queue (or completion if this is the last step)
 			}
 			else if (PromptingForInput)

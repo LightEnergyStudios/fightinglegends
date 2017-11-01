@@ -134,7 +134,7 @@ namespace FightingLegends
 						break;
 
 					case SpotFXType.Miss:
-						animator.SetTrigger("Miss");		// TODO: what is this?
+						animator.SetTrigger("Miss");
 						break;
 
 					case SpotFXType.Counter:

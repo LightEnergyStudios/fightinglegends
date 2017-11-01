@@ -25,6 +25,7 @@ namespace FightingLegends
 		public Text trainingText;
 		public Text networkFightLabel;
 		public Text networkFightText;
+		public Text noNetworkText;
 
 		private FightManager fightManager;
 
@@ -34,7 +35,7 @@ namespace FightingLegends
 		private Animator animator;
 		bool entryTriggered = false;
 
-		private bool internetReachable = false;
+		private bool lanReachable = false;		// wi-fi needed for vs mode
 
 
 		public void Awake()
@@ -47,7 +48,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			CheckInternet();
+			CheckLANAvailability();
 
 			arcadeModeButton.onClick.AddListener(ArcadeMode);
 			survivalModeButton.onClick.AddListener(SurvivalMode);
@@ -91,6 +92,7 @@ namespace FightingLegends
 //			trainingText.text = FightManager.Translate("trainingTitle");
 			networkFightLabel.text = FightManager.Translate("vs");
 			networkFightText.text = FightManager.Translate("networkTitle");
+			noNetworkText.text = "[ " + FightManager.Translate("noNetwork") + " ]";
 
 			FightManager.OnThemeChanged += SetTheme;
 //
@@ -111,16 +113,15 @@ namespace FightingLegends
 			FightManager.OnThemeChanged -= SetTheme;
 		}
 
-		private void CheckInternet()
+		private void CheckLANAvailability()
 		{
-			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
-			networkFightButton.interactable = internetReachable;
+			lanReachable = (Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork);
+			networkFightButton.interactable = lanReachable;
+			noNetworkText.gameObject.SetActive(!lanReachable);
 		}
 
 		private void ArcadeMode()
 		{
-			FightManager.SavedGameStatus.CompletedBasicTraining = true;			// TODO: for testing purposes only
-
 			FightManager.CombatMode = FightMode.Arcade;
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;
 			fightManager.ModeSelectChoice = MenuType.ArcadeFighterSelect;		// triggers fade to black and new menu
@@ -128,8 +129,6 @@ namespace FightingLegends
 
 		private void SurvivalMode()
 		{
-			FightManager.SavedGameStatus.CompletedBasicTraining = true;			// TODO: for testing purposes only
-
 			FightManager.CombatMode = FightMode.Survival;
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;
 			fightManager.ModeSelectChoice = MenuType.SurvivalFighterSelect;	// triggers fade to black and new menu
@@ -137,8 +136,6 @@ namespace FightingLegends
 
 		private void ChallengeMode()
 		{
-			FightManager.SavedGameStatus.CompletedBasicTraining = true;			// TODO: for testing purposes only
-
 			FightManager.CombatMode = FightMode.Challenge;
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;
 
@@ -172,8 +169,6 @@ namespace FightingLegends
 
 		private void Training()
 		{
-//			FightManager.SavedGameStatus.CompletedBasicTraining = false;		// TODO: for testing purposes only
-
 			FightManager.CombatMode = FightMode.Training;
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;				// only after completed training
 

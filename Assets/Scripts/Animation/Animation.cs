@@ -46,12 +46,10 @@ namespace FightingLegends
 		private void OnEnable()
 		{
 			FightManager.OnFightPaused += PauseAnimation;
-//			FightManager.OnFightFrozen += PauseAnimation;		// TODO: ok?
 		}
 
 		private void OnDisable()
 		{
-//			FightManager.OnFightPaused -= PauseAnimation;		// TODO: ok?
 			FightManager.OnFightFrozen -= PauseAnimation;
 		}
 

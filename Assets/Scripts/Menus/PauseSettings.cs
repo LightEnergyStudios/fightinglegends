@@ -349,8 +349,6 @@ namespace FightingLegends
 
 		private void Training()
 		{
-			FightManager.SavedGameStatus.CompletedBasicTraining = false;		// TODO: for testing purposes only
-
 			FightManager.CombatMode = FightMode.Training;
 			FightManager.SavedGameStatus.NinjaSchoolFight = false;				// only after completed training
 

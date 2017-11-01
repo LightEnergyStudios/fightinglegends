@@ -19,10 +19,17 @@
 		<string name="fightEnded">FIGHT ENDED</string>
 
 		<string name="wiFiConnect">WI-FI CONNECT</string>
+		<string name="noNetwork">NO NETWORK</string>
 		<string name="hostAGame">HOST A GAME</string>
 		<string name="findAGame">FIND A GAME</string>
+		<string name="joinGame">JOIN GAME</string>
+		<string name="stopSearch">STOP SEARCH</string>
 		<string name="waitingForOpponent">WAITING FOR OPPONENT</string>
+		<string name="ready">READY</string>
 		<string name="join">JOIN</string>
+		<string name="connecting">CONNECTING</string>
+		<string name="scanning">SCANNING</string>
+		<string name="cancelled">CANCELLED</string>
 
         <string name="redLightHeading">RED = BLOCK</string>
         <string name="greenLightHeading">GREEN = FIGHT</string>

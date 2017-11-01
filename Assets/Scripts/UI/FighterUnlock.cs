@@ -21,6 +21,7 @@ namespace FightingLegends
 
 		public Text UnlockStatus;
 		public Text DefeatCount;
+		public Text DefeatsToDate;				// TODO: to be implemented (one day)
 		public Text ArcadeDifficulty;
 		public Text DefeatDifficulty;
 		public Text UnlockCoins;
@@ -61,6 +62,9 @@ namespace FightingLegends
 
 		private int CoinsToUnlock = 0;
 
+
+		private FightManager fightManager;
+
 		public delegate void OnFighterUnlockedDelegate(Fighter fighter);
 		public static OnFighterUnlockedDelegate OnFighterUnlocked;
 
@@ -74,6 +78,9 @@ namespace FightingLegends
 			panel.gameObject.SetActive(false);
 			panel.color = panelColour;
 			panelScale = panel.transform.localScale;
+
+			var fightManagerObject = GameObject.Find("FightManager");
+			fightManager = fightManagerObject.GetComponent<FightManager>();
 		}
 
 		private void OnEnable()
@@ -142,6 +149,7 @@ namespace FightingLegends
 				UnlockCoins.text = "";
 
 				DefeatCount.text = "";
+				DefeatsToDate.text = "";
 				ArcadeDifficulty.text = "";
 				DefeatDifficulty.text = "";
 			}
@@ -150,6 +158,7 @@ namespace FightingLegends
 				UnlockStatus.text = "";
 
 				DefeatCount.text = FightManager.Translate("defeat") + " x" + unlockDefeats;
+				DefeatsToDate.text = "";
 				ArcadeDifficulty.text = FightManager.Translate("arcadeDifficulty") + ":";
 				DefeatDifficulty.text = FightManager.Translate(unlockDifficulty.ToString().ToLower());
 				UnlockCoins.text = string.Format("{0:N0}", unlockCoins);
@@ -160,6 +169,7 @@ namespace FightingLegends
 			{
 				UnlockStatus.text = "???";
 				DefeatCount.text = "";
+				DefeatsToDate.text = "";
 				DefeatDifficulty.text = "";
 				UnlockCoins.text = "";
 			}
@@ -242,8 +252,6 @@ namespace FightingLegends
 
 				FighterStars.Play();
 
-//				Fireworks.Play();
-
 				if (UnlockSound != null)
 					AudioSource.PlayClipAtPoint(UnlockSound, Vector3.zero, FightManager.SFXVolume);
 			}
@@ -256,7 +264,7 @@ namespace FightingLegends
 			yield return null;
 		}
 
-		private IEnumerator Hide()
+		private IEnumerator Hide(bool checkUnlockNinja)
 		{
 			//			if (FadeSound != null)
 			//				AudioSource.PlayClipAtPoint(FadeSound, Vector3.zero, FightManager.SFXVolume);
@@ -276,6 +284,9 @@ namespace FightingLegends
 			panel.gameObject.SetActive(false);
 			panel.transform.localScale = panelScale;
 
+			if (checkUnlockNinja)
+				fightManager.CheckUnlockNinja();
+
 			yield return null;
 		}
 
@@ -286,7 +297,7 @@ namespace FightingLegends
 				if (Store.CanAfford(CoinsToUnlock))
 				{
 					FightManager.GetConfirmation(FightManager.Translate("confirmUseUnlockCoins"), CoinsToUnlock, DeductUnlockCoins);
-					StartCoroutine(Hide());
+					StartCoroutine(Hide(false));
 				}
 				else
 				{
@@ -299,7 +310,7 @@ namespace FightingLegends
 		private void DeductUnlockCoins()
 		{
 			FightManager.Coins -= CoinsToUnlock;
-			UnlockFighter(unlockedFighter);			// TODO: no congratulations
+			UnlockFighter(unlockedFighter);
 		}
 
 		private void PurchaseCoins()
@@ -313,9 +324,7 @@ namespace FightingLegends
 			if (OkSound != null)
 				AudioSource.PlayClipAtPoint(OkSound, Vector3.zero, FightManager.SFXVolume);
 
-			StartCoroutine(Hide());
+			StartCoroutine(Hide(true));
 		}
 	}
-
-
 }
