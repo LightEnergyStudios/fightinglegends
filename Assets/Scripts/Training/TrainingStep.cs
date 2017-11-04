@@ -34,6 +34,7 @@ namespace FightingLegends
 		public bool FreezeOnAI = false;					// freeze triggered by AI hit frame / state
 
 		public bool SuccessOnFreeze = true;				// success FX on freeze or straight to next step
+		public bool LowSuccess = false;					// success FX low on screen
 		public State NextStepOnState = State.Void;		// go to next step at start of this state
 
 		public bool InputReceived = false;				// to prevent repeated input - once is all that is required

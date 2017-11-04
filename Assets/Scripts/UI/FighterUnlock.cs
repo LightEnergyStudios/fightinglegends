@@ -58,7 +58,7 @@ namespace FightingLegends
 
 		private Fighter unlockedFighter;
 		private FighterCard fighterCard;
-		bool unlocked = false;
+		bool fighterUnlocked = false;
 
 		private int CoinsToUnlock = 0;
 
@@ -102,7 +102,7 @@ namespace FightingLegends
 		public void UnlockFighter(Fighter fighter)
 		{
 			unlockedFighter = fighter;
-			unlocked = true;
+			fighterUnlocked = true;
 
 			fighter.ProfileData.SavedData.IsLocked = false;
 			fighter.SaveProfile();
@@ -125,7 +125,7 @@ namespace FightingLegends
 		{
 			fighterCard = card;
 			unlockedFighter = fighter;
-			unlocked = false;
+			fighterUnlocked = false;
 
 			ShowLockedFighter(fighterCard.FighterName, fighterCard.IsLocked,
 				fighterCard.CanUnlock, fighterCard.UnlockCoins, fighterCard.UnlockDefeats, fighterCard.UnlockDifficulty);
@@ -135,13 +135,17 @@ namespace FightingLegends
 		{
 			FighterName.text = fighterName.ToUpper();
 
+			// can pay to unlock fighter anytime
+			UnlockButton.gameObject.SetActive(isLocked);
+			CoinPanel.gameObject.SetActive(isLocked);
+
 			// can't (pay to) unlock some fighters until others have been unlocked (UnlockLevel)
-			UnlockButton.gameObject.SetActive(! unlocked && canUnlock);
-			CoinPanel.gameObject.SetActive(!unlocked && canUnlock);
+//			UnlockButton.gameObject.SetActive(! fighterUnlocked && canUnlock);
+//			CoinPanel.gameObject.SetActive(!fighterUnlocked && canUnlock);
 
 			Lock.gameObject.SetActive(fighterCard.IsLocked);		// should always be locked - wouldn't be here otherwise!
 
-			if (unlocked)
+			if (fighterUnlocked)
 			{
 				FighterName.text += ("\n" + FightManager.Translate("unlocked", false, true));
 //				UnlockStatus.text = FightManager.Translate("congratulations", false, true, true);
@@ -170,6 +174,7 @@ namespace FightingLegends
 				UnlockStatus.text = "???";
 				DefeatCount.text = "";
 				DefeatsToDate.text = "";
+				ArcadeDifficulty.text = "";
 				DefeatDifficulty.text = "";
 				UnlockCoins.text = "";
 			}
@@ -243,7 +248,7 @@ namespace FightingLegends
 				yield return null;
 			}
 				
-			if (unlocked)
+			if (fighterUnlocked)
 			{
 				yield return new WaitForSeconds(unlockPauseTime);
 

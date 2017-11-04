@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using FightingLegends;
+using UnityEngine.Networking;
 
 namespace Prototype.NetworkLobby
 {
@@ -57,6 +58,7 @@ namespace Prototype.NetworkLobby
 			matchNameInput.text = FightingLegends.FightManager.SavedGameStatus.UserId;
 
 			lobbyManager.networkDiscovery.OnHostIP += HostIPReceived;
+			lobbyManager.OnQuitLobby += OnQuitLobby;
 
 			ipInput.text = "";
 			scanningText.text = FightManager.Translate("scanning") + "...";
@@ -67,12 +69,13 @@ namespace Prototype.NetworkLobby
 			EnableHostButton();
 			ConfigJoinButton();
 
-			lobbyManager.StopBroadcast();  		// stops listening and broadcasting
+			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
         }
 
 		public void OnDisable()
 		{
 			lobbyManager.networkDiscovery.OnHostIP -= HostIPReceived;
+			lobbyManager.OnQuitLobby -= OnQuitLobby;
 		}
 
 		private void EnableHostButton()
@@ -92,6 +95,8 @@ namespace Prototype.NetworkLobby
         {
 			fightCancelledText.gameObject.SetActive(false);
 
+			NetworkServer.Reset();
+
             lobbyManager.StartHost();
 			lobbyManager.BroadcastHostIP();			// SM
         }
@@ -106,7 +111,7 @@ namespace Prototype.NetworkLobby
 			// join game immediately host ip received
 			OnClickJoin();				// start client
 
-			lobbyManager.StopBroadcast();  		// stops listening and broadcasting
+			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
 			ConfigJoinButton();
 			EnableHostButton();	
 		}
@@ -118,21 +123,13 @@ namespace Prototype.NetworkLobby
 
 			if (listeningforHost)
 			{
-				lobbyManager.StopBroadcast();  		// stops listening and broadcasting
-				listeningforHost = false;
-				scanningText.gameObject.SetActive(false);
-				ConfigJoinButton();
-				EnableHostButton();	
+				StopListening();	
 				return;
 			}
 
 			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game
 			{
-				lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
-				listeningforHost = true;
-				scanningText.gameObject.SetActive(true);
-				ConfigJoinButton();
-				EnableHostButton();					// can't host if listening for host broadcast
+				StartListening();
 				return;
 			}
 			
@@ -146,6 +143,33 @@ namespace Prototype.NetworkLobby
 
             lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
         }
+
+
+		private void StartListening()
+		{
+//			NetworkServer.Reset();
+
+			lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
+			listeningforHost = true;
+			scanningText.gameObject.SetActive(true);
+			ConfigJoinButton();
+			EnableHostButton();					// can't host if listening for host broadcast
+		}
+			
+		private void StopListening()
+		{
+			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
+			listeningforHost = false;
+			scanningText.gameObject.SetActive(false);
+			ConfigJoinButton();
+			EnableHostButton();	
+		}
+
+		private void OnQuitLobby()
+		{
+			Debug.Log("OnQuitLobby");
+			StopListening();
+		}
 	
 
         public void OnClickDedicated()

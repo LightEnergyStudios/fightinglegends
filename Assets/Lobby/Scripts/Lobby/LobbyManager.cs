@@ -80,8 +80,8 @@ namespace Prototype.NetworkLobby
 
 		private NetworkFightManager networkFightManager;
 
-//		public delegate void LobbyBackDelegate();
-//		public LobbyBackDelegate OnLobbyBack;
+		public delegate void QuitLobbyDelegate();
+		public QuitLobbyDelegate OnQuitLobby;
 
 
 		void Start()
@@ -109,7 +109,7 @@ namespace Prototype.NetworkLobby
 
 		public void OnDestroy()
 		{
-			StopBroadcast();
+			StopDiscovery();
 		}
 			
 
@@ -141,9 +141,13 @@ namespace Prototype.NetworkLobby
 
 		public void HideLobbyUI()
 		{
+			StopDiscovery();		// stops listening and broadcasting
+//			StopAll();
+			StopHostClbk();
+			Network.Disconnect();		// ??
+			NetworkServer.Reset();		// ??
+
 			StartCoroutine(FadeLobbyUI(false));
-			StopBroadcast();		// stops listening and broadcasting
-			StopAll();
 		}
 
 		private IEnumerator FadeLobbyUI(bool fadeToBlack)
@@ -155,7 +159,6 @@ namespace Prototype.NetworkLobby
 				lobbyUIPanel.gameObject.SetActive(false);
 
 			ChangeTo(mainMenuPanel);
-			backDelegate = QuitLobby;
 			yield return null;
 		}
 
@@ -163,6 +166,9 @@ namespace Prototype.NetworkLobby
 		private void QuitLobby()
 		{
 			StartCoroutine(FadeQuitLobby());
+
+			if (OnQuitLobby != null)
+				OnQuitLobby();
 		}
 
 		private IEnumerator FadeQuitLobby()
@@ -194,7 +200,7 @@ namespace Prototype.NetworkLobby
 			networkDiscovery.StartAsClient();
 		}
 
-		public void StopBroadcast()
+		public void StopDiscovery()
 		{
 			if (networkDiscovery.running)
 				networkDiscovery.StopBroadcast();		// stops listening and broadcasting
@@ -281,7 +287,6 @@ namespace Prototype.NetworkLobby
 				else
 				{
 					ChangeTo(mainMenuPanel);
-					backDelegate = QuitLobby;
 				}
 
 				topPanel.ToggleVisibility(true);
@@ -318,6 +323,8 @@ namespace Prototype.NetworkLobby
             {
                 SetServerInfo("Offline", "None");
                 _isMatchmaking = false;
+
+				backDelegate = QuitLobby;
             }
         }
 
@@ -349,13 +356,12 @@ namespace Prototype.NetworkLobby
 			TryToAddPlayer();
 		}
 
-//		private void RemovePlayer() // LobbyPlayer player)
+//		private void RemovePlayer(LobbyPlayer player)
 //		{
-//			if (lobbyPlayer != null)
+//			if (player != null)
 //			{
-////				lobbyPlayer.RemovePlayer();
-//				lobbyPlayer.OnRemovePlayerClick();
-//				lobbyPlayer = null;
+////				player.RemovePlayer();
+//				player.OnRemovePlayerClick();
 //			}
 //		}
 
@@ -366,10 +372,7 @@ namespace Prototype.NetworkLobby
 				LobbyPlayer player = lobbySlots[i] as LobbyPlayer;
 
 				if (player.isLocalPlayer)
-					player.RemovePlayer();
-//					player.OnRemovePlayerClick();
-				
-//				player.RpcRemovePlayer();
+					player.OnRemovePlayerClick();
 			}
 		}
 
@@ -385,28 +388,17 @@ namespace Prototype.NetworkLobby
 		public void SimpleBackClbk()
 		{
 			Debug.Log("SimpleBackClbk");
-//			playersCancelled = true;
-//
-//			if (networkDiscovery.running)
-//				networkDiscovery.StopBroadcast();		// stops listening and broadcasting
-//
-//			StopAll();				// TODO: ok?
-//			RemoveAllPlayers();		// TODO: ok?
-//			RemoveLocalPlayer();			// TODO: ok?
-
 			ChangeTo(mainMenuPanel);
-			backDelegate = QuitLobby;
-
-//			if (OnLobbyBack != null)
-//				OnLobbyBack();
 		}
 
-		private void StopAll()
-		{
-			StopClientClbk();
-			StopHostClbk();
+//		private void StopAll()
+//		{
+//			StopClientClbk();
+//			StopHostClbk();
 //			StopServerClbk();
-		}
+//
+//			Network.Disconnect();
+//		}
 
 		public void StopHostClbk()
 		{
@@ -421,8 +413,8 @@ namespace Prototype.NetworkLobby
 				StopHost();
 			}
 				
+//			RemoveLocalPlayer();
 			ChangeTo(mainMenuPanel);
-			backDelegate = QuitLobby;
 		}
 
 		public void StopClientClbk()
@@ -435,8 +427,8 @@ namespace Prototype.NetworkLobby
 				StopMatchMaker();
 			}
 				
+//			RemoveLocalPlayer();
 			ChangeTo(mainMenuPanel);
-			backDelegate = QuitLobby;
 		}
 
 		public void StopServerClbk()
@@ -444,7 +436,6 @@ namespace Prototype.NetworkLobby
 			Debug.Log("StopServerClbk");
 			StopServer();
 			ChangeTo(mainMenuPanel);
-			backDelegate = QuitLobby;
 		}
 
 		class KickMsg : MessageBase { }
@@ -687,7 +678,6 @@ namespace Prototype.NetworkLobby
 		{
 			base.OnClientDisconnect(conn);
 			ChangeTo(mainMenuPanel);
-			backDelegate = QuitLobby;
 		}
 
 		public override void OnClientError(NetworkConnection conn, int errorCode)

@@ -3802,7 +3802,7 @@ namespace FightingLegends
 			if (UnderAI)
 				InTraining = false;
 			else if (resetTraining)
-				InTraining = !FightManager.SavedGameStatus.CompletedBasicTraining;
+				InTraining = FightManager.CombatMode == FightMode.Training; // !FightManager.SavedGameStatus.CompletedBasicTraining;
 
 			ResetFrameCounts();
 
@@ -6179,7 +6179,7 @@ namespace FightingLegends
 
 			if (takenLastFatalHit)		// taken last of fatal blows
 			{
-				if (! FightManager.SavedGameStatus.CompletedBasicTraining)
+				if (FightManager.CombatMode == FightMode.Training) //! FightManager.SavedGameStatus.CompletedBasicTraining)
 					Trainer.TrainingComplete();				// clear prompt / feedback etc.
 
 				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match

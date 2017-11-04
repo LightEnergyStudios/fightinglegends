@@ -15,6 +15,7 @@ namespace FightingLegends
 		private Image background;
 		public Color backgroundColour;	
 
+		public Image ReplacePanel;
 		public Text ReplaceMessage;
 		public Text walletCoins;
 		public Text teamCoins;
@@ -145,7 +146,7 @@ namespace FightingLegends
 			noText.text = FightManager.Translate("cancel");
 
 			ReplaceMessage.text = FightManager.Translate("replaceChallenge", false, true);
-			ReplaceMessage.gameObject.SetActive(false);
+			ReplacePanel.gameObject.SetActive(false);
 
 			InitLocationSiblings();
 		}
@@ -212,7 +213,7 @@ namespace FightingLegends
 
 			uploadChallenge = challenge;
 
-			ReplaceMessage.gameObject.SetActive(! string.IsNullOrEmpty(FightManager.UserLoginProfile.ChallengeKey));
+			ReplacePanel.gameObject.SetActive(! string.IsNullOrEmpty(FightManager.UserLoginProfile.ChallengeKey));
 
 			actionOnYes = onConfirm;
 			StartCoroutine(Show());

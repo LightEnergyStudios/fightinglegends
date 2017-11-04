@@ -12,7 +12,7 @@ namespace FightingLegends
 		public Button fightHouseButton;				// select challenge category, then house challenge to take on
 		public Button fightPlayerButton;			// select challenge category, then player challenge to take on
 		public Button uploadButton;
-		public Button resultButton;
+//		public Button resultButton;
 //		public Button powerUpButton;
 //		public Text powerUpText;			// shown on power-up button
 
@@ -80,6 +80,8 @@ namespace FightingLegends
 
 		public Text UploadingMessage;
 
+		private bool gettingUserProfile = false;
+
 		private bool upLoadingChallenge = false;
 		private bool UpLoadingChallenge
 		{
@@ -107,7 +109,7 @@ namespace FightingLegends
 			get
 			{
 //				bool challengeUploaded = FightManager.UserLoginProfile != null && FightManager.UserLoginProfile.ChallengeKey != "";
-				return internetReachable && selectedTeam.Count > 0 && !upLoadingChallenge; // && !challengeUploaded;
+				return internetReachable && selectedTeam.Count > 0 && !upLoadingChallenge && !gettingUserProfile; // && !challengeUploaded;
 			}
 		}
 
@@ -115,7 +117,7 @@ namespace FightingLegends
 
 		private ChallengeData ChallengeUploading = null;
 		private ChallengeCategory CategoryUploading = ChallengeCategory.None;
-		private bool challengeUploaded = false;
+		private bool challengeUploaded = false; 		// notational only
 		private static AIDifficulty defaultDifficulty = AIDifficulty.Medium; 
 		private static string defaultLocation = FightManager.dojo; 
 		private string selectedLocation = ""; 
@@ -405,6 +407,7 @@ namespace FightingLegends
 			FightManager.OnThemeChanged += SetTheme;
 			FightManager.OnUserProfileChanged += OnUserProfileChanged;			// check for challenge result
 
+			FirebaseManager.OnGetUserProfile += OnGetUserProfile;
 			FirebaseManager.OnChallengeSaved += OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted += OnChallengeAccepted;
 			FirebaseManager.OnChallengeRemoved += OnChallengeRemoved;
@@ -417,7 +420,7 @@ namespace FightingLegends
 			fightHouseButton.onClick.AddListener(delegate { ShowChallengesOverlay(false); });
 			fightPlayerButton.onClick.AddListener(delegate { ShowChallengesOverlay(true); });
 			uploadButton.onClick.AddListener(delegate { ConfirmUploadSelectedTeam(); });
-			resultButton.onClick.AddListener(delegate { DummyChallengeRoundResults(); });
+//			resultButton.onClick.AddListener(delegate { DummyChallengeRoundResults(); });
 //			powerUpButton.onClick.AddListener(delegate { PowerUpFighter(); });
 
 			ChallengeUpload.OnCancelClicked += OnUploadCancelled;
@@ -453,9 +456,11 @@ namespace FightingLegends
 			resultText.text = FightManager.Translate("result");
 
 			PopulateFighterCards();
-			EnableActionButtons();
 
+			gettingUserProfile = true;
 			FightManager.CheckForChallengeResult();		// OnGetUserProfile callback handles result
+
+			EnableActionButtons();
 
 //			if (FightManager.SavedGameStatus.UserId == "")		// button will register user if not already registered
 //				uploadButton.interactable = true;
@@ -468,6 +473,7 @@ namespace FightingLegends
 			FightManager.OnThemeChanged -= SetTheme;
 			FightManager.OnUserProfileChanged -= OnUserProfileChanged;	
 
+			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;
 			FirebaseManager.OnChallengeSaved -= OnChallengeUploaded;
 			FirebaseManager.OnChallengeAccepted -= OnChallengeAccepted;
 			FirebaseManager.OnChallengeRemoved -= OnChallengeRemoved;
@@ -482,7 +488,7 @@ namespace FightingLegends
 			fightPlayerButton.onClick.AddListener(delegate { ShowChallengesOverlay(true); });
 
 			uploadButton.onClick.RemoveListener(delegate { ConfirmUploadSelectedTeam(); });
-			resultButton.onClick.RemoveListener(delegate { DummyChallengeRoundResults(); });
+//			resultButton.onClick.RemoveListener(delegate { DummyChallengeRoundResults(); });
 
 			ChallengeUpload.OnCancelClicked -= OnUploadCancelled;
 
@@ -782,9 +788,9 @@ namespace FightingLegends
 		{
 			bool fightersInTeam = selectedTeam.Count > 0;
 			fightHouseButton.interactable = fightersInTeam;
-			fightPlayerButton.interactable = fightersInTeam;
+			fightPlayerButton.interactable = CanUploadChallenge; // fightersInTeam;
 			uploadButton.interactable = CanUploadChallenge;
-			resultButton.interactable = fightersInTeam;
+//			resultButton.interactable = fightersInTeam;
 		}
 
 
@@ -1383,8 +1389,8 @@ namespace FightingLegends
 
 		private void UploadChallenge()
 		{
-			if (challengeUploaded)
-				return;
+//			if (challengeUploaded)
+//				return;
 
 			if (ChallengeUploading == null)
 				return;
@@ -1398,8 +1404,8 @@ namespace FightingLegends
 
 		private void ReplaceChallenge()
 		{
-			if (challengeUploaded)
-				return;
+//			if (challengeUploaded)
+//				return;
 
 			if (ChallengeUploading == null)
 				return;
@@ -1443,9 +1449,9 @@ namespace FightingLegends
 					return;
 				}
 					
+				challengeUploaded = true;
 				statusText.text = FightManager.Translate("challengeUploaded");
 					
-
 				if (profile.ChallengeResult == "Won")
 					resultText.text = FightManager.Translate("youWon", false, true);
 				else if (profile.ChallengeResult == "Lost")
@@ -1539,6 +1545,30 @@ namespace FightingLegends
 //		}
 
 		// callback from Firebase
+		private void OnGetUserProfile(string userId, UserProfile profile, bool success)
+		{
+			if (userId == FightManager.SavedGameStatus.UserId)
+			{
+				if (success)
+				{
+					if (profile != null && !string.IsNullOrEmpty(profile.ChallengeKey))
+					{
+						challengeUploaded = true;
+						statusText.text = FightManager.Translate("challengeUploaded");
+					}
+					else
+					{
+						statusText.text = "";
+					}
+				}
+
+				gettingUserProfile = false;
+				EnableActionButtons();
+			}
+		}
+
+
+		// callback from Firebase
 		private void OnChallengeUploaded(ChallengeCategory category, ChallengeData challenge, bool success)
 		{
 			if (success)
@@ -1546,9 +1576,11 @@ namespace FightingLegends
 				if (UpLoadingChallenge)
 				{
 					UpLoadingChallenge = false;
-					challengeUploaded = true;
 
-					uploadText.text = FightManager.Translate("uploaded");
+					challengeUploaded = true;
+					statusText.text = FightManager.Translate("challengeUploaded");
+
+//					uploadText.text = FightManager.Translate("uploaded");
 //					uploadButton.interactable = false;
 				}
 				else 		// uploaded by someone else - refresh list

@@ -25,52 +25,11 @@ namespace FightingLegends
 		private float narrativeFadeTime = 0.25f;		// fade out after pause
 		private float imagePulseTime = 0.25f;			// narrative image
 		private float imagePulseScale = 2.0f;			// narrative image
-
-//		private const string trafficLightRedHeader = "RED = MOVE NOT POSSIBLE";
-//		private const string trafficLightRed = "Whilst you are under attack\n or already executing a move.";
-//		private const string trafficLightGreenHeader = "GREEN = EXECUTE A MOVE!";
-//		private const string trafficLightGreen = "Your opportunity to attack or block!\nA green flash indicates successful input!";
-//		private const string trafficLightYellowHeader = "YELLOW = RESET AVAILABLE!";
-//		private const string trafficLightYellow = "Escape an attack to strike back or cancel\na move and follow-up to extend a hit combo!";
-	
-//		private const string ninjaAtTheBeach = "What's a Ninja doing here at the beach!?\nLooks like she's not backing down!";
-//		private const string blockNinja = "Take THAT!\nI guess it's your turn!";
-//		private const string coolMoves = "Get ready!!\nI'll show you some COOL moves!";
-//		private const string tryItAgain = "That was GREAT!\nLet's try it again!";
-//		private const string offBalance = "She blocked the whole thing?\nI have to get her off balance!";
-//		private const string reallyMad = "Now she looks REALLY mad!";
-////		private const string ouchGauge = "Ouch!! I guess when we take damage\nthose gems below our health bar build up\nand give us access to other moves!";
-//		private const string ouchGauge = "OUCH!! So when we take damage those\ncrystals light up to enable other moves..!";
-//		private const string comesAgain = "Here she comes again!";
-//		private const string vengeanceGauge = "I have enough crystals to perform a\nvengeance attack! Let's FINISH THIS!!";
-
-//		private const string specialExtraComboNarrative = "Now practice your TIMING with\na COMBO at full speed!";
-//		private const string resetCounterComboNarrative = "Follow-up a RESET with a COUNTER ATTACK\nwhen you have enough crystals!";
-
-//		private const string tapLight = "TAP SCREEN TO ATTACK!";
-//		private const string tapMedium = "TAP AGAIN TO FOLLOW UP!";
-//		private const string tapHeavy = "TAP ONE MORE TIME\nFOR A HEAVY HIT!";
-//		private const string holdBlock = "HOLD DOWN TO BLOCK!";
-//		private const string swipeSpecial = "SWIPE FORWARD\nFOR A SPECIAL ATTACK!";
-////		private const string trySpecialAgain = "TRY ANOTHER SPECIAL ATTACK!";
-//		private const string swipeSpecialExtra = "SWIPE FORWARD AGAIN\nFOR A FINAL SMASH!";
-////		private const string swipeShove = "SWIPE DOWN TO SHOVE!";
-////		private const string swipeShove = "SWIPE DOWN TO SHOVE\nOPPONENT OUT OF BLOCK!";
-//		private const string swipeShove = "SHE BLOCKED IT!\nSWIPE DOWN TO SHOVE!";
-//		private const string specialAgain = "ATTACK AGAIN WHILE\nSHE IS OFF BALANCE!";
-//		private const string tapLightShoveStun = "TAP TO STRIKE WHILE\nTHE OPPONENT IS OFF BALANCE!";
-//		private const string tapMediumShoveStun = "TAP AGAIN FOR A SECOND IMPACT!";
-//		private const string tapHeavyShoveStun = "TAP ONE MORE TIME\nFOR A THIRD STRIKE!";
-////		private const string swipeChainSpecial = "YOU CAN SWIPE FORWARD HALFWAY THROUGH\nYOUR SECOND OR THIRD STRIKE... TRY IT!";
-//		private const string swipeChainSpecial = "YOU CAN SWIPE FORWARD HALFWAY\nTHROUGH YOUR 2nd OR 3rd STRIKE...";
-//		private const string swipeCounter = "SWIPE BACK TO COUNTER!";
-//		private const string swipeVengeance = "SWIPE BACK AND FORWARD\nFOR A VENGEANCE ATTACK!";
-
-//		private const string tryAgain = "TRY THAT AGAIN!";
 			
 		public bool IsFrozen { get; private set; }
 
 		private const float successOffset = 120.0f;		// to prevent centred feedback from obscuring fighters
+		private const float lowSuccessOffset = -120.0f;		// to prevent centred feedback from obscuring fighters
 		private const float feedbackYOffset = 0; // -100.0f;	// over fighters' legs
 		private const float feedbackPause = 0.75f;		// pause at end of each prompt feedback loop 
 
@@ -106,9 +65,6 @@ namespace FightingLegends
 			get { return promptingForInput; }
 			private set
 			{
-				//				if (promptingForInput == value)
-				//					return;
-
 				var valueChanged = promptingForInput != value;
 				promptingForInput = value;
 
@@ -202,7 +158,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				return;
 			
 			// subscribe to fighter changed events
@@ -221,7 +177,7 @@ namespace FightingLegends
 
 		private void OnDisable()
 		{
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				return;
 
 			fighter.OnStateStarted -= OnStateStart;
@@ -251,7 +207,8 @@ namespace FightingLegends
 			if (fightManager == null)
 				return;
 
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+//			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				return;
 			
 			if (fighter.UnderAI)
@@ -393,7 +350,7 @@ namespace FightingLegends
 
 		private IEnumerator StartNextStep()
 		{
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				yield break;
 			
 			if (fighter.UnderAI)
@@ -639,7 +596,8 @@ namespace FightingLegends
 			{
 				ClearPrompt();
 //				CancelPrompt();
-				fightManager.Success(successOffset); 	// next step at end of success fx
+				bool low = CurrentStep != null && CurrentStep.LowSuccess;
+				fightManager.Success(low ? lowSuccessOffset : successOffset); 	// next step at end of success fx
 			}
 			else 				// next step immediately
 			{
@@ -694,7 +652,7 @@ namespace FightingLegends
 
 		private void OnStateStart(FighterChangedData stateStartData) 				// Fighter.StateStartedDelegate signature
 		{
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				return;
 
 			var fighter = stateStartData.Fighter;
@@ -726,7 +684,7 @@ namespace FightingLegends
 
 		private void OnStateEnd(FighterChangedData stateEndData) 				// Fighter.StateEndedDelegate signature
 		{
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				return;
 
 			var fighter = stateEndData.Fighter;
@@ -754,7 +712,7 @@ namespace FightingLegends
 
 		private void OnLastHit(FighterChangedData lastHitData)
 		{
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				return;
 
 			var fighter = lastHitData.Fighter;
@@ -777,7 +735,7 @@ namespace FightingLegends
 		// start next step at end of success FX
 		private void FeedbackStateEnd(AnimationState endingState)
 		{
-			if (FightManager.SavedGameStatus.CompletedBasicTraining || ! fighter.InTraining)
+			if (FightManager.CombatMode != FightMode.Training || ! fighter.InTraining)
 				return;
 			
 			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
@@ -1021,7 +979,9 @@ namespace FightingLegends
 			if (success)
 			{
 				CancelPrompt();
-				fightManager.Success(successOffset); 	// StartNextStep at end of success feedback
+
+				bool low = CurrentStep != null && CurrentStep.LowSuccess;
+				fightManager.Success(low ? lowSuccessOffset : successOffset); 	// next step at end of success fx	
 			}
 			else
 				StartCoroutine(StartNextStep());
@@ -1059,7 +1019,7 @@ namespace FightingLegends
 		{
 			TrainingScript = new Queue<TrainingStep>();
 
-			if (FightManager.SavedGameStatus.CompletedBasicTraining)
+			if (FightManager.CombatMode != FightMode.Training)
 				return;
 
 			if (fighter.UnderAI)

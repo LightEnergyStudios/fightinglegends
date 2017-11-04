@@ -71,7 +71,7 @@ namespace FightingLegends
 
 		private void MenuChanged(MenuType newMenu, bool canGoBack, bool canSettings, bool showCoins, bool showKudos)
 		{
-//			Debug.Log("MenuChanged: " + newMenu + ", canGoBack = " + canGoBack + ", canPause = " + canPause);
+			Debug.Log("MenuChanged: " + newMenu + ", canGoBack = " + canGoBack + ", canSettings = " + canSettings);
 			backButton.gameObject.SetActive(canGoBack);
 			settingsButton.gameObject.SetActive(canSettings);
 			coinsPanel.gameObject.SetActive(showCoins);

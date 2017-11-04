@@ -1348,24 +1348,6 @@ namespace FightingLegends
 			fighterColours.Enqueue("P3");
 		}
 
-//		private void RegisterTrainingAINames()
-//		{
-//			TrainingAINames.Enqueue("Ninja");			// only ninja has tutorial punch!
-//
-////			TrainingAIColours.Enqueue("P1");
-////			TrainingAIColours.Enqueue("P2");
-////			TrainingAIColours.Enqueue("P3");
-//		}
-
-//		private void RegisterAINames()
-//		{
-//			AINames.Enqueue("Natalya");	
-//
-////			AIColours.Enqueue("P1");
-////			AIColours.Enqueue("P2");
-////			AIColours.Enqueue("P3");
-//		}
-
 		private void RegisterBossNames()
 		{
 			BossNames.Enqueue("Skeletron");
@@ -1488,7 +1470,6 @@ namespace FightingLegends
 
 				// reset
 				SelectedAIName = "";
-//				SelectedAIColour = "";
 			}
 			else
 			{
@@ -1507,14 +1488,13 @@ namespace FightingLegends
 					{
 						if (firstFighters || nextFighterColour == "P1")		// cycle to next fighter name
 						{
-							if (!SavedGameStatus.CompletedBasicTraining)
+//							if (!SavedGameStatus.CompletedBasicTraining)
+							if (CombatMode == FightMode.Training)
 							{
 								nextFighterName = TrainingAIName;
 							}
 							else
 							{
-//								nextFighterName = AINames.Dequeue();
-//								AINames.Enqueue(nextFighterName);
 								nextFighterName = fighterNames.Dequeue();
 								fighterNames.Enqueue(nextFighterName);
 							}
@@ -1565,17 +1545,6 @@ namespace FightingLegends
 			return fighter;
 		}
 
-//		public void SetFighters(Fighter player1, Fighter player2)
-//		{
-//			if (player1 != null && HasPlayer1)
-//				DestroyFighter(Player1);
-//			if (player2 != null && HasPlayer2)
-//				DestroyFighter(Player2);
-//			
-//			Player1 = player1;
-//			Player2 = player2;
-//		}
-
 
 		public static string NextFighterColour(string currentColour)
 		{
@@ -1597,16 +1566,6 @@ namespace FightingLegends
 				if (HasPlayer1 && Player1.FighterName == SelectedAIName)
 				{
 					return NextFighterColour(Player1.ColourScheme);
-
-//					switch (Player1.ColourScheme)
-//					{
-//						case "P1":
-//							return "P2";
-//						case "P2":
-//							return "P3";
-//						case "P3":
-//							return "P1";
-//					}
 				}
 
 				return "P1";
@@ -2513,7 +2472,11 @@ namespace FightingLegends
 				if (canUnlockLoser)
 				{
 					fighterUnlocked = true;
-					UnlockFighter(loser);
+					UnlockFighter(loser);		// will check for ninja unlock on hide
+				}
+				else
+				{
+					CheckUnlockNinja();
 				}
 			}
 
@@ -3777,7 +3740,7 @@ namespace FightingLegends
 			// restore coins, kudos, settings, inventory, fight status, etc
 			if (RestoreStatus())
 			{
-				Coins = 10000;		// TODO: remove this!!
+				Coins = 200000;		// TODO: remove this!!
 				
 				// TODO: restore fight status (2 fighters)
 			}
@@ -4055,7 +4018,7 @@ namespace FightingLegends
 
 			var navigatedFrom = CurrentMenuCanvas;
 
-//			Debug.Log("ActivateMenu: " + menu + ", Count = " + menuStack.Count + ", CurrentMenuCanvas = " + CurrentMenuCanvas + ", navigatedFrom = " + navigatedFrom + ", navigatingBack = " + navigatingBack);
+			Debug.Log("ActivateMenu: " + menu + ", Count = " + menuStack.Count + ", CurrentMenuCanvas = " + CurrentMenuCanvas + ", 4553" + navigatedFrom + ", navigatingBack = " + navigatingBack);
 
 			DeactivateCurrentMenu();
 			CurrentMenuCanvas = menu;		// not necessarily on stack (eg. pauseSettings)
@@ -4513,9 +4476,9 @@ namespace FightingLegends
 			FreezeFight();
 			worldMap.Show();
 
-			// doesn't go through ActivateMenu (not part of menu stack)
-			if (OnMenuChanged != null)
-				OnMenuChanged(MenuType.WorldMap, false, true, false, false);
+//			// doesn't go through ActivateMenu (not part of menu stack)
+//			if (OnMenuChanged != null)
+//				OnMenuChanged(MenuType.WorldMap, false, true, false, false);
 
 			if (curtain != null)
 			{

@@ -20,6 +20,8 @@ namespace FightingLegends
 		public Text musicHeading;
 		public Text sfxHeading;
 
+		public Text version;
+
 		public DifficultySelector difficultySelector;
 
 		// theme 
@@ -181,6 +183,9 @@ namespace FightingLegends
 			SetHudOnOff(hudToggle.isOn);
 			SetHintsOnOff(hintsToggle.isOn);
 			SetTrainingNarrativeLabel(trainingNarrativeToggle.isOn);
+
+//			version.text = "v " + FightManager.SavedGameStatus.VersionNumber;
+			version.text = "v " + Application.version;
 
 			bool fromFight = NavigatedFrom == MenuType.Combat || NavigatedFrom == MenuType.WorldMap || NavigatedFrom == MenuType.MatchStats;
 
