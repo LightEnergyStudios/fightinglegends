@@ -5861,6 +5861,9 @@ namespace FightingLegends
 			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
 			if (! ExpiredState)
 				yield break;
+//
+//			if (FightManager.CombatMode == FightMode.Training) //! FightManager.SavedGameStatus.CompletedBasicTraining)
+//				Opponent.Trainer.TrainingComplete();				// clear prompt / feedback etc.
 
 			if (secondLifeTriggered)	// reinstate health, reset UI and move and continue fighting
 			{
@@ -6172,6 +6175,9 @@ namespace FightingLegends
 		{
 			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
 
+			if (FightManager.CombatMode == FightMode.Training) //! FightManager.SavedGameStatus.CompletedBasicTraining)
+				Opponent.Trainer.TrainingComplete();			// clear prompt / feedback etc. -> NinjaSchoolFight
+			
 			if (! ExpiredState && ! takenLastFatalHit)
 				return;
 
@@ -6179,9 +6185,6 @@ namespace FightingLegends
 
 			if (takenLastFatalHit)		// taken last of fatal blows
 			{
-				if (FightManager.CombatMode == FightMode.Training) //! FightManager.SavedGameStatus.CompletedBasicTraining)
-					Trainer.TrainingComplete();				// clear prompt / feedback etc.
-
 				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match
 				takenLastFatalHit = false;
 
@@ -6344,7 +6347,10 @@ namespace FightingLegends
 		public void StopTraining()
 		{
 			if (Trainer != null && InTraining)
-				Trainer.StopTraining();
+			{
+				Trainer.CleanupTraining();
+				InTraining = false;
+			}
 		}
 
 		public virtual string WinQuote(string loserName)

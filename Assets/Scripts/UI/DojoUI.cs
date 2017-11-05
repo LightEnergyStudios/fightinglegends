@@ -129,8 +129,6 @@ namespace FightingLegends
 			playbackInProgress = false;
 
 			movesShowing = FightManager.SavedGameStatus.ShowDojoUI;
-//			MovesPanel.gameObject.SetActive(movesShowing);
-
 			ToggleMovesShowing();
 
 			if (movesShowing)
@@ -783,6 +781,19 @@ namespace FightingLegends
 		}
 
 
+		// update damage PB if new PB
+		private void UpdateDamagePB()
+		{
+			if (!shadow.UnderAI && totalRecordedDamage > FightManager.SavedGameStatus.BestDojoDamage)
+			{
+				FightManager.SavedGameStatus.BestDojoDamage = totalRecordedDamage;
+				ChainDamagePB.text = FightManager.Translate("best") + " " + FightManager.SavedGameStatus.BestDojoDamage;
+				StartCoroutine(PulseDamagePB());
+
+				FirebaseManager.PostLeaderboardScore(Leaderboard.DojoDamage, totalRecordedDamage);
+			}
+		}
+
 		private void OnStateStarted(FighterChangedData state)
 		{
 			if (state.Fighter != fighter)
@@ -814,21 +825,13 @@ namespace FightingLegends
 					}
 
 					// update damage PB if new PB
-					if (!shadow.UnderAI && totalRecordedDamage > FightManager.SavedGameStatus.BestDojoDamage)
-					{
-						FightManager.SavedGameStatus.BestDojoDamage = totalRecordedDamage;
-						ChainDamagePB.text = FightManager.Translate("best") + " " + FightManager.SavedGameStatus.BestDojoDamage;
-						StartCoroutine(PulseDamagePB());
-
-						FirebaseManager.PostLeaderboardScore(Leaderboard.DojoDamage, totalRecordedDamage);
-					}
+					UpdateDamagePB();
 				}
 			}
 			else if (state.NewState == State.Counter_Taunt)				// trigger counter attack!
 			{
 				if (!playbackInProgress && shadow.CanSpecial) 			// only if at idle
 					shadow.CueMove(Move.Special);	
-//					shadow.ExecuteMove(Move.Special, false);	
 			}
 		}
 
@@ -1061,12 +1064,16 @@ namespace FightingLegends
 			}
 		}
 
-		private void OnKnockOut(Fighter fighter)
+		 private void OnKnockOut(Fighter fighter)
 		{
 //			Debug.Log("OnKnockOut! " + fighter.FullName);
 
 			scrollingViewport = false;
 			recordingMove = false;
+
+			// update damage PB if new PB
+			if (fighter == shadow)		// shadow KO'd
+				UpdateDamagePB();
 
 			ResetRecordedMoves();
 			if (movesShowing)

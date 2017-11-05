@@ -315,7 +315,18 @@ namespace FightingLegends
 		private IEnumerator Player2StateFeedback;		// so coroutine can be interrupted and restarted
 
 		public int MatchBestOf;
-		public int EndMatchWins { get { return (MatchBestOf / 2) + 1; }}		// wins required to end match
+		public int EndMatchWins		// wins required to end match
+		{
+			get
+			{
+				if ((HasPlayer1 && Player1.ProfileData.FighterClass == FighterClass.Boss) ||
+						(HasPlayer2 && Player2.ProfileData.FighterClass == FighterClass.Boss))
+					return 1;
+
+				return (MatchBestOf / 2) + 1;
+			}
+		}
+
 		public int RoundNumber { get; private set; }
 		public int MatchCount { get; private set; }
 
@@ -2026,7 +2037,7 @@ namespace FightingLegends
 					Player1.ResetPosition();
 					Player1.ResetHealth();
 					Player1.Reveal();
-				
+
 					// player 2 is shadow of player1
 					Player2 = CreateFighter(SelectedFighterName, NextFighterColour(SelectedFighterColour), false, false, false);
 					Player2.ResetPosition(true);		// player 2 faces left
@@ -2142,7 +2153,6 @@ namespace FightingLegends
 
 			if (IsNetworkFight)
 			{
-//				yield return StartCoroutine(ShowModeSelectCanvas());
 				yield break;
 			}
 
@@ -2150,6 +2160,8 @@ namespace FightingLegends
 			{
 				yield break;
 			}
+
+			Debug.Log("NextMatch: winner = " + winner.FullName + " CombatMode = " + CombatMode);
 
 			// player won
 			if (CombatMode == FightMode.Arcade && ! worldTourCompleted) 	// world map to choose next location 	
@@ -2165,7 +2177,7 @@ namespace FightingLegends
 				{
 					CombatMode = FightMode.Arcade;
 					SavedGameStatus.NinjaSchoolFight = true;	// shows dojo-style move UI
-					SaveGameStatus();								// completed training!
+					SaveGameStatus();							// completed training!
 
 					gameUI.SetupCombatMode();					// title etc.
 					yield return StartCoroutine(RestartMatch());					
@@ -2605,6 +2617,12 @@ namespace FightingLegends
 				{
 					yield return StartCoroutine(curtain.CurtainUp());
 					curtain.gameObject.SetActive(false);
+				}
+
+				if (CombatMode == FightMode.Dojo)
+				{
+					Player1.UpdateGauge(Fighter.maxGauge, true);
+					Player2.UpdateGauge(Fighter.maxGauge, true);
 				}
 			}
 
@@ -4018,7 +4036,7 @@ namespace FightingLegends
 
 			var navigatedFrom = CurrentMenuCanvas;
 
-			Debug.Log("ActivateMenu: " + menu + ", Count = " + menuStack.Count + ", CurrentMenuCanvas = " + CurrentMenuCanvas + ", 4553" + navigatedFrom + ", navigatingBack = " + navigatingBack);
+//			Debug.Log("ActivateMenu: " + menu + ", Count = " + menuStack.Count + ", CurrentMenuCanvas = " + CurrentMenuCanvas + ", navigatedFrom = " + navigatedFrom + ", navigatingBack = " + navigatingBack);
 
 			DeactivateCurrentMenu();
 			CurrentMenuCanvas = menu;		// not necessarily on stack (eg. pauseSettings)
@@ -4445,13 +4463,13 @@ namespace FightingLegends
 			yield return null;
 		}
 
-		public void NewFightFillGauge()				// called OnEntryStart
+		public void NewFightFillGauge()				// called by OnEntryStart
 		{
 			Player1.UpdateGauge(4, false);					// temporarily, for entry animation
 			Player2.UpdateGauge(4, false);					// temporarily, for entry animation
 		}
 
-		public void NewFightEntryComplete()			// called OnEntryComplete
+		public void NewFightEntryComplete()			// called by OnEntryComplete
 		{
 			var gauge = FightManager.CombatMode == FightMode.Dojo ? Fighter.maxGauge : 0;
 

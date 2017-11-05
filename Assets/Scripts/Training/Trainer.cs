@@ -29,7 +29,7 @@ namespace FightingLegends
 		public bool IsFrozen { get; private set; }
 
 		private const float successOffset = 120.0f;		// to prevent centred feedback from obscuring fighters
-		private const float lowSuccessOffset = -120.0f;		// to prevent centred feedback from obscuring fighters
+		private const float lowSuccessOffset = -80.0f;		// to prevent centred feedback from obscuring fighters
 		private const float feedbackYOffset = 0; // -100.0f;	// over fighters' legs
 		private const float feedbackPause = 0.75f;		// pause at end of each prompt feedback loop 
 
@@ -226,9 +226,9 @@ namespace FightingLegends
 		}
 
 
-		public void StopTraining()
+		public void CleanupTraining()
 		{
-//			Debug.Log("StopTraining: " + fighter.FullName);
+			Debug.Log("CleanupTraining: " + fighter.FullName);
 
 			CleanupCombo();
 
@@ -242,7 +242,7 @@ namespace FightingLegends
 			
 			UnFreezeTraining();	
 			CancelPrompt();
-			fighter.InTraining = false;
+//			fighter.InTraining = false;
 
 			CombosStopListening();				// any combos in the training script stop listening to fighter state events
 		}
@@ -579,7 +579,9 @@ namespace FightingLegends
 				fightManager.TrainingCompleteKudos();
 			}
 
-			StopTraining();
+			CleanupTraining();
+
+			// fighter.InTraining remains true for NinjaSchoolFight
 		}
 
 
@@ -762,7 +764,8 @@ namespace FightingLegends
 
 		private void OnQuitFight()
 		{
-			StopTraining();		// cleanup
+			CleanupTraining();		// cleanup
+			fighter.InTraining = false;
 		}
 
 
@@ -1174,6 +1177,7 @@ namespace FightingLegends
 				GestureFX = FeedbackFXType.Swipe_Forward,
 				FreezeOnHit = true,				// last special hit
 				FreezeOnState = State.Special,	
+				LowSuccess = true,				// feedback low on screen
 			}
 			);
 
@@ -1193,7 +1197,8 @@ namespace FightingLegends
 				Prompt = FightManager.Translate("swipeSpecialExtra"),
 				GestureFX = FeedbackFXType.Swipe_Forward,
 				FreezeOnHit = true,
-				FreezeOnState = State.Special_Extra,	
+				FreezeOnState = State.Special_Extra,
+				LowSuccess = true,				// feedback low on screen
 			}
 			);
 
@@ -1245,6 +1250,7 @@ namespace FightingLegends
 				Title = "Special Extra Combo",
 //				Narrative = FightManager.Translate("specialExtraComboNarrative"),
 				TrafficLightColour = TrafficLight.None,
+				LowSuccess = true,				// feedback low on screen
 
 				Combo = new TrainingCombo {
 					ComboName = LMHComboName,
@@ -1310,6 +1316,7 @@ namespace FightingLegends
 //				Narrative = FightManager.Translate("resetCounterComboNarrative"),
 //				NarrativeSprite = feedbackUI.SwipeLeftSprite,
 				TrafficLightColour = TrafficLight.None,
+				LowSuccess = true,				// feedback low on screen
 
 				Combo = new TrainingCombo {
 					ComboName = ResetComboName,

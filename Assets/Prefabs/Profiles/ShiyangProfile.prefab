@@ -96,7 +96,7 @@ MonoBehaviour:
     AIDoNothingFactor: 1
     AIHealthBoostLevel: 250
     AIVengeanceBoostLevel: 2
-    HitDamageFactor: 10
+    HitDamageFactor: 1
     RomanCancelGauge: 1
     VengeanceGauge: 3
     CounterGauge: 2

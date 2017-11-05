@@ -4441,11 +4441,6 @@ Prefab:
       propertyPath: options
       value: 
       objectReference: {fileID: 5604}
-    - target: {fileID: 114000011511193482, guid: eec7f291c2c2242b69e216344e171c29,
-        type: 2}
-      propertyPath: HitDamageFactor
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: eec7f291c2c2242b69e216344e171c29, type: 2}
   m_IsPrefabParent: 0
