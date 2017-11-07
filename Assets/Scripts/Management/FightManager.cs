@@ -264,7 +264,7 @@ namespace FightingLegends
 		public const string spaceStation = "Space Station";
 
 		public const int NumberOfEarthLocations = 8;	// to enable space station
-		private bool worldTourCompleted = false;		// arcade mode, after winning match at last location or losing to AI
+		private bool worldTourCompleted = false;		// arcade mode, after winning match at last location (space station)
 
 		public bool PlayerCreatedChallenges = false;
 
@@ -1305,7 +1305,7 @@ namespace FightingLegends
 //				CancelFeedbackFX();
 //			}
 
-			CancelFeedbackFX();
+//			CancelFeedbackFX();
 
 			// relay event to any subscribers
 			if (OnFeedbackStateEnd != null)
@@ -2315,20 +2315,23 @@ namespace FightingLegends
 			Debug.Log("CompleteCurrentLocation: " + SelectedLocation);
 			Player1.ProfileData.SavedData.CompletedLocations.Add(SelectedLocation);
 
-			if (SelectedLocation == spaceStation)		// completed world tour
+			if (CompletedEarthLocations)
 			{
-				Player1.ProfileData.SavedData.WorldTourCompletions++;
-				FightManager.SavedGameStatus.WorldTourCompletions++;		// all fighters
-				FirebaseManager.PostLeaderboardScore(Leaderboard.ArcadeWorldTours, FightManager.SavedGameStatus.WorldTourCompletions);
+				if (SelectedLocation == spaceStation)		// completed world tour
+				{
+					Player1.ProfileData.SavedData.WorldTourCompletions++;
+					FightManager.SavedGameStatus.WorldTourCompletions++;		// all fighters
+					FirebaseManager.PostLeaderboardScore(Leaderboard.ArcadeWorldTours, FightManager.SavedGameStatus.WorldTourCompletions);
 
-				ResetCompletedLocations();
-				worldTourCompleted = true;					// to prevent returning to world map
+					ResetCompletedLocations();
+					worldTourCompleted = true;					// to prevent returning to world map
 
-				Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
-			}
-			else if (CompletedEarthLocations)		// space station enabled (last location)
-			{
-				
+					Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
+				}
+//				else
+//				{
+//					worldMap.EnableSpaceStation();
+//				}
 			}
 
 			Player1.SaveProfile();
@@ -3731,7 +3734,7 @@ namespace FightingLegends
 			if (CanSettings)
 			{
 				ActivateMenu(MenuType.PauseSettings);
-				ForwardAudio();
+//				ForwardAudio();
 			}
 				
 			SaveGameStatus();
@@ -3758,7 +3761,7 @@ namespace FightingLegends
 			// restore coins, kudos, settings, inventory, fight status, etc
 			if (RestoreStatus())
 			{
-				Coins = 200000;		// TODO: remove this!!
+				Coins = 99000;		// TODO: remove this!!
 				
 				// TODO: restore fight status (2 fighters)
 			}
@@ -4044,7 +4047,7 @@ namespace FightingLegends
 			if (! navigatingBack)
 			{
 				CurrentMenu.NavigatedFrom = navigatedFrom;
-				ForwardAudio();
+//				ForwardAudio();
 			}
 			else
 				BackAudio();
@@ -4114,7 +4117,8 @@ namespace FightingLegends
 			if (CurrentMenuCanvas != MenuType.None)
 				CurrentMenu.OnDeactivate += GoBack;
 
-			if (CurrentMenuCanvas != MenuType.Combat)		// fight music according to menu
+			// play menu music if not combat (music acording to location) and not pausesettings from combat
+			if (CurrentMenuCanvas != MenuType.Combat && !(CurrentMenuCanvas == MenuType.PauseSettings && navigatedFrom == MenuType.Combat))		// fight music according to menu
 				CurrentMenu.PlayMusic();
 			
 			// broadcast menu changed event

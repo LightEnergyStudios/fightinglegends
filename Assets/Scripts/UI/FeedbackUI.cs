@@ -126,7 +126,7 @@ namespace FightingLegends
 		{
 			if (feedbackFX != null)
 			{
-//				Debug.Log("TriggerFeedbackFX: " + feedback);
+//				Debug.Log("TriggerFeedbackFX: " + feedback + ", layer = " + layer);
 				feedbackFX.gameObject.SetActive(true);
 				feedbackFX.gameObject.layer = LayerMask.NameToLayer((layer != null) ? layer : fxLayer);
 

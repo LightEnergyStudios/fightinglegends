@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 222000012904979432}
   - component: {fileID: 114000011415738468}
   m_Layer: 14
-  m_Name: AntarcticaDot
+  m_Name: SpaceStationDot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -195,7 +195,7 @@ GameObject:
   - component: {fileID: 114000011937271060}
   - component: {fileID: 114000010072030210}
   m_Layer: 14
-  m_Name: AntarcticaButton
+  m_Name: SpaceStationButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1744,7 +1744,7 @@ MonoBehaviour:
   nigeriaButton: {fileID: 114000012702789778}
   chinaButton: {fileID: 114000013100358918}
   ghettoButton: {fileID: 114289175295757530}
-  antarcticaButton: {fileID: 114000010072030210}
+  spaceStationButton: {fileID: 114000010072030210}
   tokyoDot: {fileID: 114000010949705772}
   hongKongDot: {fileID: 114000013718580334}
   hawaiiDot: {fileID: 114652677733744358}
@@ -1753,7 +1753,7 @@ MonoBehaviour:
   nigeriaDot: {fileID: 114000011735413454}
   chinaDot: {fileID: 114000013098219286}
   ghettoDot: {fileID: 114000010983695338}
-  antarcticaDot: {fileID: 114000011415738468}
+  spaceStationDot: {fileID: 114000011415738468}
   currentLocale: {fileID: 114000010723539236}
   flightPath: {fileID: 198000011709456554}
   flightSpeed: 300

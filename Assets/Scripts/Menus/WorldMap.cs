@@ -17,7 +17,7 @@ namespace FightingLegends
 		public Button nigeriaButton;
 		public Button chinaButton;
 		public Button ghettoButton;
-		public Button antarcticaButton;
+		public Button spaceStationButton;
 
 		public Image tokyoDot;
 		public Image hongKongDot;
@@ -27,7 +27,7 @@ namespace FightingLegends
 		public Image nigeriaDot;
 		public Image chinaDot;
 		public Image ghettoDot;
-		public Image antarcticaDot;
+		public Image spaceStationDot;
 
 		public Image currentLocale;						// (yellow dot) plane?
 		private const float currentZOffset = -5.0f;
@@ -85,11 +85,9 @@ namespace FightingLegends
 			chinaButton.onClick.AddListener(FlyToChina);
 			ghettoButton.onClick.AddListener(FlyToGhetto);
 
-			antarcticaButton.onClick.AddListener(FlyToAntarctica);
+			spaceStationButton.onClick.AddListener(FlyToSpaceStation);
 
-			//TODO: reinstate!
-//			antarcticaButton.gameObject.SetActive((fightManager.CompletedEarthLocations));
-//			antarcticaDot.gameObject.SetActive((fightManager.CompletedEarthLocations));
+//			EnableSpaceStation();		// if completed earth locations
 
 			if (! FightManager.IsNetworkFight)
 				TickCompletedLocations();
@@ -109,7 +107,7 @@ namespace FightingLegends
 			chinaButton.onClick.RemoveListener(FlyToChina);
 			ghettoButton.onClick.RemoveListener(FlyToGhetto);
 
-			antarcticaButton.onClick.RemoveListener(FlyToAntarctica);
+			spaceStationButton.onClick.RemoveListener(FlyToSpaceStation);
 
 			UnTickAllLocations();
 		}
@@ -160,7 +158,7 @@ namespace FightingLegends
 					break;
 
 				case FightManager.spaceStation:
-					fightManager.WorldMapPosition = antarcticaDot.rectTransform.localPosition;
+					fightManager.WorldMapPosition = spaceStationDot.rectTransform.localPosition;
 					break;
 
 				case FightManager.dojo:
@@ -168,6 +166,12 @@ namespace FightingLegends
 					break;
 			}
 		}
+
+//		public void EnableSpaceStation()
+//		{
+//			spaceStationButton.interactable = fightManager.CompletedEarthLocations;
+////			spaceStationDot.gameObject.SetActive(fightManager.CompletedEarthLocations);
+//		}
 
 
 		private void FlyToTokyo()
@@ -242,13 +246,15 @@ namespace FightingLegends
 				StartCoroutine(FlyTo(hongKongDot.rectTransform.localPosition, FightManager.hongKong, "Hoi Lun"));
 		}
 
-		private void FlyToAntarctica()
+		private void FlyToSpaceStation()
 		{
+			if (! fightManager.CompletedEarthLocations)
+				return;
 			if (HasCompletedLocation(FightManager.spaceStation))
 				return;
 
 			if (! flying)
-				StartCoroutine(FlyTo(antarcticaDot.rectTransform.localPosition, FightManager.spaceStation, "Skeletron"));
+				StartCoroutine(FlyTo(spaceStationDot.rectTransform.localPosition, FightManager.spaceStation, "Skeletron"));
 		}
 
 
@@ -356,7 +362,7 @@ namespace FightingLegends
 					locationDot = hongKongDot;
 					break;
 				case FightManager.spaceStation:
-					locationDot = antarcticaDot;
+					locationDot = spaceStationDot;
 					break;
 			}
 

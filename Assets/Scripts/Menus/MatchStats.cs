@@ -9,6 +9,7 @@ namespace FightingLegends
 	public class MatchStats : MenuCanvas
 	{
 		public Image Background;				// black semi-transparent
+		public Image WinnerNamePanel;			// pink panel
 		public Text WinnerName;					// winner's name
 		public Image WinnerPhoto;				// place holder for winner sprite
 	
@@ -88,12 +89,14 @@ namespace FightingLegends
 		public Text WorldTourText;
 		public ParticleSystem WorldTourFireworks;
 		public AudioClip WorldTourSound;
+		public Image WorldTourCast;
 
 		private const float worldTourCongratsTime = 0.1f;
 
 		private List<ChallengeRoundResult> challengeResults;
 
 		private bool worldTourComplete = false;
+		private bool worldTourCongratsShowing = false;
 
 
 		public override bool CanNavigateBack { get { return false; } }
@@ -127,6 +130,8 @@ namespace FightingLegends
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
 			ContinueCoin.gameObject.SetActive(false);
+
+			worldTourCongratsShowing = false;
 		}
 
 		private void OnDisable()
@@ -148,19 +153,23 @@ namespace FightingLegends
 				}
 				else if (FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)
 				{
-//					if (winner != null && !winner.UnderAI)							// player won - back to mode select (eg. dojo)
-//						fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
 					if (winner != null)
 					{
 						if (!winner.UnderAI)							// player won - choose next location
 						{
-							if (worldTourComplete)
+//							WorldTourCongrats();		// TODO: remove!
+							if (worldTourCongratsShowing)
+							{
+								worldTourCongratsShowing = false;
 								fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
+							}
+							else if (worldTourComplete)
+								WorldTourCongrats();
 							else
 								fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
 						}
-//						else   // AI won - didn't wait for countdown or insert coin to continue
-//							fightManager.MatchStatsChoice = MenuType.ModeSelect;
+						else   			// AI won - didn't wait for countdown or insert coin to continue
+							fightManager.MatchStatsChoice = MenuType.ModeSelect;
 					}
 				}
 				else
@@ -211,8 +220,10 @@ namespace FightingLegends
 
 			worldTourComplete = completedWorldTour;
 			WorldTourPanel.SetActive(false);				// animated reveal
+			worldTourCongratsShowing = false;
 
-			WinnerStatsPanel.SetActive(!worldTourComplete);
+//			WinnerStatsPanel.SetActive(true); // !worldTourComplete);
+			EnableWinnerStats(true);
 
 			Reset();
 
@@ -293,10 +304,17 @@ namespace FightingLegends
 				resultsAnimator.SetTrigger("Player1Winner");		// animate portrait entry from right
 		}
 
+		private void EnableWinnerStats(bool enable)
+		{
+			WinnerStatsPanel.SetActive(enable);
+			WinnerNamePanel.gameObject.SetActive(enable);
+			WinnerPhoto.gameObject.SetActive(enable);
+		}
 
 		private IEnumerator WinnerStats()
 		{
-			WinnerStatsPanel.SetActive(true);
+//			WinnerStatsPanel.SetActive(true);
+			EnableWinnerStats(true);
 
 			var player = winner.UnderAI ? winner.Opponent : winner;
 			int kudosGained = (int)(FightManager.Kudos - FightManager.SavedGameStatus.FightStartKudos);
@@ -400,56 +418,56 @@ namespace FightingLegends
 		}
 
 
-		private IEnumerator DisplayWinnerStats()
-		{
-			yield return new WaitForSeconds(statsInterval);
-
-			Stats.text = string.Format("\nMATCHES WON: {0}", winner.ProfileData.SavedData.MatchesWon);
-			StatsAudio();
-			yield return new WaitForSeconds(statsInterval);
-			Stats.text += string.Format("\nMATCHES LOST: {0}", winner.ProfileData.SavedData.MatchesLost);
-			StatsAudio();
-
-			yield return new WaitForSeconds(statsInterval);
-
-			Stats.text += string.Format("\nROUNDS WON: {0}", winner.ProfileData.SavedData.RoundsWon);
-			StatsAudio();
-			yield return new WaitForSeconds(statsInterval);
-			Stats.text += string.Format("\nROUNDS LOST: {0}", winner.ProfileData.SavedData.RoundsLost);
-			StatsAudio();
-
-			yield return new WaitForSeconds(statsInterval);
-
-			Stats.text += string.Format("\nDELIVERED HITS: {0}", winner.ProfileData.SavedData.DeliveredHits);
-			StatsAudio();
-			yield return new WaitForSeconds(statsInterval);
-			Stats.text += string.Format("\nBLOCKED HITS: {0}", winner.ProfileData.SavedData.BlockedHits);
-			StatsAudio();
-
-			yield return new WaitForSeconds(statsInterval);
-
-			Stats.text += string.Format("\nHITS TAKEN: {0}", winner.ProfileData.SavedData.HitsTaken);
-			StatsAudio();
-			yield return new WaitForSeconds(statsInterval);
-			Stats.text += string.Format("\nHITS BLOCKED: {0}", winner.ProfileData.SavedData.HitsBlocked);
-			StatsAudio();
-
-			yield return new WaitForSeconds(statsInterval);
-
-			Stats.text += string.Format("\nDAMAGE INFLICTED: {0}", (int) winner.ProfileData.SavedData.DamageInflicted);
-			StatsAudio();
-			yield return new WaitForSeconds(statsInterval);
-			Stats.text += string.Format("\nDAMAGE SUSTAINED: {0}", (int) winner.ProfileData.SavedData.DamageSustained);
-			StatsAudio();
-
-			yield return new WaitForSeconds(statsInterval);
-
-			Stats.text += string.Format("\nLEVEL: {0} -> {1}", winner.ProfileData.SavedData.FightStartLevel, winner.ProfileData.SavedData.Level);
-			StatsAudio();
-
-//			inputAllowed = true;
-			yield return null;
-		}
+//		private IEnumerator DisplayWinnerStats()
+//		{
+//			yield return new WaitForSeconds(statsInterval);
+//
+//			Stats.text = string.Format("\nMATCHES WON: {0}", winner.ProfileData.SavedData.MatchesWon);
+//			StatsAudio();
+//			yield return new WaitForSeconds(statsInterval);
+//			Stats.text += string.Format("\nMATCHES LOST: {0}", winner.ProfileData.SavedData.MatchesLost);
+//			StatsAudio();
+//
+//			yield return new WaitForSeconds(statsInterval);
+//
+//			Stats.text += string.Format("\nROUNDS WON: {0}", winner.ProfileData.SavedData.RoundsWon);
+//			StatsAudio();
+//			yield return new WaitForSeconds(statsInterval);
+//			Stats.text += string.Format("\nROUNDS LOST: {0}", winner.ProfileData.SavedData.RoundsLost);
+//			StatsAudio();
+//
+//			yield return new WaitForSeconds(statsInterval);
+//
+//			Stats.text += string.Format("\nDELIVERED HITS: {0}", winner.ProfileData.SavedData.DeliveredHits);
+//			StatsAudio();
+//			yield return new WaitForSeconds(statsInterval);
+//			Stats.text += string.Format("\nBLOCKED HITS: {0}", winner.ProfileData.SavedData.BlockedHits);
+//			StatsAudio();
+//
+//			yield return new WaitForSeconds(statsInterval);
+//
+//			Stats.text += string.Format("\nHITS TAKEN: {0}", winner.ProfileData.SavedData.HitsTaken);
+//			StatsAudio();
+//			yield return new WaitForSeconds(statsInterval);
+//			Stats.text += string.Format("\nHITS BLOCKED: {0}", winner.ProfileData.SavedData.HitsBlocked);
+//			StatsAudio();
+//
+//			yield return new WaitForSeconds(statsInterval);
+//
+//			Stats.text += string.Format("\nDAMAGE INFLICTED: {0}", (int) winner.ProfileData.SavedData.DamageInflicted);
+//			StatsAudio();
+//			yield return new WaitForSeconds(statsInterval);
+//			Stats.text += string.Format("\nDAMAGE SUSTAINED: {0}", (int) winner.ProfileData.SavedData.DamageSustained);
+//			StatsAudio();
+//
+//			yield return new WaitForSeconds(statsInterval);
+//
+//			Stats.text += string.Format("\nLEVEL: {0} -> {1}", winner.ProfileData.SavedData.FightStartLevel, winner.ProfileData.SavedData.Level);
+//			StatsAudio();
+//
+////			inputAllowed = true;
+//			yield return null;
+//		}
 
 		private IEnumerator WinQuoteFadeIn()
 		{
@@ -478,7 +496,9 @@ namespace FightingLegends
 			WinnerName.gameObject.SetActive(false);
 			WinQuote.gameObject.SetActive(false);
 
-			WinnerStatsPanel.SetActive(false);
+//			WinnerStatsPanel.SetActive(false);
+			EnableWinnerStats(false);
+
 			KudosLabel.gameObject.SetActive(false);
 			KudosUp.gameObject.SetActive(false);
 			LevelUp.gameObject.SetActive(false);
@@ -492,6 +512,8 @@ namespace FightingLegends
 			InsertCoinStrip.gameObject.SetActive(false);
 
 			WorldTourPanel.gameObject.SetActive(false);
+
+			Stars.Stop();
 		}
 
 		public void PhotoAudio()
@@ -516,11 +538,11 @@ namespace FightingLegends
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
 				StartCoroutine(CycleInsertCoinText());
 			}
-			else if (! worldTourComplete)
+			else // if (! worldTourComplete)
 				StartCoroutine(WinnerStats());
 
-			if (worldTourComplete)
-				WorldTourCongrats();
+//			if (worldTourComplete)
+//				WorldTourCongrats();
 		}
 
 
@@ -559,30 +581,48 @@ namespace FightingLegends
 
 		private void WorldTourCongrats()
 		{
-			WinnerStatsPanel.SetActive(false);
+			inputAllowed = false;
+			EnableWinnerStats(false);
+			worldTourCongratsShowing = true;
 			fightManager.Success(0, "Curtain");		// top layer. AnimateWorldTourCongrats at end
 		}
 
 		private IEnumerator AnimateWorldTourCongrats()
 		{
-			WorldTourPanel.transform.localScale = Vector3.zero;
+//			WorldTourPanel.transform.localScale = Vector3.zero;
+
+			Vector3 castStartScale = new Vector3(0, 1, 1);
+			WorldTourCast.transform.localScale = castStartScale;
 			WorldTourPanel.SetActive(true);
+
 			CongratsText.text = FightManager.Translate("congratulations", false, true, true) + "!!";
 			WorldTourText.text = FightManager.Translate("completedWorldTour", false, true);
 
 			float t = 0.0f;
 
+//			while (t < 1.0f)
+//			{
+//				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
+//
+//				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+//				yield return null;
+//			}
+
+//			t = 0.0f;
+
 			while (t < 1.0f)
 			{
 				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
 
-				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+				WorldTourCast.transform.localScale = Vector3.Lerp(castStartScale, Vector3.one, t);
 				yield return null;
 			}
 
 			WorldTourFireworks.Play();
 			if (WorldTourSound != null)
 				AudioSource.PlayClipAtPoint(WorldTourSound, Vector3.zero, FightManager.SFXVolume);
+
+			Stars.Play();
 
 			inputAllowed = true;
 
@@ -680,6 +720,7 @@ namespace FightingLegends
 			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
 			{
 				StartCoroutine(AnimateWorldTourCongrats());
+//				inputAllowed = true;
 			}
 		}
 	}

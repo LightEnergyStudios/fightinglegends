@@ -5213,7 +5213,7 @@ namespace FightingLegends
 				return;
 
 			textureAnimator.SetTrigger("StopArmourDown");
-			fightManager.CancelFeedbackFX();
+//			fightManager.CancelFeedbackFX();
 			fightManager.StopStateFeedback(IsPlayer1);
 			fightManager.ClearStateFeedback(IsPlayer1);
 			ArmourDown = false; 
@@ -5225,7 +5225,7 @@ namespace FightingLegends
 				return;
 
 			textureAnimator.SetTrigger("StopArmourUp");
-			fightManager.CancelFeedbackFX();
+//			fightManager.CancelFeedbackFX();
 			fightManager.StopStateFeedback(IsPlayer1);
 			fightManager.ClearStateFeedback(IsPlayer1);
 			ArmourUp = false;
@@ -5237,7 +5237,7 @@ namespace FightingLegends
 				return;
 
 			textureAnimator.SetTrigger("StopOnFire");
-			fightManager.CancelFeedbackFX();
+//			fightManager.CancelFeedbackFX();
 			fightManager.StopStateFeedback(IsPlayer1);
 			fightManager.ClearStateFeedback(IsPlayer1);
 
@@ -5260,7 +5260,7 @@ namespace FightingLegends
 			textureAnimator.SetTrigger("StopHealthUp");
 			fightManager.StopStateFeedback(IsPlayer1);
 			fightManager.ClearStateFeedback(IsPlayer1);
-			fightManager.CancelFeedbackFX();
+//			fightManager.CancelFeedbackFX();
 			HealthUp = false;
 		}
 
@@ -5858,7 +5858,7 @@ namespace FightingLegends
 		// loser departs ...
 		private IEnumerator ExpireToNextRound()
 		{	
-			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
+//			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
 			if (! ExpiredState)
 				yield break;
 //

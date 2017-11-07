@@ -109,6 +109,7 @@ namespace FightingLegends
 			get
 			{
 //				bool challengeUploaded = FightManager.UserLoginProfile != null && FightManager.UserLoginProfile.ChallengeKey != "";
+				Debug.Log("CanUploadChallenge internetReachable = " + internetReachable + " gettingUserProfile = " + gettingUserProfile + " upLoadingChallenge = " + upLoadingChallenge);
 				return internetReachable && selectedTeam.Count > 0 && !upLoadingChallenge && !gettingUserProfile; // && !challengeUploaded;
 			}
 		}
@@ -201,6 +202,8 @@ namespace FightingLegends
 		public Sprite skeletronFrameSprite;
 		public Sprite ninjaFrameSprite;
 
+		private bool bossInTeam = false;			// must be last in team
+
 		public GameObject challengeButtonPrefab;		// for filling challenge viewports
 		public GameObject fighterButtonPrefab;			// for populating challenge buttons
 
@@ -270,15 +273,59 @@ namespace FightingLegends
 			UpdateTeamCost();
 			EnableActionButtons();
 
-			AddListeners();
+//			AddListeners();
 
 			StartCoroutine(AnimateCardEntry());
 		}
 
-		public void OnDestroy()
+		private void OnEnable()
 		{
+			//			Debug.Log("TeamSelect.OnEnable");
+			AddListeners();
+
+			CheckInternet();
+
+			LayerTeam();
+
+			uploadText.text = FightManager.Translate("upload");
+			resultText.text = FightManager.Translate("result");
+
+			PopulateFighterCards();
+
+			if (FightManager.SavedGameStatus.UserId != "")
+			{
+				gettingUserProfile = true;
+				FightManager.CheckForChallengeResult();		// OnGetUserProfile callback handles result
+			}
+
+			EnableActionButtons();
+
+			//			if (FightManager.SavedGameStatus.UserId == "")		// button will register user if not already registered
+			//				uploadButton.interactable = true;
+			//			else
+			//				uploadButton.interactable = false;				// until user profile retrieved - checks for existing challenge
+		}
+
+		private void OnDisable()
+		{
+			EmptyChallengeButtons(ChallengeCategory.Diamond);
+			EmptyChallengeButtons(ChallengeCategory.Gold);
+			EmptyChallengeButtons(ChallengeCategory.Silver);
+			EmptyChallengeButtons(ChallengeCategory.Bronze);
+			EmptyChallengeButtons(ChallengeCategory.Iron);
+
+			RestoreAllCards();			// to original positions
+
+			ChallengeUploading = null;
+			challengeUploaded = false;
+
 			RemoveListeners();
 		}
+
+//		public void OnDestroy()
+//		{
+//			RemoveListeners();
+//		}
 
 
 		private void PopulateFighterCards()
@@ -444,30 +491,6 @@ namespace FightingLegends
 			ironButton.onClick.AddListener(delegate { CategoryChosen(ChallengeCategory.Iron); });
 		}
 
-		private void OnEnable()
-		{
-//			Debug.Log("TeamSelect.OnEnable");
-
-			CheckInternet();
-
-			LayerTeam();
-
-			uploadText.text = FightManager.Translate("upload");
-			resultText.text = FightManager.Translate("result");
-
-			PopulateFighterCards();
-
-			gettingUserProfile = true;
-			FightManager.CheckForChallengeResult();		// OnGetUserProfile callback handles result
-
-			EnableActionButtons();
-
-//			if (FightManager.SavedGameStatus.UserId == "")		// button will register user if not already registered
-//				uploadButton.interactable = true;
-//			else
-//				uploadButton.interactable = false;				// until user profile retrieved - checks for existing challenge
-		}
-
 		private void RemoveListeners()
 		{
 			FightManager.OnThemeChanged -= SetTheme;
@@ -478,7 +501,6 @@ namespace FightingLegends
 			FirebaseManager.OnChallengeAccepted -= OnChallengeAccepted;
 			FirebaseManager.OnChallengeRemoved -= OnChallengeRemoved;
 			FirebaseManager.OnChallengesDownloaded -= OnChallengesDownloaded;
-//			FirebaseManager.OnGetUserProfile -= OnGetUserProfile;	
 			FirebaseManager.OnUserProfileSaved -= OnUserProfileSaved;
 
 //			Debug.Log("TeamSelect.RemoveListeners");
@@ -511,20 +533,6 @@ namespace FightingLegends
 			silverButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Silver); });
 			bronzeButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Bronze); });
 			ironButton.onClick.RemoveListener(delegate { CategoryChosen(ChallengeCategory.Iron); });
-		}
-
-		private void OnDisable()
-		{
-			EmptyChallengeButtons(ChallengeCategory.Diamond);
-			EmptyChallengeButtons(ChallengeCategory.Gold);
-			EmptyChallengeButtons(ChallengeCategory.Silver);
-			EmptyChallengeButtons(ChallengeCategory.Bronze);
-			EmptyChallengeButtons(ChallengeCategory.Iron);
-
-			RestoreAllCards();			// to original positions
-
-			ChallengeUploading = null;
-			challengeUploaded = false;
 		}
 			
 		private void OverlayHidden(Image panel, int overlayCount)
@@ -691,7 +699,7 @@ namespace FightingLegends
 
 			foreach (var teamMember in selectedTeam)
 			{
-				teamCost += Store.TeamMemberCoinValue(ConvertToTeamMember(teamMember), false);
+				teamCost += Store.TeamMemberCoinValue(ConvertToTeamMember(teamMember), true); // false);	//TODO: ok?
 			}
 
 			return teamCost;
@@ -731,6 +739,9 @@ namespace FightingLegends
 				selectedTeam.Remove(card);
 				card.InTeam = false;
 
+				if (card.FighterName == "Skeletron")
+					bossInTeam = false;					// must be last
+
 //				if (selectedTeam.Count > 0)
 //					powerUpText.text = "POWER-UP " + selectedTeam[ selectedTeam.Count-1 ].FighterName.ToUpper();	// last added to team
 //				else 
@@ -745,10 +756,19 @@ namespace FightingLegends
 			else 						// not in team so add
 			{
 //				var teamDifficulty = GetTeamDifficulty(selectedTeam);
+				if (bossInTeam)		// can't add any more
+				{
+					fightManager.WrongAudio();
+					yield break;
+				}
 
 				StartCoroutine(MoveCardToTeam(card));
 				selectedTeam.Add(card);
 				card.InTeam = true;
+
+				if (card.FighterName == "Skeletron")
+					bossInTeam = true;
+				
 //				powerUpText.text = "POWER-UP " + card.FighterName.ToUpper();
 
 //				if (addToTeamAudio != null)
