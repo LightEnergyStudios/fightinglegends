@@ -166,6 +166,12 @@ AnimationClip:
         inSlope: 0
         outSlope: 0
         tangentMode: 136
+      - serializedVersion: 2
+        time: 0.75
+        value: -73
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -731,6 +737,12 @@ AnimationClip:
       - serializedVersion: 2
         time: 0.6666667
         value: -71.3
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 136
+      - serializedVersion: 2
+        time: 0.75
+        value: -73
         inSlope: 0
         outSlope: 0
         tangentMode: 136

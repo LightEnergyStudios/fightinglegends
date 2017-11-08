@@ -167,12 +167,6 @@ namespace FightingLegends
 			}
 		}
 
-//		public void EnableSpaceStation()
-//		{
-//			spaceStationButton.interactable = fightManager.CompletedEarthLocations;
-////			spaceStationDot.gameObject.SetActive(fightManager.CompletedEarthLocations);
-//		}
-
 
 		private void FlyToTokyo()
 		{
@@ -256,6 +250,12 @@ namespace FightingLegends
 			if (! flying)
 				StartCoroutine(FlyTo(spaceStationDot.rectTransform.localPosition, FightManager.spaceStation, "Skeletron"));
 		}
+			
+//		public void EnableSpaceStation()
+//		{
+//			spaceStationButton.interactable = fightManager.CompletedEarthLocations;
+////			spaceStationDot.gameObject.SetActive(fightManager.CompletedEarthLocations);
+//		}
 
 
 		private IEnumerator FlyTo(Vector3 destination, string location, string fighterName)

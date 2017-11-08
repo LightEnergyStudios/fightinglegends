@@ -465,6 +465,7 @@ namespace FightingLegends
 			get { return SavedGameStatus.Coins; }
 			set
 			{
+//				Debug.Log("Coins: old " + SavedGameStatus.Coins + " new " + value);
 				if (value == SavedGameStatus.Coins)
 					return;
 
@@ -1305,7 +1306,7 @@ namespace FightingLegends
 //				CancelFeedbackFX();
 //			}
 
-//			CancelFeedbackFX();
+			CancelFeedbackFX();
 
 			// relay event to any subscribers
 			if (OnFeedbackStateEnd != null)
@@ -2212,22 +2213,22 @@ namespace FightingLegends
 		}
 
 
-		public void DummyChallengeResults(List<FighterCard> selectedTeam, List<FighterCard> AITeam)
-		{
-			ChallengeRoundResults = new List<ChallengeRoundResult>();
-
-			bool AIwon = false;
-
-			foreach (var fighter in selectedTeam)
-			{
-				if (AIwon)
-					ChallengeRoundResults.Add(new ChallengeRoundResult(selectedTeam[0], fighter, true));			// player2 won
-				else
-					ChallengeRoundResults.Add(new ChallengeRoundResult(fighter, selectedTeam[0], false));			// player1 won
-				
-				AIwon = ! AIwon;
-			}
-		}
+//		public void DummyChallengeResults(List<FighterCard> selectedTeam, List<FighterCard> AITeam)
+//		{
+//			ChallengeRoundResults = new List<ChallengeRoundResult>();
+//
+//			bool AIwon = false;
+//
+//			foreach (var fighter in selectedTeam)
+//			{
+//				if (AIwon)
+//					ChallengeRoundResults.Add(new ChallengeRoundResult(selectedTeam[0], fighter, true));			// player2 won
+//				else
+//					ChallengeRoundResults.Add(new ChallengeRoundResult(fighter, selectedTeam[0], false));			// player1 won
+//				
+//				AIwon = ! AIwon;
+//			}
+//		}
 
 
 		private void PayoutChallengePot(Fighter winner)
@@ -2326,7 +2327,7 @@ namespace FightingLegends
 					ResetCompletedLocations();
 					worldTourCompleted = true;					// to prevent returning to world map
 
-					Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
+//					Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
 				}
 //				else
 //				{

@@ -1525,11 +1525,11 @@ namespace FightingLegends
 		}
 
 
-		private void DummyChallengeRoundResults()
-		{
-			fightManager.DummyChallengeResults(selectedTeam, selectedAITeam);
-			StartCoroutine(fightManager.NextMatch(null));
-		}
+//		private void DummyChallengeRoundResults()
+//		{
+//			fightManager.DummyChallengeResults(selectedTeam, selectedAITeam);
+//			StartCoroutine(fightManager.NextMatch(null));
+//		}
 
 		public static ChallengeCategory DetermineCoinCategory(ChallengeData challenge)
 		{

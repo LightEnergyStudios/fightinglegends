@@ -142,8 +142,8 @@ namespace Prototype.NetworkLobby
 		public void HideLobbyUI()
 		{
 			StopDiscovery();		// stops listening and broadcasting
-//			StopAll();
-			StopHostClbk();
+			StopAll();
+//			StopHostClbk();
 			Network.Disconnect();		// ??
 			NetworkServer.Reset();		// ??
 
@@ -261,28 +261,28 @@ namespace Prototype.NetworkLobby
 				if (topPanel.isInGame)
 				{
 					ChangeTo(lobbyPanel);
-					if (_isMatchmaking)
-					{
-						if (conn.playerControllers[0].unetView.isServer)
-						{
-							backDelegate = StopHostClbk;
-						}
-						else
-						{
-							backDelegate = StopClientClbk;
-						}
-					}
-					else
-					{
-						if (conn.playerControllers[0].unetView.isClient)
-						{
-							backDelegate = StopHostClbk;
-						}
-						else
-						{
-							backDelegate = StopClientClbk;
-						}
-					}
+//					if (_isMatchmaking)
+//					{
+//						if (conn.playerControllers[0].unetView.isServer)
+//						{
+//							backDelegate = StopHostClbk;
+//						}
+//						else
+//						{
+//							backDelegate = StopClientClbk;
+//						}
+//					}
+//					else
+//					{
+//						if (conn.playerControllers[0].unetView.isClient)
+//						{
+//							backDelegate = StopHostClbk;
+//						}
+//						else
+//						{
+//							backDelegate = StopClientClbk;
+//						}
+//					}
 				}
 				else
 				{
@@ -391,14 +391,12 @@ namespace Prototype.NetworkLobby
 			ChangeTo(mainMenuPanel);
 		}
 
-//		private void StopAll()
-//		{
-//			StopClientClbk();
-//			StopHostClbk();
-//			StopServerClbk();
-//
-//			Network.Disconnect();
-//		}
+		private void StopAll()
+		{
+			StopClientClbk();
+			StopHostClbk();
+			StopServerClbk();
+		}
 
 		public void StopHostClbk()
 		{
@@ -457,7 +455,7 @@ namespace Prototype.NetworkLobby
 			base.OnStartHost();
 
 			ChangeTo(lobbyPanel);
-			backDelegate = StopHostClbk;
+//			backDelegate = StopHostClbk;
 			SetServerInfo("Hosting", networkAddress);
 		}
 
@@ -537,7 +535,7 @@ namespace Prototype.NetworkLobby
 				}
 			}
 
-			SimpleBackClbk();		// TODO: SM ok?
+//			SimpleBackClbk();		// TODO: SM ok?
 		}
 
 		public override void OnLobbyServerDisconnect(NetworkConnection conn)
@@ -553,7 +551,7 @@ namespace Prototype.NetworkLobby
 				}
 			}
 
-			SimpleBackClbk();		// TODO: SM ok?
+//			SimpleBackClbk();		// TODO: SM ok?
 		}
 
 
@@ -669,7 +667,7 @@ namespace Prototype.NetworkLobby
 			{
 				//only to do on pure client (not self hosting client)
 				ChangeTo(lobbyPanel);
-				backDelegate = StopClientClbk;
+//				backDelegate = StopClientClbk;
 				SetServerInfo("Client", networkAddress);
 			}
 		}

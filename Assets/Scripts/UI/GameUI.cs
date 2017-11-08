@@ -288,14 +288,6 @@ namespace FightingLegends
 			}
 
 			FightManager.OnReadyToFight += OnReadyToFight;
-
-//			FightManager.OnTriggerSplat += DoSplat;
-//			FightManager.OnHideSplat += HideSplat;
-//			FightManager.OnTriggerPaintStroke += DoPaintStroke;
-//			FightManager.OnHidePaintStroke += HidePaintStroke;
-
-//			FightManager.OnFeedbackStateStart += FeedbackStart;
-//			FightManager.OnFeedbackStateEnd += FeedbackEnd;
 		}
 
 		private void StopListening()
@@ -333,14 +325,6 @@ namespace FightingLegends
 			}
 
 			FightManager.OnReadyToFight -= OnReadyToFight;
-
-//			FightManager.OnTriggerSplat -= DoSplat;
-//			FightManager.OnHideSplat -= HideSplat;
-//			FightManager.OnTriggerPaintStroke -= DoPaintStroke;
-//			FightManager.OnHidePaintStroke -= HidePaintStroke;
-
-//			FightManager.OnFeedbackStateStart -= FeedbackStart;
-//			FightManager.OnFeedbackStateEnd -= FeedbackEnd;
 		}
 
 		public void SetFighters(bool active)

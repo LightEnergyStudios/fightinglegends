@@ -907,7 +907,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1000011698088088
 GameObject:
   m_ObjectHideFlags: 1
@@ -11877,6 +11877,7 @@ MonoBehaviour:
   TrainingButton: {fileID: 114278387007600690}
   NewUserButton: {fileID: 114031940051805624}
   DojoButtons: {fileID: 1910609949571310}
+  ButtonBackground: {fileID: 114347567925548018}
   BuyCoinsLabel: {fileID: 114156436148184892}
   ResetLevelLabel: {fileID: 114000013969102136}
   LevelUpLabel: {fileID: 114000011355086574}

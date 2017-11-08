@@ -40,6 +40,7 @@ namespace FightingLegends
 		public Button NewUserButton;
 
 		public GameObject DojoButtons;			// hidden when power-up overlay showing
+		public Image ButtonBackground;
 
 		public Text BuyCoinsLabel;	
 		public Text ResetLevelLabel;
@@ -728,6 +729,7 @@ namespace FightingLegends
 			fighterSelect.HideFighter();
 			StopSwipeFeedback();
 			DojoButtons.SetActive(false);
+			ButtonBackground.gameObject.SetActive(false);
 		}
 
 		private void OverlayHiding(Image overlay, int overlayCount)
@@ -754,6 +756,7 @@ namespace FightingLegends
 				}
 
 				DojoButtons.SetActive(true);
+				ButtonBackground.gameObject.SetActive(true);
 				StartSwipeFeedback();
 			}
 				
@@ -944,7 +947,8 @@ namespace FightingLegends
 
 		private void UseCoinsForSelectedPowerUp()
 		{
-			FightManager.Coins -= SelectedPowerUpCoins;
+//			FightManager.Coins -= SelectedPowerUpCoins;
+			// coins deducted by AreYouSure
 			AssignPowerUp();
 		}
 
@@ -970,7 +974,6 @@ namespace FightingLegends
 				AudioSource.PlayClipAtPoint(EquipSound, Vector3.zero, FightManager.SFXVolume);
 
 			PowerUpFighter.SaveProfile();
-
 			SetPowerUpSprites();
 		}
 			

@@ -138,7 +138,7 @@ namespace Prototype.NetworkLobby
             lobbyManager.networkAddress = ipInput.text;
             lobbyManager.StartClient();
 
-            lobbyManager.backDelegate = lobbyManager.StopClientClbk;
+//            lobbyManager.backDelegate = lobbyManager.StopClientClbk;
             lobbyManager.DisplayIsConnecting();
 
             lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
@@ -177,7 +177,7 @@ namespace Prototype.NetworkLobby
             lobbyManager.ChangeTo(null);
             lobbyManager.StartServer();
 
-            lobbyManager.backDelegate = lobbyManager.StopServerClbk;
+//            lobbyManager.backDelegate = lobbyManager.StopServerClbk;
 
             lobbyManager.SetServerInfo("Dedicated Server", lobbyManager.networkAddress);
         }
@@ -192,7 +192,7 @@ namespace Prototype.NetworkLobby
 				"", "", "", 0, 0,
 				lobbyManager.OnMatchCreate);
 
-            lobbyManager.backDelegate = lobbyManager.StopHostClbk;
+//            lobbyManager.backDelegate = lobbyManager.StopHostClbk;
             lobbyManager._isMatchmaking = true;
             lobbyManager.DisplayIsConnecting();
 
@@ -202,7 +202,7 @@ namespace Prototype.NetworkLobby
         public void OnClickOpenServerList()
         {
             lobbyManager.StartMatchMaker();
-			lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
+//			lobbyManager.backDelegate = lobbyManager.SimpleBackClbk;
             lobbyManager.ChangeTo(lobbyServerList);
         }
 

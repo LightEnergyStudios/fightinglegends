@@ -6000,7 +6000,7 @@ namespace FightingLegends
 						break;
 				}
 
-//				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
+				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
 
 				if (endOfMatch)
 				{
@@ -6031,8 +6031,8 @@ namespace FightingLegends
 							}
 							else
 							{
-								if (!winner.UnderAI) 							// player won
-									fightManager.CompleteCurrentLocation();		// sets worldTourCompleted if last location
+								if (!winner.UnderAI && FighterName != "Ninja") 					// player won - except if against ninja (in training)
+									fightManager.CompleteCurrentLocation();						// sets worldTourCompleted if last location
 								yield return StartCoroutine(fightManager.NextMatch(winner)); 	// show winner/stats then world map to fly to next match location/AI opponent
 							}
 							break;

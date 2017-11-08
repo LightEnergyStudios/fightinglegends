@@ -34,6 +34,10 @@ namespace FightingLegends
 
 		private const string fxLayer = "FeedbackFX";		// default layer
 
+		private const int comboFontSize = 26;				// starting size
+		private const int comboFontIncreaseEvery = 10;		// increment size every x combos
+		private const int comboFontIncrement = 2;			// font size increment
+
 		// level up feedback
 		public Image LevelUpPanel;
 		public Text LevelUpText;
@@ -177,6 +181,9 @@ namespace FightingLegends
 			var count = player1 ? Player1ComboCount : Player2ComboCount;
 			count.transform.localScale = Vector3.one;
 			count.text = comboCount.ToString();
+
+			int fontIncrements = comboCount / comboFontIncreaseEvery;
+			count.fontSize = comboFontSize + (fontIncrements * comboFontIncrement);
 
 			StartCoroutine(PulseText(count, pulseTextScale));
 

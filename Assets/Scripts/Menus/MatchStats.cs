@@ -91,7 +91,7 @@ namespace FightingLegends
 		public AudioClip WorldTourSound;
 		public Image WorldTourCast;
 
-		private const float worldTourCongratsTime = 0.1f;
+		private const float worldTourCongratsTime = 0.25f;
 
 		private List<ChallengeRoundResult> challengeResults;
 
