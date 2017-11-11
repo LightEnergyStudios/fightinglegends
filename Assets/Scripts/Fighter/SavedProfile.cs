@@ -64,6 +64,18 @@ namespace FightingLegends
 //		public bool TotalDefeats { get; set; }		// UnlockDefeats applies to total arcade defeats of all fighters (eg. Ninja not faced in arcade mode)
 		public AIDifficulty UnlockDifficulty { get; set; }	// difficulty level for unlock defeats
 
+
+		public string LastLocation
+		{
+			get
+			{
+				if (CompletedLocations == null || CompletedLocations.Count == 0)
+					return FightManager.hawaii;
+				
+				return CompletedLocations [CompletedLocations.Count - 1];
+			}
+		}
+
 		public bool CanUnlockDefeats
 		{
 			get

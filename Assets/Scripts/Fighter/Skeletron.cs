@@ -93,7 +93,7 @@ namespace FightingLegends
 			base.KnockOut();		// feedback FX + expiry countdown + profile data
 			CurrentState = State.Die;
 
-			KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+			KOFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 		}
 
 

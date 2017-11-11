@@ -3365,25 +3365,6 @@ namespace FightingLegends
 		}
 
 
-//		private void PopulateMoves()
-//		{
-//			if (! DumbAI)
-//				return;
-//
-//			moveQueue = new Queue<Move>();
-//
-//			moveQueue.Enqueue(Move.Shove);
-//			moveQueue.Enqueue(Move.Strike_Light);
-//			moveQueue.Enqueue(Move.Special);		// includes special extra
-//			moveQueue.Enqueue(Move.Shove);
-//			moveQueue.Enqueue(Move.Block);			// start block, will unblock after BlockFrames
-//			moveQueue.Enqueue(Move.Strike_Combo);	// light - medium - heavy combo
-//			moveQueue.Enqueue(Move.Shove);
-////			moveQueue.Enqueue(Move.Counter);		// taunt
-//			moveQueue.Enqueue(Move.Vengeance);
-//		}
-
-
 		#region event handlers
 
 		protected void OnHealthChanged(FighterChangedData newState) 		// Fighter.HealthChangedDelegate signature

@@ -2063,10 +2063,7 @@ namespace FightingLegends
 
 				// survival AI opponent starts fight at same level as Player1
 				if (CombatMode == FightMode.Survival)
-				{
 					SetSurvivalAILevel(false);				// AI same as fighter
-//					SetAIRandomPowerUps();					// after first 5 rounds
-				}
 
 				Player2.StartWatching();
 			}
@@ -2162,7 +2159,7 @@ namespace FightingLegends
 				yield break;
 			}
 
-			Debug.Log("NextMatch: winner = " + winner.FullName + " CombatMode = " + CombatMode);
+//			Debug.Log("NextMatch: winner = " + winner.FullName + " CombatMode = " + CombatMode);
 
 			// player won
 			if (CombatMode == FightMode.Arcade && ! worldTourCompleted) 	// world map to choose next location 	
@@ -2582,7 +2579,7 @@ namespace FightingLegends
 
 		public IEnumerator NextRound(bool resetRound) 
 		{
-			CancelFX();
+//			CancelFX();
 			ReadyToFight = false;
 
 			if (CombatMode == FightMode.Challenge)
@@ -4368,7 +4365,9 @@ namespace FightingLegends
 			GameUIVisible(false);
 
 			matchStats.Show();
-			matchStats.PlayMusic();
+
+			if (winner.IsPlayer1)		// also works for vs mode
+				matchStats.PlayMusic();
 
 			// doesn't go through ActivateMenu (not part of menu stack)
 			if (OnMenuChanged != null)

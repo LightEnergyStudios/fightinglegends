@@ -73,7 +73,7 @@ MonoBehaviour:
     Element2: 3
     ArmourDownDamageFactor: 2
     ArmourUpDamageFactor: 0.5
-    OnFireDamagePerTick: 1
+    OnFireDamagePerTick: 0.75
     HealthUpBoost: 10
     StrikeTravelTime: 0.1
     RecoilTravelTime: 0.1

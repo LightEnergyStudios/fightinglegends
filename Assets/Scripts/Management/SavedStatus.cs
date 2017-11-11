@@ -40,7 +40,7 @@ namespace FightingLegends
 		public bool ShowStateFeedback = true;				// show state feedback + fireworks
 		public bool ShowHud = true;							// show HUD
 		public bool ShowInfoBubbles = true;					// once only - uness reset
-		public bool ShowDojoUI = false;						// moves / animation
+		public bool ShowDojoMoves = false;					// moves / animation
 
 		public AIDifficulty Difficulty = AIDifficulty.Easy;
 		public UITheme Theme = UITheme.Water;

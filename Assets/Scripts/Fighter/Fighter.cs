@@ -2126,7 +2126,8 @@ namespace FightingLegends
 		{
 			// in the dojo, the shadow fighter constantly regenerates health
 			bool dojoRegenerate = FightManager.CombatMode == FightMode.Dojo && IsDojoShadow
-				&& !ExpiredHealth && !ExpiredState && !FallenState && !fightManager.FightFrozen;
+									&& !ExpiredHealth && !ExpiredState && !Opponent.ExpiredHealth && !Opponent.ExpiredState
+									&& !FallenState && !fightManager.FightFrozen;
 
 			// constantly increase health if fighter has the regenerator power-up
 			bool powerUpRegenerate = FightManager.CombatMode != FightMode.Arcade && StaticPowerUp == FightingLegends.PowerUp.Regenerator &&
@@ -3221,9 +3222,6 @@ namespace FightingLegends
 
 		private void TriggerSpotFX(SpotFXType FXType, bool x2 = false, bool randomRotation = true)
 		{
-//			if (fightManager.IsKnockOut)
-//				return;
-
 //			Debug.Log(FullName + ": TriggerSpotEffect " + FXType);
 			
 			if (x2)
@@ -3247,6 +3245,7 @@ namespace FightingLegends
 
 		public void CancelSpotFX()
 		{
+			Debug.Log(FullName + " CancelSpotFX");
 			if (spotFX != null)
 				spotFX.VoidState();
 		}
@@ -3260,9 +3259,6 @@ namespace FightingLegends
 				return;
 
 			smokeFX.TriggerSmoke(smoke, xOffset, yOffset);
-//
-//			if (smokeAnimator != null)
-//				smokeAnimator.SetTrigger(animatorTrigger);
 		}
 			
 
@@ -3323,9 +3319,6 @@ namespace FightingLegends
 				case Move.Power_Up:
 					return CanTriggerPowerUp;
 
-				case Move.Strike_Combo:
-					return InTraining;
-
 				case Move.Block:
 					return HasBlock && (CanBlock || CanContinue);
 
@@ -3357,7 +3350,7 @@ namespace FightingLegends
 		{
 			var executedFromState = CurrentState;			// for OnMoveExecuted event
 
-			if ((!fightManager.ReadyToFight || fightManager.EitherFighterExpired)) // && !PreviewMoves)
+			if ((!fightManager.ReadyToFight || fightManager.EitherFighterExpired))
 			{
 				MoveOk = false;
 			}
@@ -3394,11 +3387,6 @@ namespace FightingLegends
 					case Move.Power_Attack:
 						MoveOk = Strike(HitStrength.Power, continuing);
 						break;
-
-//					case Move.Strike_Combo:
-//						autoCombo = true;
-//						MoveOk = Strike(HitStrength.Light, continuing);
-//						break;
 
 					case Move.Shove:
 						MoveOk = Shove(continuing);
@@ -3553,7 +3541,6 @@ namespace FightingLegends
 				case Move.Strike_Light:
 				case Move.Strike_Medium:
 				case Move.Strike_Heavy:
-				case Move.Strike_Combo:
 					comboTriggered = false;
 					comboInProgress = false;
 					break;
@@ -4597,6 +4584,8 @@ namespace FightingLegends
 			}
 			else if (IsBlocking && Opponent.CurrentMove != Move.Power_Attack)		// can't block a power attack
 			{
+//				Debug.Log(FullName + " TakeHit: BLOCKING lastHit = " + lastHit + " alreadyExpired = " + alreadyExpired);
+
 				// hit blocked - sustain block damage and go into block stun
 				if (alreadyExpired)		// aleady expired, don't take damage
 				{
@@ -4635,9 +4624,12 @@ namespace FightingLegends
 					}
 					else			// this is the fatal blow (while blocking)
 					{		
+//						Debug.Log(FullName + " TakeHit: BLOCKING fatal lastHit = " + lastHit);
+
 						takenLastFatalHit = lastHit;	// expire after freeze if last hit
 
 						Opponent.TriggerSpotFX(SpotFXType.Guard_Crush);
+						Debug.Log(FullName + " Guard Crush!");
 						AudioSource.PlayClipAtPoint(ProfileData.counterTriggerSound, Vector3.zero, FightManager.SFXVolume);
 
 						if (takenLastFatalHit)
@@ -4646,12 +4638,11 @@ namespace FightingLegends
 						}
 						else
 						{
-//							ReleaseBlock(true);
 							StartHitStun(hitData);
 						}
 
 						if (FighterName != "Skeletron") // && ! FallenState)
-							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+							KOFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
 			}
@@ -4726,7 +4717,7 @@ namespace FightingLegends
 							StartHitStun(hitData);	// start appropriate hit stun animation according to type of hit
 
 						if (FighterName != "Skeletron") // && (! FallenState)				// skeletron only
-							KnockOutFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
+							KOFreeze();			// freeze for effect ... on next frame - a KO hit will freeze until KO feedback ends
 					}
 				}
 			}
@@ -5096,9 +5087,6 @@ namespace FightingLegends
 			damage += (damage * Opponent.ProfileData.LevelFactor);
 
 			bool expired = UpdateHealth(damage);
-
-//			if (expired)
-//				ReleaseBlock(true);
 
 			// show damage taken in UI
 			if (damage > 0 && fighterUI != null)
@@ -6000,7 +5988,7 @@ namespace FightingLegends
 						break;
 				}
 
-				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
+//				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
 
 				if (endOfMatch)
 				{
@@ -6067,15 +6055,12 @@ namespace FightingLegends
 			
 		protected virtual void KOState(HitFrameData hitData)
 		{
-			ReleaseBlock(true);
-
-			Debug.Log(FullName + ": KOState - State = " + CurrentState + ", CanContinue = " + CanContinue);
+//			Debug.Log(FullName + ": KOState - State = " + CurrentState + ", CanContinue = " + CanContinue);
 			Expire(hitData);				// expire immediately by default - skeletron falls to his knees to take one final blow
 		}
 
 		private void Expire(HitFrameData hitData)
 		{			
-//			ReleaseBlock(true);
 			ClearCuedMoves();
 
 			switch (hitData.TypeOfHit)
@@ -6152,9 +6137,10 @@ namespace FightingLegends
 		}
 
 
-		protected void KnockOutFreeze()
+		protected void KOFreeze()
 		{
-			Debug.Log(FullName + ": KnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
+//			Debug.Log(FullName + ": KOFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
+			ReleaseBlock();
 
 			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
 			fightManager.TriggerFeedbackFX(FeedbackFXType.KO);
@@ -6173,7 +6159,7 @@ namespace FightingLegends
 		// called at end of KO feedback / freeze
 		public void EndKnockOutFreeze()
 		{
-			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
+//			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
 
 			if (FightManager.CombatMode == FightMode.Training) //! FightManager.SavedGameStatus.CompletedBasicTraining)
 				Opponent.Trainer.TrainingComplete();			// clear prompt / feedback etc. -> NinjaSchoolFight

@@ -58,14 +58,15 @@ namespace FightingLegends
 		private const float minRecordedMoveAlpha = 0.2f;
 		private const float playbackMoveAlpha = 0.5f;	// dimmed when played back
 		private const float dimmedMoveAlpha = 0.25f;	// dimmed to hilight next move
-		private const float recordMoveTime = 0.35f;		// image animation when adding to chain
+		private const float recordMoveTime = 0.5f; // 0.35f;		// image animation when adding to chain
 		private const float recordMoveScale = 0.5f;		// image animation when adding to chain
 		private const float playbackMoveTime = 0.4f;	// image animation when playing back move
 		private const float scrollMovesTime = 0.25f;	// when scrolling recorded moves
 		private bool recordingMove = false;
+		private const float recordedMoveOffset = 50.0f; // for animation of recorded move image
 
 		private const float pauseBeforePlayback = 1.0f; // seconds pause between record and playback
-		private bool playbackPause = false;				// during pause before playback
+//		private bool playbackPause = false;				// during pause before playback
 
 		private bool recordingInProgress = false;		// recording fighter moves for opponent playback
 		private bool playbackInProgress = false;		// under attack from 'shadow of self'...  =∫
@@ -90,6 +91,9 @@ namespace FightingLegends
 
 		private const float recordPlaybackHighOffsetY = 145.0f;		// move up if moves not showing 
 		private const float recordPlaybackLowOffsetY = 70.0f;		// move down if moves showing 
+
+		private const float followUpHighOffsetY = 136.0f;			// move up if moves not showing 
+		private const float followUpLowOffsetY = 66.0f;				// move down if moves showing 
 
 		private Fighter fighter = null;					// Player1
 		private Fighter shadow = null;					// Player2
@@ -122,17 +126,20 @@ namespace FightingLegends
 			StartCoroutine(StopShadowPlayback(false));
 			recordedMoves = new List<RecordedMove>();
 
-			ResetRecordedMoves();
+			ClearRecordedMoves();
 			StartCoroutine(ScrollMovesToTop(true));
 
 			recordingInProgress = false;
 			playbackInProgress = false;
 
-			movesShowing = FightManager.SavedGameStatus.ShowDojoUI;
-			ToggleMovesShowing();
+			movesShowing = FightManager.SavedGameStatus.ShowDojoMoves;
+
+			ConfigMovesShowing();
+			ShowMovesButton.isOn = movesShowing;
 
 			if (movesShowing)
 				DisableMoves();
+			
 //			GetComponent<Animator>().enabled = true;		// enter prompts
 
 			if (StateFeedbackOnly)							// no recording and playback
@@ -168,8 +175,12 @@ namespace FightingLegends
 					SetMoveLabels();
 				
 				StartListening();
+
 				SetFighterProfile();
-				ResetRecordedMoves();
+				ClearRecordedMoves();
+
+				ShowMovesButton.isOn = movesShowing;
+				ConfigMovesShowing();
 
 				if (movesShowing)
 					SyncStateMoves(true);
@@ -294,7 +305,8 @@ namespace FightingLegends
 
 				if (executeNextMove && ! ShadowExecuteNextMove())		// eg. not enough gauge
 				{
-					ResetRecordedMoves();
+					StartCoroutine(StopShadowPlayback(false));
+					ClearRecordedMoves();
 				}
 
 				if (shadowBlocking && shadowBlockFramesRemaining == 0)
@@ -424,6 +436,7 @@ namespace FightingLegends
 			ChainedFeedback.text = feedback;
 		}
 			
+		// 'follow-up'
 		private void ChainFeedback()
 		{
 			// don't show follow-up prompt if already set
@@ -876,7 +889,7 @@ namespace FightingLegends
 					else
 						StartCoroutine(RecordMove(moveUI, fighter.CurrentState, false, true, false, false, false));
 				}
-//					StartCoroutine(RecordMove(moveUI, fighter.CurrentState, false, true, false, false, false));
+
 			}
 
 			string moveLabel = "";
@@ -992,8 +1005,8 @@ namespace FightingLegends
 			// fighter roman cancel stops playback
 			if (playbackInProgress)
 			{
-//				StartCoroutine(StopShadowPlayback(false));
-				ResetRecordedMoves();
+				StartCoroutine(StopShadowPlayback(false));
+				ClearRecordedMoves();
 			}
 		}
 
@@ -1075,7 +1088,8 @@ namespace FightingLegends
 			if (fighter == shadow)		// shadow KO'd
 				UpdateDamagePB();
 
-			ResetRecordedMoves();
+			StartCoroutine(StopShadowPlayback(false));
+			ClearRecordedMoves();
 			if (movesShowing)
 				DisableMoves();
 		}
@@ -1098,7 +1112,7 @@ namespace FightingLegends
 				if (playbackInProgress)
 				{
 					StartCoroutine(StopShadowPlayback(true));
-					ResetRecordedMoves();
+					ClearRecordedMoves();
 				}
 				else if (autoShadowPlayback && RecordedMoveCount > 0)
 				{
@@ -1123,7 +1137,8 @@ namespace FightingLegends
 			
 			if (playbackInProgress && NextMoveIsLast)		// stop playback if power-up is last move - hasn't stepped on after move execution yet
 			{
-				ResetRecordedMoves();
+				StartCoroutine(StopShadowPlayback(false));
+				ClearRecordedMoves();
 //				shadow.ResetMove(false);		// resets powerUpTriggered flag, clears cued moves, returns to idle, etc
 			}
 			else 
@@ -1138,7 +1153,7 @@ namespace FightingLegends
 			if (playbackInProgress)		// knocked out of playback
 			{
 				StartCoroutine(StopShadowPlayback(false));
-				ResetRecordedMoves();
+				ClearRecordedMoves();
 			}
 		}
 
@@ -1150,7 +1165,7 @@ namespace FightingLegends
 			if (playbackInProgress)		// shoved out of playback
 			{
 				StartCoroutine(StopShadowPlayback(false));
-				ResetRecordedMoves();
+				ClearRecordedMoves();
 			}
 		}
 			
@@ -1162,7 +1177,7 @@ namespace FightingLegends
 			if (playbackInProgress)		// hit while blocking
 			{
 				StartCoroutine(StopShadowPlayback(false));
-				ResetRecordedMoves();
+				ClearRecordedMoves();
 			}
 		}
 
@@ -1234,8 +1249,9 @@ namespace FightingLegends
 			{
 				while (recordingMove)		// wait until animation finished
 					yield return null;
-				
-				ResetRecordedMoves();
+
+				StartCoroutine(StopShadowPlayback(false));
+				ClearRecordedMoves();
 				StartCoroutine(ScrollMovesToTop());
 
 				StartRecording();
@@ -1261,7 +1277,8 @@ namespace FightingLegends
 			// create a new image based on the last move button
 			var moveImage = move.DuplicateImage;
 
-			moveImage.transform.SetParent(transform);
+			moveImage.transform.SetParent(MovesPanel.transform);
+//			moveImage.transform.SetParent(transform);
 			moveImage.transform.localScale = Vector3.one;	
 
 			ScrollViewportIfFull();
@@ -1272,7 +1289,8 @@ namespace FightingLegends
 				var targetScale = new Vector3(recordMoveScale, recordMoveScale, recordMoveScale);
 
 				float t = 0;
-				Vector3 startPosition = move.MoveImage.rectTransform.localPosition;						// position of move button image
+				var movePosition = move.MoveImage.transform.position;
+				Vector3 startPosition = new Vector3(movePosition.x, movePosition.y - recordedMoveOffset, movePosition.z); // move.MoveImage.transform.localPosition;						// position of move button image
 				Vector3 targetPosition = ChainMovePosition(reverse ? 1 : RecordedMoveCount, true);		// centre of first / next position in viewport
 				Color startColour = Color.white;
 				Color targetColour = new Color(moveImage.color.r, moveImage.color.g, moveImage.color.b, moveImage.color.a * playbackMoveAlpha);
@@ -1281,7 +1299,7 @@ namespace FightingLegends
 				{
 					t += Time.deltaTime * (Time.timeScale / recordMoveTime);
 
-					moveImage.transform.localPosition = Vector3.Lerp(startPosition, targetPosition, t);
+					moveImage.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
 					moveImage.transform.localScale = Vector3.Lerp(startScale, targetScale, t);
 					moveImage.color = Color.Lerp(startColour, targetColour, t);
 					yield return null;
@@ -1438,9 +1456,9 @@ namespace FightingLegends
 			recordedMoves.Add(new RecordedMove(recordingFrameCount, null, State.Void, false, false, false, false));
 		}
 
-		private void ResetRecordedMoves()
+		private void ClearRecordedMoves()
 		{
-//			Debug.Log("ResetRecordedMoves");
+//			Debug.Log("ClearRecordedMoves");
 			recordedMoves.Clear();
 			recordedMovesHidden = 0;
 
@@ -1461,12 +1479,13 @@ namespace FightingLegends
 			StopRecordingFeedback();
 			recordingInProgress = false;
 
-			StartCoroutine(StopShadowPlayback(false));
+//			StartCoroutine(StopShadowPlayback(false));
 		}
 
 		private Vector3 ChainMovePosition(int moveIndex, bool centre)
 		{
-			Vector3 viewportPosition = MoveChainViewport.transform.localPosition;
+//			Vector3 viewportPosition = MoveChainViewport.transform.localPosition;
+			Vector3 viewportPosition = MoveChainViewport.transform.position;
 			Rect viewportRect = MoveChainViewport.GetComponent<Image>().rectTransform.rect;
 			float viewportSize = viewportRect.height;
 
@@ -1620,7 +1639,8 @@ namespace FightingLegends
 			if (move.pulseMoveCoroutine != null)
 				StopCoroutine(move.pulseMoveCoroutine);
 
-			move.pulseMoveCoroutine = move.Pulse(scale, pulseTime, PulseSound, stars, tick);
+//			move.pulseMoveCoroutine = move.Pulse(scale, pulseTime, PulseSound, stars, tick);	// bling
+			move.pulseMoveCoroutine = move.Pulse(scale, pulseTime, null, stars, tick);			// silent
 			yield return StartCoroutine(move.pulseMoveCoroutine);
 		}
 	
@@ -1650,32 +1670,30 @@ namespace FightingLegends
 		{
 			movesShowing = isOn;
 
-			FightManager.SavedGameStatus.ShowDojoUI = isOn;
+			FightManager.SavedGameStatus.ShowDojoMoves = isOn;
 			fightManager.SaveGameStatus();
 
-			ToggleMovesShowing();
+			ConfigMovesShowing();
 		}
-
-		private void ToggleMovesShowing()
+			
+		private void ConfigMovesShowing()
 		{
 			ShowMovesText.text = movesShowing ? FightManager.Translate("hideMoves", true) : FightManager.Translate("showMoves", true);
 			MovesPanel.gameObject.SetActive(movesShowing);
 
 			if (movesShowing)
 			{
-				SyncStateMoves(true);
-
 				RecordingFeedback.transform.localPosition = new Vector3(RecordingFeedback.transform.localPosition.x, recordPlaybackLowOffsetY, RecordingFeedback.transform.localPosition.z);
 				PlaybackFeedback.transform.localPosition = new Vector3(PlaybackFeedback.transform.localPosition.x, recordPlaybackLowOffsetY, PlaybackFeedback.transform.localPosition.z);
+				FollowUpFeedback.transform.localPosition = new Vector3(FollowUpFeedback.transform.localPosition.x, followUpLowOffsetY, FollowUpFeedback.transform.localPosition.z);
 
-				ChainDamagePB.text = FightManager.Translate("best") + " " + FightManager.SavedGameStatus.BestDojoDamage;
+//				ChainDamagePB.text = FightManager.Translate("best") + " " + FightManager.SavedGameStatus.BestDojoDamage;
 			}
 			else
 			{
-				DisableMoves();
-
 				RecordingFeedback.transform.localPosition = new Vector3(RecordingFeedback.transform.localPosition.x, recordPlaybackHighOffsetY, RecordingFeedback.transform.localPosition.z);
 				PlaybackFeedback.transform.localPosition = new Vector3(PlaybackFeedback.transform.localPosition.x, recordPlaybackHighOffsetY, PlaybackFeedback.transform.localPosition.z);
+				FollowUpFeedback.transform.localPosition = new Vector3(FollowUpFeedback.transform.localPosition.x, followUpHighOffsetY, FollowUpFeedback.transform.localPosition.z);
 			}
 		}
 	}

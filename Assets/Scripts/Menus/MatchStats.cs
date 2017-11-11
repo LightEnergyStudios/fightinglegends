@@ -125,7 +125,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			feedbackUI.feedbackFX.OnEndState += FeedbackStateEnd;
+//			feedbackUI.feedbackFX.OnEndState += FeedbackStateEnd;
 			SaveInsertCoinTextPositions();
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
@@ -136,7 +136,7 @@ namespace FightingLegends
 
 		private void OnDisable()
 		{
-			feedbackUI.feedbackFX.OnEndState -= FeedbackStateEnd;
+//			feedbackUI.feedbackFX.OnEndState -= FeedbackStateEnd;
 			RestoreInsertCoinTextPositions();
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
@@ -163,8 +163,8 @@ namespace FightingLegends
 								worldTourCongratsShowing = false;
 								fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
 							}
-							else if (worldTourComplete)
-								WorldTourCongrats();
+//							else if (worldTourComplete)
+//								WorldTourCongrats();
 							else
 								fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
 						}
@@ -222,10 +222,16 @@ namespace FightingLegends
 			WorldTourPanel.SetActive(false);				// animated reveal
 			worldTourCongratsShowing = false;
 
+			if (worldTourComplete)
+			{
+				WorldTourCongrats();				// animation
+				return;
+			}
+
 //			WinnerStatsPanel.SetActive(true); // !worldTourComplete);
-			EnableWinnerStats(true);
 
 			Reset();
+			EnableWinnerStats(true);
 
 			WinnerName.text = winner.FighterName.ToUpper() + " " + FightManager.Translate("wins");
 
@@ -233,52 +239,42 @@ namespace FightingLegends
 			{
 				case "Shiro":
 					WinnerPhoto.sprite = shiroWin;
-//					WinnerName.text = "SHIRO WINS!";
 					break;
 
 				case "Natalya":
 					WinnerPhoto.sprite = natalyaWin;
-//					WinnerName.text = "NATALYA WINS!";
 					break;
 
 				case "Hoi Lun":
 					WinnerPhoto.sprite = hoiLunWin;
-//					WinnerName.text = "HOI LUN WINS!";
 					break;
 
 				case "Leoni":
 					WinnerPhoto.sprite = leoniWin;
-//					WinnerName.text = "LEONI WINS!";
 					break;
 
 				case "Danjuma":
 					WinnerPhoto.sprite = danjumaWin;
-//					WinnerName.text = "DANJUMA WINS!";
 					break;
 
 				case "Jackson":
 					WinnerPhoto.sprite = jacksonWin;
-//					WinnerName.text = "JACKSON WINS!";
 					break;
 
 				case "Alazne":
 					WinnerPhoto.sprite = alazneWin;
-//					WinnerName.text = "ALAZNE WINS!";
 					break;
 
 				case "Shiyang":
 					WinnerPhoto.sprite = shiyangWin;
-//					WinnerName.text = "SHIYANG WINS!";
 					break;
 
 				case "Ninja":
 					WinnerPhoto.sprite = ninjaWin;
-//					WinnerName.text = "NINJA WINS!";
 					break;
 
 				case "Skeletron":
 					WinnerPhoto.sprite = skeletronWin;
-//					WinnerName.text = "SKELETRON WINS!";
 					break;
 	
 				default:
@@ -533,12 +529,12 @@ namespace FightingLegends
 		{
 			StartCoroutine(WinQuoteFadeIn());
 
-			if (Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && winner.UnderAI && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
+			if (winner.UnderAI && Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
 			{
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
 				StartCoroutine(CycleInsertCoinText());
 			}
-			else // if (! worldTourComplete)
+			else
 				StartCoroutine(WinnerStats());
 
 //			if (worldTourComplete)
@@ -579,55 +575,67 @@ namespace FightingLegends
 			}
 		}
 
+
 		private void WorldTourCongrats()
 		{
-			inputAllowed = false;
+			inputAllowed = true;			// TODO: completed event?
 			EnableWinnerStats(false);
 			worldTourCongratsShowing = true;
-			fightManager.Success(0, "Curtain");		// top layer. AnimateWorldTourCongrats at end
-		}
-
-		private IEnumerator AnimateWorldTourCongrats()
-		{
-//			WorldTourPanel.transform.localScale = Vector3.zero;
-
-			Vector3 castStartScale = new Vector3(0, 1, 1);
-			WorldTourCast.transform.localScale = castStartScale;
 			WorldTourPanel.SetActive(true);
 
-			CongratsText.text = FightManager.Translate("congratulations", false, true, true) + "!!";
-			WorldTourText.text = FightManager.Translate("completedWorldTour", false, true);
+			WorldTourPanel.GetComponent<Animator>().SetTrigger("WorldTourComplete");
+			WorldTourFireworks.Play();
+		}
 
-			float t = 0.0f;
+//		private void WorldTourCongrats()
+//		{
+//			inputAllowed = false;
+//			EnableWinnerStats(false);
+//			worldTourCongratsShowing = true;
+//			fightManager.Success(0, "Curtain");		// top layer. AnimateWorldTourCongrats at end
+//		}
 
+//		private IEnumerator AnimateWorldTourCongrats()
+//		{
+////			WorldTourPanel.transform.localScale = Vector3.zero;
+//
+//			Vector3 castStartScale = new Vector3(0, 1, 1);
+//			WorldTourCast.transform.localScale = castStartScale;
+//			WorldTourPanel.SetActive(true);
+//
+//			CongratsText.text = FightManager.Translate("congratulations", false, true, true) + "!!";
+//			WorldTourText.text = FightManager.Translate("completedWorldTour", false, true);
+//
+//			float t = 0.0f;
+//
+////			while (t < 1.0f)
+////			{
+////				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
+////
+////				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+////				yield return null;
+////			}
+//
+////			t = 0.0f;
+//
 //			while (t < 1.0f)
 //			{
 //				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
 //
-//				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
+//				WorldTourCast.transform.localScale = Vector3.Lerp(castStartScale, Vector3.one, t);
 //				yield return null;
 //			}
-
-//			t = 0.0f;
-
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
-
-				WorldTourCast.transform.localScale = Vector3.Lerp(castStartScale, Vector3.one, t);
-				yield return null;
-			}
-
-			WorldTourFireworks.Play();
-			if (WorldTourSound != null)
-				AudioSource.PlayClipAtPoint(WorldTourSound, Vector3.zero, FightManager.SFXVolume);
-
-			Stars.Play();
-
-			inputAllowed = true;
-
-			yield return null;
-		}
+//
+//			WorldTourFireworks.Play();
+//			if (WorldTourSound != null)
+//				AudioSource.PlayClipAtPoint(WorldTourSound, Vector3.zero, FightManager.SFXVolume);
+//
+//			Stars.Play();
+//
+//			inputAllowed = true;
+//
+//			yield return null;
+//		}
 
 
 		private IEnumerator CycleInsertCoinText()
@@ -715,13 +723,13 @@ namespace FightingLegends
 				StopCoroutine(insertCoinTextCoroutine);
 		}
 
-		private void FeedbackStateEnd(AnimationState endingState)
-		{
-			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
-			{
-				StartCoroutine(AnimateWorldTourCongrats());
-//				inputAllowed = true;
-			}
-		}
+//		private void FeedbackStateEnd(AnimationState endingState)
+//		{
+//			if (endingState.StateLabel == FeedbackFXType.Success.ToString().ToUpper())
+//			{
+//				StartCoroutine(AnimateWorldTourCongrats());
+////				inputAllowed = true;
+//			}
+//		}
 	}
 }

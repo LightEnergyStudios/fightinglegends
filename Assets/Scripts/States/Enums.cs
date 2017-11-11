@@ -25,7 +25,7 @@ namespace FightingLegends
 		Strike_Light = 2,		// tap
 		Strike_Medium = 3,		// tap
 		Strike_Heavy = 4,		// tap
-		Strike_Combo = 5,		// light -> medium -> heavy (for dumb AI)
+
 		Block = 6,				// while held
 		ReleaseBlock = 7,		// when hold released
 		Special = 8,			// swipe right (also special extra for water fighters)

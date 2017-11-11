@@ -120,7 +120,7 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.BurningHeart.FightingLegends
-  bundleVersion: 1.23
+  bundleVersion: 1.24
   preloadedAssets: []
   metroInputSource: 0
   m_HolographicPauseOnTrackingLoss: 1
