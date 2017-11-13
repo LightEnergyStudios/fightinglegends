@@ -404,8 +404,8 @@ namespace FightingLegends
 				if (elementsLabel == "")
 					elementsLabel = fightManager.Player1.FighterName;
 
-				ProfileLabel.text = string.Format("{0} {1} - {2} - {3}", FightManager.Translate("level", false, false, true), fightManager.Player1.Level,
-					elementsLabel, fightManager.Player1.ClassLabel);
+				ProfileLabel.text = string.Format("{0} {1} - {2} - {3}", FightManager.Translate("level"), fightManager.Player1.Level,
+					elementsLabel.ToLower(), fightManager.Player1.ClassLabel.ToLower());
 
 //				ProfileLabel.text = string.Format("{0} {1}", FightManager.Translate("level", false, false, true), fightManager.Player1.Level);
 			}
@@ -682,7 +682,7 @@ namespace FightingLegends
 			RecordingFeedback.text = "";
 
 			yield return StartCoroutine(ScrollMovesToTop());
-//			AdjustChainAlpha(true);
+			AdjustChainAlpha(true);
 
 			var feedback = "[ " + FightManager.Translate("playback") + " ]";
 			if (PlaybackFeedback.text != feedback)
@@ -1276,7 +1276,7 @@ namespace FightingLegends
 			UpdateMoveCountUI();
 		}
 
-		private IEnumerator AnimateRecordMove(MoveUI move, bool reverse = false)
+		private IEnumerator AnimateRecordMove(MoveUI move)
 		{
 			if (RecordedMoveCount == 0)
 				yield break;
@@ -1289,16 +1289,13 @@ namespace FightingLegends
 			// create a new image based on the last move button
 			var moveImage = move.DuplicateImage;
 			moveImage.transform.SetParent(MovesPanel.transform);
-//			moveImage.transform.SetParent(transform);
 			moveImage.transform.localScale = Vector3.one;	
 
 			// TODO: remove recorded move counter text - debug only!!
-			var moveCounter = Instantiate(RecordedMoveCounter, moveImage.transform);
-			moveCounter.transform.localScale = Vector3.one;	
-			moveCounter.transform.localPosition = Vector3.zero;
-			moveCounter.GetComponent<Text>().text = RecordedMoveCount.ToString();
-
-//			ScrollViewportIfFull();
+//			var moveCounter = Instantiate(RecordedMoveCounter, moveImage.transform);
+//			moveCounter.transform.localScale = Vector3.one;	
+//			moveCounter.transform.localPosition = Vector3.zero;
+//			moveCounter.GetComponent<Text>().text = RecordedMoveCount.ToString();
 
 			if (movesShowing)
 			{
@@ -1307,10 +1304,11 @@ namespace FightingLegends
 
 				float t = 0;
 				var movePosition = move.MoveImage.transform.position;
-				Vector3 startPosition = new Vector3(movePosition.x, movePosition.y - recordedMoveOffset, movePosition.z); // move.MoveImage.transform.localPosition;						// position of move button image
-				Vector3 targetPosition = AnimateMoveTarget(reverse ? 1 : RecordedMoveCount, true);		// centre of first / next position in viewport
+				Vector3 startPosition = new Vector3(movePosition.x, movePosition.y - recordedMoveOffset, movePosition.z);	// offset position of move button image
+//				Vector3 targetPosition = AnimateMoveTarget(reverse ? 1 : RecordedMoveCount, true);		// centre of first / next position in viewport
+				Vector3 targetPosition = AnimateMoveTarget(RecordedMoveCount, true);		// centre of next position in viewport
 				Color startColour = Color.white;
-				Color targetColour = new Color(moveImage.color.r, moveImage.color.g, moveImage.color.b, moveImage.color.a * playbackMoveAlpha);
+				Color targetColour = new Color(moveImage.color.r, moveImage.color.g, moveImage.color.b, moveImage.color.a * recordedMoveAlpha);
 
 				while (t < 1.0f)
 				{
@@ -1332,7 +1330,7 @@ namespace FightingLegends
 			moveImage.transform.localPosition = Vector3.zero;
 //			moveImage.color = startColour;
 
-			AdjustChainAlpha(reverse);
+			AdjustChainAlpha(false);
 
 			recordingMove = false;
 			yield return null;
