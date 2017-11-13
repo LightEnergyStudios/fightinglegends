@@ -145,6 +145,9 @@ namespace FightingLegends
 		{
 			get
 			{
+				if (trackingPositions == null)
+					return 0;
+				
 				if (trackingPositions.Count == 0)
 					return TrackPosition;
 
@@ -1824,7 +1827,7 @@ namespace FightingLegends
 			switch (currentStatusEffect)
 			{
 				case StatusEffect.KnockOut:
-					fightManager.SnapshotCameraPosition();
+					fightManager.SnapshotCameraPosition(ProfileData.FighterClass == FighterClass.Boss);
 					fightManager.UnfreezeFight();
 
 					if (ExpiredHealth || ExpiredState) 		// TODO: check this! (skeletron) 
@@ -5988,7 +5991,7 @@ namespace FightingLegends
 						break;
 				}
 
-//				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
+				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
 
 				if (endOfMatch)
 				{

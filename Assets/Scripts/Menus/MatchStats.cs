@@ -228,8 +228,6 @@ namespace FightingLegends
 				return;
 			}
 
-//			WinnerStatsPanel.SetActive(true); // !worldTourComplete);
-
 			Reset();
 			EnableWinnerStats(true);
 

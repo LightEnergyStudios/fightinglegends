@@ -97,7 +97,7 @@ namespace FightingLegends
 		}
 
 
-		protected override bool TravelOnExpiry { get { return false; } }
+//		protected override bool TravelOnExpiry { get { return false; } }
 
 
 		protected override bool FallenState	

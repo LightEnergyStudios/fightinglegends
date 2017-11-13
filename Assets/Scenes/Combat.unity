@@ -7202,15 +7202,6 @@ Prefab:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1910}
-    - target: {fileID: 1633250249131642, guid: 7885092649f3140239359e8481539edc, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224114926383320730, guid: 7885092649f3140239359e8481539edc,
-        type: 2}
-      propertyPath: m_SizeDelta.y
-      value: -339
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7885092649f3140239359e8481539edc, type: 2}
   m_IsPrefabParent: 0
@@ -7379,20 +7370,20 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 33761670993866926, guid: 804b3ecbd423047d8a74fb44d6595731,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 2}
-    - target: {fileID: 22399890, guid: 804b3ecbd423047d8a74fb44d6595731, type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 1916}
     - target: {fileID: 33899679674450816, guid: 804b3ecbd423047d8a74fb44d6595731,
         type: 2}
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1259881555}
+    - target: {fileID: 22399890, guid: 804b3ecbd423047d8a74fb44d6595731, type: 2}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1916}
+    - target: {fileID: 33761670993866926, guid: 804b3ecbd423047d8a74fb44d6595731,
+        type: 2}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 804b3ecbd423047d8a74fb44d6595731, type: 2}
   m_IsPrefabParent: 0

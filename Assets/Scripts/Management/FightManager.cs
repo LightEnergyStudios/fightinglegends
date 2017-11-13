@@ -1255,9 +1255,9 @@ namespace FightingLegends
 		}
 
 
-		public void SnapshotCameraPosition()
+		public void SnapshotCameraPosition(bool toZero = false)
 		{
-			expiryCameraPosition = CameraSnapshot;
+			expiryCameraPosition = toZero ? Vector3.zero : CameraSnapshot;
 		}
 
 		private void FeedbackStateEnd(AnimationState endingState)
