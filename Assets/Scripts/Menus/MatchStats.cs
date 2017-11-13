@@ -82,8 +82,6 @@ namespace FightingLegends
 		private IEnumerator insertCoinTextCoroutine = null;
 		private List<float> insertCoinTextPosition;			// original x position of animated text x3
 
-		private FeedbackUI feedbackUI;
-
 		public GameObject WorldTourPanel;
 		public Text CongratsText;
 		public Text WorldTourText;
@@ -108,10 +106,6 @@ namespace FightingLegends
 
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
-
-			var feedbackUIObject = GameObject.Find("FeedbackUI");
-			if (feedbackUIObject != null)
-				feedbackUI = feedbackUIObject.GetComponent<FeedbackUI>();
 		}
 
 		// initialization

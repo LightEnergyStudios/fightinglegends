@@ -5907,7 +5907,6 @@ namespace FightingLegends
 				}
 			}
 				
-
 			var travelTime = ProfileData.ExpiryTime;
 
 			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
