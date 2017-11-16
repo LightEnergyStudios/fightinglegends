@@ -95,6 +95,7 @@ namespace FightingLegends
 		{
 			GameUI.TrafficLightInfoBubble += TrafficLightInfoBubble;
 			GameUI.OnGaugeIncreased += CrystalInfoBubble;
+			FightManager.OnAIBlock += ShoveInfoBubble;
 //			FightManager.OnNewFight += CombatModeInfoBubble;
 //			FightManager.OnMenuChanged += MenuInfoBubble;
 			FightManager.OnInfoBubbleRead += OnInfoBubbleRead;
@@ -108,6 +109,7 @@ namespace FightingLegends
 		{
 			GameUI.TrafficLightInfoBubble -= TrafficLightInfoBubble;
 			GameUI.OnGaugeIncreased -= CrystalInfoBubble;
+			FightManager.OnAIBlock -= ShoveInfoBubble;
 //			FightManager.OnNewFight -= CombatModeInfoBubble;
 //			FightManager.OnMenuChanged -= MenuInfoBubble;
 			FightManager.OnInfoBubbleRead -= OnInfoBubbleRead;
@@ -598,63 +600,54 @@ namespace FightingLegends
 					bubbleMessage = InfoBubbleMessage.Mash;
 					bubbleHeading = FightManager.Translate("mashInfoHeading");
 					bubbleText = FightManager.Translate("mashInfoMessage");
-//					bubbleImage = mashSprite;
 					break;
 
 				case FeedbackFXType.Hold:
 					bubbleMessage = InfoBubbleMessage.Hold;
 					bubbleHeading = FightManager.Translate("holdInfoHeading");
 					bubbleText = FightManager.Translate("holdInfoMessage");
-//					bubbleImage = holdSprite;
 					break;
 
 				case FeedbackFXType.Press:
 					bubbleMessage = InfoBubbleMessage.Tap;
 					bubbleHeading = FightManager.Translate("tapInfoHeading");
 					bubbleText = FightManager.Translate("tapInfoMessage");
-//					bubbleImage = tapSprite;
 					break;
 
 				case FeedbackFXType.Press_Both:
 					bubbleMessage = InfoBubbleMessage.TapBoth;
 					bubbleHeading = FightManager.Translate("bothTapInfoHeading");
 					bubbleText = FightManager.Translate("bothTapInfoMessage");
-//					bubbleImage = resetSprite;
 					break;
 
 				case FeedbackFXType.Swipe_Forward:
 					bubbleMessage = InfoBubbleMessage.SwipeRight;
 					bubbleHeading = FightManager.Translate("swipeRightInfoHeading");
 					bubbleText = FightManager.Translate("swipeRightInfoMessage");
-//					bubbleImage = swipeForwardSprite;
 					break;
 
 				case FeedbackFXType.Swipe_Back:
 					bubbleMessage = InfoBubbleMessage.SwipeLeft;
 					bubbleHeading = FightManager.Translate("swipeLeftInfoHeading");
 					bubbleText = FightManager.Translate("swipeLeftInfoMessage");
-//					bubbleImage = swipeBackSprite;
 					break;
 
 				case FeedbackFXType.Swipe_Up:
 					bubbleMessage = InfoBubbleMessage.SwipeUp;
 					bubbleHeading = FightManager.Translate("swipeUpInfoHeading");
 					bubbleText = FightManager.Translate("swipeUpInfoMessage");
-//					bubbleImage = swipeUpSprite;
 					break;
 
 				case FeedbackFXType.Swipe_Down:
 					bubbleMessage = InfoBubbleMessage.SwipeDown;
 					bubbleHeading = FightManager.Translate("swipeDownInfoHeading");
 					bubbleText = FightManager.Translate("swipeDownInfoMessage");
-//					bubbleImage = swipeDownSprite;
 					break;
 
 				case FeedbackFXType.Swipe_Vengeance:
 					bubbleMessage = InfoBubbleMessage.SwipeVengeance;
 					bubbleHeading = FightManager.Translate("swipeVengeanceInfoHeading");
 					bubbleText = FightManager.Translate("swipeVengeanceInfoMessage");
-//					bubbleImage = swipeVengeanceSprite;
 					break;
 
 				default:
@@ -784,6 +777,9 @@ namespace FightingLegends
 		{
 			if (!fightManager.ReadyToFight)			// no point if not ready
 				return;
+
+			if (FightManager.CombatMode == FightMode.Training)
+				return;
 			
 			InfoBubbleMessage message = InfoBubbleMessage.Crystals;
 			string bubbleHeading = FightManager.Translate("crystalInfoHeading");
@@ -791,7 +787,24 @@ namespace FightingLegends
 			Sprite bubbleImage = CrystalSprite;
 
 			if (! FightManager.WasInfoBubbleMessageRead(message))
-				StartCoroutine(ShowInfoBubble(Vector3.zero, message, bubbleHeading, bubbleText, bubbleImage, FightManager.CombatMode != FightMode.Training));
+				StartCoroutine(ShowInfoBubble(Vector3.zero, message, bubbleHeading, bubbleText, bubbleImage, true));
+		}
+
+		private void ShoveInfoBubble()
+		{
+			if (!fightManager.ReadyToFight)			// no point if not ready
+				return;
+
+			if (FightManager.CombatMode == FightMode.Training)
+				return;
+
+			InfoBubbleMessage message = InfoBubbleMessage.SwipeDown;
+			string bubbleHeading = FightManager.Translate("swipeDownInfoHeading");
+			string bubbleText = FightManager.Translate("swipeDownInfoMessage");
+			Sprite bubbleImage = swipeDownSprite;
+
+			if (! FightManager.WasInfoBubbleMessageRead(message))
+				StartCoroutine(ShowInfoBubble(Vector3.zero, message, bubbleHeading, bubbleText, bubbleImage, true));
 		}
 
 

@@ -46,6 +46,8 @@ namespace FightingLegends
 //		private Vector3 scrollingViewportTo = default(Vector3);
 		private int recordedMovesHidden = 0;			// number of moves hidden off top
 
+		public AudioClip ScrollSound;
+
 		public ScrollRect MoveChainViewport;
 		public GameObject MoveChainContent;				// vertical viewport content
 		public Text MoveChainCount;	
@@ -65,7 +67,7 @@ namespace FightingLegends
 		private const float recordMoveTime = 0.35f;		// image animation when adding to chain
 		private const float recordMoveScale = 0.5f;		// image animation when adding to chain
 		private const float playbackMoveTime = 0.4f;	// image animation when playing back move
-		private const float scrollMovesTime = 0.15f; // 0.25f;	// when scrolling recorded moves
+		private const float scrollMovesTime = 0.15f; 	// when scrolling recorded moves
 		private bool recordingMove = false;
 		private const float recordedMoveOffset = 50.0f; // for animation of recorded move image
 
@@ -772,7 +774,7 @@ namespace FightingLegends
 //				Debug.Log("ShadowExecuteNextMove: " + nextMove + ", state = " + shadow.CurrentState + ", continued = " + NextMove.Continued + ", chained = " + NextMove.Chained + ". comboed = " + NextMove.Comboed + ", specialExtraTriggered = " + NextMove.SpecialExtraTriggered + ", frame = " + playbackFrameCount);
 
 				// scroll up to next move (move being executed disappears)
-				StartCoroutine(ScrollRecordedMoves(true));
+				StartCoroutine(ScrollMovesUp(true));
 
 				if (nextMove == Move.Block) 	// shadow block must repeat same number of frames - start countdown
 					shadowBlockFramesRemaining = FramesToNextMove;
@@ -1267,10 +1269,9 @@ namespace FightingLegends
 			recordedMoves.Add(new RecordedMove(recordingFrameCount, moveUI, fromState, continued, chained, comboed, specialExtraTriggered));
 //			Debug.Log("RecordMove: " + moveUI.Move + ", STATE = " + fromState + ", continued = " + continued + ", chained = " + chained + ", comboed = " + comboed  + ", specialExtraTriggered = " + specialExtraTriggered + ", frame = " + recordingFrameCount);
 
-//			ScrollViewportIfFull();
-			// scroll viewport if over capacity
+			// scroll viewport up one move if over capacity
 			if (RecordedMoveCount > MoveViewportCapacity)
-				StartCoroutine(ScrollRecordedMoves());
+				StartCoroutine(ScrollMovesUp());
 
 			yield return StartCoroutine(AnimateRecordMove(moveUI));		// image animation
 			UpdateMoveCountUI();
@@ -1306,7 +1307,7 @@ namespace FightingLegends
 				var movePosition = move.MoveImage.transform.position;
 				Vector3 startPosition = new Vector3(movePosition.x, movePosition.y - recordedMoveOffset, movePosition.z);	// offset position of move button image
 //				Vector3 targetPosition = AnimateMoveTarget(reverse ? 1 : RecordedMoveCount, true);		// centre of first / next position in viewport
-				Vector3 targetPosition = AnimateMoveTarget(RecordedMoveCount, true);		// centre of next position in viewport
+				Vector3 targetPosition = AnimateMoveTarget();		// centre of next position in viewport
 				Color startColour = Color.white;
 				Color targetColour = new Color(moveImage.color.r, moveImage.color.g, moveImage.color.b, moveImage.color.a * recordedMoveAlpha);
 
@@ -1356,12 +1357,15 @@ namespace FightingLegends
 		}
 
 		// scroll back to top (first move)
-		private IEnumerator ScrollMovesToTop(bool init = false)
+		private IEnumerator ScrollMovesToTop(bool init = false, bool silent = true)
 		{
 			while (scrollingViewport)
 				yield return null;
 
 			scrollingViewport = true;
+
+			if (! silent)
+				AudioSource.PlayClipAtPoint(ScrollSound, Vector3.zero, FightManager.SFXVolume);
 
 			var startPosition = MoveChainContent.transform.localPosition;
 			var targetPosition = Vector3.zero;
@@ -1432,12 +1436,13 @@ namespace FightingLegends
 //		}
 
 			
-		private IEnumerator ScrollRecordedMoves(bool adjustAlpha = false)
+		// scroll viewport up one move
+		private IEnumerator ScrollMovesUp(bool adjustAlpha = false)
 		{
 			while (scrollingViewport)
 				yield return null;
 
-			recordedMovesHidden ++;
+			recordedMovesHidden++;
 			UpdateMoveCountUI();
 
 			if (adjustAlpha)
@@ -1490,18 +1495,18 @@ namespace FightingLegends
 			recordingInProgress = false;
 		}
 
-		private Vector3 AnimateMoveTarget(int moveIndex, bool centre)
+		private Vector3 AnimateMoveTarget()
 		{
+			int moveNumber = RecordedMoveCount - recordedMovesHidden;
 			Vector3 viewportPosition = MoveChainViewport.transform.position;
-			Rect viewportRect = MoveChainViewport.GetComponent<Image>().rectTransform.rect;
-			float viewportSize = viewportRect.height;
-			int maxInViewport = (int)(viewportSize / recordedMoveSize);
+			float viewportHeight = MoveChainViewport.GetComponent<Image>().rectTransform.rect.height;
 
-			var viewportCount = (moveIndex > maxInViewport) ? maxInViewport : moveIndex;
-			var viewportStart = viewportPosition.y + (viewportSize / 2.0f);
-			float moveOffset = (viewportCount * recordedMoveSize) - (centre ? (recordedMoveSize / 2.0f) : 0);
+			var viewportIndex = (moveNumber >= MoveViewportCapacity) ? MoveViewportCapacity : moveNumber;
+			var viewportTop = viewportPosition.y + (viewportHeight / 2.0f);
+			float moveOffset = (viewportIndex * recordedMoveSize) + (recordedMoveSize / 2.0f);
 
-			return new Vector3(viewportPosition.x, viewportStart - moveOffset, viewportPosition.z);
+//			Debug.Log("AnimateMoveTarget: viewportTop = " + viewportTop + " moveOffset = " + moveOffset + " moveNumber = " + moveNumber);
+			return new Vector3(viewportPosition.x, viewportTop - moveOffset, viewportPosition.z);
 		}
 
 

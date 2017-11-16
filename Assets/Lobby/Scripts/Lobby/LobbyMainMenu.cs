@@ -105,20 +105,24 @@ namespace Prototype.NetworkLobby
 		{
 			ipInput.text = hostIP;
 
-			listeningforHost = false;
-			scanningText.gameObject.SetActive(false);
+//			listeningforHost = false;
+//			scanningText.gameObject.SetActive(false);
+
+			StopListening();
+			StartClient();			// join game immediately host ip received
 
 			// join game immediately host ip received
-			OnClickJoin();				// start client
+//			OnClickJoin();				// start client
 
-			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
-			ConfigJoinButton();
-			EnableHostButton();	
+//			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
+//			ConfigJoinButton();
+//			EnableHostButton();	
+		
 		}
 
 
         public void OnClickJoin()
-        {
+		{
 			fightCancelledText.gameObject.SetActive(false);
 
 			if (listeningforHost)
@@ -132,7 +136,12 @@ namespace Prototype.NetworkLobby
 				StartListening();
 				return;
 			}
-			
+
+			StartClient();
+		}
+
+		private void StartClient()
+		{
             lobbyManager.ChangeTo(lobbyPanel);
 
             lobbyManager.networkAddress = ipInput.text;
@@ -140,7 +149,6 @@ namespace Prototype.NetworkLobby
 
 //            lobbyManager.backDelegate = lobbyManager.StopClientClbk;
             lobbyManager.DisplayIsConnecting();
-
             lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
         }
 
@@ -159,6 +167,7 @@ namespace Prototype.NetworkLobby
 		private void StopListening()
 		{
 			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
+			
 			listeningforHost = false;
 			scanningText.gameObject.SetActive(false);
 			ConfigJoinButton();
@@ -171,7 +180,6 @@ namespace Prototype.NetworkLobby
 			StopListening();
 		}
 	
-
         public void OnClickDedicated()
         {
             lobbyManager.ChangeTo(null);

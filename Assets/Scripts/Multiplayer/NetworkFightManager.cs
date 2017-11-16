@@ -37,7 +37,6 @@ namespace FightingLegends
 		[Server]
 		public void SetPlayer(NetworkFighter player)
 		{
-//			Debug.Log("SetPlayer: IsPlayer1 = " + player.IsPlayer1);
 			if (player.IsPlayer1)
 				player1 = player;
 			else
@@ -71,15 +70,13 @@ namespace FightingLegends
 		{
 			if (fightStarted)
 				return;
-			
+
 			SelectedLocation = location;
 
 			if (CanStartFight)
 				SyncStartFight();
 			else
-			{
 				player1.RpcSelectLocation(location);		// for (opponent) world map
-			}
 		}
 
 
@@ -88,10 +85,6 @@ namespace FightingLegends
 		{
 			if (! CanStartFight)
 				return;
-
-			// stop timeout countdown
-//			if (startFightTimeoutCoroutine != null)
-//				StopCoroutine(startFightTimeoutCoroutine);
 
 			// doesn't matter which player invokes the RPC
 			// might as well be player1 as the host / initiator...
@@ -142,8 +135,6 @@ namespace FightingLegends
 		[Server]
 		private void ResetFighters()
 		{
-//			Debug.Log("ResetFighters");
-
 			Fighter1Name = "";
 			Fighter1Colour = "";
 			Fighter2Name = "";

@@ -530,7 +530,10 @@ namespace FightingLegends
 				fightManager.FighterSelectChoice = MenuType.WorldMap;		// triggers fade to black and new menu
 			}
 
-			fightManager.SelectedLocation = previewFighter.ProfileData.SavedData.LastLocation;	// defaults to hawaii
+			if (FightManager.IsNetworkFight)
+				fightManager.SelectedLocation = FightManager.hawaii;
+			else
+				fightManager.SelectedLocation = previewFighter.ProfileData.SavedData.LastLocation;	// defaults to hawaii
 
 			if (OnFighterSelected != null)
 				OnFighterSelected(previewFighter);

@@ -449,6 +449,9 @@ namespace FightingLegends
 		public delegate void QuitFightDelegate();
 		public static QuitFightDelegate OnQuitFight;
 
+		public delegate void AIBlockDelegate();
+		public static AIBlockDelegate OnAIBlock;
+
 		public delegate void HideInfoBubbleDelegate();
 		public static HideInfoBubbleDelegate OnInfoBubbleRead;
 
@@ -817,13 +820,6 @@ namespace FightingLegends
 				return;
 			
 			UpdateAnimation();
-
-//			if (HasPlayer1 && HasPlayer2)
-//			{
-//				else if (! Player1.IsIdle && ! Player2.IsIdle)
-//				if (! (Player1.IsIdle && Player2.IsIdle))
-//					Debug.Log(Player1.CurrentState + (Player1.isFrozen ? "(frozen)" : "") + " // " + Player2.CurrentState + (Player2.isFrozen ? "(frozen)" : "") + " [" + AnimationFrameCount + "]");
-//			}
 		}
 			
 		// driven by NetworkFightManager if vs mode
@@ -856,7 +852,7 @@ namespace FightingLegends
 				ToggleGameUI();
 			}
 				
-			if ((Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetMouseButtonDown(0))	// left button
+			if ((Input.touchCount >= 1 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetMouseButtonDown(0))	// left button
 			{
 				if (TrainingUI.InfoBubbleShowing)
 				{
@@ -900,8 +896,8 @@ namespace FightingLegends
 //			FBManager.OnLoginSuccess -= FBLoginSuccess;
 		}
 
-		private void StartListeningForInput()
-		{
+//		private void StartListeningForInput()
+//		{
 //			GestureListener.OnFingerTouch += FingerTouch;			// info bubble read
 
 //			GestureListener.OnSwipeUp += SwipeUp;			// cycle fighters / scenery
@@ -916,10 +912,10 @@ namespace FightingLegends
 //			GestureListener.OnFourFingerTap += FourFingerTap;		// toggle pause
 
 //			GestureListener.OnSwipeRightLeft += SwipeRightLeft;		// toggle turbo
-		}
+//		}
 
-		private void StopListeningForInput()
-		{
+//		private void StopListeningForInput()
+//		{
 //			GestureListener.OnFingerTouch -= FingerTouch;			// info bubble read
 
 //			GestureListener.OnSwipeUp -= SwipeUp;				// cycle fighters
@@ -934,7 +930,7 @@ namespace FightingLegends
 //			GestureListener.OnFourFingerTap -= FourFingerTap;	// toggle pause
 
 //			GestureListener.OnSwipeRightLeft -= SwipeRightLeft; // toggle turbo
-		}
+//		}
 
 		#endregion 		// touch event handlers
 
@@ -1912,17 +1908,13 @@ namespace FightingLegends
 		{
 			CombatMode = FightMode.Arcade;
 
-//			NetworkFight = true;
-//			Debug.Log("StartMultiplayerFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
+//			Debug.Log("StartNetworkArcadeFight: player1 = " + player1Name + " player2 = " + player2Name + " location = " + location);
 
 			SelectedFighterName = player1Name;
 			SelectedFighterColour = player1Colour;
-
 			SelectedFighter2Name = player2Name;
 			SelectedFighter2Colour = player2Colour;
-
 			SelectedLocation = location;
-//			Debug.Log("StartNetworkArcadeFight: SelectedLocation = " + SelectedLocation);
 
 			StartCoroutine(CountdownNetworkArcadeFight());
 		}

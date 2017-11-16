@@ -110,6 +110,7 @@ namespace Prototype.NetworkLobby
 		public void OnDestroy()
 		{
 			StopDiscovery();
+			StopAll();
 		}
 			
 
@@ -142,10 +143,10 @@ namespace Prototype.NetworkLobby
 		public void HideLobbyUI()
 		{
 			StopDiscovery();		// stops listening and broadcasting
-			StopAll();
-//			StopHostClbk();
-			Network.Disconnect();		// ??
-			NetworkServer.Reset();		// ??
+//			StopAll();
+////			StopHostClbk();
+//			Network.Disconnect();		// ??
+//			NetworkServer.Reset();		// ??
 
 			StartCoroutine(FadeLobbyUI(false));
 		}
@@ -165,17 +166,25 @@ namespace Prototype.NetworkLobby
 		// back button
 		private void QuitLobby()
 		{
-			StartCoroutine(FadeQuitLobby());
+			Debug.Log("QuitLobby");
 
-			if (OnQuitLobby != null)
-				OnQuitLobby();
+			if (OnQuitLobby != null)					
+				OnQuitLobby();							// main menu stop discovery and reset UI
+
+			StartCoroutine(FadeQuitLobby(true));		// stops all so do last
 		}
 
-		private IEnumerator FadeQuitLobby()
+		private IEnumerator FadeQuitLobby(bool stopAll = false)
 		{
+//			if (stopAll)
+//				StopAll();		// SM ok ???
+			
 			yield return StartCoroutine(FadeLobbyUI(true));
-			HideLobbyUI();
+			HideLobbyUI();		// also stops listening and broadcasting
 
+			if (stopAll)
+				StopAll();		// SM ok ???
+			
 			SceneLoader.LoadScene(SceneLoader.CombatScene);
 
 			FightManager.IsNetworkFight = false;
@@ -185,7 +194,7 @@ namespace Prototype.NetworkLobby
 //			yield return new WaitForSeconds(fadePause);
 			StartCoroutine(ClearFadeToBlack());
 		}
-
+			
 		// broadcast for client to discover
 		public void BroadcastHostIP()
 		{
@@ -396,6 +405,9 @@ namespace Prototype.NetworkLobby
 			StopClientClbk();
 			StopHostClbk();
 			StopServerClbk();
+
+			NetworkServer.Reset();		// ??
+			Network.Disconnect();		// ??
 		}
 
 		public void StopHostClbk()
@@ -535,7 +547,8 @@ namespace Prototype.NetworkLobby
 				}
 			}
 
-//			SimpleBackClbk();		// TODO: SM ok?
+			SimpleBackClbk();
+			QuitLobby();		// TODO: SM ok?
 		}
 
 		public override void OnLobbyServerDisconnect(NetworkConnection conn)
@@ -551,7 +564,8 @@ namespace Prototype.NetworkLobby
 				}
 			}
 
-//			SimpleBackClbk();		// TODO: SM ok?
+			SimpleBackClbk();
+			QuitLobby();		// TODO: SM ok?
 		}
 
 
@@ -598,36 +612,36 @@ namespace Prototype.NetworkLobby
 
 		// ----------------- Client callbacks ------------------
 
-//		// called when a scene has completed loading, when the scene load was initiated by the server
-//		public override void OnClientSceneChanged(NetworkConnection conn)
-//		{
-//			base.OnClientSceneChanged(conn);		// calls NetworkFighter.OnStartLocalPlayer!!
-//
-////			HideLobbyUI();
-//		}
-//
-
 		// called when a scene has completed loading, when the scene load was initiated by the server
 		public override void OnClientSceneChanged(NetworkConnection conn)
 		{
-			string loadedSceneName = SceneManager.GetSceneAt(0).name;
-			if (loadedSceneName == lobbyScene)
-			{
-				if (client.isConnected)
-					CallOnClientEnterLobby();
-			}
-			else
-			{
-				CallOnClientExitLobby();
-			}
-
-			/// This call is commented out since it causes a unet "A connection has already been set as ready. There can only be one." error.
-			/// More info: http://answers.unity3d.com/questions/991552/unet-a-connection-has-already-been-set-as-ready-th.html
-			//base.OnClientSceneChanged(conn);
-			OnLobbyClientSceneChanged(conn);
+			base.OnClientSceneChanged(conn);		// calls NetworkFighter.OnStartLocalPlayer!!
 
 			HideLobbyUI();
 		}
+
+
+		// called when a scene has completed loading, when the scene load was initiated by the server
+//		public override void OnClientSceneChanged(NetworkConnection conn)
+//		{
+//			string loadedSceneName = SceneManager.GetSceneAt(0).name;
+//			if (loadedSceneName == lobbyScene)
+//			{
+//				if (client.isConnected)
+//					CallOnClientEnterLobby();
+//			}
+//			else
+//			{
+//				CallOnClientExitLobby();
+//			}
+//
+//			/// This call is commented out since it causes a unet "A connection has already been set as ready. There can only be one." error.
+//			/// More info: http://answers.unity3d.com/questions/991552/unet-a-connection-has-already-been-set-as-ready-th.html
+//			//base.OnClientSceneChanged(conn);
+//			OnLobbyClientSceneChanged(conn);
+//
+//			HideLobbyUI();
+//		}
 			
 		void CallOnClientEnterLobby()
 		{

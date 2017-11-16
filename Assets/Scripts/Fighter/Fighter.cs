@@ -94,11 +94,6 @@ namespace FightingLegends
 		private ElementsFX elementsFX;				// script (to trigger effect) - instantiated from prefab
 		private SmokeFX smokeFX;					// script (to trigger effect) - instantiated from prefab
 
-//		private Dust dustParticles;					// triggered when travelling
-//		private const float dustForce = 1400.0f;	// force over lifetime
-
-//		private Fire fireParticles;					// triggered when on fire
-
 		private const float spotFXOffsetX = 300;
 		private const float spotFXOffsetY = -50;
 		private const float spotFXOffsetZ = -50;
@@ -114,11 +109,6 @@ namespace FightingLegends
 		private const float smokeFXOffsetX = 0;
 		private const float smokeFXOffsetY = 0;
 		private const float smokeFXOffsetZ = -20;
-
-		private const float dustOffsetX = 450;			// centre
-		private const float dustAttackOffsetX = 50;		// +/- if attacking/recoiling
-		private const float dustOffsetY = -970; // -950;
-		private const float dustOffsetZ = 50;
 
 		private const float fireOffsetX = 395;
 		private const float fireOffsetY = -500;
@@ -1720,7 +1710,6 @@ namespace FightingLegends
 			if (FailedMoves.Count >= MaxFailedInputs)
 			{
 				fightManager.FailedInputBubble(failedInput);
-
 				ClearFailedMoves();
 			}
 		}
@@ -1831,7 +1820,7 @@ namespace FightingLegends
 					fightManager.UnfreezeFight();
 
 					if (ExpiredHealth || ExpiredState) 		// TODO: check this! (skeletron) 
-						EndKnockOutFreeze();				// next round if didn't take second life opportunity
+						EndKOFreeze();				// next round if didn't take second life opportunity
 					break;
 
 				case StatusEffect.OnFire:
@@ -3353,7 +3342,7 @@ namespace FightingLegends
 		{
 			var executedFromState = CurrentState;			// for OnMoveExecuted event
 
-			if ((!fightManager.ReadyToFight || fightManager.EitherFighterExpired))
+			if (!fightManager.ReadyToFight || fightManager.EitherFighterExpired)
 			{
 				MoveOk = false;
 			}
@@ -4327,6 +4316,9 @@ namespace FightingLegends
 			if (UnderAI)
 			{
 				HoldingBlock = true;
+
+				if (FightManager.OnAIBlock != null)
+					FightManager.OnAIBlock();			// shove info bubble basically
 			}
 		}
 
@@ -5424,9 +5416,6 @@ namespace FightingLegends
 		private IEnumerator TravelToDefault(Vector3 targetPosition)
 		{	
 			Returning = true;
-
-//			TriggerDust(Attacking);
-
 			var travelTime = RecoilTravelTime;
 				
 			// scale travelTime according to animation speed
@@ -5470,7 +5459,6 @@ namespace FightingLegends
 				yield break;
 
 			Attacking = true;
-//			TriggerDust(Attacking);
 
 			if (immediate)
 			{
@@ -5528,7 +5516,6 @@ namespace FightingLegends
 			if (slideTime <= 0)
 				yield break;
 
-//			TriggerDust(true);
 			TriggerSmoke(SmokeFXType.Small);
 
 			var startPosition = transform.position;
@@ -5542,7 +5529,6 @@ namespace FightingLegends
 				yield return null;
 			}
 				
-//			TriggerDust(true);
 			TriggerSmoke(SmokeFXType.Small);
 			yield return null;
 		}
@@ -5852,9 +5838,6 @@ namespace FightingLegends
 //			Debug.Log(FullName + ": ExpireToNextRound: ExpiredState = " + ExpiredState);
 			if (! ExpiredState)
 				yield break;
-//
-//			if (FightManager.CombatMode == FightMode.Training) //! FightManager.SavedGameStatus.CompletedBasicTraining)
-//				Opponent.Trainer.TrainingComplete();				// clear prompt / feedback etc.
 
 			if (secondLifeTriggered)	// reinstate health, reset UI and move and continue fighting
 			{
@@ -5990,7 +5973,7 @@ namespace FightingLegends
 						break;
 				}
 
-				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
+//				Debug.Log(FullName + ": ExpireToNextRound: endOfMatch = " + endOfMatch);
 
 				if (endOfMatch)
 				{
@@ -5998,7 +5981,6 @@ namespace FightingLegends
 					winner.SaveProfile();		// not if AI
 
 					FightManager.SavedGameStatus.FightInProgress = false;
-//					FightManager.SavedStatus.NinjaSchoolFight = false;
 
 					fightManager.HideDojoUI();
 
@@ -6149,19 +6131,20 @@ namespace FightingLegends
 
 			StartStatusEffectFrameCount(StatusEffect.KnockOut);
 
-			// freeze both fighters for effect ... on next frame - a KO hit will freeze until KO feedback ends
+			// freeze both fighters for effect ... on next frame - a KO hit will freeze until KO status effect times out
 			SetFreezeFrames(expiryFreezeFrames);	
 
-			secondLifeOpportunity = true;   		// reset by EndKnockOutFreeze
+			if (ProfileData.FighterClass != FighterClass.Boss)
+				secondLifeOpportunity = true;   		// reset by EndKOFreeze
 
 			if (OnKnockOutFreeze != null)			// for AI to trigger second life (if equipped)
 				OnKnockOutFreeze(this);
 		}
 
 		// called at end of KO feedback / freeze
-		public void EndKnockOutFreeze()
+		private void EndKOFreeze()
 		{
-//			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
+//			Debug.Log(FullName + ": EndKOFreeze ExpiredState = " + ExpiredState + ", takenLastFatalHit = " + takenLastFatalHit);
 
 			if (FightManager.CombatMode == FightMode.Training) //! FightManager.SavedGameStatus.CompletedBasicTraining)
 				Opponent.Trainer.TrainingComplete();			// clear prompt / feedback etc. -> NinjaSchoolFight
@@ -6180,49 +6163,6 @@ namespace FightingLegends
 					OnKnockOut(this);
 			}
 		}
-
-//		protected void KnockOutFreeze()
-//		{
-////			Debug.Log(FullName + ": KnockOutFreeze!");
-//			Debug.Log(FullName + ": KnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock);
-//
-//			AudioSource.PlayClipAtPoint(fightManager.KOSound, Vector3.zero, FightManager.SFXVolume);
-//			fightManager.TriggerFeedbackFX(FeedbackFXType.KO);
-//
-//			StartStatusEffectFrameCount(StatusEffect.KnockOut);
-//
-//			// freeze both fighters for effect ... on next frame - a KO hit will freeze until KO feedback ends
-//			SetFreezeFrames(expiryFreezeFrames);	
-//
-//			secondLifeOpportunity = true;   		// reset by EndKnockOutFreeze
-//
-//			if (OnKnockOutFreeze != null)			// for AI to trigger second life (if equipped)
-//				OnKnockOutFreeze(this);
-//		}
-//
-//		// called at end of KO feedback / freeze
-//		public void EndKnockOutFreeze()
-//		{
-//			Debug.Log(FullName + ": EndKnockOutFreeze ExpiredState = " + ExpiredState + ", IsBlocking = " + IsBlocking + ", HoldingBlock = " + HoldingBlock + " takenLastFatalHit " + takenLastFatalHit);
-//
-//			if (! ExpiredState && ! takenLastFatalHit)
-//				return;
-//
-//			secondLifeOpportunity = false;
-//
-//			if (takenLastFatalHit)		// taken last of fatal blows
-//			{
-//				if (! FightManager.SavedGameStatus.CompletedBasicTraining)
-//					Trainer.TrainingComplete();				// clear prompt / feedback etc.
-//
-////				Debug.Log(FullName + ": EndKnockOutFreeze -> ExpireToNextRound");
-//				StartCoroutine(ExpireToNextRound());		// travel followed by next round / match
-//				takenLastFatalHit = false;
-//			
-//				if (OnKnockOut != null)
-//					OnKnockOut(this);
-//			}
-//		}
 			
 		protected virtual void KnockOut()
 		{
@@ -6238,9 +6178,6 @@ namespace FightingLegends
 
 			if (ProfileData.counterWhiff != null)
 				AudioSource.PlayClipAtPoint(ProfileData.counterWhiff, Vector3.zero, FightManager.SFXVolume);
-
-//			if (! chained)		// record gauge used to execute
-//				DeductGauge(ProfileData.CounterGauge);
 		}
 
 		#endregion

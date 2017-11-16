@@ -24,9 +24,6 @@ namespace FightingLegends
 
 		private FightManager fightManager;
 
-		private bool fighterSelected = false;			// client only
-		private bool locationSelected = false;			// client only
-
 
 		public bool IsPlayer1
 		{
@@ -44,9 +41,6 @@ namespace FightingLegends
 		{			
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
-
-			fighterSelected = false;
-			locationSelected = false;
 		}
 			
 
@@ -55,12 +49,6 @@ namespace FightingLegends
 //			Debug.Log("NetworkFighter.SetFightManager: netId = " + fightManager.netId);
 			networkFightManager = fightManager;
 		}
-
-		// called when becomes active on the server - includes hosts
-//		public override void OnStartServer()
-//		{
-//			Debug.Log("NetworkFighter.OnStartServer: IsPlayer1 = " + IsPlayer1);
-//		}
 
 		// called when the local player object has been set up
 		public override void OnStartLocalPlayer()
@@ -182,10 +170,10 @@ namespace FightingLegends
 		[Client]
 		private void FighterSelected(Fighter fighter)
 		{
+//			Debug.Log("FighterSelected: " + fighter.FighterName + " isLocalPlayer = " + isLocalPlayer);
 			if (!isLocalPlayer)
 				return;
 
-			fighterSelected = true;
 			CmdSetFighter(IsPlayer1, fighter.FighterName, fighter.ColourScheme);
 		}
 			
@@ -193,6 +181,7 @@ namespace FightingLegends
 		// called from client, runs on server
 		public void CmdSetFighter(bool isPlayer1, string name, string colour)
 		{
+//			Debug.Log("CmdSetFighter: " + name + " isServer = " + isServer);
 			if (!isServer)
 				return;
 
@@ -207,7 +196,6 @@ namespace FightingLegends
 			if (!isLocalPlayer)
 				return;
 
-			locationSelected = true;
 			CmdSetLocation(IsPlayer1, location);
 		}
 			
@@ -236,7 +224,7 @@ namespace FightingLegends
 		// called on server, runs on clients
 		public void RpcStartFight(string fighter1Name, string fighter1Colour, string fighter2Name, string fighter2Colour, string location)
 		{
-//			Debug.Log("RpcStartFight: isPlayer1 = " + IsPlayer1 + " : " + fighter1Name + "/" + fighter1Colour + " : " + fighter2Name + "/" + fighter2Colour + " : " + location);
+			Debug.Log("RpcStartFight: isPlayer1 = " + IsPlayer1 + " : " + fighter1Name + "/" + fighter1Colour + " : " + fighter2Name + "/" + fighter2Colour + " : " + location);
 
 			if (IsPlayer1)
 				fightManager.StartNetworkArcadeFight(fighter1Name, fighter1Colour, fighter2Name, fighter2Colour, location);
@@ -245,16 +233,6 @@ namespace FightingLegends
 
 			fightManager.NetworkMessage("");		// disabled
 		}
-
-//		[ClientRpc]
-//		// called on server, runs on clients
-//		public void RpcStartFightExpiryCounter(int counter)
-//		{
-//			fightManager.NetworkMessage(FightManager.Translate("timeOut"));
-////			Debug.Log("RpcStartExpiryCounter: " + counter);
-//			fightManager.TriggerNumberFX(counter, 0, 0, feedbackLayer, false);		// beep sound
-//		}
-
 
 		// FightManager.OnBackClicked
 		[Client]
