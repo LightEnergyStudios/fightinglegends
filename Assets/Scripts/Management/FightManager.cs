@@ -82,7 +82,7 @@ namespace FightingLegends
 				if (value == SavedGameStatus.SFXVolume)
 					return;
 
-				SavedGameStatus.SFXVolume = value;
+				SavedGameStatus.SFXVolume = value;		
 
 				if (OnSFXVolumeChanged != null)
 					OnSFXVolumeChanged(SavedGameStatus.SFXVolume);
@@ -459,6 +459,9 @@ namespace FightingLegends
 		public static GameResetDelegate OnGameReset;
 
 		public int InitialCoins;
+
+		public const float DefaultMusicVolume = 0.4f;
+		public const float DefaultSFXVolume = 0.6f;
 	
 		public float HitDamageFactor;			// increase for more damage globally
 
@@ -3760,8 +3763,8 @@ namespace FightingLegends
 				// no saved status to restore - init default values
 				Coins = InitialCoins;
 				Kudos = 0;
-				SFXVolume = 0.5f;
-				MusicVolume = 0.5f;
+				SFXVolume = DefaultSFXVolume;
+				MusicVolume = DefaultMusicVolume;
 			}
 				
 			SetTheme(SavedGameStatus.Theme);
@@ -5112,12 +5115,16 @@ namespace FightingLegends
 					File.Delete(filePath);
 
 					SavedGameStatus = new SavedStatus();
+					SavedGameStatus.VersionNumber = Application.version;
+
 					RestorePlayerPrefs();			// important data saved as PlayerPrefs too
 					return false;
 				}
 			}
 
 			SavedGameStatus = new SavedStatus();
+			SavedGameStatus.VersionNumber = Application.version;
+
 			RestorePlayerPrefs();					// important data saved as PlayerPrefs too	
 
 			Debug.Log("RestoreStatus: No saved file");
@@ -5154,6 +5161,8 @@ namespace FightingLegends
 				File.Delete(filePath);
 
 			SavedGameStatus = new SavedStatus();
+			SavedGameStatus.VersionNumber = Application.version;
+
 			SaveGameStatus();
 
 			PlayerPrefs.SetString("FL_UserId", "");

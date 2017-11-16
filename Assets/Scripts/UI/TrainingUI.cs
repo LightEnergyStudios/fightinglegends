@@ -67,7 +67,8 @@ namespace FightingLegends
 		public AudioClip bubbleSound;
 
 		private long lastInfoBubbleTicks = 0;					// ticks (10,000 milliseconds, 10 million ticks per second)
-		private const float minTicksBetweenBubbles = 250000000;	// 2.5 seconds (10 million ticks per second)
+//		private const float minTicksBetweenBubbles = 250000000;	// 2.5 seconds (10 million ticks per second)
+		private const float minTicksBetweenBubbles = 25000000;	// 0.25 seconds (10 million ticks per second)
 
 		private const float bubbleTime = 0.25f;
 		private const float bubbleOverTime = 0.1f;
@@ -94,7 +95,7 @@ namespace FightingLegends
 		private void Start()
 		{
 			GameUI.TrafficLightInfoBubble += TrafficLightInfoBubble;
-			GameUI.OnGaugeIncreased += CrystalInfoBubble;
+//			GameUI.OnGaugeIncreased += CrystalInfoBubble;
 			FightManager.OnAIBlock += ShoveInfoBubble;
 //			FightManager.OnNewFight += CombatModeInfoBubble;
 //			FightManager.OnMenuChanged += MenuInfoBubble;
@@ -108,7 +109,7 @@ namespace FightingLegends
 		private void OnDestroy()
 		{
 			GameUI.TrafficLightInfoBubble -= TrafficLightInfoBubble;
-			GameUI.OnGaugeIncreased -= CrystalInfoBubble;
+//			GameUI.OnGaugeIncreased -= CrystalInfoBubble;
 			FightManager.OnAIBlock -= ShoveInfoBubble;
 //			FightManager.OnNewFight -= CombatModeInfoBubble;
 //			FightManager.OnMenuChanged -= MenuInfoBubble;
@@ -501,6 +502,8 @@ namespace FightingLegends
 			Vector3 bubblePosition = Vector3.zero;
 			InfoBubbleMessage bubbleMessage = GameUI.TrafficLightMessage(colour, flashing);
 
+			Debug.Log("TrafficLightInfoBubble: " + bubbleMessage + " read = " + FightManager.WasInfoBubbleMessageRead(bubbleMessage));
+
 			if (FightManager.WasInfoBubbleMessageRead(bubbleMessage))
 				return;
 
@@ -516,9 +519,15 @@ namespace FightingLegends
 					bubbleImage = holdSprite;
 					break;
 
-				case TrafficLight.Yellow:
+				case TrafficLight.YellowReactive:
 					bubbleHeading = FightManager.Translate("yellowLightHeading", false, true);
-					bubbleText = FightManager.Translate("yellowLightNarrative");
+					bubbleText = FightManager.Translate("yellowLightReactiveNarrative");
+					bubbleImage = resetSprite;
+					break;
+
+				case TrafficLight.YellowProactive:
+					bubbleHeading = FightManager.Translate("yellowLightHeading", false, true);
+					bubbleText = FightManager.Translate("yellowLightProactiveNarrative");
 					bubbleImage = resetSprite;
 					break;
 
@@ -773,22 +782,22 @@ namespace FightingLegends
 //				StartCoroutine(ShowInfoBubble(Vector3.zero, bubbleMessage, bubbleHeading, bubbleText, bubbleImage, false));
 //		}
 
-		private void CrystalInfoBubble(int newGauge)
-		{
-			if (!fightManager.ReadyToFight)			// no point if not ready
-				return;
-
-			if (FightManager.CombatMode == FightMode.Training)
-				return;
-			
-			InfoBubbleMessage message = InfoBubbleMessage.Crystals;
-			string bubbleHeading = FightManager.Translate("crystalInfoHeading");
-			string bubbleText = FightManager.Translate("crystalInfoMessage");
-			Sprite bubbleImage = CrystalSprite;
-
-			if (! FightManager.WasInfoBubbleMessageRead(message))
-				StartCoroutine(ShowInfoBubble(Vector3.zero, message, bubbleHeading, bubbleText, bubbleImage, true));
-		}
+//		private void CrystalInfoBubble(int newGauge)
+//		{
+//			if (!fightManager.ReadyToFight)			// no point if not ready
+//				return;
+//
+//			if (FightManager.CombatMode == FightMode.Training)
+//				return;
+//			
+//			InfoBubbleMessage message = InfoBubbleMessage.Crystals;
+//			string bubbleHeading = FightManager.Translate("crystalInfoHeading");
+//			string bubbleText = FightManager.Translate("crystalInfoMessage");
+//			Sprite bubbleImage = CrystalSprite;
+//
+//			if (! FightManager.WasInfoBubbleMessageRead(message))
+//				StartCoroutine(ShowInfoBubble(Vector3.zero, message, bubbleHeading, bubbleText, bubbleImage, true));
+//		}
 
 		private void ShoveInfoBubble()
 		{
@@ -873,13 +882,16 @@ namespace FightingLegends
 			if (FightManager.IsNetworkFight)
 				yield break;
 
+			if (FightManager.CombatMode == FightMode.Dojo)
+				yield break;
+
 			if (message != InfoBubbleMessage.None && message == CurrentInfoBubbleMessage)		// no change
 				yield break;
 
 			if (fightManager.BlockInfoBubble)
 				yield break;
 
-			// wait at least minTicksBetweenBubbles
+//			// wait at least minTicksBetweenBubbles
 			var nowTicks = DateTime.Now.Ticks;
 			if (nowTicks - lastInfoBubbleTicks < minTicksBetweenBubbles)
 				yield break;
@@ -895,7 +907,7 @@ namespace FightingLegends
 			float t = 0;
 			Vector3 startScale = Vector3.zero;
 			Vector3 targetScale = Vector3.one;
-			Vector3 overScale = new Vector3(1.15f, 1.15f, 1.15f);
+			Vector3 overScale = new Vector3(1.2f, 1.2f, 1.2f);
 
 			InfoBubble.transform.localScale = startScale;
 

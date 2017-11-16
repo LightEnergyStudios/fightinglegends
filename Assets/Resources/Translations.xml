@@ -39,10 +39,11 @@
         <string name="rightArrowHeading">RIGHT ARROW = EXTRA</string>
 
         <string name="redLightNarrative">BLOCK your opponent's oncoming attack!</string>
-        <string name="flashingGreenLightNarrative">Strike while your opponent is VULNERABLE! \n FIRE characters mash to follow-up your SPECIAL attack!</string>
-        <string name="greenLightNarrative">Don't stand IDLE for too long! Attack or block!</string>
-        <string name="yellowLightNarrative">You have enough crystals to RESET! \n Escape your opponent's combo or extend your own!</string>
-        <string name="leftArrowNarrative">You have enough crystals to COUNTER ATTACK before your opponent makes contact!</string>
+        <string name="flashingGreenLightNarrative">STRIKE while your opponent is VULNERABLE! FIRE characters MASH to follow-up your SPECIAL attack!</string>
+        <string name="greenLightNarrative">Don't stand IDLE for too long! ATTACK or BLOCK!</string>
+        <string name="yellowLightProactiveNarrative">You have enough CRYSTALS to RESET! Follow-up to EXTEND your COMBO!</string>
+        <string name="yellowLightReactiveNarrative">You have enough CRYSTALS to RESET! Be ready to COUNTER or BLOCK!</string>
+        <string name="leftArrowNarrative">You have enough CRYSTALS to COUNTER ATTACK before your opponent makes contact!</string>
         <string name="rightArrowNarrative">WATER characters follow-up your SPECIAL with another swipe!</string>
 
         <string name="specialExtraWaterNarrative">Swipe forward to follow-up your SPECIAL attack!</string>

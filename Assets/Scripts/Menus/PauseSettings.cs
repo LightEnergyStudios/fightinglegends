@@ -61,6 +61,8 @@ namespace FightingLegends
 		public Text musicVolume;				// number (1-11)
 		public Text sfxVolume;					// number (1-11)
 
+		public AudioClip TestSFX;				// when volume slider changed
+
 		public Button slowDownButton;
 		public Button speedUpButton;
 		public Text gameFPS;
@@ -152,11 +154,11 @@ namespace FightingLegends
 			iterateToggle.isOn = iterateStrategies;
 			isolateToggle.isOn = isolateStrategy;
 
-			ConfigAIToggles();
-			UpdateFPS();
-			SetVolumes();
+//			ConfigAIToggles();
+//			UpdateFPS();
 
-			ThemeGlow();
+//			SetVolumeSliders();
+//			ThemeGlow();
 		}
 
 		private void OnEnable()
@@ -171,6 +173,9 @@ namespace FightingLegends
 //			KudosChanged(FightManager.Kudos);				// set current value
 
 //			SetStats();
+
+			SetVolumeSliders();
+			ThemeGlow();
 
 			AnimateEntry();
 
@@ -214,11 +219,11 @@ namespace FightingLegends
 			hudToggle.onValueChanged.AddListener(HudToggled);
 			hintsToggle.onValueChanged.AddListener(HintsToggled);
 
-			smartAIToggle.onValueChanged.AddListener(SmartAIToggled);
-			proactiveToggle.onValueChanged.AddListener(ProactiveToggled);
-			reactiveToggle.onValueChanged.AddListener(ReactiveToggled);
-			iterateToggle.onValueChanged.AddListener(IterateToggled);
-			isolateToggle.onValueChanged.AddListener(IsolateToggled);
+//			smartAIToggle.onValueChanged.AddListener(SmartAIToggled);
+//			proactiveToggle.onValueChanged.AddListener(ProactiveToggled);
+//			reactiveToggle.onValueChanged.AddListener(ReactiveToggled);
+//			iterateToggle.onValueChanged.AddListener(IterateToggled);
+//			isolateToggle.onValueChanged.AddListener(IsolateToggled);
 
 			if (difficultySelector != null)
 				difficultySelector.OnDifficultySelected += SetDifficulty;
@@ -246,11 +251,11 @@ namespace FightingLegends
 			hudToggle.onValueChanged.RemoveListener(HudToggled);
 			hintsToggle.onValueChanged.RemoveListener(HintsToggled);
 
-			smartAIToggle.onValueChanged.RemoveListener(SmartAIToggled);
-			reactiveToggle.onValueChanged.RemoveListener(ReactiveToggled);
-			proactiveToggle.onValueChanged.RemoveListener(ProactiveToggled);
-			iterateToggle.onValueChanged.RemoveListener(IterateToggled);
-			isolateToggle.onValueChanged.RemoveListener(IsolateToggled);
+//			smartAIToggle.onValueChanged.RemoveListener(SmartAIToggled);
+//			reactiveToggle.onValueChanged.RemoveListener(ReactiveToggled);
+//			proactiveToggle.onValueChanged.RemoveListener(ProactiveToggled);
+//			iterateToggle.onValueChanged.RemoveListener(IterateToggled);
+//			isolateToggle.onValueChanged.RemoveListener(IsolateToggled);
 
 			if (difficultySelector != null)
 				difficultySelector.OnDifficultySelected -= SetDifficulty;
@@ -450,7 +455,11 @@ namespace FightingLegends
 			float volume = value / sfxSlider.maxValue;
 			fightManager.SetSFXVolume(volume);
 
+//			Debug.Log("SFXVolumeChanged: " + value + " / " + FightManager.SFXVolume);
+
 			sfxVolume.text = ((int)value).ToString();
+
+			AudioSource.PlayClipAtPoint(TestSFX, Vector3.zero, FightManager.SFXVolume);
 		}
 
 		private void MusicVolumeChanged(float value)
@@ -458,19 +467,25 @@ namespace FightingLegends
 			float volume = value / musicSlider.maxValue;
 			fightManager.SetMusicVolume(volume);
 
+//			Debug.Log("MusicVolumeChanged: " + value + " / " + FightManager.MusicVolume);
+
 			musicVolume.text = ((int)value).ToString();
 		}
 			
-		private void SetVolumes()
+		private void SetVolumeSliders()
 		{
-			sfxSlider.value = (FightManager.SFXVolume > 0) ? sfxSlider.maxValue / FightManager.SFXVolume : sfxSlider.minValue;
-			musicSlider.value = (FightManager.MusicVolume > 0) ? musicSlider.maxValue / FightManager.MusicVolume : musicSlider.minValue;
+			sfxSlider.value = Mathf.RoundToInt(sfxSlider.maxValue * FightManager.SFXVolume);
+			musicSlider.value = Mathf.RoundToInt(musicSlider.maxValue * FightManager.MusicVolume);
+//			Debug.Log("SetVolumeSliders: SFX - " + FightManager.SFXVolume + " / " + sfxSlider.value + " Music - " + FightManager.MusicVolume + " / " + musicSlider.value);
+
+			sfxVolume.text = sfxSlider.value.ToString();
+			musicVolume.text = musicSlider.value.ToString();
 		}
 			
-		private void UpdateFPS()
-		{
-			gameFPS.text = string.Format("{0:0.##} FPS", fightManager.AnimationFPS);
-		}
+//		private void UpdateFPS()
+//		{
+//			gameFPS.text = string.Format("{0:0.##} FPS", fightManager.AnimationFPS);
+//		}
 
 		private void TrainingNarrativeToggled(bool isOn)
 		{
@@ -533,52 +548,52 @@ namespace FightingLegends
 
 		#region AI testing
 
-		private void ConfigAIToggles()
-		{
-			reactiveToggle.interactable = smartAI;
-			proactiveToggle.interactable = smartAI;
-			iterateToggle.interactable = smartAI; 
-			isolateToggle.interactable = smartAI && iterateStrategies;
-
-			if (! iterateStrategies)
-				isolateStrategy = false;
-		}
-
-		private void SmartAIToggled(bool isOn)
-		{
-			smartAI = isOn;
-			ConfigAIToggles();
-			SaveSettings();
-		}
-
-		private void ReactiveToggled(bool isOn)
-		{
-			reactiveStrategies = isOn;
-			SaveSettings();
-		}
-
-		private void ProactiveToggled(bool isOn)
-		{
-			proactiveStrategies = isOn;
-			SaveSettings();
-		}
-
-		private void IterateToggled(bool isOn)
-		{
-			iterateStrategies = isOn;
-
+//		private void ConfigAIToggles()
+//		{
+//			reactiveToggle.interactable = smartAI;
+//			proactiveToggle.interactable = smartAI;
+//			iterateToggle.interactable = smartAI; 
+//			isolateToggle.interactable = smartAI && iterateStrategies;
+//
 //			if (! iterateStrategies)
 //				isolateStrategy = false;
-			
-			ConfigAIToggles();
-			SaveSettings();
-		}
-
-		private void IsolateToggled(bool isOn)
-		{
-			isolateStrategy = isOn;
-			SaveSettings();
-		}
+//		}
+//
+//		private void SmartAIToggled(bool isOn)
+//		{
+//			smartAI = isOn;
+//			ConfigAIToggles();
+//			SaveSettings();
+//		}
+//
+//		private void ReactiveToggled(bool isOn)
+//		{
+//			reactiveStrategies = isOn;
+//			SaveSettings();
+//		}
+//
+//		private void ProactiveToggled(bool isOn)
+//		{
+//			proactiveStrategies = isOn;
+//			SaveSettings();
+//		}
+//
+//		private void IterateToggled(bool isOn)
+//		{
+//			iterateStrategies = isOn;
+//
+////			if (! iterateStrategies)
+////				isolateStrategy = false;
+//			
+//			ConfigAIToggles();
+//			SaveSettings();
+//		}
+//
+//		private void IsolateToggled(bool isOn)
+//		{
+//			isolateStrategy = isOn;
+//			SaveSettings();
+//		}
 
 		private void SaveSettings()
 		{

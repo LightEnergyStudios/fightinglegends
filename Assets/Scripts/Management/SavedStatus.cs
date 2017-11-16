@@ -10,7 +10,7 @@ namespace FightingLegends
 	[Serializable]
 	public class SavedStatus
 	{
-		public string VersionNumber = "1.0";
+		public string VersionNumber = "";
 		public int LimitedVersion = 0;					// without extra assets? free version?
 
 		public int PlayCount = 0;						// times game started
@@ -21,7 +21,7 @@ namespace FightingLegends
 
 		// player status
 
-		public float Kudos = 0;							// to allow very large numbers!
+		public float Kudos = 0;							// float to allow very large numbers!
 		public int Coins = 0;
 
 		public int BestDojoDamage = 0;					// PB damage from chain in Dojo mode
@@ -33,8 +33,8 @@ namespace FightingLegends
 		public bool CompletedBasicTraining = false;	
 
 		// settings
-		public float SFXVolume = 0.5f;
-		public float MusicVolume = 0.5f;
+		public float SFXVolume = FightManager.DefaultSFXVolume;			// 0 - 1
+		public float MusicVolume = FightManager.DefaultMusicVolume;		// 0 - 1
 
 		public bool ShowTrainingNarrative = false;			// show narrative panel during training
 		public bool ShowStateFeedback = true;				// show state feedback + fireworks
@@ -116,8 +116,5 @@ namespace FightingLegends
 		public int Quantity { get; set; }			// quantity 'in stock'
 		public DateTime TimeCreated { get; set; }
 		public DateTime TimeUpdated { get; set; }
-
-//		public float Lifetime = 0;					// 
-//		public float LifeReamining = 0;
 	}
 }

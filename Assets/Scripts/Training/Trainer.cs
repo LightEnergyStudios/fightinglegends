@@ -1043,59 +1043,59 @@ namespace FightingLegends
 		}
 
 
-		private void ConstructRedGreenTrafficLightTraining()
-		{
-			if (! trafficLightTraining)
-				return;
+//		private void ConstructRedGreenTrafficLightTraining()
+//		{
+//			if (! trafficLightTraining)
+//				return;
+//
+//			TrainingScript.Enqueue(new TrainingStep {
+//				Title = "Green Light",
+//				Header = FightManager.Translate("greenLightHeader"),
+////				Narrative = FightManager.Translate("greenLightNarrative"),
+//				NarrativeSprite = feedbackUI.OkSprite,
+//				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
+//				TrafficLightColour = TrafficLight.Green
+//			}
+//			);
+//
+//			TrainingScript.Enqueue(new TrainingStep {
+//				Title = "Red Light",
+//				Header = FightManager.Translate("redLightHeader"),
+////				Narrative = FightManager.Translate("redLightNarrative"),
+//				NarrativeSprite = feedbackUI.NotOkSprite,
+//				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
+//				TrafficLightColour = TrafficLight.Red
+//			}
+//			);
+//		}
 
-			TrainingScript.Enqueue(new TrainingStep {
-				Title = "Green Light",
-				Header = FightManager.Translate("greenLightHeader"),
-//				Narrative = FightManager.Translate("greenLightNarrative"),
-				NarrativeSprite = feedbackUI.OkSprite,
-				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
-				TrafficLightColour = TrafficLight.Green
-			}
-			);
 
-			TrainingScript.Enqueue(new TrainingStep {
-				Title = "Red Light",
-				Header = FightManager.Translate("redLightHeader"),
-//				Narrative = FightManager.Translate("redLightNarrative"),
-				NarrativeSprite = feedbackUI.NotOkSprite,
-				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
-				TrafficLightColour = TrafficLight.Red
-			}
-			);
-		}
-
-
-		private void ConstructYellowTrafficLightTraining()
-		{
-			if (! trafficLightTraining)
-				return;
-
-			TrainingScript.Enqueue(new TrainingStep {
-				Title = "Yellow Light",
-				Header = FightManager.Translate("yellowLightHeader"),
-//				Narrative = FightManager.Translate("yellowLightNarrative"), 
-//				NarrativeSprite = feedbackUI.ResetSprite,
-//				WaitSeconds = 2.0f,
-				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
-				TrafficLightColour = TrafficLight.Yellow
-			}
-			);
-
-			TrainingScript.Enqueue(new TrainingStep {
-				Title = "Left Arrow",
-				Header = FightManager.Translate("leftArrowHeader"),
-//				Narrative = FightManager.Translate("leftArrowNarrative"),
-				NarrativeSprite = trainingUI.swipeBackSprite,
-				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
-				TrafficLightColour = TrafficLight.Left
-			}
-			);
-		}
+//		private void ConstructYellowTrafficLightTraining()
+//		{
+//			if (! trafficLightTraining)
+//				return;
+//
+//			TrainingScript.Enqueue(new TrainingStep {
+//				Title = "Yellow Light",
+//				Header = FightManager.Translate("yellowLightHeader"),
+////				Narrative = FightManager.Translate("yellowLightProactiveNarrative"), 
+////				NarrativeSprite = feedbackUI.ResetSprite,
+////				WaitSeconds = 2.0f,
+//				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
+//				TrafficLightColour = TrafficLight.Yellow
+//			}
+//			);
+//
+//			TrainingScript.Enqueue(new TrainingStep {
+//				Title = "Left Arrow",
+//				Header = FightManager.Translate("leftArrowHeader"),
+////				Narrative = FightManager.Translate("leftArrowNarrative"),
+//				NarrativeSprite = trainingUI.swipeBackSprite,
+//				IsTrafficLightStep = true,					// to explain traffic lights (with narrative)
+//				TrafficLightColour = TrafficLight.Left
+//			}
+//			);
+//		}
 			
 		private void ConstructShortBasicTraining()
 		{

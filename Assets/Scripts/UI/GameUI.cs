@@ -470,7 +470,8 @@ namespace FightingLegends
 			var player1 = fightManager.Player1;
 			var player2 = fightManager.Player2;
 
-//			Debug.Log("SetStateTrafficLight player1 = " + player1.FighterName + "/" + player1.ColourScheme + " player2 = " + player2.FighterName + "/" + player2.ColourScheme);
+			if (lastHit)
+				Debug.Log("SetStateTrafficLight lastHit: " + player1.CurrentState);
 
 			bool fighterCanCounter = player1.HasCounterGauge && (player1.IsIdle || player1.IsDashing || player1.IsBlockIdle || player1.IsBlockStunned);
 
@@ -478,7 +479,7 @@ namespace FightingLegends
 				player2.CurrentState == State.Heavy_Windup || player2.CurrentState == State.Counter_Attack ||
 				player2.CurrentState == State.Special || player2.CurrentState == State.Special_Start || player2.CurrentState == State.Special_Opportunity ||
 				player2.CurrentState == State.Special_Extra || player2.CurrentState == State.Vengeance;
-
+			
 //			bool AIvulnerable = player2.CurrentState == State.Light_Cutoff || player2.CurrentState == State.Medium_Cutoff ||
 //			                    player2.CurrentState == State.Heavy_Cutoff || player2.CurrentState == State.Counter_Recovery ||
 //			                    player2.CurrentState == State.Special_Opportunity;
@@ -486,6 +487,9 @@ namespace FightingLegends
 			bool AIvulnerable = player2.CurrentState == State.Counter_Recovery || player2.CurrentState == State.Special_Opportunity;
 			
 			bool AIvulnerableOnLastHit = lastHit && (player2.CurrentState == State.Counter_Attack || player2.CurrentState == State.Special_Extra || player2.CurrentState == State.Vengeance);
+			bool resetOnLastHit = lastHit && (player1.CurrentState == State.Counter_Attack || player1.CurrentState == State.Special_Extra || player1.CurrentState == State.Vengeance);
+
+			bool canResetState = player1.IsHitStunned || player1.CurrentState == State.Heavy_Cutoff || resetOnLastHit;
 
 			bool shouldBlock = player1.IsIdle || player1.IsBlockIdle || player1.IsBlockStunned;		// keep blocking if already doing so
 
@@ -505,9 +509,9 @@ namespace FightingLegends
 			{
 				SetTrafficLightColour(TrafficLight.Left);
 			}
-			else if (player1.CanRomanCancel && player1.HasRomanCancelGauge)
+			else if (player1.CanRomanCancel && player1.HasRomanCancelGauge && canResetState)
 			{
-				SetTrafficLightColour(TrafficLight.Yellow);
+				SetTrafficLightColour(player1.IsHitStunned ? TrafficLight.YellowReactive : TrafficLight.YellowProactive);
 			}
 			else if (shouldBlock && AIapproaching)
 			{
@@ -526,7 +530,7 @@ namespace FightingLegends
 		private void OnStateStarted(FighterChangedData newState)
 		{
 			// traffic light colours forced during training (except during a combo)
-			if (newState.Fighter.InTraining) // && !newState.Fighter.Trainer.CurrentStepIsCombo)
+			if (newState.Fighter.InTraining)
 				return;
 
 			SetStateTrafficLight(newState);
@@ -535,7 +539,7 @@ namespace FightingLegends
 		private void OnCanContinue(FighterChangedData newState)
 		{
 			// traffic lights forced during training, except during a combo
-			if (newState.Fighter.InTraining) // && !newState.Fighter.Trainer.CurrentStepIsCombo)
+			if (newState.Fighter.InTraining)
 				return;
 
 			SetStateTrafficLight(newState);
@@ -550,7 +554,7 @@ namespace FightingLegends
 			}
 
 			// traffic lights forced during training, except during a combo
-			if (newState.Fighter.InTraining) // && !newState.Fighter.Trainer.CurrentStepIsCombo)
+			if (newState.Fighter.InTraining)
 				return;
 			
 			SetStateTrafficLight(newState);
@@ -559,7 +563,7 @@ namespace FightingLegends
 		private void OnLastHit(FighterChangedData newState)
 		{
 			// traffic lights forced during training, except during a combo
-			if (newState.Fighter.InTraining) // && !newState.Fighter.Trainer.CurrentStepIsCombo)
+			if (newState.Fighter.InTraining)
 				return;
 
 			SetStateTrafficLight(newState);
@@ -616,7 +620,8 @@ namespace FightingLegends
 
 		private void SetTrafficLightColour(TrafficLight colour, int flashes = 0, bool stars = false)
 		{
-//			Debug.Log("SetTrafficLightColour " + colour + ", showBubble = " + showBubble);
+			if (colour != TrafficLight.None)
+				Debug.Log("SetTrafficLightColour " + colour);
 
 			if (!TrafficLightVisible)		// eg. survival and challenge modes
 				return;
@@ -626,7 +631,7 @@ namespace FightingLegends
 
 			UnlitTrafficLight.gameObject.SetActive(colour == TrafficLight.None);
 			RedTrafficLight.gameObject.SetActive(colour == TrafficLight.Red);
-			YellowTrafficLight.gameObject.SetActive(colour == TrafficLight.Yellow);
+			YellowTrafficLight.gameObject.SetActive(colour == TrafficLight.YellowReactive || colour == TrafficLight.YellowProactive);
 			GreenTrafficLight.gameObject.SetActive(colour == TrafficLight.Green);
 			LeftTrafficLight.gameObject.SetActive(colour == TrafficLight.Left);
 			RightTrafficLight.gameObject.SetActive(colour == TrafficLight.Right);
@@ -639,7 +644,11 @@ namespace FightingLegends
 						RedLightStars.Play();
 						break;
 
-					case TrafficLight.Yellow:
+					case TrafficLight.YellowReactive:
+						YellowLightStars.Play();
+						break;
+
+					case TrafficLight.YellowProactive:
 						YellowLightStars.Play();
 						break;
 
@@ -681,8 +690,11 @@ namespace FightingLegends
 				case TrafficLight.Red:
 					return InfoBubbleMessage.RedLight;
 
-				case TrafficLight.Yellow:
-					return InfoBubbleMessage.YellowLight;
+				case TrafficLight.YellowReactive:
+					return InfoBubbleMessage.YellowLightReactive;
+
+				case TrafficLight.YellowProactive:
+					return InfoBubbleMessage.YellowLightProactive;
 
 				case TrafficLight.Green:
 					if (flashing)
