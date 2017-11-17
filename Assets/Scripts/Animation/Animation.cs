@@ -50,7 +50,7 @@ namespace FightingLegends
 
 		private void OnDisable()
 		{
-			FightManager.OnFightFrozen -= PauseAnimation;
+			FightManager.OnFightPaused -= PauseAnimation;
 		}
 
 

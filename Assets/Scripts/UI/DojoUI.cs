@@ -832,9 +832,9 @@ namespace FightingLegends
 			if (movesShowing)
 				SyncStateMoves(true);				// according to current state of fighter
 
-			// return to idle - add a null frame number stamp to end of recordedMoves
+			// return to idle or block idle - add a null frame number stamp to end of recordedMoves
 			// shadow retaliates with same moves (stop recording - start playback)
-			if (state.NewState == State.Idle)
+			if (state.NewState == State.Idle || state.NewState == State.Block_Idle)
 			{
 				if (recordingInProgress)
 				{

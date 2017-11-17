@@ -6237,8 +6237,6 @@ namespace FightingLegends
 				if (IsIdle)
 					return null;
 
-//				return GetHitFrameData(CurrentState, StateFrameCount);
-
 				if (StateFrameCount == 0)
 					return null;
 
@@ -6248,18 +6246,6 @@ namespace FightingLegends
 				return hitFrameDictionary.TryGetValue(key, out stateFrameData) ? stateFrameData : null;
 			}
 		}
-
-
-//		public HitFrameData GetHitFrameData(State state, int stateFrameCount)
-//		{
-//			if (stateFrameCount == 0)
-//				return null;
-//
-//			int key = (int)state + stateFrameCount;
-//			HitFrameData stateFrameData;
-//
-//			return hitFrameDictionary.TryGetValue(key, out stateFrameData) ? stateFrameData : null;
-//		}
 
 		#endregion
 

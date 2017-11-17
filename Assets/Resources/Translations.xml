@@ -39,10 +39,10 @@
         <string name="rightArrowHeading">RIGHT ARROW = EXTRA</string>
 
         <string name="redLightNarrative">BLOCK your opponent's oncoming attack!</string>
-        <string name="flashingGreenLightNarrative">STRIKE while your opponent is VULNERABLE! FIRE characters MASH to follow-up your SPECIAL attack!</string>
-        <string name="greenLightNarrative">Don't stand IDLE for too long! ATTACK or BLOCK!</string>
-        <string name="yellowLightProactiveNarrative">You have enough CRYSTALS to RESET! Follow-up to EXTEND your COMBO!</string>
-        <string name="yellowLightReactiveNarrative">You have enough CRYSTALS to RESET! Be ready to COUNTER or BLOCK!</string>
+        <string name="flashingGreenLightNarrative">STRIKE while your opponent is VULNERABLE! [FIRE characters MASH to follow-up your SPECIAL attack!]</string>
+        <string name="greenLightNarrative">Don't stand IDLE for too long!  ATTACK or BLOCK!</string>
+        <string name="yellowLightProactiveNarrative">You have enough CRYSTALS to RESET!  Follow-up to EXTEND your COMBO!</string>
+        <string name="yellowLightReactiveNarrative">You have enough CRYSTALS to RESET!  Be ready to COUNTER or BLOCK!</string>
         <string name="leftArrowNarrative">You have enough CRYSTALS to COUNTER ATTACK before your opponent makes contact!</string>
         <string name="rightArrowNarrative">WATER characters follow-up your SPECIAL with another swipe!</string>
 
@@ -66,12 +66,12 @@
 		 <string name="swipeTwiceInfoMessage">Swipe back and forward, then lift your finger!</string>
 
         <string name="tapInfoMessage">Tap once quickly! Use your index finger lightly for best results!</string>
-        <string name="bothTapInfoMessage">Tap with two fingers for a RESET! Requires 1 crystal. Be ready to follow-up immediately!</string>
+        <string name="bothTapInfoMessage">Tap with two fingers for a RESET!  Requires 1 crystal. Be ready to follow-up immediately!</string>
         <string name="holdInfoMessage">Hold finger down to BLOCK, release finger to release block!</string>
-        <string name="swipeRightInfoMessage">Swipe right to launch a SPECIAL attack! WATER characters can follow-up with another swipe!</string>
+        <string name="swipeRightInfoMessage">Swipe right to launch a SPECIAL attack! [WATER characters can follow-up with another swipe!]</string>
         <string name="swipeLeftInfoMessage">Catch your opponent off-balance with a COUNTER ATTACK just before they strike you! Requires 2 crystals.</string>
-        <string name="swipeDownInfoMessage">SHOVE your opponent out of their block! Be sure to follow-up!</string>
-        <string name="swipeUpInfoMessage">Trigger the POWER-UP you have equipped! It will replenish after a while!</string>
+        <string name="swipeDownInfoMessage">SHOVE your opponent out of their block!  Be sure to follow-up!</string>
+        <string name="swipeUpInfoMessage">Trigger the POWER-UP you have equipped!  It will replenish after a while!</string>
         <string name="swipeVengeanceInfoMessage">Swipe back and forward once to mount a VENGEANCE attack! Requires 3 crystals.</string>
         <string name="mashInfoMessage">FIRE characters follow-up a SPECIAL by mashing at the right time!</string>
 
@@ -82,8 +82,8 @@
         <string name="LMHComboTimingMessage">As any Ninja will teach you ... you must master perfect TIMING to string together a long HIT COMBO!</string>
         <string name="ResetComboTimingMessage">When you have enough crystals, RESET to escape and then quickly follow-up with a cool COUNTER ATTACK!</string>
 
-        <string name="specialExtraComboNarrative">Now practice your TIMING with \n a COMBO at full speed!</string>
-		<string name="resetCounterComboNarrative">Next follow-up a RESET with a COUNTER \n ATTACK when you have enough crystals!</string>
+        <string name="specialExtraComboNarrative">Now practice your TIMING with a COMBO at full speed!</string>
+		<string name="resetCounterComboNarrative">Next follow-up a RESET with a COUNTER ATTACK when you have enough crystals!</string>
 
 		<string name="tapLight">TAP SCREEN TO ATTACK!</string>
 		<string name="tapMedium">TAP AGAIN TO FOLLOW UP!</string>

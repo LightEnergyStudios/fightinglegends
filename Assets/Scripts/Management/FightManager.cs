@@ -801,6 +801,8 @@ namespace FightingLegends
 		// OnApplicationPause(false) is called for a fresh launch and when resumed from background
 		public void OnApplicationPause(bool paused)
 		{
+			PauseFight(paused);
+
 			// save status and Player1 profile if going to background
 			if (paused)
 			{
@@ -809,10 +811,10 @@ namespace FightingLegends
 				if (HasPlayer1)
 					Player1.SaveProfile();
 			}
-			else
-			{
-				CancelFX();
-			}
+//			else
+//			{
+//				CancelFX();
+//			}
 		}
 			
 		// called every Time.fixedDeltaTime seconds
@@ -1825,7 +1827,7 @@ namespace FightingLegends
 
 		#region fight control
 
-		public void PauseFight(bool pause) // bool notify = true)
+		public void PauseFight(bool pause)
 		{
 			if (FightPaused == pause)		// no change
 				return;

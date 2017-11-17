@@ -228,7 +228,7 @@ namespace FightingLegends
 
 		public void CleanupTraining()
 		{
-			Debug.Log("CleanupTraining: " + fighter.FullName);
+//			Debug.Log("CleanupTraining: " + fighter.FullName);
 
 			CleanupCombo();
 

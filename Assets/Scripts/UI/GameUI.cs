@@ -205,29 +205,18 @@ namespace FightingLegends
 			}
 			else  		// arcade
 			{
-//				bool trainingCompleted = FightManager.SavedGameStatus.CompletedBasicTraining;
-//
-//				Player1Health.ShowScore(trainingCompleted);
-//				Player2Health.ShowScore(trainingCompleted);
-//				ScoreDash.gameObject.SetActive(trainingCompleted);
-
 				Player1Health.ShowScore(true);
 				Player2Health.ShowScore(true);
 				ScoreDash.gameObject.SetActive(true);
 
-//				if (trainingCompleted)
-				{
-					var mode = FightManager.CombatMode.ToString().ToLower();
-					var difficulty = FightManager.SavedGameStatus.Difficulty.ToString().ToLower();
+				var mode = FightManager.CombatMode.ToString().ToLower();
+				var difficulty = FightManager.SavedGameStatus.Difficulty.ToString().ToLower();
 
-					if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
-						CombatMode.text = string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate("twoPlayer"));
-					else
-						CombatMode.text = FightManager.SavedGameStatus.NinjaSchoolFight ? FightManager.Translate("ninjaSchool")
-												: string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate(difficulty));
-				}
-//				else
-//					CombatMode.text = FightManager.Translate("ninjaSchool");
+				if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
+					CombatMode.text = string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate("twoPlayer"));
+				else
+					CombatMode.text = FightManager.SavedGameStatus.NinjaSchoolFight ? FightManager.Translate("ninjaSchool")
+											: string.Format("{0} - {1}", FightManager.Translate(mode), FightManager.Translate(difficulty));
 
 				if (FightManager.IsNetworkFight && FightManager.CombatMode == FightMode.Arcade)
 				{
@@ -264,6 +253,7 @@ namespace FightingLegends
 				player1.OnStateStarted += OnStateStarted;
 				player1.OnCanContinue += OnCanContinue;
 				player1.OnGaugeChanged += OnGaugeChanged;
+				player1.OnLastHit += OnLastHit;
 
 				if (player1.InTraining)
 				{
@@ -302,6 +292,7 @@ namespace FightingLegends
 				player1.OnStateStarted -= OnStateStarted;
 				player1.OnCanContinue -= OnCanContinue;
 				player1.OnGaugeChanged -= OnGaugeChanged;
+				player1.OnLastHit -= OnLastHit;
 
 				if (player1.InTraining)
 				{
@@ -465,13 +456,11 @@ namespace FightingLegends
 				return;
 
 			var fighter = newState.Fighter;
-			bool lastHit = newState.ChangeType == FighterChangeType.LastHit;
-
 			var player1 = fightManager.Player1;
 			var player2 = fightManager.Player2;
 
-			if (lastHit)
-				Debug.Log("SetStateTrafficLight lastHit: " + player1.CurrentState);
+			bool player1LastHit = newState.ChangeType == FighterChangeType.LastHit && fighter == player1;
+			bool player2LastHit = newState.ChangeType == FighterChangeType.LastHit && fighter == player2;
 
 			bool fighterCanCounter = player1.HasCounterGauge && (player1.IsIdle || player1.IsDashing || player1.IsBlockIdle || player1.IsBlockStunned);
 
@@ -479,17 +468,13 @@ namespace FightingLegends
 				player2.CurrentState == State.Heavy_Windup || player2.CurrentState == State.Counter_Attack ||
 				player2.CurrentState == State.Special || player2.CurrentState == State.Special_Start || player2.CurrentState == State.Special_Opportunity ||
 				player2.CurrentState == State.Special_Extra || player2.CurrentState == State.Vengeance;
-			
-//			bool AIvulnerable = player2.CurrentState == State.Light_Cutoff || player2.CurrentState == State.Medium_Cutoff ||
-//			                    player2.CurrentState == State.Heavy_Cutoff || player2.CurrentState == State.Counter_Recovery ||
-//			                    player2.CurrentState == State.Special_Opportunity;
 
 			bool AIvulnerable = player2.CurrentState == State.Counter_Recovery || player2.CurrentState == State.Special_Opportunity;
-			
-			bool AIvulnerableOnLastHit = lastHit && (player2.CurrentState == State.Counter_Attack || player2.CurrentState == State.Special_Extra || player2.CurrentState == State.Vengeance);
-			bool resetOnLastHit = lastHit && (player1.CurrentState == State.Counter_Attack || player1.CurrentState == State.Special_Extra || player1.CurrentState == State.Vengeance);
+			bool AIvulnerableOnLastHit = player2LastHit && (player2.CurrentState == State.Counter_Attack || player2.CurrentState == State.Special_Extra || player2.CurrentState == State.Vengeance);
 
-			bool canResetState = player1.IsHitStunned || player1.CurrentState == State.Heavy_Cutoff || resetOnLastHit;
+			bool romanCancelOnLastHit = player1LastHit && (player1.CurrentState == State.Counter_Attack || player1.CurrentState == State.Special_Extra || player1.CurrentState == State.Vengeance);
+			bool canProactiveRomanCancel = player1.HasRomanCancelGauge && (romanCancelOnLastHit || player1.CurrentState == State.Heavy_Cutoff);
+			bool canReactiveRomanCancel = player1.HasRomanCancelGauge && player1.IsHitStunned;
 
 			bool shouldBlock = player1.IsIdle || player1.IsBlockIdle || player1.IsBlockStunned;		// keep blocking if already doing so
 
@@ -509,9 +494,13 @@ namespace FightingLegends
 			{
 				SetTrafficLightColour(TrafficLight.Left);
 			}
-			else if (player1.CanRomanCancel && player1.HasRomanCancelGauge && canResetState)
+			else if (canReactiveRomanCancel)
 			{
-				SetTrafficLightColour(player1.IsHitStunned ? TrafficLight.YellowReactive : TrafficLight.YellowProactive);
+				SetTrafficLightColour(TrafficLight.YellowReactive);
+			}
+			else if (canProactiveRomanCancel)
+			{
+				SetTrafficLightColour(TrafficLight.YellowProactive);
 			}
 			else if (shouldBlock && AIapproaching)
 			{
@@ -620,9 +609,9 @@ namespace FightingLegends
 
 		private void SetTrafficLightColour(TrafficLight colour, int flashes = 0, bool stars = false)
 		{
-			if (colour != TrafficLight.None)
-				Debug.Log("SetTrafficLightColour " + colour);
-
+//			if (colour != TrafficLight.None)
+//				Debug.Log("SetTrafficLightColour " + colour);
+//
 			if (!TrafficLightVisible)		// eg. survival and challenge modes
 				return;
 
@@ -745,50 +734,21 @@ namespace FightingLegends
 
 		private void DoSplat()
 		{
-//			Splat.gameObject.SetActive(true);
-
-//			HidePaintStrokes();
-
 			StartCoroutine(TriggerSplat());
-//			var animator = GetComponent<Animator>();
-//			animator.SetTrigger("EnterSplat");
 		}
 
 		private void HideSplat()
 		{
-//			Debug.Log("HideSplat");
-//			Splat.gameObject.SetActive(false);
-
 			StartCoroutine(FadeSplat());
 		}
 
 		private void DoPaintStroke(bool right)
 		{
-//			PaintStroke.transform.localScale = flip ? new Vector3(-1, 1, 1) : new Vector3(1, 1, 1);			// flipped to flow to the right
-//			if (right)
-//			{
-//				PaintStrokeRight.gameObject.SetActive(true);
-//				PaintStrokeLeft.gameObject.SetActive(false);
-//			}
-//			else
-//			{
-//				PaintStrokeLeft.gameObject.SetActive(true);
-//				PaintStrokeRight.gameObject.SetActive(false);
-//			}
-
-//			HideSplat();
 			StartCoroutine(TriggerPaintStroke(right));
-
-//			var animator = GetComponent<Animator>();
-//			animator.SetTrigger("EnterSplat");
 		}
 
 		private void HidePaintStrokes()
 		{
-//			Debug.Log("HidePaintStroke");
-//			PaintStrokeLeft.gameObject.SetActive(false);
-//			PaintStrokeRight.gameObject.SetActive(false);
-
 			StartCoroutine(FadePaintStroke(true));
 			StartCoroutine(FadePaintStroke(false));
 		}
@@ -956,6 +916,5 @@ namespace FightingLegends
 		{
 			fightManager.NewFightFillGauge();			// temporarily - for animation
 		}
-
 	}
 }
