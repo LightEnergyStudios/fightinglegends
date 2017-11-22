@@ -42,11 +42,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ProfileName: Hoi Lun
   SpotFXPrefab: {fileID: 117072, guid: 1213e66111dee43fbb8bf6e07778c016, type: 2}
-  ElementsFXPrefab: {fileID: 1976077684887768, guid: ca979ec03bf8b43af812445dfab209af,
+  ElementsFXPrefab: {fileID: 1902504850692466, guid: 41394ee9aac8544b6b613ef5a7f38b5c,
     type: 2}
   SmokeFXPrefab: {fileID: 1042451426250106, guid: de67fa9b37b214a36a9981df6bed3daa,
     type: 2}
-  DustPrefab: {fileID: 1723952538234936, guid: 0dce63d3f965942c9af456a9ea0d9820, type: 2}
   ProfileData:
     SavedData:
       FighterName: 

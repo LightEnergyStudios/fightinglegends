@@ -27,6 +27,9 @@ namespace Prototype.NetworkLobby
 
 		public GameObject fightManagerPrefab;		// NetworkFightManager
 		public LobbyDiscovery networkDiscovery;
+		private bool discoveryInitialised = false;
+
+		public LobbyState lobbyState = LobbyState.None;
 
 //		[Header("Unity UI Lobby")]
 //		[Tooltip("Time in second between all players ready & match start")]
@@ -107,10 +110,18 @@ namespace Prototype.NetworkLobby
 			findAGame.text = FightManager.Translate("findAGame");
 		}
 
+		public void OnEnable()
+		{
+			lobbyState = LobbyState.None;
+			discoveryInitialised = false;
+//			networkDiscovery.Initialize();
+		}
+
 		public void OnDestroy()
 		{
 			StopDiscovery();
 			StopAll();
+			Shutdown();
 		}
 			
 
@@ -137,30 +148,11 @@ namespace Prototype.NetworkLobby
 			blackOut.gameObject.SetActive(false);
 			blackOut.color = Color.clear;
 
+			NetworkServer.Reset();		// SM ok ??
+			Network.Disconnect();		// SM ok ??
+
+//			networkDiscovery.Initialize();
 			ChangeTo(mainMenuPanel);
-		}
-
-		public void HideLobbyUI()
-		{
-			StopDiscovery();		// stops listening and broadcasting
-//			StopAll();
-////			StopHostClbk();
-//			Network.Disconnect();		// ??
-//			NetworkServer.Reset();		// ??
-
-			StartCoroutine(FadeLobbyUI(false));
-		}
-
-		private IEnumerator FadeLobbyUI(bool fadeToBlack)
-		{
-			if (fadeToBlack)
-				yield return StartCoroutine(FadeToBlack());
-			
-			if (lobbyUIPanel != null)
-				lobbyUIPanel.gameObject.SetActive(false);
-
-			ChangeTo(mainMenuPanel);
-			yield return null;
 		}
 
 		// back button
@@ -168,51 +160,44 @@ namespace Prototype.NetworkLobby
 		{
 			Debug.Log("QuitLobby");
 
-			if (OnQuitLobby != null)					
-				OnQuitLobby();							// main menu stop discovery and reset UI
+//			if (OnQuitLobby != null)					
+//				OnQuitLobby();							// main menu stop discovery and reset UI
 
-			StartCoroutine(FadeQuitLobby(true));		// stops all so do last
+			if (! RemoveLocalPlayer())					// FadeQuitLobby called OnLobbyServerPlayerRemoved
+				StartCoroutine(FadeQuitLobby());
 		}
-
-		private IEnumerator FadeQuitLobby(bool stopAll = false)
+	
+		private IEnumerator FadeQuitLobby() //bool stopAll = false)
 		{
-//			if (stopAll)
-//				StopAll();		// SM ok ???
-			
-			yield return StartCoroutine(FadeLobbyUI(true));
-			HideLobbyUI();		// also stops listening and broadcasting
+			StopDiscovery();		// stops listening and broadcasting
 
-			if (stopAll)
-				StopAll();		// SM ok ???
-			
+			yield return StartCoroutine(FadeLobbyUI(true));
+
+//			if (stopAll)
+			StopAll();		// SM ok ???
+
 			SceneLoader.LoadScene(SceneLoader.CombatScene);
 
 			FightManager.IsNetworkFight = false;
 			SceneSettings.ShowLobbyUI = false;
 			SceneSettings.DirectToFighterSelect = false;
 
-//			yield return new WaitForSeconds(fadePause);
+			lobbyState = LobbyState.None;
+
 			StartCoroutine(ClearFadeToBlack());
-		}
-			
-		// broadcast for client to discover
-		public void BroadcastHostIP()
-		{
-			networkDiscovery.Initialize();
-			networkDiscovery.StartAsServer();
+			yield return null;
 		}
 
-		// start listening for host IP broadcast
-		public void DiscoverHostIP()
+		private IEnumerator FadeLobbyUI(bool fadeToBlack)
 		{
-			networkDiscovery.Initialize();
-			networkDiscovery.StartAsClient();
-		}
+			if (fadeToBlack)
+				yield return StartCoroutine(FadeToBlack());
 
-		public void StopDiscovery()
-		{
-			if (networkDiscovery.running)
-				networkDiscovery.StopBroadcast();		// stops listening and broadcasting
+			if (lobbyUIPanel != null)
+				lobbyUIPanel.gameObject.SetActive(false);
+
+			ChangeTo(mainMenuPanel);
+			yield return null;
 		}
 
 		public void EntryComplete()
@@ -261,6 +246,39 @@ namespace Prototype.NetworkLobby
 		}
 
 		#endregion   // UI
+
+
+		#region discovery
+
+		// broadcast for client to discover
+		public void BroadcastHostIP()
+		{
+			networkDiscovery.Initialize();
+			discoveryInitialised = true;
+			networkDiscovery.StartAsServer();
+		}
+
+		// start listening for host IP broadcast
+		public void DiscoverHostIP()
+		{
+			networkDiscovery.Initialize();
+			discoveryInitialised = true;
+			networkDiscovery.StartAsClient();
+		}
+
+		public void StopDiscovery()
+		{
+			//			Debug.Log("StopDiscovery running = " + networkDiscovery.running);
+			if (discoveryInitialised)
+			{
+				if (networkDiscovery.running)
+					networkDiscovery.StopBroadcast();		// stops listening and broadcasting
+
+				discoveryInitialised = false;
+			}
+		}
+
+		#endregion
 
 
 		public override void OnLobbyClientSceneChanged(NetworkConnection conn)
@@ -369,49 +387,70 @@ namespace Prototype.NetworkLobby
 //		{
 //			if (player != null)
 //			{
-////				player.RemovePlayer();
 //				player.OnRemovePlayerClick();
 //			}
 //		}
 
-		public void RemoveLocalPlayer()
+		public bool RemoveLocalPlayer()
 		{
 			for (int i = 0; i < lobbySlots.Length; ++i)
 			{
 				LobbyPlayer player = lobbySlots[i] as LobbyPlayer;
 
-				if (player.isLocalPlayer)
+				if (player != null && player.isLocalPlayer)
+				{
 					player.OnRemovePlayerClick();
+					return true;
+				}
 			}
+			return false;
 		}
 
-		public void RemoveAllPlayers()
-		{
-			for (int i = 0; i < lobbySlots.Length; ++i)
-			{
-				LobbyPlayer player = lobbySlots[i] as LobbyPlayer;
-				player.OnRemovePlayerClick();
-			}
-		}
+//		public void RemoveAllPlayers()
+//		{
+//			for (int i = 0; i < lobbySlots.Length; ++i)
+//			{
+//				LobbyPlayer player = lobbySlots[i] as LobbyPlayer;
+//				player.OnRemovePlayerClick();
+//			}
+//		}
 
-		public void SimpleBackClbk()
-		{
-			Debug.Log("SimpleBackClbk");
-			ChangeTo(mainMenuPanel);
-		}
+//		public void SimpleBackClbk()
+//		{
+//			Debug.Log("SimpleBackClbk");
+//			ChangeTo(mainMenuPanel);
+//		}
 
 		private void StopAll()
 		{
-			StopClientClbk();
-			StopHostClbk();
-			StopServerClbk();
+			switch (lobbyState)
+			{
+				case LobbyState.Client: 
+					StopClientClbk();
+					break;
 
-			NetworkServer.Reset();		// ??
-			Network.Disconnect();		// ??
+				case LobbyState.Host:
+					StopHostClbk();
+					break;
+
+				case LobbyState.Server:
+					StopServerClbk();
+					break;
+
+				case LobbyState.None:
+				default:
+					break;
+			}
+
+//			NetworkServer.Reset();		// ??
+//			Network.Disconnect();		// ??
 		}
 
 		public void StopHostClbk()
 		{
+			if (lobbyState != LobbyState.Host)
+				return;
+			
 			Debug.Log("StopHostClbk");
 			if (_isMatchmaking)
 			{
@@ -423,12 +462,14 @@ namespace Prototype.NetworkLobby
 				StopHost();
 			}
 				
-//			RemoveLocalPlayer();
 			ChangeTo(mainMenuPanel);
 		}
 
 		public void StopClientClbk()
 		{
+			if (lobbyState != LobbyState.Client)
+				return;
+			
 			Debug.Log("StopClientClbk");
 			StopClient();
 
@@ -437,14 +478,17 @@ namespace Prototype.NetworkLobby
 				StopMatchMaker();
 			}
 				
-//			RemoveLocalPlayer();
 			ChangeTo(mainMenuPanel);
 		}
 
 		public void StopServerClbk()
 		{
+			if (lobbyState != LobbyState.Server)
+				return;
+			
 			Debug.Log("StopServerClbk");
 			StopServer();
+
 			ChangeTo(mainMenuPanel);
 		}
 
@@ -501,6 +545,19 @@ namespace Prototype.NetworkLobby
 
 		// ----------------- Server callbacks ------------------
 
+		// called on the server when a client disconnects
+		public override void OnServerDisconnect(NetworkConnection conn)
+		{
+			NetworkServer.DestroyPlayersForConnection(conn);
+			if (conn.lastError != NetworkError.Ok)
+			{
+				if (LogFilter.logError)
+				{
+					Debug.LogError("ServerDisconnected due to error: " + conn.lastError);
+				}
+			}
+		}
+
 //		public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
 //		{
 //			GameObject player = (GameObject)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
@@ -547,8 +604,10 @@ namespace Prototype.NetworkLobby
 				}
 			}
 
-			SimpleBackClbk();
-			QuitLobby();		// TODO: SM ok?
+//			SimpleBackClbk();
+			Debug.Log("OnLobbyServerPlayerRemoved - quit");
+			StartCoroutine(FadeQuitLobby());
+//			QuitLobby();		// TODO: SM ok?
 		}
 
 		public override void OnLobbyServerDisconnect(NetworkConnection conn)
@@ -564,11 +623,12 @@ namespace Prototype.NetworkLobby
 				}
 			}
 
-			SimpleBackClbk();
-			QuitLobby();		// TODO: SM ok?
+//			SimpleBackClbk();
+			Debug.Log("OnLobbyServerDisconnect - quit");
+			StartCoroutine(FadeQuitLobby());
+//			QuitLobby();		// TODO: SM ok?
 		}
-
-
+			
 		private void SpawnNetworkFightManager()
 		{
 			GameObject managerObject = Instantiate(fightManagerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -617,7 +677,10 @@ namespace Prototype.NetworkLobby
 		{
 			base.OnClientSceneChanged(conn);		// calls NetworkFighter.OnStartLocalPlayer!!
 
-			HideLobbyUI();
+			StopDiscovery();		// stops listening and broadcasting
+			StartCoroutine(FadeLobbyUI(false));
+
+//			HideLobbyUI();
 		}
 
 

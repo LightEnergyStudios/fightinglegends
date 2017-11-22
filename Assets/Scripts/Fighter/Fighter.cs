@@ -464,6 +464,7 @@ namespace FightingLegends
 			{
 				var spotFXObject = Instantiate(profile.SpotFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				spotFX = spotFXObject.GetComponent<SpotFX>();
+				spotFX.OnEndState += FXStateEnd;			// listening for feedback state ends
 
 				// make spotFX a child of the fighter
 				spotFXObject.transform.parent = transform;
@@ -481,6 +482,7 @@ namespace FightingLegends
 
 				var spotFXx2Object = Instantiate(profile.SpotFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				spotFXx2 = spotFXx2Object.GetComponent<SpotFX>();
+				spotFXx2.OnEndState += FXStateEnd;			// listening for feedback state ends
 
 				spotFXx2.transform.localScale = new Vector3(4, 4, 4);
 
@@ -495,6 +497,7 @@ namespace FightingLegends
 			{
 				var elementsFXObject = Instantiate(profile.ElementsFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				elementsFX = elementsFXObject.GetComponent<ElementsFX>();
+				elementsFX.OnEndState += FXStateEnd;			// listening for feedback state ends
 
 				// make elementsFXObject a child of the fighter
 				elementsFXObject.transform.parent = transform;
@@ -512,6 +515,7 @@ namespace FightingLegends
 			{
 				var smokeFXObject = Instantiate(profile.SmokeFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				smokeFX = smokeFXObject.GetComponent<SmokeFX>();
+				smokeFX.OnEndState += FXStateEnd;			// listening for feedback state ends
 
 				// make smokeFXObject a child of the fighter
 				smokeFXObject.transform.parent = transform;
@@ -589,6 +593,12 @@ namespace FightingLegends
 				StopListeningForInput();
 
 			// destroy instantiated children
+
+			spotFX.OnEndState -= FXStateEnd;
+			spotFXx2.OnEndState -= FXStateEnd;
+			elementsFX.OnEndState -= FXStateEnd;
+			smokeFX.OnEndState -= FXStateEnd;
+
 			Destroy(spotFX.gameObject);
 			Destroy(spotFXx2.gameObject);
 			Destroy(elementsFX.gameObject);
@@ -1282,6 +1292,19 @@ namespace FightingLegends
 				default:
 					break;
 			}
+		}
+
+
+		private void FXStateEnd(AnimationState endingState)
+		{
+			CancelFX();
+		}
+
+		public void CancelFX()
+		{
+			CancelElementFX();
+			CancelSpotFX();
+			CancelSmokeFX();
 		}
 			
 
@@ -3219,7 +3242,10 @@ namespace FightingLegends
 			if (x2)
 			{
 				if (spotFXx2 != null)
+				{
+					spotFX.gameObject.SetActive(true);
 					spotFXx2.TriggerEffect(FXType);
+				}
 			}
 			else
 			{
@@ -3230,6 +3256,7 @@ namespace FightingLegends
 //						Quaternion rotation = Quaternion.Euler(0, 0, UnityEngine.Random.Range(0, 360));
 //						spotFX.movieClip.transform.rotation = rotation;	
 //					}
+					spotFX.gameObject.SetActive(true);
 					spotFX.TriggerEffect(FXType);	
 				}
 			}
@@ -3239,7 +3266,15 @@ namespace FightingLegends
 		{
 			Debug.Log(FullName + " CancelSpotFX");
 			if (spotFX != null)
+			{
 				spotFX.VoidState();
+				spotFX.gameObject.SetActive(false);
+			}
+			if (spotFXx2 != null)
+			{
+				spotFXx2.VoidState();
+				spotFXx2.gameObject.SetActive(false);
+			}
 		}
 
 		#endregion  // spot FX
@@ -3250,7 +3285,18 @@ namespace FightingLegends
 			if (smokeFX == null)
 				return;
 
+			spotFX.gameObject.SetActive(true);
 			smokeFX.TriggerSmoke(smoke, xOffset, yOffset);
+		}
+
+		public void CancelSmokeFX()
+		{
+			Debug.Log(FullName + " CancelSmokeFX");
+			if (smokeFX != null)
+			{
+				smokeFX.VoidState();
+				smokeFX.gameObject.SetActive(false);
+			}
 		}
 			
 
@@ -5255,12 +5301,14 @@ namespace FightingLegends
 			
 			if (IsAirElement)
 			{
+				elementsFX.gameObject.SetActive(true);
 				elementsFX.TriggerElementEffect(FighterName, FighterElement.Air);	// FX may vary by fighter
 				if (ProfileData.airSound != null)
 					AudioSource.PlayClipAtPoint(ProfileData.airSound, Vector3.zero, FightManager.SFXVolume);
 			}
 			else if (IsEarthElement)
 			{
+				elementsFX.gameObject.SetActive(true);
 				elementsFX.TriggerElementEffect(FighterName, FighterElement.Earth);
 				if (ProfileData.earthSound != null)
 					AudioSource.PlayClipAtPoint(ProfileData.earthSound, Vector3.zero, FightManager.SFXVolume);
@@ -5274,12 +5322,14 @@ namespace FightingLegends
 
 			if (IsFireElement)
 			{
+				elementsFX.gameObject.SetActive(true);
 				elementsFX.TriggerElementEffect(FighterName, FighterElement.Fire);
 				if (ProfileData.fireSound != null)
 					AudioSource.PlayClipAtPoint(ProfileData.fireSound, Vector3.zero, FightManager.SFXVolume);
 			}
 			else if (IsWaterElement)
 			{
+				elementsFX.gameObject.SetActive(true);
 				elementsFX.TriggerElementEffect(FighterName, FighterElement.Water);
 				if (ProfileData.waterSound != null)
 					AudioSource.PlayClipAtPoint(ProfileData.waterSound, Vector3.zero, FightManager.SFXVolume);
@@ -5289,7 +5339,10 @@ namespace FightingLegends
 		public void CancelElementFX()
 		{
 			if (elementsFX != null)
+			{
 				elementsFX.VoidState();
+				elementsFX.gameObject.SetActive(false);
+			}
 		}
 
 		public string ElementsLabel

@@ -221,12 +221,6 @@ namespace Prototype.NetworkLobby
         {
             CheckRemoveButton();
         }
-
-		[ClientRpc]
-		public void RpcRemovePlayer()
-		{
-			OnRemovePlayerClick();
-		}
 			
 
         //====== Server Commands

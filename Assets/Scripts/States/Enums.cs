@@ -590,5 +590,13 @@ namespace FightingLegends
 //		OK
 	}
 
+	public enum LobbyState
+	{
+		None,
+		Client,
+		Host,
+		Server,
+	}
+
 }
 

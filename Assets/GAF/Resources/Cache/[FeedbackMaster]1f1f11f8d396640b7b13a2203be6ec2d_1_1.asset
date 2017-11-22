@@ -14,7 +14,7 @@ MonoBehaviour:
   m_Asset: {fileID: 11400000, guid: 1f1f11f8d396640b7b13a2203be6ec2d, type: 2}
   m_Scale: 1
   m_CSF: 1
-  m_CurrentDataPath: Assets/Artwork/FX/Feedback/
+  m_CurrentDataPath: Assets/Artwork/FX/old/Feedback/
   m_Data:
   - m_SearchName: FeedbackMaster
     m_SharedTexture: {fileID: 2800000, guid: aa839eaae6e2c45e389e91f73e585776, type: 3}

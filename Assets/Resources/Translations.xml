@@ -39,7 +39,7 @@
         <string name="rightArrowHeading">RIGHT ARROW = EXTRA</string>
 
         <string name="redLightNarrative">BLOCK your opponent's oncoming attack!</string>
-        <string name="flashingGreenLightNarrative">STRIKE while your opponent is VULNERABLE! [FIRE characters MASH to follow-up your SPECIAL attack!]</string>
+        <string name="flashingGreenLightNarrative">STRIKE while your opponent is VULNERABLE!  FIRE characters MASH to follow-up your SPECIAL attack!</string>
         <string name="greenLightNarrative">Don't stand IDLE for too long!  ATTACK or BLOCK!</string>
         <string name="yellowLightProactiveNarrative">You have enough CRYSTALS to RESET!  Follow-up to EXTEND your COMBO!</string>
         <string name="yellowLightReactiveNarrative">You have enough CRYSTALS to RESET!  Be ready to COUNTER or BLOCK!</string>

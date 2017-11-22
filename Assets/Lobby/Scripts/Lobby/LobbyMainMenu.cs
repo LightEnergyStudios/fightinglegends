@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using FightingLegends;
 using UnityEngine.Networking;
+using System;
 
 namespace Prototype.NetworkLobby
 {
@@ -66,10 +67,8 @@ namespace Prototype.NetworkLobby
 			fightCancelledText.text = FightManager.Translate("cancelled");
 			fightCancelledText.gameObject.SetActive(false);
 
-			EnableHostButton();
-			ConfigJoinButton();
-
-			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
+			lobbyManager.lobbyState = LobbyState.None;
+			StopDiscovery();  		// stops listening and broadcasting
         }
 
 		public void OnDisable()
@@ -93,31 +92,27 @@ namespace Prototype.NetworkLobby
 
         public void OnClickHost()
         {
+			if (lobbyManager.lobbyState != LobbyState.None)
+				return;
+			
 			fightCancelledText.gameObject.SetActive(false);
 
-			NetworkServer.Reset();
+//			NetworkServer.Reset();
 
             lobbyManager.StartHost();
+			lobbyManager.lobbyState = LobbyState.Host;
+
 			lobbyManager.BroadcastHostIP();			// SM
         }
 
 		private void HostIPReceived(string hostIP)
 		{
+//			LobbyManager.s_Singleton.networkAddress = hostIP;
+//			NetworkManager.singleton.networkAddress = hostIP;
 			ipInput.text = hostIP;
 
-//			listeningforHost = false;
-//			scanningText.gameObject.SetActive(false);
-
-			StopListening();
-			StartClient();			// join game immediately host ip received
-
-			// join game immediately host ip received
-//			OnClickJoin();				// start client
-
-//			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
-//			ConfigJoinButton();
-//			EnableHostButton();	
-		
+			StopDiscovery();  		// stops listening and broadcasting
+			StartClient();						// join game immediately host ip received
 		}
 
 
@@ -125,15 +120,15 @@ namespace Prototype.NetworkLobby
 		{
 			fightCancelledText.gameObject.SetActive(false);
 
-			if (listeningforHost)
+			if (listeningforHost)						// stop 'search' (discovery)
 			{
-				StopListening();	
+				StopDiscovery();  		// stops listening and broadcasting
 				return;
 			}
 
-			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game
+			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game (start discovery)
 			{
-				StartListening();
+				StartDiscovery();
 				return;
 			}
 
@@ -142,10 +137,15 @@ namespace Prototype.NetworkLobby
 
 		private void StartClient()
 		{
+			if (lobbyManager.lobbyState != LobbyState.None)
+				return;
+			
+			Debug.Log("StartClient");
             lobbyManager.ChangeTo(lobbyPanel);
 
-            lobbyManager.networkAddress = ipInput.text;
+			lobbyManager.networkAddress = ipInput.text;	
             lobbyManager.StartClient();
+			lobbyManager.lobbyState = LobbyState.Client;
 
 //            lobbyManager.backDelegate = lobbyManager.StopClientClbk;
             lobbyManager.DisplayIsConnecting();
@@ -153,10 +153,8 @@ namespace Prototype.NetworkLobby
         }
 
 
-		private void StartListening()
+		private void StartDiscovery()
 		{
-//			NetworkServer.Reset();
-
 			lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
 			listeningforHost = true;
 			scanningText.gameObject.SetActive(true);
@@ -164,10 +162,14 @@ namespace Prototype.NetworkLobby
 			EnableHostButton();					// can't host if listening for host broadcast
 		}
 			
-		private void StopListening()
+		private void StopDiscovery()
 		{
 			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
-			
+//			StopListeningUI();	
+//		}
+//
+//		private void StopListeningUI()
+//		{
 			listeningforHost = false;
 			scanningText.gameObject.SetActive(false);
 			ConfigJoinButton();
@@ -177,7 +179,7 @@ namespace Prototype.NetworkLobby
 		private void OnQuitLobby()
 		{
 			Debug.Log("OnQuitLobby");
-			StopListening();
+//			StopDiscovery();
 		}
 	
         public void OnClickDedicated()
@@ -185,6 +187,7 @@ namespace Prototype.NetworkLobby
             lobbyManager.ChangeTo(null);
             lobbyManager.StartServer();
 
+			lobbyManager.lobbyState = LobbyState.Server;
 //            lobbyManager.backDelegate = lobbyManager.StopServerClbk;
 
             lobbyManager.SetServerInfo("Dedicated Server", lobbyManager.networkAddress);

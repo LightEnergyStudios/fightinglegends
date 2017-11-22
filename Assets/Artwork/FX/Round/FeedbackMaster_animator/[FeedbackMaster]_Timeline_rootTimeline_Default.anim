@@ -30,7 +30,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 100.96547
+    m_StopTime: 101.06547
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -21261,4 +21261,25 @@ AnimationClip:
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 3030
+    messageOptions: 0
+  - time: 100.9988
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 3031
+    messageOptions: 0
+  - time: 101.032135
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 3032
+    messageOptions: 0
+  - time: 101.06547
+    functionName: updateToFrameAnimator
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 3033
     messageOptions: 0

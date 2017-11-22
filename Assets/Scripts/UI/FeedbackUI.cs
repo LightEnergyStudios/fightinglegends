@@ -163,13 +163,19 @@ namespace FightingLegends
 //			Debug.Log("CancelFeedbackFX");
 
 			if (feedbackFX != null)
+			{
 				feedbackFX.VoidState();
+				feedbackFX.gameObject.SetActive(false);
+			}
 		}
 
 		public void CancelRoundFX()
 		{
 			if (roundFX != null)
+			{
 				roundFX.VoidState();
+				roundFX.gameObject.SetActive(false);
+			}
 		}
 
 

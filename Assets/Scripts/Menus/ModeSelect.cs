@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Prototype.NetworkLobby;
 
 namespace FightingLegends
 {
@@ -28,6 +29,7 @@ namespace FightingLegends
 		public Text noNetworkText;
 
 		private FightManager fightManager;
+//		private LobbyManager lobbyManager;
 
 		public AudioClip entryAudio;
 		public AudioClip entryCompleteAudio;
@@ -49,6 +51,10 @@ namespace FightingLegends
 		private void OnEnable()
 		{
 			CheckLANAvailability();
+
+//			var lobbyManagerObject = GameObject.Find("LobbyManager");
+//			if (lobbyManagerObject != null)
+//				lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
 
 			arcadeModeButton.onClick.AddListener(ArcadeMode);
 			survivalModeButton.onClick.AddListener(SurvivalMode);
@@ -162,8 +168,17 @@ namespace FightingLegends
 //				FightManager.CombatMode = FightMode.Arcade;
 				FightManager.IsNetworkFight = true;
 
-				SceneSettings.ShowLobbyUI = true;
-				SceneLoader.LoadScene(SceneLoader.OpeningScene);			// lobby scene
+//				if (lobbyManager != null)
+//				{
+//					SceneLoader.UnloadSceneAsync(SceneLoader.CombatScene);
+//					lobbyManager.ShowLobbyUI();
+//				}	
+//				else
+//				{
+					SceneSettings.ShowLobbyUI = true;
+					SceneLoader.LoadScene(SceneLoader.OpeningScene);			// straight to lobby
+					Debug.Log("NetworkFight - Loaded OPENING scene");
+//				}
 			}
 		}
 

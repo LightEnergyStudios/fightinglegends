@@ -797,10 +797,43 @@ namespace FightingLegends
 			DestroyFighter(Player2);
 		}
 
+		private void StopTime()
+		{
+			Time.timeScale = 0;
+			Time.fixedDeltaTime = 0;
+		}
+
+		private void RestartTime()
+		{
+			Time.timeScale = 1;
+			Time.fixedDeltaTime = AnimationFrameInterval;
+		}
+
+
+
+//		public void OnApplicationFocus(bool hasFocus)
+//		{
+//			PauseAll(!hasFocus);
+//		}
 
 		// OnApplicationPause(false) is called for a fresh launch and when resumed from background
 		public void OnApplicationPause(bool paused)
 		{
+			PauseAll(paused);
+		}
+
+		private void PauseAll(bool paused)
+		{
+			CancelFX();
+
+			if (paused)
+				StopTime();
+			else
+				RestartTime();
+
+			if (FightPaused == paused)
+				return;
+			
 			PauseFight(paused);
 
 			// save status and Player1 profile if going to background
@@ -811,10 +844,6 @@ namespace FightingLegends
 				if (HasPlayer1)
 					Player1.SaveProfile();
 			}
-//			else
-//			{
-//				CancelFX();
-//			}
 		}
 			
 		// called every Time.fixedDeltaTime seconds
@@ -1263,53 +1292,9 @@ namespace FightingLegends
 
 		private void FeedbackStateEnd(AnimationState endingState)
 		{
-//			Debug.Log("FightManager.FeedbackStateEnd: " + endingState.StateLabel);
-
-//			if (endingState.StateLabel == FeedbackFXType.KO.ToString().ToUpper())
-//			{
-//				expiryCameraPosition = CameraPosition;
-//
-////				Debug.Log("KO FeedbackStateEnd: Player1.CurrentState = " + Player1.CurrentState + ", Player1.takenLastFatalHit = " + Player1.takenLastFatalHit + ", Player2.CurrentState = " + Player2.CurrentState + ", Player2.takenLastFatalHit = " + Player2.takenLastFatalHit);
-//				UnfreezeFight();
-//
-//				if (Player1.ExpiredHealth || Player1.ExpiredState) 	
-//					Player1.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-//				else if (Player2.ExpiredHealth || Player2.ExpiredState) 
-//					Player2.EndKnockOutFreeze();		// next round if didn't take second life opportunity
-//			}
-
-//			else if (endingState.StateLabel == FeedbackFXType.Armour_Down.ToString().ToUpper())
-//			{
-//				Player1.StopArmourDown();
-//				Player2.StopArmourDown();
-//			}
-//			else if (endingState.StateLabel == FeedbackFXType.Armour_Up.ToString().ToUpper())
-//			{
-//				Player1.StopArmourUp();
-//				Player2.StopArmourUp();
-//			}
-//			else if (endingState.StateLabel == FeedbackFXType.On_Fire.ToString().ToUpper())
-//			{
-//				Player1.StopOnFire();
-//				Player2.StopOnFire();
-//			}
-//			else if (endingState.StateLabel == FeedbackFXType.Health_Up.ToString().ToUpper())
-//			{
-//				Player1.StopHealthUp();
-//				Player2.StopHealthUp();
-//			}
-//			else if (endingState.StateLabel == FeedbackFXType.Round.ToString().ToUpper())
-//			{
-//				round number fx / sound?
-//			}
-//			else
-//			{
-//				CancelFeedbackFX();
-//			}
-
 			CancelFeedbackFX();
 
-			// relay event to any subscribers
+			// relay event to any subscribers (eg. store left/right swipe loop)
 			if (OnFeedbackStateEnd != null)
 				OnFeedbackStateEnd(endingState);
 		}
@@ -1320,15 +1305,10 @@ namespace FightingLegends
 			CancelRoundFX();
 
 			if (HasPlayer1)
-			{
-				Player1.CancelElementFX();
-				Player1.CancelSpotFX();
-			}
+				Player1.CancelFX();
+			
 			if (HasPlayer2)
-			{
-				Player2.CancelElementFX();
-				Player2.CancelSpotFX();
-			}
+				Player2.CancelFX();
 		}
 
 		#region fighter recycling 

@@ -17,9 +17,6 @@ namespace FightingLegends
 		public GameObject SpotFXPrefab;				// triggers spot effects animations (set in Inspector)
 		public GameObject ElementsFXPrefab;			// triggers elements effects animations (set in Inspector)
 		public GameObject SmokeFXPrefab;			// triggers elements effects animations (set in Inspector)
-		public GameObject DustPrefab;				// triggers dust when travelling (set in Inspector)
-//		public GameObject FirePrefab;				// triggers when on fire
-//		public GameObject WaterPrefab;				// not yet implemented
 
 		// values set in Inspector for each fighter
 		public ProfileData ProfileData;  			// serializable - contains SavedProfile to save/load (filePath)

@@ -15,6 +15,7 @@ namespace FightingLegends
 		public GAFBakedMovieClip movieClip{ get; private set; }				// gameobject component
 		protected Dictionary<string, AnimationState> movieClipStates;		// for lookup of frame number by state (frame label)
 		protected uint movieClipFrame;
+//		protected uint lastMovieClipFrame = 0;
 
 		public AudioClip firstFrameAudio; 
 
@@ -50,7 +51,7 @@ namespace FightingLegends
 
 		private void OnDisable()
 		{
-			FightManager.OnFightPaused -= PauseAnimation;
+			FightManager.OnFightFrozen -= PauseAnimation;
 		}
 
 
@@ -124,6 +125,12 @@ namespace FightingLegends
 				
 //			if (OnAnimationFrame != null)
 //				OnAnimationFrame(CurrentFrameLabel);
+
+//			if (MovieClipFrame == lastMovieClipFrame)
+//			{
+//				VoidState();
+//				return;
+//			}
 
 			if (MovieClipFrame == currentAnimation.FirstFrame)
 			{
@@ -239,6 +246,9 @@ namespace FightingLegends
 				animation.StateLoops = StateLoops(key);		// virtual 
 
 				movieClipStates.Add(key, animation);
+
+				// record very last frame number
+//				lastMovieClipFrame = animation.FirstFrame;
 			}
 		}
 

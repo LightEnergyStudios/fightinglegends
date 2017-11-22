@@ -35,7 +35,7 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-//			Debug.Log("Opening.OnEnable");
+			Debug.Log("Opening.OnEnable");
 
 			// LobbyManager is not destroyed between scenes, but we have to
 			// get a new reference to it after scene is switched

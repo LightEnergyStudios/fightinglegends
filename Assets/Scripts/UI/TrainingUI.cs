@@ -502,7 +502,7 @@ namespace FightingLegends
 			Vector3 bubblePosition = Vector3.zero;
 			InfoBubbleMessage bubbleMessage = GameUI.TrafficLightMessage(colour, flashing);
 
-			Debug.Log("TrafficLightInfoBubble: " + bubbleMessage + " read = " + FightManager.WasInfoBubbleMessageRead(bubbleMessage));
+//			Debug.Log("TrafficLightInfoBubble: " + bubbleMessage + " read = " + FightManager.WasInfoBubbleMessageRead(bubbleMessage));
 
 			if (FightManager.WasInfoBubbleMessageRead(bubbleMessage))
 				return;

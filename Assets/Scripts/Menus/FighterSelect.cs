@@ -70,7 +70,7 @@ namespace FightingLegends
 		public Image InsertCoinTextPanel;
 		public List<Text> InsertCoinTop;					// animated text x3
 		public List<Text> InsertCoinBottom;					// animated text x3
-		private float insertCoinTextTime = 2.0f;
+		private float insertCoinTextTime = 1.5f;
 
 		private List<float> insertCoinTopPosition;			// original x position of animated text x3
 		private List<float> insertCoinBottomPosition;		// original x position of animated text x3

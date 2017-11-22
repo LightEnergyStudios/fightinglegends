@@ -94,6 +94,7 @@ namespace FightingLegends
 		// non async version
 		public static void LoadScene(string scene)
 		{
+//			Debug.Log("LoadScene: " + scene);
 			SceneManager.LoadScene(scene, LoadSceneMode.Single);
 		}
 
