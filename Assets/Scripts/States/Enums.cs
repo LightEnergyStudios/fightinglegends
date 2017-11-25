@@ -553,19 +553,20 @@ namespace FightingLegends
 		StateEnd = 3,
 		MoveExecuted = 4,
 		MoveCompleted = 5,
-		RomanCancel = 6,
-		PriorityChanged = 7,
-		HealthChanged = 8,
-		CanContinue = 9,			// immediate
-		LastHit = 10,
-		HitStun = 11,				// hook, mid, straight or uppercut
-		IdleFrame = 12,				// frame count at idle
-		BlockIdleFrame = 13,		// frame count at block idle (opponent)
-		CanContinueFrame = 14,		// frame count at CanContinue
-		VengeanceFrame = 15,		// frame count at vengeance state
-		GaugeIncreasedFrame = 16,	// frame count since increase in gauge
-		StunnedFrame = 17,			// frame count since start of hit / block / shove stun
-		LastHitFrame = 18,			// frame count since a last hit (until end of state)
+		RomanCancelReactive = 6,	// from hit stun
+		RomanCancelProactive = 7,	// not from hit stun
+		PriorityChanged = 8,
+		HealthChanged = 9,
+		CanContinue = 10,			// immediate
+		LastHit = 11,
+		HitStun = 12,				// hook, mid, straight or uppercut
+		IdleFrame = 13,				// frame count at idle
+		BlockIdleFrame = 14,		// frame count at block idle (opponent)
+		CanContinueFrame = 15,		// frame count at CanContinue
+		VengeanceFrame = 16,		// frame count at vengeance state
+		GaugeIncreasedFrame = 17,	// frame count since increase in gauge
+		StunnedFrame = 18,			// frame count since start of hit / block / shove stun
+		LastHitFrame = 19,			// frame count since a last hit (until end of state)
 	}
 
 	public enum Leaderboard

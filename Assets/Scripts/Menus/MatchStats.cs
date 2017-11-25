@@ -151,19 +151,18 @@ namespace FightingLegends
 					{
 						if (!winner.UnderAI)							// player won - choose next location
 						{
-//							WorldTourCongrats();		// TODO: remove!
 							if (worldTourCongratsShowing)
 							{
 								worldTourCongratsShowing = false;
 								fightManager.MatchStatsChoice = MenuType.ModeSelect;		// exits match stats
 							}
-//							else if (worldTourComplete)
-//								WorldTourCongrats();
 							else
 								fightManager.MatchStatsChoice = MenuType.WorldMap;			// exits match stats
 						}
-						else   			// AI won - didn't wait for countdown or insert coin to continue
-							fightManager.MatchStatsChoice = MenuType.ModeSelect;
+						// AI won - wait for countdown or insert coin to continue
+
+//						else   			// AI won - didn't wait for countdown or insert coin to continue
+//							fightManager.MatchStatsChoice = MenuType.ModeSelect;
 					}
 				}
 				else
@@ -537,34 +536,51 @@ namespace FightingLegends
 		public IEnumerator ShowChallengeResults(List<ChallengeRoundResult> results)
 		{
 			challengeResults = results;
-
 			ChallengePanel.SetActive(true);
+			EnableWinnerStats(false);
+			inputAllowed = false;
+
+			bool firstResult = true;
 
 			foreach (var result in challengeResults)
 			{
 				var winnerSprite = result.Winner.Portrait.sprite;
 				var loserSprite = result.Loser.Portrait.sprite;
 
-				Debug.Log("ShowChallengeResults: winnerSprite = " + winnerSprite + ", loserSprite = " + loserSprite + ", AIWinner = " + result.AIWinner);
+//				Debug.Log("ShowChallengeResults: winnerSprite = " + winnerSprite + ", loserSprite = " + loserSprite + ", AIWinner = " + result.AIWinner);
 
 				if (result.AIWinner)
 				{
 					Player2Button.SetFighterCard(winnerSprite, result.Winner);
 					Player1Button.SetFighterCard(loserSprite, result.Loser);
+
+					if (firstResult)
+						resultsAnimator.SetTrigger("ChallengeP1P2");	// both enter
+					else
+					{
+						resultsAnimator.SetTrigger("FlipPlayer2");
+						resultsAnimator.SetTrigger("ChallengeP2");		// animate winner entry from right
+					}
 				}
 				else
 				{
 					Player1Button.SetFighterCard(winnerSprite, result.Winner);
 					Player2Button.SetFighterCard(loserSprite, result.Loser);
+
+					if (firstResult)
+						resultsAnimator.SetTrigger("ChallengeP1P2");	// both enter
+					else
+					{
+						resultsAnimator.SetTrigger("FlipPlayer1");
+						resultsAnimator.SetTrigger("ChallengeP1");		// animate winner entry from left
+					}
 				}
 
-				if (result.AIWinner)
-					resultsAnimator.SetTrigger("ChallengeP2");		// animate card entry from right
-				else
-					resultsAnimator.SetTrigger("ChallengeP1");		// animate card entry from left
-				
+				firstResult = false;
 				yield return new WaitForSeconds(1.0f);
 			}
+
+			inputAllowed = true;
 		}
 
 

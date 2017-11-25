@@ -936,6 +936,9 @@ namespace FightingLegends
 			MoveContinuations.Clear();
 			MoveContinuations.Enqueue(move);
 
+			if (UnderAI && move == Move.Block)
+				HoldingBlock = true;
+
 			if (! UnderAI && ! IsDojoShadow)
 			{
 				moveCuedOk = true;
@@ -2094,7 +2097,7 @@ namespace FightingLegends
 			{
 				// catch-all in case AI stuck in a non-idle state for too long
 //				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && StateFrameCount > AIStateFrameTimeout)
-				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && !FallenState && HitFrameCount > AIHitFrameTimeout)
+				if (UnderAI && !IsBlockIdle && !IsStunned && !ExpiredState && !ExpiredHealth && !FallenState && !IsDashing && HitFrameCount > AIHitFrameTimeout)
 				{
 					var timeOut = "TIMEOUT: " + CurrentState + ", Continuation: " + NextContinuation + ", isFrozen: " + isFrozen;
 					Debug.Log(FullName + ": " + timeOut);
@@ -3243,7 +3246,7 @@ namespace FightingLegends
 			{
 				if (spotFXx2 != null)
 				{
-					spotFX.gameObject.SetActive(true);
+					spotFXx2.gameObject.SetActive(true);
 					spotFXx2.TriggerEffect(FXType);
 				}
 			}
@@ -3264,7 +3267,7 @@ namespace FightingLegends
 
 		public void CancelSpotFX()
 		{
-			Debug.Log(FullName + " CancelSpotFX");
+//			Debug.Log(FullName + " CancelSpotFX");
 			if (spotFX != null)
 			{
 				spotFX.VoidState();
@@ -3285,13 +3288,13 @@ namespace FightingLegends
 			if (smokeFX == null)
 				return;
 
-			spotFX.gameObject.SetActive(true);
+			smokeFX.gameObject.SetActive(true);
 			smokeFX.TriggerSmoke(smoke, xOffset, yOffset);
 		}
 
 		public void CancelSmokeFX()
 		{
-			Debug.Log(FullName + " CancelSmokeFX");
+//			Debug.Log(FullName + " CancelSmokeFX");
 			if (smokeFX != null)
 			{
 				smokeFX.VoidState();
@@ -3326,7 +3329,7 @@ namespace FightingLegends
 		}
 
 
-		public bool CanExecuteMove(Move move)
+		public bool CanExecuteMove(Move move, bool report = false)
 		{
 			if ((!fightManager.ReadyToFight || fightManager.EitherFighterExpired)) // && !PreviewMoves)
 				return false;
@@ -3367,6 +3370,8 @@ namespace FightingLegends
 					return CanSpecial || CanContinue;
 
 				case Move.Counter:
+					if (report)
+						Debug.Log("CanExecuteMove COUNTER: " + ((HasCounterGauge && (IsIdle || CanContinue)) || CanChain));
 					return (HasCounterGauge && (IsIdle || CanContinue)) || CanChain;	// gauge not required to chain counter
 
 				case Move.Vengeance:
@@ -6071,7 +6076,7 @@ namespace FightingLegends
 							break;
 
 						case FightMode.Challenge:
-							fightManager.RecordChallengeResult(winner.UnderAI);				// record result of final round in challenge
+							fightManager.RecordFinalChallengeResult(winner.UnderAI);		// record result of final round in challenge
 							yield return StartCoroutine(fightManager.NextMatch(winner)); 	// show winner/stats then back to mode select
 							break;
 

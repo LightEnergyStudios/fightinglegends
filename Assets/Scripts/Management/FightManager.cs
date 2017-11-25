@@ -2637,6 +2637,7 @@ namespace FightingLegends
 					var loser = challengeTeam.Dequeue();		// remove from head of queue
 					var winner = challengeAITeam.Peek();
 
+					Debug.Log("NextFighterInTeam: P1 lost: winner = " + winner.FighterName + " loser = " + loser.FighterName );
 					ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, true));			// player1 lost
 				}
 
@@ -2652,6 +2653,7 @@ namespace FightingLegends
 					var loser = challengeAITeam.Dequeue();					// remove from head of queue
 					var winner = challengeTeam.Peek();
 
+					Debug.Log("NextFighterInTeam: P1 won: winner = " + winner.FighterName + " loser = " + loser.FighterName );
 					ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, false));			// player1 won
 				}
 
@@ -2836,14 +2838,14 @@ namespace FightingLegends
 			// set up queues so first in list is first to fight etc
 			for (int i = 0; i < selectedTeam.Count; i++)
 			{
-				challengeTeam.Enqueue(selectedTeam[ i ]);
+				challengeTeam.Enqueue(selectedTeam[ i ].Duplicate());
 			}
 				
 			for (int i = 0; i < selectedAITeam.Count; i++)
 			{
-				challengeAITeam.Enqueue(selectedAITeam[ i ]);
+				challengeAITeam.Enqueue(selectedAITeam[ i ].Duplicate());
 			}
-
+				
 //			Debug.Log("SetupChallenge: challengeTeam " + challengeTeam.Count + ", challengeAITeam " + challengeAITeam.Count);
 		}
 			
@@ -2856,11 +2858,12 @@ namespace FightingLegends
 		}
 
 		// record results of final round of challenge match
-		public void RecordChallengeResult(bool AIWinner)
+		public void RecordFinalChallengeResult(bool AIWinner)
 		{
 			FighterCard winner = (AIWinner) ? challengeAITeam.Peek() : challengeTeam.Peek();
 			FighterCard loser = (AIWinner) ? challengeTeam.Peek() : challengeAITeam.Peek();
 
+			Debug.Log("RecordFinalChallengeResult: winner = " + winner.FighterName + " loser = " + loser.FighterName );
 			ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, AIWinner));
 		}
 

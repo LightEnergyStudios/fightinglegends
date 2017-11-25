@@ -109,7 +109,7 @@ namespace FightingLegends
 			get
 			{
 //				bool challengeUploaded = FightManager.UserLoginProfile != null && FightManager.UserLoginProfile.ChallengeKey != "";
-				Debug.Log("CanUploadChallenge internetReachable = " + internetReachable + " gettingUserProfile = " + gettingUserProfile + " upLoadingChallenge = " + upLoadingChallenge);
+//				Debug.Log("CanUploadChallenge internetReachable = " + internetReachable + " gettingUserProfile = " + gettingUserProfile + " upLoadingChallenge = " + upLoadingChallenge);
 				return internetReachable && selectedTeam.Count > 0 && !upLoadingChallenge && !gettingUserProfile; // && !challengeUploaded;
 			}
 		}
@@ -1345,6 +1345,52 @@ namespace FightingLegends
 		{
 			// AI fighter colour is determined by Player1, so not relevant here
 			return new FighterCard(null, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
+
+//			Button fighterButton = null;
+//			switch (name)
+//			{
+//				case "Shiro":
+//					fighterButton = shiroButton;
+//					break;
+//
+//				case "Natalya":
+//					fighterButton = natalyaButton;
+//					break;
+//
+//				case "Hoi Lun":
+//					fighterButton = hoiLunButton;
+//					break;
+//
+//				case "Leoni":
+//					fighterButton = leoniButton;
+//					break;
+//
+//				case "Danjuma":
+//					fighterButton = danjumaButton;
+//					break;
+//
+//				case "Jackson":
+//					fighterButton = jacksonButton;
+//					break;
+//
+//				case "Alazne":
+//					fighterButton = alazneButton;
+//					break;
+//
+//				case "Shiyang":
+//					fighterButton = shiyangButton;
+//					break;
+//
+//				case "Ninja":
+//					fighterButton = ninjaButton;
+//					break;
+//
+//				case "Skeletron":
+//					fighterButton = skeletronButton;
+//					break;
+//			}
+
+//			return new FighterCard(fighterButton, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
 		}
 
 

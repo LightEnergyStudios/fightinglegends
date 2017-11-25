@@ -76,8 +76,12 @@ namespace FightingLegends
 					condition += "MoveCompleted " + TriggerCondition.TriggerMove;
 					break;
 
-				case Condition.RomanCancel:
-					condition += "RomanCancel";
+				case Condition.RomanCancelReactive:
+					condition += "RomanCancelReactive";
+					break;
+
+				case Condition.RomanCancelProactive:
+					condition += "RomanCancelProactive";
 					break;
 
 				case Condition.PriorityChanged:

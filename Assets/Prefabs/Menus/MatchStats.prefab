@@ -2135,7 +2135,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0.991}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
@@ -3875,7 +3875,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0.991}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
@@ -28537,7 +28537,7 @@ RectTransform:
   m_GameObject: {fileID: 1831859484804790}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -47.36841}
-  m_LocalScale: {x: 1.9999987, y: 1.9999987, z: 0.99999934}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 1}
   m_Children:
   - {fileID: 224229032297696368}
   - {fileID: 224596585220256900}
@@ -29266,7 +29266,7 @@ RectTransform:
   m_GameObject: {fileID: 1211410079465968}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -47.368412}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 1}
   m_Children:
   - {fileID: 224698550955871232}
   - {fileID: 224660560591543796}

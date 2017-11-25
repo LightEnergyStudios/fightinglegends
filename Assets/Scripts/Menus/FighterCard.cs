@@ -28,7 +28,7 @@ namespace FightingLegends
 		public Sprite TriggerPowerUpSprite { get; private set; }	
 
 		public Sprite FrameSprite { get; private set; }
-		public Sprite FighterSprite { get; private set; }
+//		public Sprite FighterSprite { get; private set; }
 
 		public bool InTeam = false;									// challenge mode (during team selection)
 		public bool IsHidden = false;								// challenge mode (secret AI opposition)
@@ -43,7 +43,9 @@ namespace FightingLegends
 		public Vector3 originalPosition { get; private set; }
 		public Vector3 currentPosition { get { return CardButton != null ? CardButton.transform.localPosition : Vector3.zero; } }
 
-		public Image Portrait { get { return CardButton != null ? CardButton.transform.Find("Image").GetComponent<Image>() : null; }}
+//		public Image Portrait { get { return CardButton != null ? CardButton.transform.Find("Image").GetComponent<Image>() : null; }}
+		private Image CardPortrait { get { return CardButton != null ? CardButton.transform.Find("Image").GetComponent<Image>() : null; }}
+		public Image Portrait { get; private set; }
 
 
 		public FighterCard(Button button, string name, string colour, int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, AIDifficulty difficulty = AIDifficulty.Medium)
@@ -57,7 +59,7 @@ namespace FightingLegends
 			SetProfileData(level, xpPercent, staticPowerUp, triggerPowerUp, frame, false, false, 0, 0, 0, AIDifficulty.Simple);	// shows level, power-ups and xp
 		}
 
-		public void SetProfileData(int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, bool isLocked, bool canUnlock, int unlockCoins, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty, Sprite portrait = null)
+		public void SetProfileData(int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, bool isLocked, bool canUnlock, int unlockCoins, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty) //, Image portrait = null)
 		{
 			Level = level;
 			StaticPowerUpSprite = staticPowerUp;
@@ -66,8 +68,8 @@ namespace FightingLegends
 			if (frame != null)
 				FrameSprite = frame;
 
-			if (portrait != null)
-				FighterSprite = portrait;
+//			if (CardPortrait != null)
+//				Portrait = CardPortrait;
 			
 			XP = xpPercent;
 
@@ -83,6 +85,13 @@ namespace FightingLegends
 
 			SetButtonData();
 		}
+
+
+		public FighterCard Duplicate()
+		{
+			return new FighterCard(CardButton, FighterName, FighterColour, Level, XP, StaticPowerUpSprite, TriggerPowerUpSprite, FrameSprite, Difficulty);
+		}
+
 
 //		public void CopyFighterCard(FighterCard card)
 //		{
@@ -112,7 +121,10 @@ namespace FightingLegends
 			CardButton = button;
 
 			if (CardButton != null)
+			{
 				originalPosition = CardButton.transform.localPosition;
+				Portrait = CardPortrait;
+			}
 		}
 
 		public void SetButtonData()

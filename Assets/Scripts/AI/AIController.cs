@@ -469,10 +469,10 @@ namespace FightingLegends
 		}
 
 		// return value of null represents 'do nothing'
-		private AIPropensity RandomSelectPropensity(IEnumerable<AIPropensity> propensities, bool doSomething = false)
+		private AIPropensity RandomSelectPropensity(IEnumerable<AIPropensity> propensities, bool report = false, bool doSomething = false)
 		{
 			// any propensity with a 'certainty' probability is automatically chosen (ie. no chance of do nothing)
-			var certainPropensity = CheckForCertainPropensity(propensities);
+			var certainPropensity = CheckForCertainPropensity(propensities, report);
 			if (certainPropensity != null)
 				return certainPropensity;
 				
@@ -501,14 +501,20 @@ namespace FightingLegends
 			return PropensityChoices[ SelectedPropensityIndex ];
 		}
 
-		private AIPropensity CheckForCertainPropensity(IEnumerable<AIPropensity> propensities)
+		private AIPropensity CheckForCertainPropensity(IEnumerable<AIPropensity> propensities, bool report = false)
 		{
 			foreach (var propensity in propensities)
 			{
 				if (propensity.Probability >= Certainty)
+				{
+					if (report)
+						Debug.Log("CheckForCertainPropensity MoveToExecute = " + propensity.Strategy.Behaviour.MoveToExecute);
 					return propensity;
+				}
 			}
 
+			if (report)
+				Debug.Log("CheckForCertainPropensity - No certainties");
 			return null;
 		}
 
@@ -525,7 +531,7 @@ namespace FightingLegends
 		}
 
 
-		private bool MatchFighterClasses(AIStrategy strategy)
+		private bool MatchFighterClasses(AIStrategy strategy, bool report = false)
 		{
 			var behaviour = strategy.Behaviour;
 			var condition = strategy.TriggerCondition;
@@ -534,6 +540,9 @@ namespace FightingLegends
 			if (behaviour.FighterClass == FighterClass.Undefined || condition.OpponentClass == FighterClass.Undefined)
 				return true;
 
+			if (report)
+				Debug.Log("MatchFighterClasses: FighterClass = " + behaviour.FighterClass + ", OpponentClass = " + condition.OpponentClass + ", OpponentTrigger = " + condition.OpponentTrigger);
+			
 			// can only match classes of fighter and opponent!
 			if (! condition.OpponentTrigger)
 				return false;
@@ -545,8 +554,10 @@ namespace FightingLegends
 		}
 
 		// check if the behaviour move is possible under the current AI difficulty level
-		private bool MatchDifficulty(AIStrategy strategy)
+		private bool MatchDifficulty(AIStrategy strategy, bool report = false)
 		{	
+			if (report)
+				Debug.Log("MatchDifficulty: strategy difficulty = " + strategy.Behaviour.Difficulty + ", game difficulty = " + FightManager.SavedGameStatus.Difficulty);
 			return strategy.Behaviour.Difficulty <= FightManager.SavedGameStatus.Difficulty;
 		}
 			
@@ -591,7 +602,8 @@ namespace FightingLegends
 				case Condition.MoveCompleted:
 					return condition.TriggerMove == activeStepCondition.TriggerMove;
 
-				case Condition.RomanCancel:
+				case Condition.RomanCancelReactive:
+				case Condition.RomanCancelProactive:
 					return true;			// no further conditions required
 
 				case Condition.PriorityChanged:
@@ -849,40 +861,46 @@ namespace FightingLegends
 				IterateToNextStrategy();
 		}
 
-		private void ChooseRomanCancelStrategy(FighterChangedData triggerState, bool opponentTrigger)
+		private void ChooseRomanCancelStrategy(FighterChangedData triggerState, bool isReactive, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
-			
-//			Debug.Log(fighter.FullName + ": ChooseRomanCancelStrategy - CanContinue = " + fighter.CanContinue + ", State = " + fighter.CurrentState + ", Gauge = " + fighter.ProfileData.Gauge);
+
+			var triggerCondition = (isReactive ? Condition.RomanCancelReactive : Condition.RomanCancelProactive);
+			Debug.Log(fighter.FullName + ": ChooseRomanCancelStrategy - State = " + triggerState.NewState + ", isReactive = " + isReactive + ", triggerCondition = " + triggerCondition.ToString());
 
 			var propensities = CurrentAttitudePropensities().Where
 				(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
-					&& x.Strategy.TriggerCondition.Condition == Condition.RomanCancel
-					&& MatchFighterClasses(x.Strategy) && MatchDifficulty(x.Strategy)
-					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
+					&& x.Strategy.TriggerCondition.Condition == triggerCondition
+					&& MatchFighterClasses(x.Strategy, true) && MatchDifficulty(x.Strategy, true)
+					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute, true));
 
 			if (propensities.Count() == 0)
+			{
+				Debug.Log(fighter.FullName + "       >> NO choices!!  (" + CurrentAttitudePropensities().Count() + ")");
 				return;
+			}
 
-//			Debug.Log(fighter.FullName + ": ChooseRomanCancelStrategy - choices = " + propensities.Count());
+			Debug.Log(fighter.FullName + "       >> " + propensities.Count() + " choices");
 
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
-			TriggerUI += Condition.RomanCancel.ToString();
+			TriggerUI += (isReactive ? Condition.RomanCancelReactive.ToString() : Condition.RomanCancelProactive.ToString());
 			TriggerUI += ": " + triggerState.Move.ToString();
 			TriggerUI +=  " [ " + fighter.AnimationFrameCount + " ]";
 
-			var propensity = RandomSelectPropensity(propensities);
+			var propensity = RandomSelectPropensity(propensities, true);
 
 			if (propensity != null)
 			{
+				Debug.Log(fighter.FullName + "       >> MoveToExecute = " + ((propensity.Strategy == null) ? "Do nothing" : propensity.Strategy.Behaviour.MoveToExecute.ToString()));
+
 				if (propensity.Strategy != null)		// null == 'do nothing'
 				{
-					if (!CueStrategy(propensity.Strategy))
+					if (!CueStrategy(propensity.Strategy, true))
 					{
 						ErrorUI = "ChooseRomanCancelStrategy unable to " + propensity.Strategy.Behaviour.MoveToExecute;
-						Debug.Log(fighter.FullName + ": ChooseRomanCancelStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute);
+						Debug.Log(fighter.FullName + ": ChooseRomanCancelStrategy ExecuteStrategy failed - " + propensity.Strategy.Behaviour.MoveToExecute.ToString());
 					}
 				}
 			}
@@ -1307,9 +1325,10 @@ namespace FightingLegends
 		#endregion 		// behaviour triggers
 
 
-		private bool CueStrategy(AIStrategy strategy)
+		private bool CueStrategy(AIStrategy strategy, bool report = false)
 		{
-//			Debug.Log("CueStrategy: StrategyCued = " + StrategyCued + ", MoveToExecute = " + strategy.Behaviour.MoveToExecute);
+			if (report)
+				Debug.Log("CueStrategy: StrategyCued = " + StrategyCued + ", MoveToExecute = " + strategy.Behaviour.MoveToExecute);
 			
 			if (StrategyCued)		// to prevent >1 triggered per beat
 				return false;
@@ -1336,11 +1355,17 @@ namespace FightingLegends
 
 				if (fighter.CanContinue && !immediate)
 				{
+					if (report)
+						Debug.Log("CueStrategy: CueContinuation " + behaviour.MoveToExecute);
+
 					fighter.CueContinuation(behaviour.MoveToExecute);
 					StatusUI = "CONTINUATION CUED: " + behaviour.MoveToExecute + " [ " + fighter.AnimationFrameCount + " ]";
 				}
 				else
 				{
+					if (report)
+						Debug.Log("CueStrategy: CueMove " + behaviour.MoveToExecute);
+
 					fighter.CueMove(behaviour.MoveToExecute);
 					StatusUI = "MOVE CUED: " + behaviour.MoveToExecute + " [ " + fighter.AnimationFrameCount + " ]";
 				}
@@ -1945,7 +1970,7 @@ namespace FightingLegends
 							},
 						},
 
-						Probability = 500.0f,		
+						Probability = 10.0f,		
 					},
 
 
@@ -1967,11 +1992,11 @@ namespace FightingLegends
 
 							TriggerCondition = new AICondition
 							{
-								Condition = Condition.RomanCancel,
+								Condition = Condition.RomanCancelReactive,
 							},
 						},
 
-						Probability = 300.0f,		
+						Probability = 100.0f,		
 					},
 
 
@@ -1993,11 +2018,11 @@ namespace FightingLegends
 
 							TriggerCondition = new AICondition
 							{
-								Condition = Condition.RomanCancel,
+								Condition = Condition.RomanCancelReactive,
 							},
 						},
 
-						Probability = 500.0f,		
+						Probability = Certainty, // 5000.0f,		
 					},
 
 
@@ -2826,150 +2851,120 @@ namespace FightingLegends
 
 						Probability = 100.0f,		
 					},
-
-
-					// Roman Cancel after last hit Special ( that's the very next frame after the hit )
-					// ninja and skeletron only (others last hit is last frame of state)
+						
+//					// Roman Cancel on Special Opportunity
 //					new AIPropensity
 //					{
 //						Attitude = Attitudes[0], 		// even
 //
 //						Strategy = new AIStrategy
 //						{
-//							Strategy = Strategy.RomanCancelFromSpecial,
+//							Strategy = Strategy.RomanCancelFromSpecialOpportunity,
 //
 //							Behaviour = new AIBehaviour
 //							{
 //								Proactive = true,
 //								Behaviour = Behaviour.RomanCancel,
-//								MoveToExecute = Move.Roman_Cancel,		
+//								MoveToExecute = Move.Roman_Cancel,	
+//								Difficulty = AIDifficulty.Hard
+//							},
+//
+//							TriggerCondition = new AICondition
+//							{
+//								Condition = Condition.StateStart,
+//								TriggerState = State.Special_Opportunity,
+//							},
+//						},
+//
+//						Probability = 500.0f,		
+//					},
+//
+//
+//					// Roman Cancel after last hit Special Extra ( that's the very next frame after the hit )
+//					new AIPropensity
+//					{
+//						Attitude = Attitudes[0], 		// even
+//
+//						Strategy = new AIStrategy
+//						{
+//							Strategy = Strategy.RomanCancelFromSpecialExtra,
+//
+//							Behaviour = new AIBehaviour
+//							{
+//								Proactive = true,
+//								Behaviour = Behaviour.RomanCancel,
+//								MoveToExecute = Move.Roman_Cancel,	
+//								Difficulty = AIDifficulty.Hard
 //							},
 //
 //							TriggerCondition = new AICondition
 //							{
 //								Condition = Condition.LastHitFrame,
 //								TriggerLastHitFrame = 2,
-//								TriggerState = State.Special,
+//								TriggerState = State.Special_Extra,
 //							},
 //						},
 //
-//						Probability = 100.0f,		
+//						Probability = 500.0f,		
 //					},
-
-
-					// Roman Cancel on Special Opportunity
-					new AIPropensity
-					{
-						Attitude = Attitudes[0], 		// even
-
-						Strategy = new AIStrategy
-						{
-							Strategy = Strategy.RomanCancelFromSpecialOpportunity,
-
-							Behaviour = new AIBehaviour
-							{
-								Proactive = true,
-								Behaviour = Behaviour.RomanCancel,
-								MoveToExecute = Move.Roman_Cancel,	
-								Difficulty = AIDifficulty.Hard
-							},
-
-							TriggerCondition = new AICondition
-							{
-								Condition = Condition.StateStart,
-								TriggerState = State.Special_Opportunity,
-							},
-						},
-
-						Probability = 500.0f,		
-					},
-
-
-					// Roman Cancel after last hit Special Extra ( that's the very next frame after the hit )
-					new AIPropensity
-					{
-						Attitude = Attitudes[0], 		// even
-
-						Strategy = new AIStrategy
-						{
-							Strategy = Strategy.RomanCancelFromSpecialExtra,
-
-							Behaviour = new AIBehaviour
-							{
-								Proactive = true,
-								Behaviour = Behaviour.RomanCancel,
-								MoveToExecute = Move.Roman_Cancel,	
-								Difficulty = AIDifficulty.Hard
-							},
-
-							TriggerCondition = new AICondition
-							{
-								Condition = Condition.LastHitFrame,
-								TriggerLastHitFrame = 2,
-								TriggerState = State.Special_Extra,
-							},
-						},
-
-						Probability = 500.0f,		
-					},
-
-
-					// Roman Cancel after last hit Vengeance ( that's the very next frame after the hit )
-					new AIPropensity
-					{
-						Attitude = Attitudes[0], 		// even
-
-						Strategy = new AIStrategy
-						{
-							Strategy = Strategy.RomanCancelFromVengeance,
-
-							Behaviour = new AIBehaviour
-							{
-								Proactive = true,
-								Behaviour = Behaviour.RomanCancel,
-								MoveToExecute = Move.Roman_Cancel,	
-								Difficulty = AIDifficulty.Hard
-							},
-
-							TriggerCondition = new AICondition
-							{
-								Condition = Condition.LastHitFrame,
-								TriggerLastHitFrame = 2,
-								TriggerState = State.Vengeance,
-							},
-						},
-
-						Probability = 500.0f,		
-					},
-
-
-					// Roman Cancel after last hit CounterAttack ( that's the very next frame after the hit )
-					new AIPropensity
-					{
-						Attitude = Attitudes[0], 		// even
-
-						Strategy = new AIStrategy
-						{
-							Strategy = Strategy.RomanCancelFromCounterAttack,
-
-							Behaviour = new AIBehaviour
-							{
-								Proactive = true,
-								Behaviour = Behaviour.RomanCancel,
-								MoveToExecute = Move.Roman_Cancel,	
-								Difficulty = AIDifficulty.Hard
-							},
-
-							TriggerCondition = new AICondition
-							{
-								Condition = Condition.LastHitFrame,
-								TriggerLastHitFrame = 2,
-								TriggerState = State.Counter_Attack,
-							},
-						},
-
-						Probability = 500.0f,		
-					},
+//
+//
+//					// Roman Cancel after last hit Vengeance ( that's the very next frame after the hit )
+//					new AIPropensity
+//					{
+//						Attitude = Attitudes[0], 		// even
+//
+//						Strategy = new AIStrategy
+//						{
+//							Strategy = Strategy.RomanCancelFromVengeance,
+//
+//							Behaviour = new AIBehaviour
+//							{
+//								Proactive = true,
+//								Behaviour = Behaviour.RomanCancel,
+//								MoveToExecute = Move.Roman_Cancel,	
+//								Difficulty = AIDifficulty.Hard
+//							},
+//
+//							TriggerCondition = new AICondition
+//							{
+//								Condition = Condition.LastHitFrame,
+//								TriggerLastHitFrame = 2,
+//								TriggerState = State.Vengeance,
+//							},
+//						},
+//
+//						Probability = 500.0f,		
+//					},
+//
+//
+//					// Roman Cancel after last hit CounterAttack ( that's the very next frame after the hit )
+//					new AIPropensity
+//					{
+//						Attitude = Attitudes[0], 		// even
+//
+//						Strategy = new AIStrategy
+//						{
+//							Strategy = Strategy.RomanCancelFromCounterAttack,
+//
+//							Behaviour = new AIBehaviour
+//							{
+//								Proactive = true,
+//								Behaviour = Behaviour.RomanCancel,
+//								MoveToExecute = Move.Roman_Cancel,	
+//								Difficulty = AIDifficulty.Hard
+//							},
+//
+//							TriggerCondition = new AICondition
+//							{
+//								Condition = Condition.LastHitFrame,
+//								TriggerLastHitFrame = 2,
+//								TriggerState = State.Counter_Attack,
+//							},
+//						},
+//
+//						Probability = 500.0f,		
+//					},
 
 
 					// Light Strike on Proactive Roman Cancel
@@ -2990,7 +2985,7 @@ namespace FightingLegends
 
 							TriggerCondition = new AICondition
 							{
-								Condition = Condition.RomanCancel,
+								Condition = Condition.RomanCancelProactive,
 							},
 						},
 
@@ -3043,7 +3038,7 @@ namespace FightingLegends
 
 							TriggerCondition = new AICondition
 							{
-								Condition = Condition.RomanCancel,
+								Condition = Condition.RomanCancelProactive,
 							},
 						},
 
@@ -3503,8 +3498,11 @@ namespace FightingLegends
 				return;
 
 			bool opponent = ! newState.Fighter.UnderAI;
+			var state = newState.NewState;
+			bool isReactive = (state == State.Hit_Stun_Hook || state == State.Hit_Stun_Mid ||
+								state == State.Hit_Stun_Straight || state == State.Hit_Stun_Uppercut);
 
-			ChooseRomanCancelStrategy(newState, opponent);
+			ChooseRomanCancelStrategy(newState, isReactive, opponent);
 		}
 
 		public void OnIdleFrame(FighterChangedData newState)			// Fighter.IdleFrameDelegate signature
