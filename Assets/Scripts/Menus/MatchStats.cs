@@ -65,10 +65,19 @@ namespace FightingLegends
 		private Fighter winner;
 
 		public GameObject ChallengePanel;
+		public ParticleSystem ChallengeFireworks;
 		public FighterButton Player1Button;
 		public FighterButton Player2Button;
-//		public FighterCard Player1Card;
-//		public FighterCard Player2Card;
+		public AudioClip ChallengeResultStart;				// fighter card entry start
+		public AudioClip ChallengeResultEnd;				// fighter card entry end
+		public AudioClip ChallengeResultFlip;				// fighter card flipped and replaced
+
+//		private Sprite challengeWinnerSprite;
+//		private FighterCard challengeWinnerCard;
+//		private Sprite challengeLoserSprite;
+//		private FighterCard challengeLoserCard;
+//
+		private bool player1WonChallengeRound = false;
 
 //		public GameObject InsertCoin;	
 		private const float continuePause = 1.0f;			// before countdown starts
@@ -547,40 +556,89 @@ namespace FightingLegends
 				var winnerSprite = result.Winner.Portrait.sprite;
 				var loserSprite = result.Loser.Portrait.sprite;
 
+				player1WonChallengeRound = !result.AIWinner;
+		
 //				Debug.Log("ShowChallengeResults: winnerSprite = " + winnerSprite + ", loserSprite = " + loserSprite + ", AIWinner = " + result.AIWinner);
 
-				if (result.AIWinner)
-				{
-					Player2Button.SetFighterCard(winnerSprite, result.Winner);
-					Player1Button.SetFighterCard(loserSprite, result.Loser);
+				if (ChallengeResultStart != null)
+					AudioSource.PlayClipAtPoint(ChallengeResultStart, Vector3.zero, FightManager.SFXVolume);
 
+				if (! player1WonChallengeRound)		// AI won round
+				{
 					if (firstResult)
-						resultsAnimator.SetTrigger("ChallengeP1P2");	// both enter
-					else
 					{
-						resultsAnimator.SetTrigger("FlipPlayer2");
-						resultsAnimator.SetTrigger("ChallengeP2");		// animate winner entry from right
+						Player1Button.SetFighterCard(loserSprite, result.Loser);
+						Player2Button.SetFighterCard(winnerSprite, result.Winner);
+						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter
+					}
+					else 		// replace (flipped) loser with next contender
+					{
+						Player2Button.SetFighterCard(winnerSprite, result.Winner);
+						resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from left
 					}
 				}
 				else
 				{
-					Player1Button.SetFighterCard(winnerSprite, result.Winner);
-					Player2Button.SetFighterCard(loserSprite, result.Loser);
-
 					if (firstResult)
-						resultsAnimator.SetTrigger("ChallengeP1P2");	// both enter
-					else
 					{
-						resultsAnimator.SetTrigger("FlipPlayer1");
-						resultsAnimator.SetTrigger("ChallengeP1");		// animate winner entry from left
+						Player1Button.SetFighterCard(winnerSprite, result.Winner);
+						Player2Button.SetFighterCard(loserSprite, result.Loser);
+						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter
+					}
+					else		// replace (flipped) loser with next contender
+					{
+						Player1Button.SetFighterCard(winnerSprite, result.Winner);
+						resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from left
 					}
 				}
-
+				
 				firstResult = false;
-				yield return new WaitForSeconds(1.0f);
+				yield return new WaitForSeconds(2.0f);			// allow time for loser to be flipped
 			}
 
 			inputAllowed = true;
+		}
+
+		public void ChallengeResultEntry()
+		{
+			if (ChallengeResultEnd != null)
+				AudioSource.PlayClipAtPoint(ChallengeResultEnd, Vector3.zero, FightManager.SFXVolume);
+
+			ChallengeFireworks.Play();
+
+			// pause then flip user
+			StartCoroutine(FlipLoser());
+		}
+
+		private IEnumerator FlipLoser()
+		{
+			yield return new WaitForSeconds(1.0f);
+
+			if (player1WonChallengeRound)
+				resultsAnimator.SetTrigger("FlipPlayer2");
+			else
+				resultsAnimator.SetTrigger("FlipPlayer1");
+
+			if (ChallengeResultFlip != null)
+				AudioSource.PlayClipAtPoint(ChallengeResultFlip, Vector3.zero, FightManager.SFXVolume);
+		}
+
+		public void Player1Flipped()
+		{
+//			Player1Button.SetFighterCard(challengeLoserSprite, challengeLoserCard);
+//			resultsAnimator.SetTrigger("ChallengeP1");		// animate fighter card entry from left
+//
+//			if (ChallengeResultStart != null)
+//				AudioSource.PlayClipAtPoint(ChallengeResultStart, Vector3.zero, FightManager.SFXVolume);
+		}
+
+		public void Player2Flipped()
+		{
+//			Player2Button.SetFighterCard(challengeLoserSprite, challengeLoserCard);
+//			resultsAnimator.SetTrigger("ChallengeP2");		// animate fighter card entry from right
+//
+//			if (ChallengeResultStart != null)
+//				AudioSource.PlayClipAtPoint(ChallengeResultStart, Vector3.zero, FightManager.SFXVolume);
 		}
 
 
