@@ -15,6 +15,7 @@ namespace FightingLegends
 	
 		public Text WinQuote;
 		public Text Stats;						// damage, hits, etc... (not currently used)
+		public Text ChallengeStats;		
 
 		public GameObject WinnerStatsPanel;
 		public Text LevelLabel;
@@ -66,17 +67,24 @@ namespace FightingLegends
 
 		public GameObject ChallengePanel;
 		public ParticleSystem ChallengeFireworks;
+
 		public FighterButton Player1Button;
 		public FighterButton Player2Button;
+		public ParticleSystem Player1Fireworks;
+		public ParticleSystem Player2Fireworks;
+		public ParticleSystem Player1Stars;
+		public ParticleSystem Player2Stars;
+
 		public AudioClip ChallengeResultStart;				// fighter card entry start
 		public AudioClip ChallengeResultEnd;				// fighter card entry end
-		public AudioClip ChallengeResultFlip;				// fighter card flipped and replaced
+		public AudioClip ChallengeFlipStart;				// fighter card flipped and replaced
+		public AudioClip ChallengeFlipEnd;					// fighter card flipped and replaced
 
-//		private Sprite challengeWinnerSprite;
-//		private FighterCard challengeWinnerCard;
-//		private Sprite challengeLoserSprite;
-//		private FighterCard challengeLoserCard;
-//
+		private float challengeResultsPause = 1.5f;			// pause between results of each round (FighterCards)
+		private float pulseFlipPause = 0.25f;				// pause before flipping loser / pulsing winner after card entry
+		private float pulseFighterTime = 0.25f;
+		private Vector3 pulseFighterScale = new Vector3(3.5f, 3.5f, 1);
+
 		private bool player1WonChallengeRound = false;
 
 //		public GameObject InsertCoin;	
@@ -124,6 +132,9 @@ namespace FightingLegends
 
 			LevelLabel.text = FightManager.Translate("level", false, false, true);
 			VsVictoriesLabel.text = FightManager.Translate("victories", false, false, true);
+
+//			P1InitPosition = Player1Button.transform.localPosition;
+//			P2InitPosition = Player2Button.transform.localPosition;
 		}
 
 		private void OnEnable()
@@ -305,11 +316,12 @@ namespace FightingLegends
 			WinnerStatsPanel.SetActive(enable);
 			WinnerNamePanel.gameObject.SetActive(enable);
 			WinnerPhoto.gameObject.SetActive(enable);
+
+			ChallengeStats.gameObject.SetActive(false);
 		}
 
-		private IEnumerator WinnerStats()
+		private IEnumerator ShowWinnerStats()
 		{
-//			WinnerStatsPanel.SetActive(true);
 			EnableWinnerStats(true);
 
 			var player = winner.UnderAI ? winner.Opponent : winner;
@@ -413,6 +425,92 @@ namespace FightingLegends
 			yield return null;
 		}
 
+//		private void EnableChallengeStats(bool enable)
+//		{
+//			WinnerStatsPanel.SetActive(enable);
+//			WinnerNamePanel.gameObject.SetActive(false);
+//			WinnerPhoto.gameObject.SetActive(false);
+//			WinQuote.gameObject.SetActive(false);
+//
+//			LevelUp.gameObject.SetActive(false);
+//			LevelLabel.gameObject.SetActive(false);
+//			CoinsUp.gameObject.SetActive(false);
+//			CoinsLabel.gameObject.SetActive(false);
+//			VsVictoriesLabel.gameObject.SetActive(false);
+//			VsVictoriesUpDown.gameObject.SetActive(false);
+//		}
+
+		private IEnumerator ShowChallengeStats()
+		{
+//			EnableChallengeStats(true);
+
+			WinnerStatsPanel.SetActive(true);
+			KudosLabel.gameObject.SetActive(true);
+			KudosUp.gameObject.SetActive(true);
+
+			ChallengeStats.gameObject.SetActive(false);		// fade in below
+
+			WinnerNamePanel.gameObject.SetActive(false);
+			WinnerPhoto.gameObject.SetActive(false);
+			WinQuote.gameObject.SetActive(false);
+			LevelUp.gameObject.SetActive(false);
+			LevelLabel.gameObject.SetActive(false);
+			CoinsUp.gameObject.SetActive(false);
+			CoinsLabel.gameObject.SetActive(false);
+			VsVictoriesLabel.gameObject.SetActive(false);
+			VsVictoriesUpDown.gameObject.SetActive(false);
+
+			yield return StartCoroutine(ChallengeStatsFadeIn());
+
+			int kudosGained = (int)(FightManager.Kudos - FightManager.SavedGameStatus.FightStartKudos);
+			KudosUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartKudos);
+
+			if (kudosGained > 0)
+			{
+				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
+				{
+					//					yield return new WaitForSeconds(kudosUpPause);
+					KudosUp.text = string.Format("{0:N0}", kudos);
+
+					if (kudos % kudosBlingInterval == 0)
+					{
+						yield return new WaitForSeconds(kudosUpPause);
+						fightManager.BlingAudio();
+					}
+				}
+				KudosUpFireworks.Play();
+			}
+			else
+			{
+				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
+				fightManager.BlingAudio();
+			}
+
+//			ChallengeStats.text = "Challenge stats!!";
+//			ChallengeStats.text = "\"" + winner.ChallengeQuote(loser.FighterName) + "\"";		// virtual
+			StatsAudio();
+				
+			inputAllowed = true;
+			yield return null;
+		}
+
+		private IEnumerator ChallengeStatsFadeIn()
+		{
+			ChallengeStats.color = Color.clear;
+			ChallengeStats.gameObject.SetActive(true);
+
+			float t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / fadeInTime); 
+
+				ChallengeStats.color = Color.Lerp(Color.clear, Color.white, t);
+				yield return null;
+			}
+
+			yield return null;
+		}
 
 //		private IEnumerator DisplayWinnerStats()
 //		{
@@ -467,6 +565,9 @@ namespace FightingLegends
 
 		private IEnumerator WinQuoteFadeIn()
 		{
+			if (FightManager.CombatMode == FightMode.Challenge)
+				yield break;
+			
 			WinQuote.color = Color.clear;
 			WinQuote.gameObject.SetActive(true);
 
@@ -490,10 +591,13 @@ namespace FightingLegends
 			Background.gameObject.SetActive(false);
 			WinnerPhoto.gameObject.SetActive(false);
 			WinnerName.gameObject.SetActive(false);
+			WinnerNamePanel.gameObject.SetActive(false);
 			WinQuote.gameObject.SetActive(false);
+			WinnerStatsPanel.SetActive(false);
+			ChallengeStats.gameObject.SetActive(false);
 
-//			WinnerStatsPanel.SetActive(false);
-			EnableWinnerStats(false);
+//			EnableWinnerStats(false);
+//			EnableChallengeStats(false);
 
 			KudosLabel.gameObject.SetActive(false);
 			KudosUp.gameObject.SetActive(false);
@@ -527,75 +631,109 @@ namespace FightingLegends
 
 		public void EntryComplete()		// animation event on last frame
 		{
-			StartCoroutine(WinQuoteFadeIn());
+			StartCoroutine(WinQuoteFadeIn());		// not challenge mode
 
 			if (winner.UnderAI && Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
 			{
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
 				StartCoroutine(CycleInsertCoinText());
 			}
+			else if (FightManager.CombatMode == FightMode.Challenge)
+				StartCoroutine(ShowChallengeStats());
 			else
-				StartCoroutine(WinnerStats());
+				StartCoroutine(ShowWinnerStats());
 
 //			if (worldTourComplete)
 //				WorldTourCongrats();
 		}
 
-
 		public IEnumerator ShowChallengeResults(List<ChallengeRoundResult> results)
 		{
 			challengeResults = results;
 			ChallengePanel.SetActive(true);
-			EnableWinnerStats(false);
+//			EnableChallengeStats(false);
 			inputAllowed = false;
 
-			bool firstResult = true;
+			int roundNumber = 0;
+			bool prevRoundAIWinner = false;
 
-			foreach (var result in challengeResults)
+			// animate results of each round of challenge
+			foreach (var result in challengeResults)	
 			{
 				var winnerSprite = result.Winner.Portrait.sprite;
 				var loserSprite = result.Loser.Portrait.sprite;
 
-				player1WonChallengeRound = !result.AIWinner;
+				player1WonChallengeRound = !result.AIWinner; 	// needed to trigger flip animation
+				roundNumber++;
+//				fightManager.TriggerRoundFX(roundNumber, 0, 200.0f, true);
+//				yield return new WaitForSeconds(0.5f);			// allow time for round number
 		
-//				Debug.Log("ShowChallengeResults: winnerSprite = " + winnerSprite + ", loserSprite = " + loserSprite + ", AIWinner = " + result.AIWinner);
+//				Debug.Log("ShowChallengeResults: player1WonChallengeRound = " + player1WonChallengeRound + ", prevRoundAIWinner = " + prevRoundAIWinner + ", roundNumber = " + roundNumber);
 
 				if (ChallengeResultStart != null)
 					AudioSource.PlayClipAtPoint(ChallengeResultStart, Vector3.zero, FightManager.SFXVolume);
 
-				if (! player1WonChallengeRound)		// AI won round
+				if (! player1WonChallengeRound)		// P2 won round
 				{
-					if (firstResult)
+					if (roundNumber == 1)
 					{
 						Player1Button.SetFighterCard(loserSprite, result.Loser);
 						Player2Button.SetFighterCard(winnerSprite, result.Winner);
-						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter
+						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter together
 					}
 					else 		// replace (flipped) loser with next contender
 					{
-						Player2Button.SetFighterCard(winnerSprite, result.Winner);
-						resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from left
+						if (prevRoundAIWinner)		// P1 lost last round, this round won by P2, so replace P1 with loser
+						{
+							Player1Button.SetFighterCard(loserSprite, result.Loser);
+							resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from right
+						}
+						else 						// P2 lost last round, this round won by P2, so replace P2 with winner
+						{
+							Player2Button.SetFighterCard(winnerSprite, result.Winner);
+							resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from left
+						}
 					}
 				}
-				else
+				else 		// P1 won round
 				{
-					if (firstResult)
+					if (roundNumber == 1)
 					{
 						Player1Button.SetFighterCard(winnerSprite, result.Winner);
 						Player2Button.SetFighterCard(loserSprite, result.Loser);
-						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter
+						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter together
 					}
 					else		// replace (flipped) loser with next contender
 					{
-						Player1Button.SetFighterCard(winnerSprite, result.Winner);
-						resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from left
+						if (prevRoundAIWinner)		// P1 lost last round, this round won by P1, so replace P1 with winner
+						{
+							Player1Button.SetFighterCard(winnerSprite, result.Winner);
+							resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from left
+						}
+						else 						// P2 lost last round, this round won by P1, so replace P2 with loser
+						{
+							Player2Button.SetFighterCard(loserSprite, result.Loser);
+							resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from right
+						}
 					}
 				}
-				
-				firstResult = false;
-				yield return new WaitForSeconds(2.0f);			// allow time for loser to be flipped
+
+				prevRoundAIWinner = ! player1WonChallengeRound;
+
+				yield return new WaitForSeconds(challengeResultsPause);			// allow time for loser to be flipped etc
 			}
 
+//			ChallengeFireworks.Play();
+
+			ChallengeStats.text = "CHALLENGE OVER!"; 			// TODO: appropriate text!
+
+			// animate stats panel
+			// P1 and P2 are reversed... (not sure why)
+			if (player1WonChallengeRound)		// last round of challenge
+				resultsAnimator.SetTrigger("Player2Winner");		// animate stats panel entry from left
+			else
+				resultsAnimator.SetTrigger("Player1Winner");		// animate stats panel entry from right
+			
 			inputAllowed = true;
 		}
 
@@ -604,41 +742,89 @@ namespace FightingLegends
 			if (ChallengeResultEnd != null)
 				AudioSource.PlayClipAtPoint(ChallengeResultEnd, Vector3.zero, FightManager.SFXVolume);
 
-			ChallengeFireworks.Play();
+//			ChallengeFireworks.Play();
 
-			// pause then flip user
+			StartCoroutine(PulseWinner());
 			StartCoroutine(FlipLoser());
 		}
 
 		private IEnumerator FlipLoser()
 		{
-			yield return new WaitForSeconds(1.0f);
+			yield return new WaitForSeconds(pulseFlipPause);
 
 			if (player1WonChallengeRound)
 				resultsAnimator.SetTrigger("FlipPlayer2");
 			else
 				resultsAnimator.SetTrigger("FlipPlayer1");
 
-			if (ChallengeResultFlip != null)
-				AudioSource.PlayClipAtPoint(ChallengeResultFlip, Vector3.zero, FightManager.SFXVolume);
+			if (ChallengeFlipStart != null)
+				AudioSource.PlayClipAtPoint(ChallengeFlipStart, Vector3.zero, FightManager.SFXVolume);
 		}
-
+			
 		public void Player1Flipped()
 		{
-//			Player1Button.SetFighterCard(challengeLoserSprite, challengeLoserCard);
-//			resultsAnimator.SetTrigger("ChallengeP1");		// animate fighter card entry from left
+			Player1Fireworks.Play();
+
+			if (ChallengeFlipEnd != null)
+				AudioSource.PlayClipAtPoint(ChallengeFlipEnd, Vector3.zero, FightManager.SFXVolume);
+			
+			// reset rotation and position
+//			Player1Button.gameObject.SetActive(false);
+//			Player1Button.transform.localRotation = Quaternion.Euler(0, 0, 0);
 //
-//			if (ChallengeResultStart != null)
-//				AudioSource.PlayClipAtPoint(ChallengeResultStart, Vector3.zero, FightManager.SFXVolume);
+//			challengeLoserFlipped = true;
+//			Player1Button.transform.localPosition = P1InitPosition;
+//			Player1Button.gameObject.SetActive(true);
 		}
 
 		public void Player2Flipped()
 		{
-//			Player2Button.SetFighterCard(challengeLoserSprite, challengeLoserCard);
-//			resultsAnimator.SetTrigger("ChallengeP2");		// animate fighter card entry from right
+			Player2Fireworks.Play();
+
+			if (ChallengeFlipEnd != null)
+				AudioSource.PlayClipAtPoint(ChallengeFlipEnd, Vector3.zero, FightManager.SFXVolume);
+			
+			// reset rotation and position
+//			Player2Button.gameObject.SetActive(false);
+//			Player2Button.transform.localRotation = Quaternion.Euler(0, 0, 0);
 //
-//			if (ChallengeResultStart != null)
-//				AudioSource.PlayClipAtPoint(ChallengeResultStart, Vector3.zero, FightManager.SFXVolume);
+//			challengeLoserFlipped = true;
+//			Player2Button.transform.localPosition = P2InitPosition;
+//			Player2Button.gameObject.SetActive(true);
+		}
+
+
+		private IEnumerator PulseWinner()
+		{
+			yield return new WaitForSeconds(pulseFlipPause);
+
+			var player = player1WonChallengeRound ? Player1Button : Player2Button;
+			var stars = player1WonChallengeRound ? Player1Stars : Player2Stars;
+			Vector3 startScale = player.transform.localScale;
+			float t = 0.0f;
+
+			stars.Play();
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / pulseFighterTime); 
+
+				player.transform.localScale = Vector3.Lerp(startScale, pulseFighterScale, t);
+				yield return null;
+			}
+				
+			t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / pulseFighterTime); 
+
+				player.transform.localScale = Vector3.Lerp(pulseFighterScale, startScale, t);
+				yield return null;
+			}
+
+			stars.Stop();
+			yield return null;
 		}
 
 
@@ -646,6 +832,7 @@ namespace FightingLegends
 		{
 			inputAllowed = true;			// TODO: completed event?
 			EnableWinnerStats(false);
+//			EnableChallengeStats(false);
 			worldTourCongratsShowing = true;
 			WorldTourPanel.SetActive(true);
 

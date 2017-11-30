@@ -76,6 +76,7 @@ namespace FightingLegends
 
 		public Image ChallengesOverlay;			// overlay panel (categories)
 		public Text challengesTitle;			// diamond, gold, silver etc
+		public Text challengesHousePlayer;
 		public Color OwnChallengeColour;
 
 		public Text UploadingMessage;
@@ -331,16 +332,16 @@ namespace FightingLegends
 		private void PopulateFighterCards()
 		{
 //			Debug.Log("PopulateFighterCards");
-			fighterDeck.Add(ninjaCard = new FighterCard(ninjaButton, "Ninja", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(leoniCard = new FighterCard(leoniButton, "Leoni", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(shiroCard = new FighterCard(shiroButton, "Shiro", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(danjumaCard = new FighterCard(danjumaButton, "Danjuma", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(natalyaCard = new FighterCard(natalyaButton, "Natalya", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(hoiLunCard = new FighterCard(hoiLunButton, "Hoi Lun", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(jacksonCard = new FighterCard(jacksonButton, "Jackson", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(alazneCard = new FighterCard(alazneButton, "Alazne", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(shiyangCard = new FighterCard(shiyangButton, "Shiyang", "P1", 1, 0, null, null, null));
-			fighterDeck.Add(skeletronCard = new FighterCard(skeletronButton, "Skeletron", "P1", 1, 0, null, null, null));
+			fighterDeck.Add(ninjaCard = new FighterCard(ninjaButton, "Ninja", "P1", null));
+			fighterDeck.Add(leoniCard = new FighterCard(leoniButton, "Leoni", "P1", null));
+			fighterDeck.Add(shiroCard = new FighterCard(shiroButton, "Shiro", "P1", null));
+			fighterDeck.Add(danjumaCard = new FighterCard(danjumaButton, "Danjuma", "P1", null));
+			fighterDeck.Add(natalyaCard = new FighterCard(natalyaButton, "Natalya", "P1", null));
+			fighterDeck.Add(hoiLunCard = new FighterCard(hoiLunButton, "Hoi Lun", "P1", null));
+			fighterDeck.Add(jacksonCard = new FighterCard(jacksonButton, "Jackson", "P1", null));
+			fighterDeck.Add(alazneCard = new FighterCard(alazneButton, "Alazne", "P1", null));
+			fighterDeck.Add(shiyangCard = new FighterCard(shiyangButton, "Shiyang", "P1", null));
+			fighterDeck.Add(skeletronCard = new FighterCard(skeletronButton, "Skeletron", "P1", null));
 
 			firstCardIndex = ninjaCard.CardButton.transform.GetSiblingIndex();
 
@@ -374,7 +375,7 @@ namespace FightingLegends
 				if (profile != null)
 				{
 //					Debug.Log("SetDeckProfiles: " + card.FighterName + ", StaticPowerUp = " + profile.StaticPowerUp + ", TriggerPowerUp = " + profile.TriggerPowerUp);
-					card.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(card.FighterName),
+					card.SetProfileData(profile.Level, profile.XP, profile.StaticPowerUp, PowerUpSprite(profile.StaticPowerUp), profile.TriggerPowerUp, PowerUpSprite(profile.TriggerPowerUp), CardFrame(card.FighterName),
 								profile.IsLocked, profile.CanUnlockOrder, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
 			}
@@ -864,67 +865,41 @@ namespace FightingLegends
 					StartCoroutine(RevealOverlay(ironOverlay));
 					break;
 			}
-
-//			SetChallengesTitle();
+					
 			GetChallenges(selectedCategory); //, false);
 		}
 
 		private void SetChallengesTitle()
 		{
-			challengesTitle.text = fightManager.PlayerCreatedChallenges ? FightManager.Translate("player") : FightManager.Translate("house");
-			challengesTitle.text += ": ";
+			challengesHousePlayer.text = "[ " + (fightManager.PlayerCreatedChallenges ? FightManager.Translate("player") : FightManager.Translate("house")) + " ]";
 
 			switch (selectedCategory)
 			{
 				case ChallengeCategory.Diamond:
-					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("diamond"), selectedCategoryCount);
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("diamond"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Gold:
-					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("gold"), selectedCategoryCount);
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("gold"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Silver:
-					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("silver"), selectedCategoryCount);
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("silver"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Bronze:
-					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("bronze"), selectedCategoryCount);
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("bronze"), selectedCategoryCount);
 					break;
 
 				case ChallengeCategory.Iron:
-					challengesTitle.text += string.Format("{0} [ {1} ]", FightManager.Translate("iron"), selectedCategoryCount);
+					challengesTitle.text = string.Format("{0} [ {1} ]", FightManager.Translate("iron"), selectedCategoryCount);
 					break;
 
 				default:
-					challengesTitle.text += FightManager.Translate("chooseCategory");
+					challengesTitle.text = FightManager.Translate("chooseCategory");
 					break;
 			}
 		}
-			
-//		private TeamChallenge GetChallenge(ChallengeCategory category, int categoryIndex)
-//		{
-//			switch (category)
-//			{
-//				case ChallengeCategory.Diamond:
-//					return DiamondChallenges[categoryIndex];	
-//
-//				case ChallengeCategory.Gold:
-//					return GoldChallenges[categoryIndex];	
-//
-//				case ChallengeCategory.Silver:
-//					return SilverChallenges[categoryIndex];	
-//
-//				case ChallengeCategory.Bronze:
-//					return BronzeChallenges[categoryIndex];	
-//
-//				case ChallengeCategory.Iron:
-//					return IronChallenges[categoryIndex];	
-//
-//				default:
-//					return null;
-//			}
-//		}
 
 		private void ChallengeChosen(ChallengeButton challengeButton)
 		{
@@ -936,12 +911,13 @@ namespace FightingLegends
 				return;
 			}
 
-//			if (OwnChallenge(chosenChallenge))
-//			{
-//				ConfirmRemoveChallenge();
-//			}
-//			else
-				
+			// must register as a user before accepting a player challenge!
+			if (chosenChallenge.UserId != "" && string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
+			{
+				FightManager.RegisterNewUser();
+				return;
+			}
+					
 			if (!OwnChallenge(chosenChallenge))
 			{
 				selectedCategoryCount = 0;
@@ -1061,6 +1037,7 @@ namespace FightingLegends
 				var fighterButton = fighterButtonObject.GetComponent<FighterButton>();
 				var fighterRect = fighterButtonObject.GetComponent<RectTransform>();
 
+//				Debug.Log("FillChallengeFighterButtons: " + fighterCard.FighterName + " static = " + fighterCard.StaticPowerUp + " trigger = " + fighterCard.TriggerPowerUp);
 				fighterButton.SetFighterCard(FighterSprite(fighterCard.FighterName), fighterCard);
 
 				// currently clicking a fighter button has the same effect as clicking the challenge button
@@ -1208,6 +1185,7 @@ namespace FightingLegends
 				{
 					foreach (var teamMember in challenge.AITeam)
 					{
+//						Debug.Log("FillChallengeButtons: " + category + ": static = " + teamMember.StaticPowerUp + " trigger = " + teamMember.TriggerPowerUp);
 						challenge.PrizeCoins += Store.TeamMemberCoinValue(ConvertToTeamMember(teamMember), true);
 					}
 				}
@@ -1341,56 +1319,11 @@ namespace FightingLegends
 			}
 		}
 
-		private FighterCard CreateChallengeCard(string name, string colour, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUp, Sprite triggerPowerUp)
+//		private FighterCard CreateChallengeCard(string name, string colour, int level, float xpPercent, AIDifficulty difficulty, Sprite staticPowerUpSprite, Sprite triggerPowerUpSprite)
+		private FighterCard CreateChallengeCard(string name, string colour, int level, float xpPercent, AIDifficulty difficulty, PowerUp staticPowerUp, PowerUp triggerPowerUp)
 		{
 			// AI fighter colour is determined by Player1, so not relevant here
-			return new FighterCard(null, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
-
-//			Button fighterButton = null;
-//			switch (name)
-//			{
-//				case "Shiro":
-//					fighterButton = shiroButton;
-//					break;
-//
-//				case "Natalya":
-//					fighterButton = natalyaButton;
-//					break;
-//
-//				case "Hoi Lun":
-//					fighterButton = hoiLunButton;
-//					break;
-//
-//				case "Leoni":
-//					fighterButton = leoniButton;
-//					break;
-//
-//				case "Danjuma":
-//					fighterButton = danjumaButton;
-//					break;
-//
-//				case "Jackson":
-//					fighterButton = jacksonButton;
-//					break;
-//
-//				case "Alazne":
-//					fighterButton = alazneButton;
-//					break;
-//
-//				case "Shiyang":
-//					fighterButton = shiyangButton;
-//					break;
-//
-//				case "Ninja":
-//					fighterButton = ninjaButton;
-//					break;
-//
-//				case "Skeletron":
-//					fighterButton = skeletronButton;
-//					break;
-//			}
-
-//			return new FighterCard(fighterButton, name, colour, level, xpPercent, staticPowerUp, triggerPowerUp, CardFrame(name), difficulty);
+			return new FighterCard(null, name, colour, level, xpPercent, staticPowerUp, PowerUpSprite(staticPowerUp), triggerPowerUp, PowerUpSprite(triggerPowerUp), CardFrame(name), difficulty);
 		}
 
 
@@ -1571,12 +1504,6 @@ namespace FightingLegends
 		}
 
 
-//		private void DummyChallengeRoundResults()
-//		{
-//			fightManager.DummyChallengeResults(selectedTeam, selectedAITeam);
-//			StartCoroutine(fightManager.NextMatch(null));
-//		}
-
 		public static ChallengeCategory DetermineCoinCategory(ChallengeData challenge)
 		{
 			if (challenge.PrizeCoins <= IronThreshold)
@@ -1698,10 +1625,9 @@ namespace FightingLegends
 				var difficulty = (AIDifficulty) Enum.Parse(typeof(AIDifficulty), teamMember.Difficulty);
 				var staticPowerUp = (PowerUp) Enum.Parse(typeof(PowerUp), teamMember.StaticPowerUp);
 				var triggerPowerUp = (PowerUp) Enum.Parse(typeof(PowerUp), teamMember.TriggerPowerUp);
-//				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
-				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.FighterColour, teamMember.Level, (float)teamMember.XP, difficulty, PowerUpSprite(staticPowerUp), PowerUpSprite(triggerPowerUp)));
-//				Debug.Log("ConvertToTeamChallenge: " + teamMember.FighterName + " Level " + teamMember.Level);
+//				Debug.Log("ConvertToTeamChallenge: " + teamMember.FighterName + " Static " + staticPowerUp + " Trigger " + triggerPowerUp);
 
+				teamChallenge.AITeam.Add(CreateChallengeCard(teamMember.FighterName, teamMember.FighterColour, teamMember.Level, (float)teamMember.XP, difficulty, staticPowerUp, triggerPowerUp));
 			}
 
 			return teamChallenge;
@@ -1736,11 +1662,11 @@ namespace FightingLegends
 						Location = FightManager.hawaii,
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", "P1", 50, 50.0f, AIDifficulty.Medium, ArmourPiercing, HealthBooster),
-							CreateChallengeCard("Leoni", "P2", 61, 61.0f, AIDifficulty.Hard, Regenerator, PowerAttack),
-							CreateChallengeCard("Hoi Lun", "P3", 33, 33.0f, AIDifficulty.Medium, PoiseMaster, Ignite),
-							CreateChallengeCard("Danjuma", "P1", 45, 45.0f, AIDifficulty.Hard, PoiseWrecker, VengeanceBooster),
-							CreateChallengeCard("Leoni", "P3", 70, 70.0f, AIDifficulty.Brutal, Avenger, SecondLife),
+							CreateChallengeCard("Leoni", "P1", 50, 50.0f, AIDifficulty.Medium, PowerUp.ArmourPiercing, PowerUp.HealthBooster),
+							CreateChallengeCard("Leoni", "P2", 61, 61.0f, AIDifficulty.Hard, PowerUp.Regenerator, PowerUp.PowerAttack),
+							CreateChallengeCard("Hoi Lun", "P3", 33, 33.0f, AIDifficulty.Medium, PowerUp.PoiseMaster, PowerUp.Ignite),
+							CreateChallengeCard("Danjuma", "P1", 45, 45.0f, AIDifficulty.Hard, PowerUp.PoiseWrecker, PowerUp.VengeanceBooster),
+							CreateChallengeCard("Leoni", "P3", 70, 70.0f, AIDifficulty.Brutal, PowerUp.Avenger, PowerUp.SecondLife),
 						}
 					},
 
@@ -1752,15 +1678,15 @@ namespace FightingLegends
 						Location = FightManager.dojo,
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Ninja", "P1", 99, 99.0f, AIDifficulty.Simple, Regenerator, HealthBooster),
-							CreateChallengeCard("Ninja", "P2", 99, 99.0f, AIDifficulty.Easy, Avenger, VengeanceBooster),
-							CreateChallengeCard("Ninja", "P3", 99, 99.0f, AIDifficulty.Medium, ArmourPiercing, PowerAttack),
-							CreateChallengeCard("Ninja", "P1", 99, 99.0f, AIDifficulty.Medium, PoiseWrecker, SecondLife),
-							CreateChallengeCard("Ninja", "P2", 99, 99.0f, AIDifficulty.Medium, PoiseMaster, Ignite),
-							CreateChallengeCard("Ninja", "P3", 99, 99.0f, AIDifficulty.Hard, Avenger, PowerAttack),
-							CreateChallengeCard("Ninja", "P1", 99, 99.0f, AIDifficulty.Hard, ArmourPiercing, HealthBooster),
-							CreateChallengeCard("Ninja", "P2", 99, 99.0f, AIDifficulty.Hard, Regenerator, PowerAttack),
-							CreateChallengeCard("Ninja", "P3", 99, 99.0f, AIDifficulty.Brutal, PoiseMaster, SecondLife),
+							CreateChallengeCard("Ninja", "P1", 99, 99.0f, AIDifficulty.Simple, PowerUp.Regenerator, PowerUp.HealthBooster),
+							CreateChallengeCard("Ninja", "P2", 99, 99.0f, AIDifficulty.Easy, PowerUp.Avenger, PowerUp.VengeanceBooster),
+							CreateChallengeCard("Ninja", "P3", 99, 99.0f, AIDifficulty.Medium, PowerUp.ArmourPiercing, PowerUp.PowerAttack),
+							CreateChallengeCard("Ninja", "P1", 99, 99.0f, AIDifficulty.Medium, PowerUp.PoiseWrecker, PowerUp.SecondLife),
+							CreateChallengeCard("Ninja", "P2", 99, 99.0f, AIDifficulty.Medium, PowerUp.PoiseMaster, PowerUp.Ignite),
+							CreateChallengeCard("Ninja", "P3", 99, 99.0f, AIDifficulty.Hard, PowerUp.Avenger, PowerUp.PowerAttack),
+							CreateChallengeCard("Ninja", "P1", 99, 99.0f, AIDifficulty.Hard, PowerUp.ArmourPiercing, PowerUp.HealthBooster),
+							CreateChallengeCard("Ninja", "P2", 99, 99.0f, AIDifficulty.Hard, PowerUp.Regenerator, PowerUp.PowerAttack),
+							CreateChallengeCard("Ninja", "P3", 99, 99.0f, AIDifficulty.Brutal, PowerUp.PoiseMaster, PowerUp.SecondLife),
 
 						}
 					},
@@ -1773,106 +1699,22 @@ namespace FightingLegends
 						Location = FightManager.dojo,
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", "P1", 100, 25.0f, AIDifficulty.Hard, Regenerator, HealthBooster),
-							CreateChallengeCard("Shiro", "P1", 100, 80.0f, AIDifficulty.Hard, ArmourPiercing, Ignite),
-							CreateChallengeCard("Danjuma", "P1", 100, 10.0f, AIDifficulty.Hard, PoiseWrecker, PowerAttack),
-							CreateChallengeCard("Natalya", "P1", 100, 80.0f, AIDifficulty.Hard, Regenerator, Ignite),
-							CreateChallengeCard("Hoi Lun", "P1", 100, 25.0f, AIDifficulty.Hard, PoiseMaster, PowerAttack),
-							CreateChallengeCard("Jackson", "P1", 100, 80.0f, AIDifficulty.Hard, PoiseWrecker, Ignite),
-							CreateChallengeCard("Alazne", "P1", 100, 10.0f, AIDifficulty.Hard, Avenger, VengeanceBooster),
-							CreateChallengeCard("Shiyang", "P1", 100, 80.0f, AIDifficulty.Hard, ArmourPiercing, Ignite),
-							CreateChallengeCard("Ninja", "P1", 100, 10.0f, AIDifficulty.Brutal, Avenger, SecondLife),
-							CreateChallengeCard("Skeletron", "P1", 100, 90.0f, AIDifficulty.Hard, ArmourPiercing, SecondLife),
+							CreateChallengeCard("Leoni", "P1", 100, 25.0f, AIDifficulty.Hard, PowerUp.Regenerator, PowerUp.HealthBooster),
+							CreateChallengeCard("Shiro", "P1", 100, 80.0f, AIDifficulty.Hard, PowerUp.ArmourPiercing, PowerUp.Ignite),
+							CreateChallengeCard("Danjuma", "P1", 100, 10.0f, AIDifficulty.Hard, PowerUp.PoiseWrecker, PowerUp.PowerAttack),
+							CreateChallengeCard("Natalya", "P1", 100, 80.0f, AIDifficulty.Hard, PowerUp.Regenerator, PowerUp.Ignite),
+							CreateChallengeCard("Hoi Lun", "P1", 100, 25.0f, AIDifficulty.Hard, PowerUp.PoiseMaster, PowerUp.PowerAttack),
+							CreateChallengeCard("Jackson", "P1", 100, 80.0f, AIDifficulty.Hard, PowerUp.PoiseWrecker, PowerUp.Ignite),
+							CreateChallengeCard("Alazne", "P1", 100, 10.0f, AIDifficulty.Hard, PowerUp.Avenger, PowerUp.VengeanceBooster),
+							CreateChallengeCard("Shiyang", "P1", 100, 80.0f, AIDifficulty.Hard, PowerUp.ArmourPiercing, PowerUp.Ignite),
+							CreateChallengeCard("Ninja", "P1", 100, 10.0f, AIDifficulty.Brutal, PowerUp.Avenger, PowerUp.SecondLife),
+							CreateChallengeCard("Skeletron", "P1", 100, 90.0f, AIDifficulty.Hard, PowerUp.ArmourPiercing, PowerUp.SecondLife),
 						}
 					},
 				};
 			}
 		}
-
-
-//		private List<TeamChallenge> DiamondChallenges
-//		{
-//			get
-//			{
-//				return new List<TeamChallenge>
-//				{
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Diamond,
-//						Location = FightManager.china,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Leoni", "P1", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//							CreateChallengeCard("Shiro", "P1", 4, 45.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-//						},
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Diamond,
-//						Location = FightManager.hongKong,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Danjuma", "P1", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Hoi Lun", "P2", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Jackson", "P1", 24, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P1", 1, 90.0f, AIDifficulty.Medium, null, ArmourPiercing),
-//							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Diamond,
-//						Location = FightManager.dojo,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Jackson", "P1", 5, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//							CreateChallengeCard("Alazne", "P3", 5, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P1", 15, 10.0f, AIDifficulty.Medium, null, null),
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Diamond,
-//						Location = FightManager.ghetto,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Shiro", "P3", 7, 75.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Jackson", "P1", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Natalya", "P2", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Jackson", "P3", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Hoi Lun", "P1", 11, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P1", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Leoni", "P1", 16, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//						}
-//					}, 
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Diamond,
-//						Location = FightManager.soviet,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Alazne", "P1", 31, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Shiro", "P3", 1, 50.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P1", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//						}
-//					},
-//				};
-//			}
-//		}
-
+			
 		private List<TeamChallenge> GoldChallenges
 		{
 			get
@@ -1887,7 +1729,7 @@ namespace FightingLegends
 						Location = FightManager.spaceStation,
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Skeletron", "P3", 100, 78.0f, AIDifficulty.Brutal, Regenerator, SecondLife),
+							CreateChallengeCard("Skeletron", "P3", 100, 78.0f, AIDifficulty.Brutal, PowerUp.Regenerator, PowerUp.SecondLife),
 						}
 					},
 
@@ -1899,75 +1741,12 @@ namespace FightingLegends
 						Location = FightManager.china,
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Shiro", "P1", 20, 27.0f, AIDifficulty.Hard, ArmourPiercing, Ignite),
-							CreateChallengeCard("Jackson", "P3", 44, 76.0f, AIDifficulty.Hard, Regenerator, Ignite),
-							CreateChallengeCard("Natalya", "P1", 38, 11.0f, AIDifficulty.Hard, Avenger, Ignite),
-							CreateChallengeCard("Shiyang", "P2", 47, 89.0f, AIDifficulty.Hard, PoiseMaster, Ignite),
+							CreateChallengeCard("Shiro", "P1", 20, 27.0f, AIDifficulty.Hard, PowerUp.ArmourPiercing, PowerUp.Ignite),
+							CreateChallengeCard("Jackson", "P3", 44, 76.0f, AIDifficulty.Hard, PowerUp.Regenerator, PowerUp.Ignite),
+							CreateChallengeCard("Natalya", "P1", 38, 11.0f, AIDifficulty.Hard, PowerUp.Avenger, PowerUp.Ignite),
+							CreateChallengeCard("Shiyang", "P2", 47, 89.0f, AIDifficulty.Hard, PowerUp.PoiseMaster, PowerUp.Ignite),
 						}
 					},
-
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Gold,
-//						Location = FightManager.soviet,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Shiro", "P1", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Jackson", "P2", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Jackson", "P1", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//
-//						}
-//					}, 
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Gold,
-//						Location = FightManager.china,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Leoni", "P1", 1, 75.0f, AIDifficulty.Medium, null, HealthBooster),
-//							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, null, ArmourPiercing),	
-//							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Danjuma", "P3", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Hoi Lun", "P3", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Shiyang", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P1", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Leoni", "P3", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Gold,
-//						Location = FightManager.spaceStation,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Danjuma", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Hoi Lun", "P1", 1, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Jackson", "P2", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Shiyang", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P3", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, null, PoiseWrecker),	
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Gold,
-//						Location = FightManager.tokyo,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Alazne", "P1", 51, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Shiro", "P1", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P1", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//						}
-//					},
 				};
 			}
 		}
@@ -1986,89 +1765,12 @@ namespace FightingLegends
 						Location = FightManager.soviet,
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Natalya", "P3", 27, 64.0f, AIDifficulty.Medium, null, null),
-							CreateChallengeCard("Leoni", "P2", 14, 19.0f, AIDifficulty.Medium, null, null),
-							CreateChallengeCard("Shiyang", "P3", 67, 80.0f, AIDifficulty.Medium, null, null),
-							CreateChallengeCard("Hoi Lun", "P3", 80, 77.0f, AIDifficulty.Medium, null, PowerAttack),
+							CreateChallengeCard("Natalya", "P3", 27, 64.0f, AIDifficulty.Medium, PowerUp.None, PowerUp.None),
+							CreateChallengeCard("Leoni", "P2", 14, 19.0f, AIDifficulty.Medium, PowerUp.None, PowerUp.None),
+							CreateChallengeCard("Shiyang", "P3", 67, 80.0f, AIDifficulty.Medium, PowerUp.None, PowerUp.None),
+							CreateChallengeCard("Hoi Lun", "P3", 80, 77.0f, AIDifficulty.Medium, PowerUp.None, PowerUp.PowerAttack),
 						}
 					},
-
-
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Silver,
-//						Location = FightManager.tokyo,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Alazne", "P3", 8, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Shiro", "P2", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P3", 13, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Shiyang", "P2", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Silver,
-//						Location = FightManager.ghetto,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Shiyang", "P2", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Shiro", "P1", 42, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Jackson", "P3", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Jackson", "P3", 4, 80.0f, AIDifficulty.Medium, null, Ignite),
-//							CreateChallengeCard("Hoi Lun", "P1", 41, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Shiyang", "P3", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P1", 6, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Leoni", "P2", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//						}
-//					}, 
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Silver,
-//						Location = FightManager.china,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Alazne", "P3", 12, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Shiyang", "P1", 28, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P2", 31, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Danjuma", "P1", 3, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Silver,
-//						Location = FightManager.dojo,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Leoni", "P1", 21, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//							CreateChallengeCard("Shiro", "P2", 7, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P1", 9, 10.0f, AIDifficulty.Medium, Avenger, null),
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Silver,
-//						Location = FightManager.soviet,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Danjuma", "P2", 28, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Hoi Lun", "P1", 18, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Jackson", "P1", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Shiyang", "P1", 11, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P3", 5, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Shiro", "P2", 4, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//						}
-//					},
 				};
 			}
 		}
@@ -2079,82 +1781,7 @@ namespace FightingLegends
 			{
 				return new List<TeamChallenge>
 				{
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Bronze,
-//						Location = FightManager.dojo,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Shiyang", "P3", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Shiro", "P2", 22, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Jackson", "P1", 48, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Natalya", "P3", 23, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Skeletron", "P1", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Danjuma", "P2", 12, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Hoi Lun", "P1", 9, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Ninja", "P3", 9, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P2", 4, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Leoni", "P3", 17, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//						}
-//					}, 
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Bronze,
-//						Location = FightManager.china,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Leoni", "P1", 11, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//							CreateChallengeCard("Shiro", "P1", 24, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//							CreateChallengeCard("Natalya", "P2", 33, 10.0f, AIDifficulty.Medium, Avenger, null),
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Bronze,
-//						Location = FightManager.soviet,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Danjuma", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Hoi Lun", "P3", 16, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Jackson", "P1", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Shiyang", "P2", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P1", 19, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Shiro", "P3", 32, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Bronze,
-//						Location = FightManager.china,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Alazne", "P1", 15, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Danjuma", "P1", 25, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Natalya", "P1", 35, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Shiyang", "P2", 15, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//						}
-//					},
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Bronze,
-//						Location = FightManager.tokyo,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Natalya", "P2", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Jackson", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Hoi Lun", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//						}
-//					},
+
 				};
 			}
 		}
@@ -2171,60 +1798,12 @@ namespace FightingLegends
 						Location = FightManager.hawaii,
 						AITeam = new List<FighterCard>
 						{
-							CreateChallengeCard("Leoni", "P1", 10, 67.0f, AIDifficulty.Easy, null, null),
-							CreateChallengeCard("Danjuma", "P2", 11, 11.0f, AIDifficulty.Easy, null, null),
-							CreateChallengeCard("Alazne", "P1", 12, 90.0f, AIDifficulty.Medium, null, null),
-							CreateChallengeCard("Hoi Lun", "P2", 13, 41.0f, AIDifficulty.Medium, ArmourPiercing, null),
+							CreateChallengeCard("Leoni", "P1", 10, 67.0f, AIDifficulty.Easy, PowerUp.None, PowerUp.None),
+							CreateChallengeCard("Danjuma", "P2", 11, 11.0f, AIDifficulty.Easy, PowerUp.None, PowerUp.None),
+							CreateChallengeCard("Alazne", "P1", 12, 90.0f, AIDifficulty.Medium, PowerUp.None, PowerUp.None),
+							CreateChallengeCard("Hoi Lun", "P2", 13, 41.0f, AIDifficulty.Medium, PowerUp.ArmourPiercing, PowerUp.None),
 						}
 					},
-
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Iron,
-//						Location = FightManager.cuba,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Jackson", "P2", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Natalya", "P1", 30, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Jackson", "P3", 40, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Danjuma", "P1", 20, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Hoi Lun", "P3", 10, 10.0f, AIDifficulty.Medium, Ignite, null),
-//							CreateChallengeCard("Shiyang", "P1", 10, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//							CreateChallengeCard("Alazne", "P2", 10, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Leoni", "P1", 10, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//							CreateChallengeCard("Jackson", "P3", 14, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//						}
-//					}, 
-//
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Iron,
-//						Location = FightManager.china,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Leoni", "P1", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//							CreateChallengeCard("Shiro", "P2", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),	
-//						}
-//					},
-//							
-//					new TeamChallenge
-//					{
-//						ChallengeCategory = ChallengeCategory.Iron,
-//						Location = FightManager.cuba,
-//
-//						AITeam = new List<FighterCard>
-//						{
-//							CreateChallengeCard("Jackson", "P2", 4, 80.0f, AIDifficulty.Medium, PowerAttack, Ignite),
-//							CreateChallengeCard("Alazne", "P3", 1, 90.0f, AIDifficulty.Medium, Regenerator, ArmourPiercing),
-//							CreateChallengeCard("Leoni", "P2", 1, 75.0f, AIDifficulty.Medium, HealthBooster, SecondLife),
-//							CreateChallengeCard("Shiro", "P1", 2, 25.0f, AIDifficulty.Medium, ArmourPiercing, PoiseWrecker),
-//							CreateChallengeCard("Danjuma", "P1", 2, 40.0f, AIDifficulty.Medium, PoiseMaster, null),
-//							CreateChallengeCard("Natalya", "P1", 3, 10.0f, AIDifficulty.Medium, Avenger, null),
-//							CreateChallengeCard("Shiyang", "P1", 1, 0.0f, AIDifficulty.Medium, SecondLife, null),
-//						}
-//					},
 				};
 			}
 		}
@@ -2245,14 +1824,4 @@ namespace FightingLegends
 			AIWinner = aiWinner;
 		}
 	}
-
-//	public class ChallengePot
-//	{
-//		public DateTime DateAccepted;
-//
-//		public TeamChallenge AcceptedChallenge = null;
-//		public int SelectedTeamPrizeCoins = 0;
-//
-//		public int PotCoins { get { return AcceptedChallenge.PrizeCoins + SelectedTeamPrizeCoins; } }
-//	}
 }

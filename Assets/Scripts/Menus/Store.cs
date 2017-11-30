@@ -563,7 +563,7 @@ namespace FightingLegends
 
 			var fighterName = previewFighter.FighterName;
 		
-			fighterCard.SetProfileData(previewFighter.Level, previewFighter.XP, PowerUpSprite(previewFighter.StaticPowerUp), PowerUpSprite(previewFighter.TriggerPowerUp), null,
+			fighterCard.SetProfileData(previewFighter.Level, previewFighter.XP, previewFighter.StaticPowerUp, PowerUpSprite(previewFighter.StaticPowerUp), previewFighter.TriggerPowerUp, PowerUpSprite(previewFighter.TriggerPowerUp), null,
 				previewFighter.IsLocked, previewFighter.CanUnlockOrder, previewFighter.UnlockCoins, previewFighter.UnlockOrder, previewFighter.UnlockDefeats, previewFighter.UnlockDifficulty);
 			fighterSelect.EnableFighterButton(fighterName, true);
 
@@ -1053,7 +1053,7 @@ namespace FightingLegends
 			{
 				var fighterCard = fighterSelect.GetFighterCard(PowerUpFighter.FighterName);
 				if (fighterCard != null)
-					fighterCard.SetPowerUps(PowerUpSprite(PowerUpFighter.StaticPowerUp), PowerUpSprite(PowerUpFighter.TriggerPowerUp));
+					fighterCard.SetPowerUpSprites(PowerUpSprite(PowerUpFighter.StaticPowerUp), PowerUpSprite(PowerUpFighter.TriggerPowerUp));
 			}
 		}
 
@@ -1376,6 +1376,46 @@ namespace FightingLegends
 				case PowerUp.None:
 				default:
 					return null;
+			}
+		}
+
+		public int GetPowerUpCooldown(PowerUp powerUp)
+		{
+			switch (powerUp)
+			{
+				case PowerUp.ArmourPiercing:
+					return ArmourPiercing.TriggerCoolDown;
+
+				case PowerUp.Avenger:
+					return Avenger.TriggerCoolDown;
+
+				case PowerUp.Ignite:
+					return Ignite.TriggerCoolDown;
+
+				case PowerUp.HealthBooster:
+					return HealthBooster.TriggerCoolDown;
+
+				case PowerUp.PoiseMaster:
+					return PoiseMaster.TriggerCoolDown;
+
+				case PowerUp.PoiseWrecker:
+					return PoiseWrecker.TriggerCoolDown;
+
+				case PowerUp.PowerAttack:
+					return PowerAttack.TriggerCoolDown;
+
+				case PowerUp.Regenerator:
+					return Regenerator.TriggerCoolDown;
+
+				case PowerUp.SecondLife:
+					return SecondLife.TriggerCoolDown;
+
+				case PowerUp.VengeanceBooster:
+					return VengeanceBooster.TriggerCoolDown;
+
+				case PowerUp.None:
+				default:
+					return 0;
 			}
 		}
 

@@ -2509,7 +2509,7 @@ namespace FightingLegends
 		// swipe up
 		public bool PowerUp()
 		{
-			Debug.Log(FullName + ": PowerUp " + TriggerPowerUp + ", CanTriggerPowerUp = " + CanTriggerPowerUp + ", FightPaused = " + FightManager.FightPaused);
+//			Debug.Log(FullName + ": PowerUp " + TriggerPowerUp + ", CanTriggerPowerUp = " + CanTriggerPowerUp + ", FightPaused = " + FightManager.FightPaused);
 
 			if (fightManager.PowerUpFeedbackActive)
 				return false;
@@ -2624,7 +2624,10 @@ namespace FightingLegends
 		private void TriggerIgnite()	
 		{
 			if (Opponent != null)
-				Opponent.StartOnFire(-feedbackOffsetX);
+			{
+				var xOffset = IsPlayer1 ? feedbackOffsetX : -feedbackOffsetX;
+				Opponent.StartOnFire(-xOffset);
+			}
 			powerUpTriggered = true;
 			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("ignite", false, true), true, false);
 		}
@@ -6061,7 +6064,7 @@ namespace FightingLegends
 							}
 							else
 							{
-								if (!winner.UnderAI && FighterName != "Ninja") 					// player won - except if against ninja (in training)
+								if (!winner.UnderAI && FighterName != "Ninja") 					// player won - except if against ninja (in training) (kludge)
 									fightManager.CompleteCurrentLocation();						// sets worldTourCompleted if last location
 								yield return StartCoroutine(fightManager.NextMatch(winner)); 	// show winner/stats then world map to fly to next match location/AI opponent
 							}

@@ -54,7 +54,7 @@ namespace FightingLegends
 					fighter.OnKnockOut -= OnKnockOut;
 
 					fighter.OnPowerUpTriggered -= PowerUpTriggered;
-					fighter.OnStaticPowerUpApplied -= StaticPowerUpApplied;	
+//					fighter.OnStaticPowerUpApplied -= StaticPowerUpApplied;	
 				}
 
 				fighter = value;
@@ -71,7 +71,7 @@ namespace FightingLegends
 				fighter.OnKnockOut += OnKnockOut;
 
 				fighter.OnPowerUpTriggered += PowerUpTriggered;
-				fighter.OnStaticPowerUpApplied += StaticPowerUpApplied;	
+//				fighter.OnStaticPowerUpApplied += StaticPowerUpApplied;	
 			}
 		}
 			
@@ -140,7 +140,7 @@ namespace FightingLegends
 		private void ShowTriggerCoolDown(bool show)
 		{
 			TriggerCoolDown.gameObject.SetActive(show);
-			TriggerPowerUpCoolDown.gameObject.SetActive(show);
+//			TriggerPowerUpCoolDown.gameObject.SetActive(show);		// reinstate to show digital countdown
 		}
 
 
@@ -213,11 +213,11 @@ namespace FightingLegends
 				StartCoroutine(TriggerCoolDownCountdown(true));		// milliseconds
 		}
 
-		private void StaticPowerUpApplied(PowerUp powerUp)
-		{
+//		private void StaticPowerUpApplied(PowerUp powerUp)
+//		{
 //			PlayTriggeredAudio();
 //			StaticStars.Play();
-		}
+//		}
 
 		private void PlayTriggeredAudio()
 		{

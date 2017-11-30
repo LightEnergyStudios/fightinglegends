@@ -38,7 +38,7 @@ namespace FightingLegends
 				var profile = GetFighterProfile(fighterName);
 				if (profile != null)
 				{
-					fighterCard.SetProfileData(profile.Level, profile.XP, PowerUpSprite(profile.StaticPowerUp), PowerUpSprite(profile.TriggerPowerUp), CardFrame(fighterName),
+					fighterCard.SetProfileData(profile.Level, profile.XP, profile.StaticPowerUp, PowerUpSprite(profile.StaticPowerUp), profile.TriggerPowerUp, PowerUpSprite(profile.TriggerPowerUp), CardFrame(fighterName),
 										profile.IsLocked, profile.CanUnlockOrder, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
 			}

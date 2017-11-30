@@ -10,8 +10,6 @@ using Firebase;
 using Firebase.Database;
 using Firebase.Unity.Editor;
 
-//using Facebook.MiniJSON;
-
 
 namespace FightingLegends
 {
@@ -61,28 +59,6 @@ namespace FightingLegends
 
 			// get the root reference location of the database
 			databaseRoot = FirebaseDatabase.DefaultInstance.RootReference;
-
-//			DummyUsers();
-//
-//			GetUserProfile("");
-//			GetUserProfile(null);
-//			GetUserProfile("User99");
-//			GetUserProfile("User1");
-
-//			DummyScores();
-
-//			List<LeaderboardScore> scores;
-//			List<Challenge> challenges;
-//
-//			GetCategoryChallenges(ChallengeCategory.Gold, out challenges);
-//			GetCategoryChallenges(ChallengeCategory.Silver, out challenges);
-//
-//			GetLeaderboardScores(Leaderboard.Kudos, out scores);
-//			GetLeaderboardScores(Leaderboard.DojoDamage, out scores);
-
-//			int score = 0;
-//			GetLeaderboardScore(Leaderboard.Kudos, "Steve", out score);
-//			GetLeaderboardScore(Leaderboard.DojoDamage, "Mark", out score);
 		}
 
 		private static Dictionary<string, object> ChallengeToDict(ChallengeData challenge)
@@ -94,45 +70,6 @@ namespace FightingLegends
 		{
 			return JsonUtility.ToJson(challenge);
 		}
-
-//		private void DummyChallenges()
-//		{
-//			var challenge1 = CreateDummyChallenge(ChallengeCategory.Gold, "Steve's Challenge1", FightManager.china, 1000);
-//			UploadChallenge(challenge1, ChallengeCategory.Gold);
-//
-//			var challenge2 = CreateDummyChallenge(ChallengeCategory.Silver, "Steve's Challenge2", FightManager.tokyo, 2000);
-//			UploadChallenge(challenge2, ChallengeCategory.Silver);
-//
-//			var challenge3 = CreateDummyChallenge(ChallengeCategory.Gold, "Steve's Challenge3", FightManager.ghetto, 3000);
-//			UploadChallenge(challenge3, ChallengeCategory.Gold);
-//		}
-
-//		private void DummyUsers()
-//		{
-//			UploadUserProfile(new UserProfile {
-//				UserID = "User10",
-//				DateAdded = DateTime.Now.ToShortDateString(),
-//				TimeAdded = DateTime.Now.ToShortTimeString(),
-////				CoinsToCollect = 1,
-//			}
-//			);
-//
-//			UploadUserProfile(new UserProfile {
-//				UserID = "User20",
-//				DateAdded = DateTime.Now.ToShortDateString(),
-//				TimeAdded = DateTime.Now.ToShortTimeString(),
-////				CoinsToCollect = 2,
-//			}
-//			);
-//				
-//			UploadUserProfile(new UserProfile {
-//				UserID = "User30",
-//				DateAdded = DateTime.Now.ToShortDateString(),
-//				TimeAdded = DateTime.Now.ToShortTimeString(),
-////				CoinsToCollect = 3,
-//			}
-//			);
-//		}
 			
 		public static bool SaveChallenge(ChallengeData challenge, ChallengeCategory category, bool isNew)
 		{
@@ -246,6 +183,7 @@ namespace FightingLegends
 			var userId = FightManager.SavedGameStatus.UserId;
 			if (string.IsNullOrEmpty(userId))
 			{
+				Debug.Log("AcceptChallenge: null userId!");
 				if (OnChallengeAccepted != null)
 					OnChallengeAccepted(challenge, userId, false);
 
@@ -254,6 +192,7 @@ namespace FightingLegends
 				
 			if (string.IsNullOrEmpty(challengeKey))
 			{
+				Debug.Log("AcceptChallenge: null challengeKey!");
 				if (OnChallengeAccepted != null)
 					OnChallengeAccepted(challenge, userId, false);
 
@@ -360,57 +299,7 @@ namespace FightingLegends
 				Debug.Log("Team: " + teamMember.FighterName + " / " + teamMember.Level + " / " + teamMember.Difficulty + " / " + teamMember.StaticPowerUp + " / " + teamMember.TriggerPowerUp);
 			}
 		}
-
-
-//		private ChallengeData CreateDummyChallenge(ChallengeCategory category, string name, string location, int prizeCoins)
-//		{
-//			return new ChallengeData
-//			{
-//				Name = name,
-//				ParentCategory = category.ToString(),
-//				Location = location,
-//				PrizeCoins = prizeCoins,
-//
-//				Team = new List<ChallengeTeamMember>
-//				{
-//					new ChallengeTeamMember
-//					{
-//						FighterName = "Leoni",
-//						Level = 1,
-//						XP = 25,
-//						Difficulty = AIDifficulty.Medium.ToString(),
-//						StaticPowerUp = PowerUp.Regenerator.ToString(),
-//						TriggerPowerUp = PowerUp.SecondLife.ToString(),
-//						ParentChallenge = name,
-//					},
-//
-//					new ChallengeTeamMember
-//					{
-//						FighterName = "Shiro",
-//						Level = 4,
-//						XP = 75,
-//						Difficulty = AIDifficulty.Easy.ToString(),
-//						StaticPowerUp = PowerUp.Regenerator.ToString(),
-//						TriggerPowerUp = PowerUp.HealthBooster.ToString(),
-//						ParentChallenge = name,
-//					},
-//
-//
-//					new ChallengeTeamMember
-//					{
-//						FighterName = "Shiyang",
-//						Level = 12,
-//						XP = 10,
-//						Difficulty = AIDifficulty.Hard.ToString(),
-//						StaticPowerUp = PowerUp.ArmourPiercing.ToString(),
-//						TriggerPowerUp = PowerUp.Ignite.ToString(),
-//						ParentChallenge = name,
-//					},
-//				}
-//			};
-//		}
-
-
+			
 		public static void PostLeaderboardScore(Leaderboard leaderboard, float score) //, string userId = null)
 		{
 			if (string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId))
@@ -461,7 +350,7 @@ namespace FightingLegends
 						
 					// if the leaderboard is not full, simply add the user's score
 
-					// it the leaderboard is full, only add the user's score if it's higher than the lowest
+					// if the leaderboard is full, only add the user's score if it's higher than the lowest
 					// in which case the lowest is deleted from the leaderboard
 
 					bool leaderboardFull = scores.Count == LeaderboardMax;

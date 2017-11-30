@@ -298,19 +298,19 @@ namespace FightingLegends
 			if (fighterCardsLoaded)
 				return;
 
-			fighterCards.Add("Leoni", new FighterCard(leoniButton, "Leoni", "P1", 1, 0, null, null, CardFrame("Leoni")));
-			fighterCards.Add("Shiro", new FighterCard(shiroButton, "Shiro", "P1", 1, 0, null, null, CardFrame("Shiro")));	
-			fighterCards.Add("Natalya", new FighterCard(natalyaButton, "Natalya", "P1", 1, 0, null, null, CardFrame("Natalya")));
-			fighterCards.Add("Danjuma", new FighterCard(danjumaButton, "Danjuma", "P1", 1, 0, null, null, CardFrame("Danjuma")));
-			fighterCards.Add("Hoi Lun", new FighterCard(hoiLunButton, "Hoi Lun", "P1", 1, 0, null, null, CardFrame("Hoi Lun")));
-			fighterCards.Add("Jackson", new FighterCard(jacksonButton, "Jackson", "P1", 1, 0, null, null, CardFrame("Jackson")));
-			fighterCards.Add("Shiyang", new FighterCard(shiyangButton, "Shiyang", "P1", 1, 0, null, null, CardFrame("Shiyang")));
-			fighterCards.Add("Alazne", new FighterCard(alazneButton, "Alazne", "P1", 1, 0, null, null, CardFrame("Alazne")));
+			fighterCards.Add("Leoni", new FighterCard(leoniButton, "Leoni", "P1", CardFrame("Leoni")));
+			fighterCards.Add("Shiro", new FighterCard(shiroButton, "Shiro", "P1", CardFrame("Shiro")));	
+			fighterCards.Add("Natalya", new FighterCard(natalyaButton, "Natalya", "P1", CardFrame("Natalya")));
+			fighterCards.Add("Danjuma", new FighterCard(danjumaButton, "Danjuma", "P1", CardFrame("Danjuma")));
+			fighterCards.Add("Hoi Lun", new FighterCard(hoiLunButton, "Hoi Lun", "P1", CardFrame("Hoi Lun")));
+			fighterCards.Add("Jackson", new FighterCard(jacksonButton, "Jackson", "P1", CardFrame("Jackson")));
+			fighterCards.Add("Shiyang", new FighterCard(shiyangButton, "Shiyang", "P1", CardFrame("Shiyang")));
+			fighterCards.Add("Alazne", new FighterCard(alazneButton, "Alazne", "P1", CardFrame("Alazne")));
 
 			if (ninjaButton != null)
-				fighterCards.Add("Ninja", new FighterCard(ninjaButton, "Ninja", "P1", 1, 0f, null, null, CardFrame("Ninja")));
+				fighterCards.Add("Ninja", new FighterCard(ninjaButton, "Ninja", "P1", CardFrame("Ninja")));
 			if (skeletronButton != null)
-				fighterCards.Add("Skeletron", new FighterCard(skeletronButton, "Skeletron", "P1", 1, 0f, null, null, CardFrame("Skeletron")));
+				fighterCards.Add("Skeletron", new FighterCard(skeletronButton, "Skeletron", "P1", CardFrame("Skeletron")));
 			
 			fighterCardsLoaded = true;
 		}
@@ -335,7 +335,7 @@ namespace FightingLegends
 				var profile = GetFighterProfile(fighterName);
 				if (profile != null)
 				{
-					fighterCard.SetProfileData(1, 0, null, null, CardFrame(fighterName),
+					fighterCard.SetProfileData(1, 0, PowerUp.None, null, PowerUp.None, null, CardFrame(fighterName),
 						profile.IsLocked, profile.CanUnlockOrder, profile.UnlockCoins, profile.UnlockOrder, profile.UnlockDefeats, profile.UnlockDifficulty);
 				}
 			}

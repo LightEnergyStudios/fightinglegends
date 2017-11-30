@@ -48,7 +48,7 @@ namespace FightingLegends
 		public Image Portrait { get; private set; }
 
 
-		public FighterCard(Button button, string name, string colour, int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, AIDifficulty difficulty = AIDifficulty.Medium)
+		public FighterCard(Button button, string name, string colour, int level, float xpPercent, PowerUp staticPowerUp, Sprite staticPowerUpSprite, PowerUp triggerPowerUp, Sprite triggerPowerUpSprite, Sprite frame, AIDifficulty difficulty = AIDifficulty.Medium)
 		{
 			FighterName = name;
 			FighterColour = colour;
@@ -56,14 +56,21 @@ namespace FightingLegends
 			InTeam = false;
 		
 			SetButton(button);
-			SetProfileData(level, xpPercent, staticPowerUp, triggerPowerUp, frame, false, false, 0, 0, 0, AIDifficulty.Simple);	// shows level, power-ups and xp
+			SetProfileData(level, xpPercent, staticPowerUp, staticPowerUpSprite, triggerPowerUp, triggerPowerUpSprite, frame, false, false, 0, 0, 0, AIDifficulty.Easy);	// shows level, power-ups and xp
 		}
 
-		public void SetProfileData(int level, float xpPercent, Sprite staticPowerUp, Sprite triggerPowerUp, Sprite frame, bool isLocked, bool canUnlock, int unlockCoins, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty) //, Image portrait = null)
+		public FighterCard(Button button, string name, string colour, Sprite frame)
+				: this(button, name, colour, 1, 0, PowerUp.None, null, PowerUp.None, null, frame)
+		{
+		}
+
+		public void SetProfileData(int level, float xpPercent, PowerUp staticPowerUp, Sprite staticPowerUpSprite, PowerUp triggerPowerUp, Sprite triggerPowerUpSprite, Sprite frame, bool isLocked, bool canUnlock, int unlockCoins, int unlockOrder, int unlockDefeats, AIDifficulty unlockDifficulty) //, Image portrait = null)
 		{
 			Level = level;
-			StaticPowerUpSprite = staticPowerUp;
-			TriggerPowerUpSprite = triggerPowerUp;
+			StaticPowerUp = staticPowerUp;
+			TriggerPowerUp = triggerPowerUp;
+			StaticPowerUpSprite = staticPowerUpSprite;
+			TriggerPowerUpSprite = triggerPowerUpSprite;
 
 			if (frame != null)
 				FrameSprite = frame;
@@ -87,9 +94,10 @@ namespace FightingLegends
 		}
 
 
+		// used to display challenge results as animated cards, so must persist longer than TeamSelect
 		public FighterCard Duplicate()
 		{
-			return new FighterCard(CardButton, FighterName, FighterColour, Level, XP, StaticPowerUpSprite, TriggerPowerUpSprite, FrameSprite, Difficulty);
+			return new FighterCard(CardButton, FighterName, FighterColour, Level, XP, StaticPowerUp, StaticPowerUpSprite, TriggerPowerUp, TriggerPowerUpSprite, FrameSprite, Difficulty);
 		}
 
 
@@ -104,11 +112,17 @@ namespace FightingLegends
 //				FighterSprite = portrait;
 //		}
 
-		public void SetPowerUps(Sprite staticPowerUp, Sprite triggerPowerUp)
+		public void SetPowerUpSprites(Sprite staticPowerUp, Sprite triggerPowerUp)
 		{
 			StaticPowerUpSprite = staticPowerUp;
 			TriggerPowerUpSprite = triggerPowerUp;
 		}
+
+//		public void SetPowerUps(PowerUp staticPowerUp, PowerUp triggerPowerUp)
+//		{
+//			StaticPowerUp = staticPowerUp;
+//			TriggerPowerUp = triggerPowerUp;
+//		}
 
 //		public void SetLock(bool isLocked)
 //		{
@@ -129,7 +143,7 @@ namespace FightingLegends
 
 		public void SetButtonData()
 		{
-			SetButtonPowerUps();
+			SetButtonPowerUpSprites();
 			SetButtonLevel();
 			SetButtonXPBar();
 			SetButtonFrame();
@@ -152,7 +166,7 @@ namespace FightingLegends
 			}
 		}
 
-		private void SetButtonPowerUps()
+		private void SetButtonPowerUpSprites()
 		{
 			if (CardButton != null)
 			{
@@ -277,6 +291,6 @@ namespace FightingLegends
 
 		public int PrizeCoins = 0;		// winnings
 
-		public string UserId = "";		// "" denotes 'system' challenge
+		public string UserId = "";		// "" denotes 'house' (system) challenge
 	}
 }

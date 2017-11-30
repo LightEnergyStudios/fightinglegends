@@ -364,7 +364,7 @@ namespace FightingLegends
 		public const float ChallengeFee = 0.0f; // 10.0f;
 
 		private List<ChallengeRoundResult> ChallengeRoundResults = new List<ChallengeRoundResult>();
-
+		private AIDifficulty arcadeAIDifficulty;		// current setting saved at start of challenge mode, to restore at end of match
 
 		// scenery
 
@@ -2042,6 +2042,10 @@ namespace FightingLegends
 				if (CombatMode == FightMode.Survival)
 					SetSurvivalAILevel(false);				// AI same as fighter
 
+				// save current arcade mode difficulty, to restore at end of challenge match
+				if (CombatMode == FightMode.Challenge)
+					arcadeAIDifficulty = FightManager.SavedGameStatus.Difficulty;
+
 				Player2.StartWatching();
 			}
 
@@ -2104,7 +2108,7 @@ namespace FightingLegends
 	
 		public IEnumerator NextMatch(Fighter winner) 
 		{
-//			Debug.Log("NextMatch: winner = " + winner.FullName);
+			Debug.Log("NextMatch: winner = " + winner.FullName);
 			// deliberately no fade to black!
 
 			// track to expiry position and reveal winner simultaneously
@@ -2301,7 +2305,7 @@ namespace FightingLegends
 					ResetCompletedLocations();
 					worldTourCompleted = true;					// to prevent returning to world map
 
-//					Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
+					Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
 				}
 //				else
 //				{
@@ -2314,7 +2318,7 @@ namespace FightingLegends
 
 		public bool CompletedEarthLocations
 		{
-			get { return Player1 != null && Player1.ProfileData.SavedData.CompletedLocations.Count == NumberOfEarthLocations; }
+			get { return Player1 != null && Player1.ProfileData.SavedData.CompletedLocations.Count >= NumberOfEarthLocations; }
 		}
 
 		private void ResetCompletedLocations()
@@ -2676,7 +2680,12 @@ namespace FightingLegends
 			nextFighter.TriggerPowerUp = nextFighterCard.TriggerPowerUp;
 			nextFighter.StaticPowerUp = nextFighterCard.StaticPowerUp;
 
+			nextFighter.ProfileData.SavedData.TriggerPowerUpCoolDown = storeManager.GetPowerUpCooldown(nextFighter.TriggerPowerUp);
+
 			nextFighter.ResetHealth();			// set initial health - according to level
+
+			// temporarily set global AI difficulty, otherwise used for arcade mode AI
+			FightManager.SavedGameStatus.Difficulty = nextFighterCard.Difficulty;
 
 			// put next fighter into Player1 / Player2 slot
 			if (player1)
@@ -2737,6 +2746,9 @@ namespace FightingLegends
 					yield return StartCoroutine(nextFighter.Slide(dashInTime, GetRelativeDefaultPosition(player1)));
 
 				nextFighter.ReturnToIdle();
+
+//				nextFighter.ProfileData.SavedData.TriggerPowerUpCoolDown =
+//									storeManager.GetPowerUpCooldown(nextFighter.ProfileData.SavedData.TriggerPowerUp);
 
 //				if (dashInAudio != null)
 //					AudioSource.PlayClipAtPoint(dashInAudio, Vector2.zero, SFXVolume);
@@ -2813,6 +2825,8 @@ namespace FightingLegends
 			Player2.StaticPowerUp = Store.RandomStaticPowerUp;
 			Player2.TriggerPowerUp = Store.RandomTriggerPowerUp;
 
+			Player2.ProfileData.SavedData.TriggerPowerUpCoolDown = storeManager.GetPowerUpCooldown(Player2.TriggerPowerUp);
+
 			Debug.Log("SetAIRandomPowerUps: StaticPowerUp = "  + Player2.StaticPowerUp + ", TriggerPowerUp = " + Player2.TriggerPowerUp);
 		}
 			
@@ -2838,12 +2852,14 @@ namespace FightingLegends
 			// set up queues so first in list is first to fight etc
 			for (int i = 0; i < selectedTeam.Count; i++)
 			{
-				challengeTeam.Enqueue(selectedTeam[ i ].Duplicate());
+//				Debug.Log("SetupChallenge selectedTeam: " + selectedTeam[i].FighterName + ", static " + selectedTeam[i].StaticPowerUp + ", trigger " + selectedTeam[i].TriggerPowerUp);
+				challengeTeam.Enqueue(selectedTeam[i].Duplicate());			// ?? new instance needed for challenge results
 			}
 				
 			for (int i = 0; i < selectedAITeam.Count; i++)
 			{
-				challengeAITeam.Enqueue(selectedAITeam[ i ].Duplicate());
+//				Debug.Log("SetupChallenge selectedAITeam: " + selectedAITeam[i].FighterName + ", static " + selectedAITeam[i].StaticPowerUp + ", trigger " + selectedAITeam[i].TriggerPowerUp);
+				challengeAITeam.Enqueue(selectedAITeam[i].Duplicate());		// ?? new instance needed for challenge results
 			}
 				
 //			Debug.Log("SetupChallenge: challengeTeam " + challengeTeam.Count + ", challengeAITeam " + challengeAITeam.Count);
@@ -2863,8 +2879,12 @@ namespace FightingLegends
 			FighterCard winner = (AIWinner) ? challengeAITeam.Peek() : challengeTeam.Peek();
 			FighterCard loser = (AIWinner) ? challengeTeam.Peek() : challengeAITeam.Peek();
 
-			Debug.Log("RecordFinalChallengeResult: winner = " + winner.FighterName + " loser = " + loser.FighterName );
+//			Debug.Log("RecordFinalChallengeResult: winner = " + winner.FighterName + " loser = " + loser.FighterName );
 			ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, AIWinner));
+
+			// restore arcade mode difficulty at end of challenge match
+			if (CombatMode == FightMode.Challenge)
+				FightManager.SavedGameStatus.Difficulty = arcadeAIDifficulty;
 		}
 
 		#endregion 		// fight control
@@ -3145,7 +3165,7 @@ namespace FightingLegends
 			if (CombatMode == FightMode.Arcade || CombatMode == FightMode.Training)
 				yield break;
 
-			Debug.Log("PowerUpFeedback: " + powerUp);
+//			Debug.Log("PowerUpFeedback: " + powerUp);
 
 			powerUpFrozen = true;
 			PowerUpFeedbackActive = true;
@@ -3487,14 +3507,35 @@ namespace FightingLegends
 			if (CurrentMenuCanvas == MenuType.Combat && CombatMode == FightMode.Training)
 				GestureSparks(feedback);
 		}
-
-
+			
 		public void GestureSparks(FeedbackFXType feedback)
 		{
 			if (gestureListener != null)
 				StartCoroutine(gestureListener.FeedbackFXSparks(feedback));
 		}
 
+
+		public void TriggerRoundFX(int roundNumber, float xOffset = 0.0f, float yOffset = 0.0f, bool silent = false)
+		{
+			if (feedbackUI != null)
+				feedbackUI.TriggerRoundFX(xOffset, yOffset);
+			
+			if (!silent && RoundSound != null)
+				AudioSource.PlayClipAtPoint(RoundSound, Vector3.zero, SFXVolume);
+
+			StartCoroutine(NumberFX(roundNumber, silent));
+		}
+
+		private IEnumerator NumberFX(int roundNumber, bool silent = false)
+		{
+			yield return new WaitForSeconds(newRoundTime);	// looks better if round plays slightly before number
+
+			TriggerNumberFX(roundNumber, roundNumberOffset, 0);
+
+			if (! silent)
+				PlayNumberSound(roundNumber);
+		}
+			
 		public void TriggerNumberFX(int number, float xOffset = 0.0f, float yOffset = 0.0f, string layer = null, bool silent = true)
 		{
 			if (feedbackUI != null)
@@ -3504,11 +3545,6 @@ namespace FightingLegends
 				AudioSource.PlayClipAtPoint(ReadyToFightSound, Vector3.zero, SFXVolume);
 		}
 
-		public void TriggerRoundFX(float xOffset = 0.0f, float yOffset = 0.0f)
-		{
-			if (feedbackUI != null)
-				feedbackUI.TriggerRoundFX(xOffset, yOffset);
-		}
 			
 		public void CancelFeedbackFX()
 		{
@@ -3557,14 +3593,14 @@ namespace FightingLegends
 				}
 				else
 				{
-					TriggerRoundFX();	
-					if (RoundSound != null)
-						AudioSource.PlayClipAtPoint(RoundSound, Vector3.zero, SFXVolume);
-				
-					yield return new WaitForSeconds(newRoundTime);	// looks better if round plays slightly before number
-
-					TriggerNumberFX(RoundNumber, roundNumberOffset, 0);
-					PlayNumberSound(RoundNumber);
+					TriggerRoundFX(RoundNumber);	
+//					if (RoundSound != null)
+//						AudioSource.PlayClipAtPoint(RoundSound, Vector3.zero, SFXVolume);
+//				
+//					yield return new WaitForSeconds(newRoundTime);	// looks better if round plays slightly before number
+//
+//					TriggerNumberFX(RoundNumber, roundNumberOffset, 0);
+//					PlayNumberSound(RoundNumber);
 				}
 
 				yield return new WaitForSeconds(newRoundTime * 2.0f);	// time for round number to play out
@@ -5206,6 +5242,8 @@ namespace FightingLegends
 			profile.TriggerPowerUp = card.TriggerPowerUp;
 			profile.StaticPowerUp = card.StaticPowerUp;
 
+			profile.TriggerPowerUpCoolDown = storeManager.GetPowerUpCooldown(profile.TriggerPowerUp);
+
 			return profile;
 		}
 
@@ -5223,6 +5261,8 @@ namespace FightingLegends
 
 			profile.TriggerPowerUp = savedData.TriggerPowerUp;
 			profile.StaticPowerUp = savedData.StaticPowerUp;
+
+			profile.TriggerPowerUpCoolDown = storeManager.GetPowerUpCooldown(profile.TriggerPowerUp);
 
 			profile.RoundsWon = savedData.RoundsWon;
 			profile.RoundsLost = savedData.RoundsLost;

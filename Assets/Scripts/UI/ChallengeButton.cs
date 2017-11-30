@@ -67,31 +67,12 @@ namespace FightingLegends
 				if (difficulty == null)					// first team member
 					difficulty = teamMember.Difficulty;
 
-				if (teamMember.Difficulty != difficulty)	// not same as first - must be mixed difficulties
+				else if (teamMember.Difficulty != difficulty)	// not same as first - must be mixed difficulties
 					return null;
 			}
 
 			return difficulty;
 		}
-
-//		private AIDifficulty? TeamDifficulty
-//		{
-//			get
-//			{
-//				AIDifficulty? difficulty = null;
-//
-//				foreach (var teamMember in Challenge.AITeam)
-//				{
-//					if (difficulty == null)					// first team member
-//						difficulty = teamMember.Difficulty;
-//
-//					if (teamMember.Difficulty != difficulty)	// not same as first - must be mixed difficulties
-//						return null;
-//				}
-//
-//				return difficulty;
-//			}
-//		}
 
 		private Color GetDifficultyColour(AIDifficulty difficulty, bool isOn)
 		{
