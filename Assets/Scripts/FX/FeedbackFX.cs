@@ -51,7 +51,7 @@ namespace FightingLegends
 			InitAnimation();
 		}
 
-		public void Update()
+		public void FixedUpdate()
 		{
 			if (isMovieClip)
 				NextAnimationFrame();		// if not paused

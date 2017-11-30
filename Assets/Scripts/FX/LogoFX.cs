@@ -74,7 +74,7 @@ namespace FightingLegends
 			TriggerCompanyLogo();
 		}
 
-		public void Update()
+		public void FixedUpdate()
 		{			
 			if (isMovieClip)
 			{

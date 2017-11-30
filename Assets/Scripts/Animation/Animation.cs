@@ -17,6 +17,8 @@ namespace FightingLegends
 		protected uint movieClipFrame;
 //		protected uint lastMovieClipFrame = 0;
 
+		protected uint gameLoopCount = 0;
+
 		public AudioClip firstFrameAudio; 
 
 		protected AnimationState currentAnimation = null;					// start/end frames etc

@@ -939,6 +939,9 @@ namespace FightingLegends
 			if (UnderAI && move == Move.Block)
 				HoldingBlock = true;
 
+//			if (UnderAI)
+//				Debug.Log(FullName + ": CueContinuation: " + move + ", CurrentState = " + CurrentState + " [" + AnimationFrameCount + "]");
+
 			if (! UnderAI && ! IsDojoShadow)
 			{
 				moveCuedOk = true;
@@ -1780,7 +1783,7 @@ namespace FightingLegends
 
 		private void FixedUpdate()
 		{
-			if (PreviewIdle) 			// eg. for fighter select scene preview idle (not driven by FightManager)
+			if (PreviewIdle && FightManager.IsFighterAnimationFrame) 			// eg. for fighter select scene preview idle (not driven by FightManager)
 				NextAnimationFrame();
 		}
 			
@@ -2030,6 +2033,9 @@ namespace FightingLegends
 		public void UpdateAnimation()
 		{
 			if (!InFight)
+				return;
+
+			if (!FightManager.IsFighterAnimationFrame)
 				return;
 
 			FightFrameCount++;
@@ -3179,10 +3185,12 @@ namespace FightingLegends
 				Unfreeze();
 				romanCancelFrozen = false;
 
+//				if (UnderAI)
+//					Debug.Log(FullName + ": END RomanCancel freeze - CurrentMove = " + CurrentMove + " -> " + NextContinuation);
+
 				if (CurrentMove == Move.Roman_Cancel)
 				{
 //					Debug.Log(FullName + ": END RomanCancel freeze - State = " + CurrentState + " -> " + NextContinuation);
-
 					CompleteMove();				// execute the move continuation if present
 
 					if (Opponent != null)
@@ -3373,8 +3381,8 @@ namespace FightingLegends
 					return CanSpecial || CanContinue;
 
 				case Move.Counter:
-					if (report)
-						Debug.Log("CanExecuteMove COUNTER: " + ((HasCounterGauge && (IsIdle || CanContinue)) || CanChain));
+//					if (report && UnderAI)
+//						Debug.Log("CanExecuteMove COUNTER: HasCounterGauge = " + HasCounterGauge + " IsIdle = " + IsIdle + " CanContinue = " + CanContinue + " CanChain = " + CanChain);
 					return (HasCounterGauge && (IsIdle || CanContinue)) || CanChain;	// gauge not required to chain counter
 
 				case Move.Vengeance:
@@ -3483,6 +3491,9 @@ namespace FightingLegends
 					var newState = new FighterChangedData(this);
 					newState.ExecutedMove(move, executedFromState);
 					OnMoveExecuted(newState, continuing);
+
+//					if (UnderAI)
+//						Debug.Log(FullName + " ExecuteMove: " + move);
 				}
 				
 				// don't suspend AI countdowns for roman cancel as move was instantaneous
@@ -3498,10 +3509,16 @@ namespace FightingLegends
 ////				LastMoveUI = log;
 //			}
 
+//			if (UnderAI)
+//				Debug.Log(FullName + ": ExecuteMove " + move + ", continuing = " + continuing);
+
 			// clear continuations + cued move, even if move failed
 			// continuation may be cued immediately on roman cancel for dojo playback at end of freeze, so don't clear it here
-			bool dojoShadowContinuation = IsDojoShadow && move == Move.Roman_Cancel && HasContinuation;		
-			ClearCuedMoves(!dojoShadowContinuation && move != Move.ReleaseBlock); 
+			bool dojoShadowContinuation = IsDojoShadow && move == Move.Roman_Cancel && HasContinuation;	
+			bool AIRomanCancel = UnderAI && move == Move.Roman_Cancel;
+			bool clearContinuations = !dojoShadowContinuation && !AIRomanCancel;		// kludge!
+			ClearCuedMoves(clearContinuations && move != Move.ReleaseBlock); 
+//			ClearCuedMoves(!dojoShadowContinuation && move != Move.ReleaseBlock); 
 
 			return MoveOk;
 		}
@@ -3656,6 +3673,9 @@ namespace FightingLegends
 
 		private void ContinueOrIdle()
 		{	
+//			if (UnderAI)
+//				Debug.Log(FullName + " ContinueOrIdle:" + " HasContinuation = " +  HasContinuation + " CheckGauge = " + CheckGauge(NextContinuation));
+
 			if (HasContinuation && CheckGauge(NextContinuation))	 // final check for sufficient gauge (if required)	
 				ExecuteContinuation();
 			else

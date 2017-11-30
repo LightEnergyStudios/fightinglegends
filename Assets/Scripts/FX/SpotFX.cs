@@ -43,12 +43,11 @@ namespace FightingLegends
 			InitAnimation();
 		}
 			
-		public void Update()
+		public void FixedUpdate()
 		{
 			if (isMovieClip)
 				NextAnimationFrame();		// if not paused
 		}
-		
 
 
 		public void TriggerEffect(SpotFXType effectType) //, Vector3 position)

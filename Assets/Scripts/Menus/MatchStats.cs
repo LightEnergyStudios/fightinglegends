@@ -80,7 +80,7 @@ namespace FightingLegends
 		public AudioClip ChallengeFlipStart;				// fighter card flipped and replaced
 		public AudioClip ChallengeFlipEnd;					// fighter card flipped and replaced
 
-		private float challengeResultsPause = 1.5f;			// pause between results of each round (FighterCards)
+		private float challengeResultsPause = 2.5f;			// pause between results of each round (FighterCards)
 		private float pulseFlipPause = 0.25f;				// pause before flipping loser / pulsing winner after card entry
 		private float pulseFighterTime = 0.25f;
 		private Vector3 pulseFighterScale = new Vector3(3.5f, 3.5f, 1);
@@ -425,20 +425,21 @@ namespace FightingLegends
 			yield return null;
 		}
 
-//		private void EnableChallengeStats(bool enable)
-//		{
-//			WinnerStatsPanel.SetActive(enable);
-//			WinnerNamePanel.gameObject.SetActive(false);
-//			WinnerPhoto.gameObject.SetActive(false);
-//			WinQuote.gameObject.SetActive(false);
-//
-//			LevelUp.gameObject.SetActive(false);
-//			LevelLabel.gameObject.SetActive(false);
-//			CoinsUp.gameObject.SetActive(false);
-//			CoinsLabel.gameObject.SetActive(false);
-//			VsVictoriesLabel.gameObject.SetActive(false);
-//			VsVictoriesUpDown.gameObject.SetActive(false);
-//		}
+		private void EnableChallengeStats(bool enable)
+		{
+			WinnerStatsPanel.SetActive(enable);
+			WinnerName.gameObject.SetActive(false);
+			WinnerNamePanel.gameObject.SetActive(false);
+			WinnerPhoto.gameObject.SetActive(false);
+			WinQuote.gameObject.SetActive(false);
+
+			LevelUp.gameObject.SetActive(false);
+			LevelLabel.gameObject.SetActive(false);
+			CoinsUp.gameObject.SetActive(false);
+			CoinsLabel.gameObject.SetActive(false);
+			VsVictoriesLabel.gameObject.SetActive(false);
+			VsVictoriesUpDown.gameObject.SetActive(false);
+		}
 
 		private IEnumerator ShowChallengeStats()
 		{
@@ -450,6 +451,7 @@ namespace FightingLegends
 
 			ChallengeStats.gameObject.SetActive(false);		// fade in below
 
+			WinnerName.gameObject.SetActive(false);
 			WinnerNamePanel.gameObject.SetActive(false);
 			WinnerPhoto.gameObject.SetActive(false);
 			WinQuote.gameObject.SetActive(false);
@@ -633,7 +635,7 @@ namespace FightingLegends
 		{
 			StartCoroutine(WinQuoteFadeIn());		// not challenge mode
 
-			if (winner.UnderAI && Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
+			if (winner != null && winner.UnderAI && Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
 			{
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
 				StartCoroutine(CycleInsertCoinText());
@@ -647,11 +649,17 @@ namespace FightingLegends
 //				WorldTourCongrats();
 		}
 
-		public IEnumerator ShowChallengeResults(List<ChallengeRoundResult> results)
+		public void ShowChallengeResults(List<ChallengeRoundResult> results)
 		{
 			challengeResults = results;
 			ChallengePanel.SetActive(true);
-//			EnableChallengeStats(false);
+			EnableChallengeStats(false);
+
+			StartCoroutine(AnimateChallengeResults(results));
+		}
+
+		private IEnumerator AnimateChallengeResults(List<ChallengeRoundResult> results)
+		{
 			inputAllowed = false;
 
 			int roundNumber = 0;

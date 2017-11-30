@@ -198,13 +198,16 @@ namespace FightingLegends
 		private const float minSpeedFactor = 0.0625f;			// about 1fps (0.94)
 		private const float maxSpeedFactor = 4.0f;				// 60fps
 
-		private const float DefaultAnimationFPS = 15.0f;		// 1/15 sec = 0.0666667  Time.fixedDeltaTime
+//		private const float DefaultAnimationFPS = 15.0f;		// 1/15 sec = 0.0666667  Time.fixedDeltaTime
+		private const float DefaultAnimationFPS = 60.0f;		// 1/60 sec = 0.0166667  Time.fixedDeltaTime
 //		private const float TurboAnimationFPS = 24.0f;			// 1/15 sec = 0.0416667  Time.fixedDeltaTime
 		public float AnimationFPS { get; private set; }			// effective FPS after animation speed adjustments
 		public float AnimationFrameInterval { get { return (1.0f / AnimationFPS); } }  // time between animation frames
 		public int AnimationFrameCount { get; private set; }	// incremented according to AnimationFPS
 		private const int FxTargetFPS = 60;						// for FX
 
+		private const int FighterAnimationFrameInterval = 4;	// 60 / 4 = 15
+		public static bool IsFighterAnimationFrame { get; private set; }
 //		public int FightFrameCount { get; private set; }	
 
 		private StatusUI statusUI;
@@ -848,11 +851,12 @@ namespace FightingLegends
 			
 		// called every Time.fixedDeltaTime seconds
 		// 0.0666667 = 1/15 sec
+		// 0.0166667 = 1/60 sec
 		private void FixedUpdate()
 		{
 			if (IsNetworkFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
 				return;
-			
+						
 			UpdateAnimation();
 		}
 			
@@ -864,7 +868,11 @@ namespace FightingLegends
 
 //			UpdateAnimationSpeed();		// in case it was adjusted
 			AnimationFrameCount++; 
+			IsFighterAnimationFrame = (AnimationFrameCount % FighterAnimationFrameInterval == 0);
 
+			if (! IsFighterAnimationFrame)
+				return;
+			
 			if (FightFrozen)
 			{
 				if (countdownFreeze)
@@ -4390,7 +4398,7 @@ namespace FightingLegends
 				OnMenuChanged(MenuType.MatchStats, false, false, false, false);
 
 			if (CombatMode == FightMode.Challenge)
-				StartCoroutine(matchStats.ShowChallengeResults(roundResults));	// loop through round results, showing FighterCards
+				matchStats.ShowChallengeResults(roundResults);				// loop through round results, showing FighterCards
 			else
 				matchStats.RevealWinner(winner, completedWorldTour);		// set image and animate entry from side
 			
