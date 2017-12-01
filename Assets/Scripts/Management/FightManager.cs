@@ -204,11 +204,11 @@ namespace FightingLegends
 		public float AnimationFPS { get; private set; }			// effective FPS after animation speed adjustments
 		public float AnimationFrameInterval { get { return (1.0f / AnimationFPS); } }  // time between animation frames
 		public int AnimationFrameCount { get; private set; }	// incremented according to AnimationFPS
-		private const int FxTargetFPS = 60;						// for FX
+//		private const int FxTargetFPS = 60;						// for FX
 
+		private static int GameTickCount = 0;					// incremented every FixedUpdate (60fps) - used to determine fighter frames (15fps)
 		private const int FighterAnimationFrameInterval = 4;	// 60 / 4 = 15
-		public static bool IsFighterAnimationFrame { get; private set; }
-//		public int FightFrameCount { get; private set; }	
+		public static bool IsFighterAnimationFrame { get { return (GameTickCount % FighterAnimationFrameInterval == 0); }}
 
 		private StatusUI statusUI;
 		private bool statusUIVisible = false;					// by default
@@ -773,7 +773,7 @@ namespace FightingLegends
 		private void Start()
 		{
 			QualitySettings.vSyncCount = 0;				// stop syncing FPS with monitor's refresh rate
-			Application.targetFrameRate = FxTargetFPS;	// for FX / feedback etc
+//			Application.targetFrameRate = FxTargetFPS;	// for FX / feedback etc
 
 //			IsMobileDevice = DeviceDetector.IsMobile;
 
@@ -856,7 +856,9 @@ namespace FightingLegends
 		{
 			if (IsNetworkFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
 				return;
-						
+
+			GameTickCount++;
+//			IsFighterAnimationFrame = (GameTickCount % FighterAnimationFrameInterval == 0);
 			UpdateAnimation();
 		}
 			
@@ -868,7 +870,6 @@ namespace FightingLegends
 
 //			UpdateAnimationSpeed();		// in case it was adjusted
 			AnimationFrameCount++; 
-			IsFighterAnimationFrame = (AnimationFrameCount % FighterAnimationFrameInterval == 0);
 
 			if (! IsFighterAnimationFrame)
 				return;
@@ -2916,21 +2917,21 @@ namespace FightingLegends
 				adjustedAnimationSpeed = maxSpeedFactor;
 		}
 
-		private void UpdateAnimationSpeed()			// called on animation frames
-		{
-			if (AnimationSpeed == adjustedAnimationSpeed)
-				return; 		// no change
+//		private void UpdateAnimationSpeed()			// called on animation frames
+//		{
+//			if (AnimationSpeed == adjustedAnimationSpeed)
+//				return; 		// no change
+//			
+//			AnimationFPS *= (adjustedAnimationSpeed / AnimationSpeed);
+//			Time.fixedDeltaTime = AnimationFrameInterval;		// based on FPS
+//			AnimationSpeed = adjustedAnimationSpeed;
+//		}
 			
-			AnimationFPS *= (adjustedAnimationSpeed / AnimationSpeed);
-			Time.fixedDeltaTime = AnimationFrameInterval;		// based on FPS
-			AnimationSpeed = adjustedAnimationSpeed;
-		}
-			
-		private void OnAnimationSpeedChanged(float value)		// 0 - 1
-		{
-			AdjustAnimationSpeed(value / speedAdjustmentFactor);
-			UpdateAnimationSpeed();								// FPS
-		}
+//		private void OnAnimationSpeedChanged(float value)		// 0 - 1
+//		{
+//			AdjustAnimationSpeed(value / speedAdjustmentFactor);
+//			UpdateAnimationSpeed();								// FPS
+//		}
 
 		#endregion		// animation
 
@@ -4398,7 +4399,8 @@ namespace FightingLegends
 				OnMenuChanged(MenuType.MatchStats, false, false, false, false);
 
 			if (CombatMode == FightMode.Challenge)
-				matchStats.ShowChallengeResults(roundResults);				// loop through round results, showing FighterCards
+//				matchStats.ShowChallengeResults(roundResults);				// loop through round results, showing FighterCards
+				matchStats.FirstChallengeResult(roundResults);				// loop through round results, showing FighterCards
 			else
 				matchStats.RevealWinner(winner, completedWorldTour);		// set image and animate entry from side
 			

@@ -2580,7 +2580,7 @@ namespace FightingLegends
 		private void PowerUpFeedback()
 		{
 			fightManager.PowerUpAudio();
-			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("powerUp", false, true), !IsDojoShadow, IsDojoShadow);
+//			fightManager.StateFeedback(IsPlayer1, FightManager.Translate("powerUp", false, true), !IsDojoShadow, IsDojoShadow);
 
 			PowerUpFreeze();
 			if (Opponent != null)

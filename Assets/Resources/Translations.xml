@@ -320,6 +320,8 @@
 		<string name="uploadingChallenge">Uploading challenge</string>
 		<string name="challengeUploaded">CHALLENGE UPLOADED</string>
 		<string name="replaceChallenge">YOUR CURRENT CHALLENGE WILL BE REPLACED</string>
+		<string name="challengeWon">CHALLENGE WON</string>
+		<string name="challengeLost">CHALLENGE LOST</string>
 		
 		<string name="congratulations">CONGRATULATIONS</string>
 		<string name="betterLuckNextTime">BETTER LUCK NEXT TIME</string>

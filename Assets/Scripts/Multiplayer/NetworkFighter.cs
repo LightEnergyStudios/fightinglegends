@@ -128,10 +128,11 @@ namespace FightingLegends
 
 		// called every Time.fixedDeltaTime seconds
 		// 0.0666667 = 1/15 sec
+		// 0.0166667 = 1/60 sec
 		[ServerCallback]
 		private void FixedUpdate()
 		{
-			if (FightManager.IsNetworkFight && isServer)
+			if (FightManager.IsNetworkFight && isServer && FightManager.IsFighterAnimationFrame)		// TODO: this ok?
 				RpcUpdateAnimation();
 		}
 

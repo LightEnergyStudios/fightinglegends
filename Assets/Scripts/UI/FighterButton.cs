@@ -19,7 +19,7 @@ namespace FightingLegends
 			{
 				fighterCard = card;
 
-				gameObject.SetActive(true);
+//				gameObject.SetActive(true);
 				fighterCard.SetButton(GetComponent<Button>());
 				fighterCard.SetButtonData();				// setup button with level, xp, power-ups etc as per FighterCard
 			}

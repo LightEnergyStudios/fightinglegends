@@ -68,12 +68,12 @@ namespace FightingLegends
 		public GameObject ChallengePanel;
 		public ParticleSystem ChallengeFireworks;
 
-		public FighterButton Player1Button;
-		public FighterButton Player2Button;
-		public ParticleSystem Player1Fireworks;
-		public ParticleSystem Player2Fireworks;
-		public ParticleSystem Player1Stars;
-		public ParticleSystem Player2Stars;
+		public FighterButton Player1Button;					// challenge results
+		public FighterButton Player2Button;					// challenge results
+		public ParticleSystem Player1Fireworks;				// challenge results
+		public ParticleSystem Player2Fireworks;				// challenge results
+		public ParticleSystem Player1Stars;					// challenge results
+		public ParticleSystem Player2Stars;					// challenge results
 
 		public AudioClip ChallengeResultStart;				// fighter card entry start
 		public AudioClip ChallengeResultEnd;				// fighter card entry end
@@ -83,9 +83,10 @@ namespace FightingLegends
 		private float challengeResultsPause = 2.5f;			// pause between results of each round (FighterCards)
 		private float pulseFlipPause = 0.25f;				// pause before flipping loser / pulsing winner after card entry
 		private float pulseFighterTime = 0.25f;
-		private Vector3 pulseFighterScale = new Vector3(3.5f, 3.5f, 1);
+		private Vector3 pulseFighterScale = new Vector3(3.0f, 3.0f, 1);
 
 		private bool player1WonChallengeRound = false;
+		private int challengeResultRound = 0;				// challenge result currently being shown
 
 //		public GameObject InsertCoin;	
 		private const float continuePause = 1.0f;			// before countdown starts
@@ -146,6 +147,9 @@ namespace FightingLegends
 			ContinueCoin.gameObject.SetActive(false);
 
 			worldTourCongratsShowing = false;
+
+			Player1Button.gameObject.SetActive(false);
+			Player2Button.gameObject.SetActive(false);
 		}
 
 		private void OnDisable()
@@ -155,6 +159,9 @@ namespace FightingLegends
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
 			ContinueCoin.gameObject.SetActive(false);
+
+			Player1Button.gameObject.SetActive(false);
+			Player2Button.gameObject.SetActive(false);
 		}
 
 		private void Update() 
@@ -425,95 +432,6 @@ namespace FightingLegends
 			yield return null;
 		}
 
-		private void EnableChallengeStats(bool enable)
-		{
-			WinnerStatsPanel.SetActive(enable);
-			WinnerName.gameObject.SetActive(false);
-			WinnerNamePanel.gameObject.SetActive(false);
-			WinnerPhoto.gameObject.SetActive(false);
-			WinQuote.gameObject.SetActive(false);
-
-			LevelUp.gameObject.SetActive(false);
-			LevelLabel.gameObject.SetActive(false);
-			CoinsUp.gameObject.SetActive(false);
-			CoinsLabel.gameObject.SetActive(false);
-			VsVictoriesLabel.gameObject.SetActive(false);
-			VsVictoriesUpDown.gameObject.SetActive(false);
-		}
-
-		private IEnumerator ShowChallengeStats()
-		{
-//			EnableChallengeStats(true);
-
-			WinnerStatsPanel.SetActive(true);
-			KudosLabel.gameObject.SetActive(true);
-			KudosUp.gameObject.SetActive(true);
-
-			ChallengeStats.gameObject.SetActive(false);		// fade in below
-
-			WinnerName.gameObject.SetActive(false);
-			WinnerNamePanel.gameObject.SetActive(false);
-			WinnerPhoto.gameObject.SetActive(false);
-			WinQuote.gameObject.SetActive(false);
-			LevelUp.gameObject.SetActive(false);
-			LevelLabel.gameObject.SetActive(false);
-			CoinsUp.gameObject.SetActive(false);
-			CoinsLabel.gameObject.SetActive(false);
-			VsVictoriesLabel.gameObject.SetActive(false);
-			VsVictoriesUpDown.gameObject.SetActive(false);
-
-			yield return StartCoroutine(ChallengeStatsFadeIn());
-
-			int kudosGained = (int)(FightManager.Kudos - FightManager.SavedGameStatus.FightStartKudos);
-			KudosUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartKudos);
-
-			if (kudosGained > 0)
-			{
-				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
-				{
-					//					yield return new WaitForSeconds(kudosUpPause);
-					KudosUp.text = string.Format("{0:N0}", kudos);
-
-					if (kudos % kudosBlingInterval == 0)
-					{
-						yield return new WaitForSeconds(kudosUpPause);
-						fightManager.BlingAudio();
-					}
-				}
-				KudosUpFireworks.Play();
-			}
-			else
-			{
-				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
-				fightManager.BlingAudio();
-			}
-
-//			ChallengeStats.text = "Challenge stats!!";
-//			ChallengeStats.text = "\"" + winner.ChallengeQuote(loser.FighterName) + "\"";		// virtual
-			StatsAudio();
-				
-			inputAllowed = true;
-			yield return null;
-		}
-
-		private IEnumerator ChallengeStatsFadeIn()
-		{
-			ChallengeStats.color = Color.clear;
-			ChallengeStats.gameObject.SetActive(true);
-
-			float t = 0.0f;
-
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / fadeInTime); 
-
-				ChallengeStats.color = Color.Lerp(Color.clear, Color.white, t);
-				yield return null;
-			}
-
-			yield return null;
-		}
-
 //		private IEnumerator DisplayWinnerStats()
 //		{
 //			yield return new WaitForSeconds(statsInterval);
@@ -631,7 +549,7 @@ namespace FightingLegends
 				AudioSource.PlayClipAtPoint(statsAudio, Vector3.zero, FightManager.SFXVolume);
 		}
 
-		public void EntryComplete()		// animation event on last frame
+		public void EntryComplete()		// animation event on last frame of player1 / player2 winner entry
 		{
 			StartCoroutine(WinQuoteFadeIn());		// not challenge mode
 
@@ -640,120 +558,256 @@ namespace FightingLegends
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
 				StartCoroutine(CycleInsertCoinText());
 			}
-			else if (FightManager.CombatMode == FightMode.Challenge)
-				StartCoroutine(ShowChallengeStats());
 			else
 				StartCoroutine(ShowWinnerStats());
-
-//			if (worldTourComplete)
-//				WorldTourCongrats();
 		}
 
-		public void ShowChallengeResults(List<ChallengeRoundResult> results)
+		#region challenge results
+
+		private void EnableChallengeResults()
+		{
+			WinnerStatsPanel.SetActive(false);
+
+			Player1Button.gameObject.SetActive(true);
+			Player2Button.gameObject.SetActive(true);
+
+			WinnerName.gameObject.SetActive(false);
+			WinnerNamePanel.gameObject.SetActive(true);
+
+			KudosUp.gameObject.SetActive(false);
+			KudosLabel.gameObject.SetActive(false);
+			CoinsUp.gameObject.SetActive(false);
+			CoinsLabel.gameObject.SetActive(false);
+
+			WinnerPhoto.gameObject.SetActive(false);
+			WinQuote.gameObject.SetActive(false);
+
+			LevelUp.gameObject.SetActive(false);
+			LevelLabel.gameObject.SetActive(false);
+
+			VsVictoriesLabel.gameObject.SetActive(false);
+			VsVictoriesUpDown.gameObject.SetActive(false);
+		}
+
+		public void FirstChallengeResult(List<ChallengeRoundResult> results)
 		{
 			challengeResults = results;
-			ChallengePanel.SetActive(true);
-			EnableChallengeStats(false);
-
-			StartCoroutine(AnimateChallengeResults(results));
-		}
-
-		private IEnumerator AnimateChallengeResults(List<ChallengeRoundResult> results)
-		{
+			challengeResultRound = 0;
 			inputAllowed = false;
 
-			int roundNumber = 0;
-			bool prevRoundAIWinner = false;
+			EnableChallengeResults();
 
-			// animate results of each round of challenge
-			foreach (var result in challengeResults)	
-			{
-				var winnerSprite = result.Winner.Portrait.sprite;
-				var loserSprite = result.Loser.Portrait.sprite;
-
-				player1WonChallengeRound = !result.AIWinner; 	// needed to trigger flip animation
-				roundNumber++;
-//				fightManager.TriggerRoundFX(roundNumber, 0, 200.0f, true);
-//				yield return new WaitForSeconds(0.5f);			// allow time for round number
-		
-//				Debug.Log("ShowChallengeResults: player1WonChallengeRound = " + player1WonChallengeRound + ", prevRoundAIWinner = " + prevRoundAIWinner + ", roundNumber = " + roundNumber);
-
-				if (ChallengeResultStart != null)
-					AudioSource.PlayClipAtPoint(ChallengeResultStart, Vector3.zero, FightManager.SFXVolume);
-
-				if (! player1WonChallengeRound)		// P2 won round
-				{
-					if (roundNumber == 1)
-					{
-						Player1Button.SetFighterCard(loserSprite, result.Loser);
-						Player2Button.SetFighterCard(winnerSprite, result.Winner);
-						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter together
-					}
-					else 		// replace (flipped) loser with next contender
-					{
-						if (prevRoundAIWinner)		// P1 lost last round, this round won by P2, so replace P1 with loser
-						{
-							Player1Button.SetFighterCard(loserSprite, result.Loser);
-							resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from right
-						}
-						else 						// P2 lost last round, this round won by P2, so replace P2 with winner
-						{
-							Player2Button.SetFighterCard(winnerSprite, result.Winner);
-							resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from left
-						}
-					}
-				}
-				else 		// P1 won round
-				{
-					if (roundNumber == 1)
-					{
-						Player1Button.SetFighterCard(winnerSprite, result.Winner);
-						Player2Button.SetFighterCard(loserSprite, result.Loser);
-						resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter together
-					}
-					else		// replace (flipped) loser with next contender
-					{
-						if (prevRoundAIWinner)		// P1 lost last round, this round won by P1, so replace P1 with winner
-						{
-							Player1Button.SetFighterCard(winnerSprite, result.Winner);
-							resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from left
-						}
-						else 						// P2 lost last round, this round won by P1, so replace P2 with loser
-						{
-							Player2Button.SetFighterCard(loserSprite, result.Loser);
-							resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from right
-						}
-					}
-				}
-
-				prevRoundAIWinner = ! player1WonChallengeRound;
-
-				yield return new WaitForSeconds(challengeResultsPause);			// allow time for loser to be flipped etc
-			}
-
-//			ChallengeFireworks.Play();
-
-			ChallengeStats.text = "CHALLENGE OVER!"; 			// TODO: appropriate text!
-
-			// animate stats panel
-			// P1 and P2 are reversed... (not sure why)
-			if (player1WonChallengeRound)		// last round of challenge
-				resultsAnimator.SetTrigger("Player2Winner");		// animate stats panel entry from left
-			else
-				resultsAnimator.SetTrigger("Player1Winner");		// animate stats panel entry from right
-			
-			inputAllowed = true;
+			NextChallengeResult();		// ie. first
 		}
 
+		private bool NextChallengeResult()
+		{
+			if (challengeResults == null || challengeResults.Count == 0)
+				return false;
+
+			if (challengeResultRound >= challengeResults.Count)
+				return false;
+			
+			ChallengeRoundResult result = challengeResults[ challengeResultRound ];
+			var winnerSprite = result.Winner.Portrait.sprite;
+			var loserSprite = result.Loser.Portrait.sprite;
+
+			bool prevRoundAIWinner = ! player1WonChallengeRound;
+			player1WonChallengeRound = !result.AIWinner; 	// needed to trigger flip animation
+
+			if (challengeResultRound == 0)			// first result
+			{
+				if (player1WonChallengeRound)
+				{
+					Player1Button.SetFighterCard(winnerSprite, result.Winner);
+					Player2Button.SetFighterCard(loserSprite, result.Loser);
+				}
+				else
+				{
+					Player1Button.SetFighterCard(loserSprite, result.Loser);
+					Player2Button.SetFighterCard(winnerSprite, result.Winner);
+				}
+
+				resultsAnimator.SetTrigger("ChallengeP1P2");				// both enter together
+			}
+			else
+			{
+				if (player1WonChallengeRound)
+				{
+					if (prevRoundAIWinner)		// P1 lost last round, this round won by P1, so replace P1 with winner
+					{
+						Player1Button.SetFighterCard(winnerSprite, result.Winner);
+						resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from left
+					}
+					else 						// P2 lost last round, this round won by P1, so replace P2 with loser
+					{
+						Player2Button.SetFighterCard(loserSprite, result.Loser);
+						resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from right
+					}
+				}
+				else 
+				{
+					if (prevRoundAIWinner)		// P1 lost last round, this round won by P2, so replace P1 with loser
+					{
+						Player1Button.SetFighterCard(loserSprite, result.Loser);
+						resultsAnimator.SetTrigger("ChallengeP1");					// animate fighter card entry from right
+					}
+					else 						// P2 lost last round, this round won by P2, so replace P2 with winner
+					{
+						Player2Button.SetFighterCard(winnerSprite, result.Winner);
+						resultsAnimator.SetTrigger("ChallengeP2");					// animate fighter card entry from left
+					}
+				}
+			}
+			return true;
+		}
+
+		// animation event - last frame of result entry
 		public void ChallengeResultEntry()
 		{
 			if (ChallengeResultEnd != null)
 				AudioSource.PlayClipAtPoint(ChallengeResultEnd, Vector3.zero, FightManager.SFXVolume);
 
-//			ChallengeFireworks.Play();
+			//			ChallengeFireworks.Play();
 
 			StartCoroutine(PulseWinner());
 			StartCoroutine(FlipLoser());
+		}
+
+
+		private void ChallengeResultStats()
+		{
+			EnableChallengeStats();
+
+			// animate stats panel
+			// P1 and P2 are reversed... (not sure why)
+			if (player1WonChallengeRound)		// last round of challenge
+			{
+				resultsAnimator.SetTrigger("Player1Stats");		// animate stats panel entry from left
+				WinnerName.text = FightManager.Translate("challengeWon", false, true); 
+				ChallengeStats.text = FightManager.Translate("congratulations", false, true); 
+			}
+			else
+			{
+				resultsAnimator.SetTrigger("Player2Stats");		// animate stats panel entry from right
+				WinnerName.text = FightManager.Translate("challengeLost", false, true); 
+				ChallengeStats.text = FightManager.Translate("betterLuckNextTime", false, true); 
+			}
+
+			inputAllowed = true;
+		}
+			
+		// animation event - last frame of challenge stats entry
+		public void ChallengeStatsEntry()		// animation event on last frame of player1 / player2 challenge stats entry
+		{
+			if (FightManager.CombatMode == FightMode.Challenge)
+				StartCoroutine(UpdateChallengeStats());			// kudos, coins, etc.
+		}
+
+		private void EnableChallengeStats() //bool enable)
+		{
+			WinnerStatsPanel.SetActive(true);
+			ChallengeStats.gameObject.SetActive(true);
+
+//			Player1Button.gameObject.SetActive(player1WonChallengeRound);
+//			Player2Button.gameObject.SetActive(! player1WonChallengeRound);
+
+			WinnerName.gameObject.SetActive(true);
+			WinnerNamePanel.gameObject.SetActive(true);
+
+			KudosUp.gameObject.SetActive(true);
+			KudosLabel.gameObject.SetActive(true);
+			CoinsUp.gameObject.SetActive(player1WonChallengeRound);
+			CoinsLabel.gameObject.SetActive(player1WonChallengeRound);
+
+			WinnerPhoto.gameObject.SetActive(false);
+			WinQuote.gameObject.SetActive(false);
+
+			LevelUp.gameObject.SetActive(false);
+			LevelLabel.gameObject.SetActive(false);
+
+			VsVictoriesLabel.gameObject.SetActive(false);
+			VsVictoriesUpDown.gameObject.SetActive(false);
+		}
+
+		private IEnumerator UpdateChallengeStats()
+		{
+			EnableChallengeStats();
+
+			yield return StartCoroutine(ChallengeStatsFadeIn());
+
+			int kudosGained = (int)(FightManager.Kudos - FightManager.SavedGameStatus.FightStartKudos);
+			KudosUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartKudos);
+
+			int coinsGained = FightManager.Coins - FightManager.SavedGameStatus.FightStartCoins;
+
+			if (kudosGained > 0)
+			{
+				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
+				{
+					//					yield return new WaitForSeconds(kudosUpPause);
+					KudosUp.text = string.Format("{0:N0}", kudos);
+
+					if (kudos % kudosBlingInterval == 0)
+					{
+						yield return new WaitForSeconds(kudosUpPause);
+						fightManager.BlingAudio();
+					}
+				}
+				KudosUpFireworks.Play();
+			}
+			else
+			{
+				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
+				fightManager.BlingAudio();
+			}
+
+			if (player1WonChallengeRound)
+			{
+				yield return new WaitForSeconds(coinsUpPause);
+				CoinsLabel.gameObject.SetActive(true);
+				CoinsUp.gameObject.SetActive(true);
+				CoinsUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartCoins);
+
+				if (coinsGained > 0)
+				{
+					for (int coins = FightManager.SavedGameStatus.FightStartCoins + 1; coins <= FightManager.Coins; coins++)
+					{
+						yield return new WaitForSeconds(coinsUpPause);
+						CoinsUp.text = string.Format("{0:N0}", coins);
+						fightManager.CoinAudio();
+					}
+					CoinsUpFireworks.Play();
+				}
+				else
+				{
+					CoinsUp.text = string.Format("{0:N0}", FightManager.Coins);
+					fightManager.CoinAudio();
+				}
+			}
+
+			StatsAudio();
+
+			inputAllowed = true;
+			yield return null;
+		}
+
+		private IEnumerator ChallengeStatsFadeIn()
+		{
+			ChallengeStats.color = Color.clear;
+			ChallengeStats.gameObject.SetActive(true);
+
+			float t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / fadeInTime); 
+
+				ChallengeStats.color = Color.Lerp(Color.clear, Color.white, t);
+				yield return null;
+			}
+
+			yield return null;
 		}
 
 		private IEnumerator FlipLoser()
@@ -761,9 +815,15 @@ namespace FightingLegends
 			yield return new WaitForSeconds(pulseFlipPause);
 
 			if (player1WonChallengeRound)
+			{
 				resultsAnimator.SetTrigger("FlipPlayer2");
+				Player2Fireworks.Play();
+			}
 			else
+			{
 				resultsAnimator.SetTrigger("FlipPlayer1");
+				Player1Fireworks.Play();
+			}
 
 			if (ChallengeFlipStart != null)
 				AudioSource.PlayClipAtPoint(ChallengeFlipStart, Vector3.zero, FightManager.SFXVolume);
@@ -771,37 +831,28 @@ namespace FightingLegends
 			
 		public void Player1Flipped()
 		{
-			Player1Fireworks.Play();
+//			Player1Fireworks.Play();
 
 			if (ChallengeFlipEnd != null)
 				AudioSource.PlayClipAtPoint(ChallengeFlipEnd, Vector3.zero, FightManager.SFXVolume);
-			
-			// reset rotation and position
-//			Player1Button.gameObject.SetActive(false);
-//			Player1Button.transform.localRotation = Quaternion.Euler(0, 0, 0);
-//
-//			challengeLoserFlipped = true;
-//			Player1Button.transform.localPosition = P1InitPosition;
-//			Player1Button.gameObject.SetActive(true);
+
+			challengeResultRound++;
+			if (! NextChallengeResult())		// no more results
+				ChallengeResultStats();
 		}
 
 		public void Player2Flipped()
 		{
-			Player2Fireworks.Play();
+//			Player2Fireworks.Play();
 
 			if (ChallengeFlipEnd != null)
 				AudioSource.PlayClipAtPoint(ChallengeFlipEnd, Vector3.zero, FightManager.SFXVolume);
-			
-			// reset rotation and position
-//			Player2Button.gameObject.SetActive(false);
-//			Player2Button.transform.localRotation = Quaternion.Euler(0, 0, 0);
-//
-//			challengeLoserFlipped = true;
-//			Player2Button.transform.localPosition = P2InitPosition;
-//			Player2Button.gameObject.SetActive(true);
+
+			challengeResultRound++;
+			if (! NextChallengeResult())		// no more results
+				ChallengeResultStats();
 		}
-
-
+			
 		private IEnumerator PulseWinner()
 		{
 			yield return new WaitForSeconds(pulseFlipPause);
@@ -834,6 +885,8 @@ namespace FightingLegends
 			stars.Stop();
 			yield return null;
 		}
+
+		#endregion  // challenge results
 
 
 		private void WorldTourCongrats()
