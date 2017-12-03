@@ -16,6 +16,7 @@ namespace FightingLegends
 		public Text WinQuote;
 		public Text Stats;						// damage, hits, etc... (not currently used)
 		public Text ChallengeStats;		
+		public Text ChallengeScore;		
 
 		public GameObject WinnerStatsPanel;
 		public Text LevelLabel;
@@ -83,7 +84,7 @@ namespace FightingLegends
 		private float challengeResultsPause = 2.5f;			// pause between results of each round (FighterCards)
 		private float pulseFlipPause = 0.25f;				// pause before flipping loser / pulsing winner after card entry
 		private float pulseFighterTime = 0.25f;
-		private Vector3 pulseFighterScale = new Vector3(3.0f, 3.0f, 1);
+		private Vector3 pulseFighterScale = new Vector3(2.5f, 2.5f, 1);
 
 		private bool player1WonChallengeRound = false;
 		private int challengeResultRound = 0;				// challenge result currently being shown
@@ -162,6 +163,9 @@ namespace FightingLegends
 
 			Player1Button.gameObject.SetActive(false);
 			Player2Button.gameObject.SetActive(false);
+
+			Player1Stars.Stop();
+			Player2Stars.Stop();
 		}
 
 		private void Update() 
@@ -340,49 +344,53 @@ namespace FightingLegends
 			KudosUp.gameObject.SetActive(true);
 			KudosUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartKudos);
 
-			if (kudosGained > 0)
-			{
-				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
-				{
-//					yield return new WaitForSeconds(kudosUpPause);
-					KudosUp.text = string.Format("{0:N0}", kudos);
+			yield return StartCoroutine(IncreaseKudos(kudosGained));
 
-					if (kudos % kudosBlingInterval == 0)
-					{
-						yield return new WaitForSeconds(kudosUpPause);
-						fightManager.BlingAudio();
-					}
-				}
-				KudosUpFireworks.Play();
-			}
-			else
-			{
-				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
-				fightManager.BlingAudio();
-			}
+//			if (kudosGained > 0)
+//			{
+//				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
+//				{
+////					yield return new WaitForSeconds(kudosUpPause);
+//					KudosUp.text = string.Format("{0:N0}", kudos);
+//
+//					if (kudos % kudosBlingInterval == 0)
+//					{
+//						yield return new WaitForSeconds(kudosUpPause);
+//						fightManager.BlingAudio();
+//					}
+//				}
+//				KudosUpFireworks.Play();
+//			}
+//			else
+//			{
+//				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
+//				fightManager.BlingAudio();
+//			}
 
-			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
+			if (FightManager.CombatMode == FightMode.Survival) // || FightManager.CombatMode == FightMode.Challenge)
 			{
 				yield return new WaitForSeconds(levelUpPause);
 				LevelLabel.gameObject.SetActive(true);
 				LevelUp.gameObject.SetActive(true);
 				LevelUp.text = player.ProfileData.SavedData.FightStartLevel.ToString();
 
-				if (levelGained > 0)
-				{
-					for (int level = player.ProfileData.SavedData.FightStartLevel + 1; level <= player.Level; level++)
-					{
-						yield return new WaitForSeconds(levelUpPause);
-						LevelUp.text = level.ToString();
-						fightManager.BlingAudio();
-					}
-					LevelUpFireworks.Play();
-				}
-				else
-				{
-					LevelUp.text = player.Level.ToString();
-					fightManager.BlingAudio();
-				}
+				yield return StartCoroutine(IncreaseLevel(player, levelGained));
+
+//				if (levelGained > 0)
+//				{
+//					for (int level = player.ProfileData.SavedData.FightStartLevel + 1; level <= player.Level; level++)
+//					{
+//						yield return new WaitForSeconds(levelUpPause);
+//						LevelUp.text = level.ToString();
+//						fightManager.BlingAudio();
+//					}
+//					LevelUpFireworks.Play();
+//				}
+//				else
+//				{
+//					LevelUp.text = player.Level.ToString();
+//					fightManager.BlingAudio();
+//				}
 
 				if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
 				{
@@ -391,21 +399,23 @@ namespace FightingLegends
 					CoinsUp.gameObject.SetActive(true);
 					CoinsUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartCoins);
 
-					if (coinsGained > 0)
-					{
-						for (int coins = FightManager.SavedGameStatus.FightStartCoins + 1; coins <= FightManager.Coins; coins++)
-						{
-							yield return new WaitForSeconds(coinsUpPause);
-							CoinsUp.text = string.Format("{0:N0}", coins);
-							fightManager.CoinAudio();
-						}
-						CoinsUpFireworks.Play();
-					}
-					else
-					{
-						CoinsUp.text = string.Format("{0:N0}", FightManager.Coins);
-						fightManager.CoinAudio();
-					}
+					yield return StartCoroutine(IncreaseCoins(coinsGained));
+
+//					if (coinsGained > 0)
+//					{
+//						for (int coins = FightManager.SavedGameStatus.FightStartCoins + 1; coins <= FightManager.Coins; coins++)
+//						{
+//							yield return new WaitForSeconds(coinsUpPause);
+//							CoinsUp.text = string.Format("{0:N0}", coins);
+//							fightManager.CoinAudio();
+//						}
+//						CoinsUpFireworks.Play();
+//					}
+//					else
+//					{
+//						CoinsUp.text = string.Format("{0:N0}", FightManager.Coins);
+//						fightManager.CoinAudio();
+//					}
 				}
 			}
 			else if (FightManager.IsNetworkFight)
@@ -430,6 +440,72 @@ namespace FightingLegends
 
 			inputAllowed = true;
 			yield return null;
+		}
+
+		private IEnumerator IncreaseKudos(int kudosGained)
+		{
+			if (kudosGained > 0)
+			{
+				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
+				{
+					//					yield return new WaitForSeconds(kudosUpPause);
+					KudosUp.text = string.Format("{0:N0}", kudos);
+
+					if (kudos % kudosBlingInterval == 0)
+					{
+						yield return new WaitForSeconds(kudosUpPause);
+						fightManager.BlingAudio();
+					}
+				}
+				KudosUpFireworks.Play();
+			}
+			else
+			{
+				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
+				fightManager.BlingAudio();
+			}
+
+			yield return null;
+		}
+
+		private IEnumerator IncreaseCoins(int coinsGained)
+		{
+			if (coinsGained > 0)
+			{
+				for (int coins = FightManager.SavedGameStatus.FightStartCoins + 1; coins <= FightManager.Coins; coins++)
+				{
+					yield return new WaitForSeconds(coinsUpPause);
+					CoinsUp.text = string.Format("{0:N0}", coins);
+					fightManager.CoinAudio();
+				}
+				CoinsUpFireworks.Play();
+			}
+			else
+			{
+				CoinsUp.text = string.Format("{0:N0}", FightManager.Coins);
+				fightManager.CoinAudio();
+			}
+
+			yield return null;
+		}
+
+		private IEnumerator IncreaseLevel(Fighter player, int levelGained)
+		{
+			if (levelGained > 0)
+			{
+				for (int level = player.ProfileData.SavedData.FightStartLevel + 1; level <= player.Level; level++)
+				{
+					yield return new WaitForSeconds(levelUpPause);
+					LevelUp.text = level.ToString();
+					fightManager.BlingAudio();
+				}
+				LevelUpFireworks.Play();
+			}
+			else
+			{
+				LevelUp.text = player.Level.ToString();
+				fightManager.BlingAudio();
+			}
 		}
 
 //		private IEnumerator DisplayWinnerStats()
@@ -679,6 +755,12 @@ namespace FightingLegends
 		{
 			EnableChallengeStats();
 
+			int p1Score = 0;
+			int p2Score = 0;
+
+			GetChallengeScore(out p1Score, out p2Score);
+			ChallengeScore.text = p1Score + " - " + p2Score; 
+
 			// animate stats panel
 			// P1 and P2 are reversed... (not sure why)
 			if (player1WonChallengeRound)		// last round of challenge
@@ -694,23 +776,26 @@ namespace FightingLegends
 				ChallengeStats.text = FightManager.Translate("betterLuckNextTime", false, true); 
 			}
 
-			inputAllowed = true;
+//			inputAllowed = true;
 		}
 			
 		// animation event - last frame of challenge stats entry
-		public void ChallengeStatsEntry()		// animation event on last frame of player1 / player2 challenge stats entry
+		public void ChallengeStatsEntry()
 		{
-			if (FightManager.CombatMode == FightMode.Challenge)
-				StartCoroutine(UpdateChallengeStats());			// kudos, coins, etc.
+			StartCoroutine(UpdateChallengeStats());			// kudos, coins, etc.
+
+			if (ChallengeResultEnd != null)
+				AudioSource.PlayClipAtPoint(ChallengeResultEnd, Vector3.zero, FightManager.SFXVolume);
 		}
 
-		private void EnableChallengeStats() //bool enable)
+		private void EnableChallengeStats()
 		{
 			WinnerStatsPanel.SetActive(true);
-			ChallengeStats.gameObject.SetActive(true);
+			ChallengeStats.gameObject.SetActive(false);			// fade in below
+			ChallengeScore.gameObject.SetActive(true);
 
-//			Player1Button.gameObject.SetActive(player1WonChallengeRound);
-//			Player2Button.gameObject.SetActive(! player1WonChallengeRound);
+			Player1Button.gameObject.SetActive(player1WonChallengeRound);
+			Player2Button.gameObject.SetActive(! player1WonChallengeRound);
 
 			WinnerName.gameObject.SetActive(true);
 			WinnerNamePanel.gameObject.SetActive(true);
@@ -728,62 +813,47 @@ namespace FightingLegends
 
 			VsVictoriesLabel.gameObject.SetActive(false);
 			VsVictoriesUpDown.gameObject.SetActive(false);
+
+			var stars = player1WonChallengeRound ? Player1Stars : Player2Stars;
+			stars.Play();
+		}
+
+		private void GetChallengeScore(out int player1, out int player2)
+		{
+			player1 = 0;
+			player2 = 0;
+
+			if (challengeResults == null)
+				return;
+
+			foreach (var result in challengeResults)
+			{
+				if (result.AIWinner)
+					player2++;
+				else
+					player1++;
+			}
 		}
 
 		private IEnumerator UpdateChallengeStats()
 		{
-			EnableChallengeStats();
-
 			yield return StartCoroutine(ChallengeStatsFadeIn());
 
 			int kudosGained = (int)(FightManager.Kudos - FightManager.SavedGameStatus.FightStartKudos);
 			KudosUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartKudos);
 
-			int coinsGained = FightManager.Coins - FightManager.SavedGameStatus.FightStartCoins;
-
-			if (kudosGained > 0)
-			{
-				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
-				{
-					//					yield return new WaitForSeconds(kudosUpPause);
-					KudosUp.text = string.Format("{0:N0}", kudos);
-
-					if (kudos % kudosBlingInterval == 0)
-					{
-						yield return new WaitForSeconds(kudosUpPause);
-						fightManager.BlingAudio();
-					}
-				}
-				KudosUpFireworks.Play();
-			}
-			else
-			{
-				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
-				fightManager.BlingAudio();
-			}
+			yield return StartCoroutine(IncreaseKudos(kudosGained));
 
 			if (player1WonChallengeRound)
 			{
+				int coinsGained = FightManager.Coins - FightManager.SavedGameStatus.FightStartCoins;
+			
 				yield return new WaitForSeconds(coinsUpPause);
 				CoinsLabel.gameObject.SetActive(true);
 				CoinsUp.gameObject.SetActive(true);
 				CoinsUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartCoins);
 
-				if (coinsGained > 0)
-				{
-					for (int coins = FightManager.SavedGameStatus.FightStartCoins + 1; coins <= FightManager.Coins; coins++)
-					{
-						yield return new WaitForSeconds(coinsUpPause);
-						CoinsUp.text = string.Format("{0:N0}", coins);
-						fightManager.CoinAudio();
-					}
-					CoinsUpFireworks.Play();
-				}
-				else
-				{
-					CoinsUp.text = string.Format("{0:N0}", FightManager.Coins);
-					fightManager.CoinAudio();
-				}
+				yield return StartCoroutine(IncreaseCoins(coinsGained));
 			}
 
 			StatsAudio();
@@ -796,6 +866,8 @@ namespace FightingLegends
 		{
 			ChallengeStats.color = Color.clear;
 			ChallengeStats.gameObject.SetActive(true);
+//			ChallengeScore.color = Color.clear;
+//			ChallengeScore.gameObject.SetActive(true);
 
 			float t = 0.0f;
 
@@ -804,6 +876,7 @@ namespace FightingLegends
 				t += Time.deltaTime * (Time.timeScale / fadeInTime); 
 
 				ChallengeStats.color = Color.Lerp(Color.clear, Color.white, t);
+//				ChallengeScore.color = Color.Lerp(Color.clear, Color.white, t);
 				yield return null;
 			}
 
@@ -872,6 +945,7 @@ namespace FightingLegends
 				yield return null;
 			}
 				
+			yield return new WaitForSeconds(pulseFighterTime / 2.0f);
 			t = 0.0f;
 
 			while (t < 1.0f)

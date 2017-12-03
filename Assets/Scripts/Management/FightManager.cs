@@ -2694,7 +2694,8 @@ namespace FightingLegends
 			nextFighter.ResetHealth();			// set initial health - according to level
 
 			// temporarily set global AI difficulty, otherwise used for arcade mode AI
-			FightManager.SavedGameStatus.Difficulty = nextFighterCard.Difficulty;
+			if (nextFighter.UnderAI)
+				FightManager.SavedGameStatus.Difficulty = nextFighterCard.Difficulty;
 
 			// put next fighter into Player1 / Player2 slot
 			if (player1)

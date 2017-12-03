@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace FightingLegends
 {
-	public class AIController : MonoBehaviour
+	 public class AIController : MonoBehaviour
     {
 		public AIPersonality Personality { get; protected set; }	// data initialised by InitPersonality
 
@@ -59,6 +59,7 @@ namespace FightingLegends
 		private AIPropensity lastActivated = null;
 
 		public bool StrategyCued = false;		// to prevent >1 (event) triggered per beat - reset at start of each beat (by fighter)
+		private bool choosingStrategy = false;
 
 		public int IterationRepeat = 10;			// number of times to activate each iterated strategy
 		private int iterationCount = 0;				// number of times each iterated strategy activated
@@ -475,6 +476,9 @@ namespace FightingLegends
 		// return value of null represents 'do nothing'
 		private AIPropensity RandomSelectPropensity(IEnumerable<AIPropensity> propensities, bool report = false, bool doSomething = false)
 		{
+			if (propensities == null || propensities.Count() == 0)
+				return null;
+			
 			// any propensity with a 'certainty' probability is automatically chosen (ie. no chance of do nothing)
 			var certainPropensity = CheckForCertainPropensity(propensities, report);
 			if (certainPropensity != null)
@@ -667,6 +671,11 @@ namespace FightingLegends
 
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			var propensities = CurrentAttitudePropensities().Where
 					(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
@@ -679,7 +688,10 @@ namespace FightingLegends
 //				Debug.Log("ReactiveStateStrategy: state start = " + triggerState.State);
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 			
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
@@ -704,6 +716,8 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 
@@ -711,6 +725,11 @@ namespace FightingLegends
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 
 			var propensities = CurrentAttitudePropensities().Where
 				(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
@@ -720,7 +739,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 			
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
@@ -745,6 +767,8 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 			
 
@@ -752,6 +776,11 @@ namespace FightingLegends
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			var propensities = CurrentAttitudePropensities().Where
 				(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
@@ -760,7 +789,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
@@ -785,12 +817,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseLastHitStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			var propensities = CurrentAttitudePropensities().Where
 				(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
@@ -799,7 +838,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
@@ -824,12 +866,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseHitStunStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			var propensities = CurrentAttitudePropensities().Where
 				(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
@@ -838,7 +887,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
@@ -863,12 +915,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseRomanCancelStrategy(FighterChangedData triggerState, bool isReactive, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+			
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 
 			var triggerCondition = (isReactive ? Condition.RomanCancelReactive : Condition.RomanCancelProactive);
 //			Debug.Log(fighter.FullName + ": ChooseRomanCancelStrategy - State = " + triggerState.NewState + ", isReactive = " + isReactive + ", triggerCondition = " + triggerCondition.ToString() + ", CanContinue = " + fighter.CanContinue);
@@ -881,8 +940,8 @@ namespace FightingLegends
 
 			if (propensities.Count() == 0)
 			{
-				Debug.Log(fighter.FullName + "       >> NO choices!!  (" + CurrentAttitudePropensities().Count() + ")");
-				return;
+				choosingStrategy = false;
+				return;			// nothing triggered
 			}
 
 //			Debug.Log(fighter.FullName + "       >> " + propensities.Count() + " choices");
@@ -912,12 +971,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseHealthStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			// trigger only applies when health falls below the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
@@ -928,7 +994,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 			
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
@@ -953,6 +1022,8 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 
@@ -960,6 +1031,11 @@ namespace FightingLegends
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 //			Debug.Log(fighter.FullName + ": ChooseGaugeStrategy - old = " + triggerState.OldGauge + ", new = " + triggerState.NewGauge + ", CanContinue = " + fighter.CanContinue + ", State = " + fighter.CurrentState);
 			// trigger only applies when gauge is equal to the strategy condition
@@ -971,7 +1047,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 			
 			// diagnostics
 			TriggerUI = opponentTrigger ? "[P1] " : "[P2] ";
@@ -996,6 +1075,8 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 
@@ -1003,6 +1084,11 @@ namespace FightingLegends
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			// trigger only applies when priority is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
@@ -1014,8 +1100,8 @@ namespace FightingLegends
 
 			if (propensities.Count() == 0)
 			{
-//				Debug.Log(fighter.FullName + ": ChoosePriorityStrategy: no propensities!");
-				return;
+				choosingStrategy = false;
+				return;			// nothing triggered
 			}
 			
 			// diagnostics
@@ -1041,12 +1127,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseIdleFrameStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			// trigger applies when idle frame is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
@@ -1057,7 +1150,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 			
 			// diagnostics
 			TriggerUI = "Idle frame: ";
@@ -1081,12 +1177,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseBlockIdleFrameStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			// trigger applies when opponents block idle frame is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
@@ -1097,7 +1200,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = "Block idle frame: ";
@@ -1121,12 +1227,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseCanContinueFrameStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			// trigger applies when can continue frame is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
@@ -1137,7 +1250,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
-				return;
+			{
+				choosingStrategy = false;
+				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = "CanContinue frame: ";
@@ -1161,12 +1277,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		private void ChooseVengeanceFrameStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			// trigger applies when vengeance frame is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
@@ -1177,7 +1300,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
+			{
+				choosingStrategy = false;
 				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = "Vengeance frame: ";
@@ -1201,6 +1327,8 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 			
 		private void ChooseGaugeIncreasedFrameStrategy(FighterChangedData triggerState, bool opponentTrigger)
@@ -1208,6 +1336,11 @@ namespace FightingLegends
 			if (StrategyCued)
 				return;
 			
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
+
 			// trigger applies when gauge increased frame is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
 				(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
@@ -1218,7 +1351,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
+			{
+				choosingStrategy = false;
 				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = "Gauge increased frame: ";
@@ -1242,12 +1378,19 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 			
 		private void ChooseStunnedFrameStrategy(FighterChangedData triggerState, bool opponentTrigger)
 		{
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			// trigger applies when stunned frame is equal to the strategy condition
 			var propensities = CurrentAttitudePropensities().Where
@@ -1258,7 +1401,10 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
+			{
+				choosingStrategy = false;
 				return;			// nothing triggered
+			}
 
 			// diagnostics
 			TriggerUI = "Stunned frame: ";
@@ -1282,6 +1428,8 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 
@@ -1291,6 +1439,11 @@ namespace FightingLegends
 
 			if (StrategyCued)
 				return;
+
+			if (choosingStrategy)
+				return;
+
+			choosingStrategy = true;
 			
 			var propensities = CurrentAttitudePropensities().Where
 				(x => x.Strategy.TriggerCondition.OpponentTrigger == opponentTrigger
@@ -1300,8 +1453,11 @@ namespace FightingLegends
 					&& fighter.CanExecuteMove(x.Strategy.Behaviour.MoveToExecute));
 
 			if (propensities.Count() == 0)
+			{
+				choosingStrategy = false;
 				return;			// nothing triggered
-
+			}
+				
 			// diagnostics
 			TriggerUI = "Last hit frame: ";
 			TriggerUI += triggerState.FrameNumber;
@@ -1324,6 +1480,8 @@ namespace FightingLegends
 			// activate next strategy even if DoNothing was chosen
 			if (IterateStrategies)
 				IterateToNextStrategy();
+
+			choosingStrategy = false;
 		}
 
 		#endregion 		// behaviour triggers
@@ -1373,6 +1531,7 @@ namespace FightingLegends
 					fighter.CueMove(behaviour.MoveToExecute);
 					StatusUI = "MOVE CUED: " + behaviour.MoveToExecute + " [ " + fighter.AnimationFrameCount + " ]";
 				}
+
 
 				StrategyCued = true;		// no more moves this beat
 				return true;

@@ -2035,7 +2035,7 @@ namespace FightingLegends
 			if (!InFight)
 				return;
 
-			if (!FightManager.IsFighterAnimationFrame)
+			if (!FightManager.IsFighterAnimationFrame) 		// just in case
 				return;
 
 			FightFrameCount++;

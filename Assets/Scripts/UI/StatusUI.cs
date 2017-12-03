@@ -69,7 +69,8 @@ namespace FightingLegends
 				
 //				ManagementText.text += "\n" + fightManager.CurrentSceneryName;
 
-				ManagementText.text += string.Format("\n{0:0.##} FPS", FightManager.FightPaused ? 0.0f : fightManager.AnimationFPS);
+				ManagementText.text += string.Format("\nDIFFICULTY: {0}", FightManager.SavedGameStatus.Difficulty);
+//				ManagementText.text += string.Format("\n{0:0.##} FPS", FightManager.FightPaused ? 0.0f : fightManager.AnimationFPS);
 
 //				ManagementText.text += "\n[ FRAME " + fightManager.AnimationFrameCount + " ]";
 
