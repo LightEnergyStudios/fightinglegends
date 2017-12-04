@@ -1451,20 +1451,20 @@ namespace FightingLegends
 				challengeUploaded = true;
 				statusText.text = FightManager.Translate("challengeUploaded");
 					
-				if (profile.ChallengeResult == "Won")
-					resultText.text = FightManager.Translate("youWon", false, true);
-				else if (profile.ChallengeResult == "Lost")
-					resultText.text = FightManager.Translate("youLost", false, true);
-				else 		// challenge not yet accepted / completed
-					resultText.text = "";	
-				
-				profile.ChallengeResult = "";
-				profile.CoinsToCollect = 0;
-				profile.ChallengeKey = "";
+//				if (profile.ChallengeResult == "Won")
+//					resultText.text = FightManager.Translate("youWon", false, true);
+//				else if (profile.ChallengeResult == "Lost")
+//					resultText.text = FightManager.Translate("youLost", false, true);
+//				else 		// challenge not yet accepted / completed
+//					resultText.text = "";	
+//				
+//				profile.ChallengeResult = "";
+//				profile.CoinsToCollect = 0;
+//				profile.ChallengeKey = "";
+//
+////				FirebaseManager.SaveUserProfile(profile);		// callback enables/disables upload button according to challenge status
 
-//				FirebaseManager.SaveUserProfile(profile);		// callback enables/disables upload button according to challenge status
-
-				ShowChallengeResult();
+//				ShowChallengeResult();
 			}
 		}
 
@@ -1552,6 +1552,25 @@ namespace FightingLegends
 					else
 					{
 						statusText.text = "";
+					}
+
+					resultText.text = "";	
+
+					if (profile.ChallengeResult == "Won" || profile.ChallengeResult == "Lost")
+					{
+						if (profile.ChallengeResult == "Won")
+							resultText.text = FightManager.Translate("youWon", false, true);
+						else 
+							resultText.text = FightManager.Translate("youLost", false, true);
+
+						ShowChallengeResult();
+
+						// clear user profile challenge result
+						profile.ChallengeResult = "";
+						profile.CoinsToCollect = 0;
+						profile.ChallengeKey = "";
+
+						FirebaseManager.SaveUserProfile(profile);		// callback enables/disables upload button according to challenge status
 					}
 				}
 

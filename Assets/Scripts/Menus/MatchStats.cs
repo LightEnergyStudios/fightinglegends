@@ -81,10 +81,14 @@ namespace FightingLegends
 		public AudioClip ChallengeFlipStart;				// fighter card flipped and replaced
 		public AudioClip ChallengeFlipEnd;					// fighter card flipped and replaced
 
-		private float challengeResultsPause = 2.5f;			// pause between results of each round (FighterCards)
+//		private float challengeResultsPause = 2.5f;			// pause between results of each round (FighterCards)
 		private float pulseFlipPause = 0.25f;				// pause before flipping loser / pulsing winner after card entry
 		private float pulseFighterTime = 0.25f;
 		private Vector3 pulseFighterScale = new Vector3(2.5f, 2.5f, 1);
+
+		private Vector3 defaultPlayerScale;					// default at start
+		private Vector3 player1Position;					// default at start
+		private Vector3 player2Position;					// default at start
 
 		private bool player1WonChallengeRound = false;
 		private int challengeResultRound = 0;				// challenge result currently being shown
@@ -135,8 +139,10 @@ namespace FightingLegends
 			LevelLabel.text = FightManager.Translate("level", false, false, true);
 			VsVictoriesLabel.text = FightManager.Translate("victories", false, false, true);
 
-//			P1InitPosition = Player1Button.transform.localPosition;
-//			P2InitPosition = Player2Button.transform.localPosition;
+			// record default values
+			defaultPlayerScale = Player1Button.transform.localScale;
+			player1Position = Player1Button.transform.localPosition;
+			player2Position = Player2Button.transform.localPosition;
 		}
 
 		private void OnEnable()
@@ -161,9 +167,13 @@ namespace FightingLegends
 			InsertCoinStrip.gameObject.SetActive(false);
 			ContinueCoin.gameObject.SetActive(false);
 
+			// restore fight card (button) values
 			Player1Button.gameObject.SetActive(false);
 			Player2Button.gameObject.SetActive(false);
-
+			Player1Button.transform.localScale = defaultPlayerScale;
+			Player2Button.transform.localScale = defaultPlayerScale;
+			Player1Button.transform.localPosition = player1Position;
+			Player2Button.transform.localPosition = player2Position;
 			Player1Stars.Stop();
 			Player2Stars.Stop();
 		}
@@ -762,7 +772,6 @@ namespace FightingLegends
 			ChallengeScore.text = p1Score + " - " + p2Score; 
 
 			// animate stats panel
-			// P1 and P2 are reversed... (not sure why)
 			if (player1WonChallengeRound)		// last round of challenge
 			{
 				resultsAnimator.SetTrigger("Player1Stats");		// animate stats panel entry from left

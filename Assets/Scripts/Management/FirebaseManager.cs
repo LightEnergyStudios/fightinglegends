@@ -36,6 +36,9 @@ namespace FightingLegends
 		public delegate void ChallengeRemovedDelegate(string category, string challengeKey, bool success);
 		public static ChallengeRemovedDelegate OnChallengeRemoved;
 
+//		public delegate void ChallengeResultClearedDelegate(string userId, bool success);
+//		public static ChallengeResultClearedDelegate OnChallengeResultCleared;
+
 		public delegate void PostLeaderboardScoreDelegate(Leaderboard leaderboard, LeaderboardScore score, bool success);
 		public static PostLeaderboardScoreDelegate OnPostScore;
 
@@ -147,6 +150,34 @@ namespace FightingLegends
 				}
 			});
 		}
+
+//		public static void ClearChallengeResult(string userId)
+//		{
+//			// update the profile of the user that posted the challenge
+//			if (string.IsNullOrEmpty(userId))		// really shouldn't happen
+//				return;
+//
+//			Dictionary<string, object> childUpdates = new Dictionary<string, object>();
+//			childUpdates["/Users/" + userId + "/CoinsToCollect"] = 0;	
+//			childUpdates["/Users/" + userId + "/ChallengeKey"] =  "";
+//			childUpdates["/Users/" + userId + "/ChallengeResult"] = "";
+//
+//			databaseRoot.UpdateChildrenAsync(childUpdates).ContinueWith(task => {
+//
+//				if (task.IsCompleted)
+//				{
+//					if (OnChallengeResultCleared != null)
+//						OnChallengeResultCleared(userId, true);	
+//				}
+//				else
+//				{
+//					Debug.Log("ClearChallengeResult: error = " + task.Exception.Message);
+//
+//					if (OnChallengeResultCleared != null)
+//						OnChallengeResultCleared(userId, false);	
+//				}
+//			});
+//		}
 
 		public static void RemoveChallenge(string category, string challengeKey)
 		{

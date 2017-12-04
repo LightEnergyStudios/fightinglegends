@@ -515,14 +515,14 @@ namespace FightingLegends
 			{
 				if (propensity.Probability >= Certainty)
 				{
-					if (report)
-						Debug.Log("CheckForCertainPropensity MoveToExecute = " + propensity.Strategy.Behaviour.MoveToExecute);
+//					if (report)
+//						Debug.Log("CheckForCertainPropensity MoveToExecute = " + propensity.Strategy.Behaviour.MoveToExecute);
 					return propensity;
 				}
 			}
 
-			if (report)
-				Debug.Log("CheckForCertainPropensity - No certainties");
+//			if (report)
+//				Debug.Log("CheckForCertainPropensity - No certainties");
 			return null;
 		}
 

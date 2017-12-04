@@ -2117,7 +2117,7 @@ namespace FightingLegends
 	
 		public IEnumerator NextMatch(Fighter winner) 
 		{
-			Debug.Log("NextMatch: winner = " + winner.FullName);
+//			Debug.Log("NextMatch: winner = " + winner.FullName);
 			// deliberately no fade to black!
 
 			// track to expiry position and reveal winner simultaneously
@@ -3974,7 +3974,7 @@ namespace FightingLegends
 			if (menuStack.Count < 1)		// make sure there is something to pop!
 				return;
 
-			var currentMenu = CurrentMenuCanvas;
+//			var currentMenu = CurrentMenuCanvas;
 
 			if (backClicked)		// if the current menu has an active overlay, simply hide it
 			{
@@ -4056,14 +4056,22 @@ namespace FightingLegends
 		{
 			if (menu == MenuType.Combat)				// fight music according to location
 				sceneryManager.PlayCurrentSceneryTrack();
-			
+
+//			Debug.Log("ActivateMenu: " + menu + ", Count = " + menuStack.Count + ", CurrentMenuCanvas = " + CurrentMenuCanvas + ", navigatingBack = " + navigatingBack);
+
 //			// nothing to do if no change...
 			if (menu == CurrentMenuCanvas)
+			{
+				if (menu == MenuType.Combat)	// eg. continuing arcade match from MatchStats (which is not in menu stack)
+				{
+					// broadcast menu changed event
+					if (OnMenuChanged != null)
+						OnMenuChanged(CurrentMenuCanvas, CanGoBack, CanSettings, CoinsVisible, KudosVisible);
+				}
 				return false;
+			}
 
 			var navigatedFrom = CurrentMenuCanvas;
-
-//			Debug.Log("ActivateMenu: " + menu + ", Count = " + menuStack.Count + ", CurrentMenuCanvas = " + CurrentMenuCanvas + ", navigatedFrom = " + navigatedFrom + ", navigatingBack = " + navigatingBack);
 
 			DeactivateCurrentMenu();
 			CurrentMenuCanvas = menu;		// not necessarily on stack (eg. pauseSettings)
