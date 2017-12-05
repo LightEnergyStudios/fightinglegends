@@ -548,6 +548,8 @@ namespace Prototype.NetworkLobby
 		// called on the server when a client disconnects
 		public override void OnServerDisconnect(NetworkConnection conn)
 		{
+			Debug.Log("OnServerDisconnect: connectionId = " + conn.connectionId);
+
 			NetworkServer.DestroyPlayersForConnection(conn);
 			if (conn.lastError != NetworkError.Ok)
 			{
@@ -605,7 +607,7 @@ namespace Prototype.NetworkLobby
 			}
 
 //			SimpleBackClbk();
-			Debug.Log("OnLobbyServerPlayerRemoved - quit");
+			Debug.Log("OnLobbyServerPlayerRemoved - connectionId = " + conn.connectionId);
 			StartCoroutine(FadeQuitLobby());
 //			QuitLobby();		// TODO: SM ok?
 		}
@@ -624,7 +626,7 @@ namespace Prototype.NetworkLobby
 			}
 
 //			SimpleBackClbk();
-			Debug.Log("OnLobbyServerDisconnect - quit");
+			Debug.Log("OnLobbyServerDisconnect - connectionId = " + conn.connectionId);
 			StartCoroutine(FadeQuitLobby());
 //			QuitLobby();		// TODO: SM ok?
 		}
