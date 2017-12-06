@@ -68,7 +68,9 @@ namespace Prototype.NetworkLobby
 			fightCancelledText.gameObject.SetActive(false);
 
 			lobbyManager.lobbyState = LobbyState.None;
-			StopDiscovery();  		// stops listening and broadcasting
+
+			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
+//			StopDiscovery();  		// stops listening and broadcasting
         }
 
 		public void OnDisable()
@@ -90,50 +92,118 @@ namespace Prototype.NetworkLobby
 				JoinText.text = string.IsNullOrEmpty(ipInput.text) ? FightManager.Translate("findAGame") : FightManager.Translate("joinGame");
 		}
 
-        public void OnClickHost()
-        {
-			if (lobbyManager.lobbyState != LobbyState.None)
-				return;
-			
+		public void OnClickHost()
+		{
 			fightCancelledText.gameObject.SetActive(false);
 
-//			NetworkServer.Reset();
+			NetworkServer.Reset();
 
-            lobbyManager.StartHost();
-			lobbyManager.lobbyState = LobbyState.Host;
-
+			lobbyManager.StartHost();
 			lobbyManager.BroadcastHostIP();			// SM
-        }
+		}
 
 		private void HostIPReceived(string hostIP)
 		{
-//			LobbyManager.s_Singleton.networkAddress = hostIP;
-//			NetworkManager.singleton.networkAddress = hostIP;
 			ipInput.text = hostIP;
 
-			StopDiscovery();  		// stops listening and broadcasting
-			StartClient();						// join game immediately host ip received
+			//			listeningforHost = false;
+			//			scanningText.gameObject.SetActive(false);
+
+			StopListening();
+			StartClient();			// join game immediately host ip received
+
+			// join game immediately host ip received
+			//			OnClickJoin();				// start client
+
+			//			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
+			//			ConfigJoinButton();
+			//			EnableHostButton();	
+
 		}
 
-
-        public void OnClickJoin()
+		public void OnClickJoin()
 		{
 			fightCancelledText.gameObject.SetActive(false);
 
-			if (listeningforHost)						// stop 'search' (discovery)
+			if (listeningforHost)
 			{
-				StopDiscovery();  		// stops listening and broadcasting
+				StopListening();	
 				return;
 			}
 
-			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game (start discovery)
+			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game
 			{
-				StartDiscovery();
+				StartListening();
 				return;
 			}
 
 			StartClient();
 		}
+
+
+//		public void OnClickJoin()
+//		{
+//			fightCancelledText.gameObject.SetActive(false);
+//
+//			if (listeningforHost)
+//			{
+//				StopListening();	
+//				return;
+//			}
+//
+//			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game
+//			{
+//				StartListening();
+//				return;
+//			}
+//
+//			StartClient();
+//		}
+//
+//        public void OnClickHost()
+//        {
+//			if (lobbyManager.lobbyState != LobbyState.None)
+//				return;
+//			
+//			fightCancelledText.gameObject.SetActive(false);
+//
+////			NetworkServer.Reset();
+//
+//            lobbyManager.StartHost();
+//			lobbyManager.lobbyState = LobbyState.Host;
+//
+//			lobbyManager.BroadcastHostIP();			// SM
+//        }
+//
+//		private void HostIPReceived(string hostIP)
+//		{
+////			LobbyManager.s_Singleton.networkAddress = hostIP;
+////			NetworkManager.singleton.networkAddress = hostIP;
+//			ipInput.text = hostIP;
+//
+//			StopDiscovery();  		// stops listening and broadcasting
+//			StartClient();						// join game immediately host ip received
+//		}
+
+
+//        public void OnClickJoin()
+//		{
+//			fightCancelledText.gameObject.SetActive(false);
+//
+//			if (listeningforHost)						// stop 'search' (discovery)
+//			{
+//				StopDiscovery();  		// stops listening and broadcasting
+//				return;
+//			}
+//
+//			if (string.IsNullOrEmpty(ipInput.text)) 	// find a game (start discovery)
+//			{
+//				StartDiscovery();
+//				return;
+//			}
+//
+//			StartClient();
+//		}
 
 		private void StartClient()
 		{
@@ -153,28 +223,52 @@ namespace Prototype.NetworkLobby
         }
 
 
-		private void StartDiscovery()
+//		private void StartDiscovery()
+//		{
+//			lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
+//			listeningforHost = true;
+//			scanningText.gameObject.SetActive(true);
+//			ConfigJoinButton();
+//			EnableHostButton();					// can't host if listening for host broadcast
+//		}
+//			
+//		private void StopDiscovery()
+//		{
+//			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
+////			StopListeningUI();	
+////		}
+//
+//		private void StopListeningUI()
+//		{
+//			listeningforHost = false;
+//			scanningText.gameObject.SetActive(false);
+//			ConfigJoinButton();
+//			EnableHostButton();	
+//		}
+
+
+		private void StartListening()
 		{
+			//			NetworkServer.Reset();
+
 			lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
 			listeningforHost = true;
 			scanningText.gameObject.SetActive(true);
 			ConfigJoinButton();
 			EnableHostButton();					// can't host if listening for host broadcast
 		}
-			
-		private void StopDiscovery()
+
+		private void StopListening()
 		{
 			lobbyManager.StopDiscovery();  		// stops listening and broadcasting
-//			StopListeningUI();	
-//		}
-//
-//		private void StopListeningUI()
-//		{
+
 			listeningforHost = false;
 			scanningText.gameObject.SetActive(false);
 			ConfigJoinButton();
 			EnableHostButton();	
 		}
+
+
 
 		private void OnQuitLobby()
 		{

@@ -1563,7 +1563,7 @@ namespace FightingLegends
 						else 
 							resultText.text = FightManager.Translate("youLost", false, true);
 
-						ShowChallengeResult();
+						ShowChallengeResult();	// TODO: slight risk that SaveUserProfile below fails - possible double payout ... OnUserProfileChanged??
 
 						// clear user profile challenge result
 						profile.ChallengeResult = "";

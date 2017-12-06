@@ -601,6 +601,7 @@ namespace FightingLegends
 			WinQuote.gameObject.SetActive(false);
 			WinnerStatsPanel.SetActive(false);
 			ChallengeStats.gameObject.SetActive(false);
+			ChallengeScore.gameObject.SetActive(false);
 
 //			EnableWinnerStats(false);
 //			EnableChallengeStats(false);
@@ -907,8 +908,7 @@ namespace FightingLegends
 				Player1Fireworks.Play();
 			}
 
-			if (ChallengeFlipStart != null)
-				AudioSource.PlayClipAtPoint(ChallengeFlipStart, Vector3.zero, FightManager.SFXVolume);
+			FlipAudio();
 		}
 			
 		public void Player1Flipped()
@@ -934,6 +934,13 @@ namespace FightingLegends
 			if (! NextChallengeResult())		// no more results
 				ChallengeResultStats();
 		}
+
+		public void FlipAudio()
+		{
+			if (ChallengeFlipStart != null)
+				AudioSource.PlayClipAtPoint(ChallengeFlipStart, Vector3.zero, FightManager.SFXVolume);
+		}
+
 			
 		private IEnumerator PulseWinner()
 		{

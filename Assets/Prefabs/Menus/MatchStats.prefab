@@ -65,7 +65,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1000010829710164
 GameObject:
   m_ObjectHideFlags: 1
@@ -2126,7 +2126,7 @@ MonoBehaviour:
   ChallengeResultStart: {fileID: 8300000, guid: 358bd814393754479ad28041f603d4f2,
     type: 3}
   ChallengeResultEnd: {fileID: 8300000, guid: b3cb3184c686249b3a52626980ceb8be, type: 3}
-  ChallengeFlipStart: {fileID: 8300000, guid: ced887097e240475faf6c0024a5251d2, type: 3}
+  ChallengeFlipStart: {fileID: 8300000, guid: fa441a6ed23df4467b1d430d83a214b3, type: 3}
   ChallengeFlipEnd: {fileID: 8300000, guid: 8162916d87e01478bad5cc7132e6314b, type: 3}
   InsertCoinTextPanel: {fileID: 1573507539606564}
   InsertCoinText:

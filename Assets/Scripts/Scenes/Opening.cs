@@ -12,6 +12,7 @@ namespace FightingLegends
 		public Text loadingText;				// animated dots
 		public HitFlash whiteFlash;				// not used
 
+		public GameObject LobbyPrefab;
 		private LobbyManager lobbyManager;
 
 		private const string loading = "Loading";
@@ -39,15 +40,15 @@ namespace FightingLegends
 
 			// LobbyManager is not destroyed between scenes, but we have to
 			// get a new reference to it after scene is switched
-			var lobbyManagerObject = GameObject.Find("LobbyManager");
-			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
+//			var lobbyManagerObject = GameObject.Find("LobbyManager");
+//			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
+
+			CreateLobby();
 
 			if (lobbyManager != null)
 			{
 				if (SceneSettings.ShowLobbyUI)
 					lobbyManager.ShowLobbyUI();
-//				else
-//					lobbyManager.HideLobbyUI(false);
 			}
 			else
 				Debug.Log("Opening.OnEnable: LobbyManager not found!");
@@ -64,6 +65,18 @@ namespace FightingLegends
 			OnPreloadComplete -= PreloadComplete;
 			BHS.OnDrums -= OnLogoDrums;
 		}
+
+		private void CreateLobby()
+		{
+			if (lobbyManager != null)
+				Destroy(lobbyManager);
+			
+			var lobbyManagerObject = Instantiate(LobbyPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			lobbyManagerObject.name = "LobbyManager";		// so find can find it!
+			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
+
+		}
+
 
 		private IEnumerator WhiteFlash()
 		{

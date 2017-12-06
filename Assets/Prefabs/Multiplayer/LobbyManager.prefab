@@ -1973,7 +1973,7 @@ MonoBehaviour:
   fightManagerPrefab: {fileID: 1326031939578868, guid: 6f36d76e3fa7e4522be0674f5f729cc3,
     type: 2}
   networkDiscovery: {fileID: 114188490123958126}
-  prematchCountdown: 3
+  lobbyState: 0
   topPanel: {fileID: 114573842534067484}
   mainMenuPanel: {fileID: 224624595877386252}
   lobbyPanel: {fileID: 224492886482346424}

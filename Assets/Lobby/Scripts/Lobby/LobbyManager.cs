@@ -114,7 +114,7 @@ namespace Prototype.NetworkLobby
 		{
 			lobbyState = LobbyState.None;
 			discoveryInitialised = false;
-//			networkDiscovery.Initialize();
+			networkDiscovery.Initialize();
 		}
 
 		public void OnDestroy()
@@ -129,6 +129,8 @@ namespace Prototype.NetworkLobby
 
 		public void ShowLobbyUI()
 		{
+			Debug.Log("ShowLobbyUI");
+
 			if (lobbyUIPanel != null)
 			{
 				lobbyUIPanel.gameObject.SetActive(true);
@@ -148,8 +150,8 @@ namespace Prototype.NetworkLobby
 			blackOut.gameObject.SetActive(false);
 			blackOut.color = Color.clear;
 
-			NetworkServer.Reset();		// SM ok ??
-			Network.Disconnect();		// SM ok ??
+//			NetworkServer.Reset();		// SM ok ??
+//			Network.Disconnect();		// SM ok ??
 
 //			networkDiscovery.Initialize();
 			ChangeTo(mainMenuPanel);
