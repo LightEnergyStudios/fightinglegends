@@ -71,9 +71,7 @@ namespace FightingLegends
 
 		private const int StatusEffectFrames = 50;			// on fire, armour up, armour down, health up
 //		private const int OKEffectFrames = 18;				// second life triggered
-//		private const int HealthUpEffectFrames = 50;
 		private const int KnockOutFreezeFrames = 30;
-//		private int StatusEffectFramesRemaining = 0;
 		private StatusEffect currentStatusEffect = StatusEffect.None;
 		private int StatusEffectStartFrame = 0;
 
@@ -181,7 +179,6 @@ namespace FightingLegends
 		private bool comboInProgress = false;
 		private bool chainInProgress = false;
 
-//		private bool autoCombo = false;			// used when in training to show l-m-h
 
 		#endregion
 
@@ -222,11 +219,9 @@ namespace FightingLegends
 		public bool frozenByInfoBubble { get; private set; }
 
 		private int romanCancelFreezeFramesRemaining = 0;
-//		public bool romanCancelFrozen { get { return romanCancelFreezeFramesRemaining > 0; } }
 		public bool romanCancelFrozen { get; private set; }
 
 		private int powerUpFreezeFramesRemaining = 0;
-//		public bool powerUpFrozen { get { return powerUpFreezeFramesRemaining > 0; } }
 		public bool powerUpFrozen { get; private set; }
 
 		private int freezeFightFrames = 0;			// for freeze of both fighters, deferred to frame following a hit
@@ -464,7 +459,7 @@ namespace FightingLegends
 			{
 				var spotFXObject = Instantiate(profile.SpotFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				spotFX = spotFXObject.GetComponent<SpotFX>();
-				spotFX.OnEndState += FXStateEnd;			// listening for feedback state ends
+				spotFX.OnEndState += SpotFXStateEnd;			// listening for feedback state ends
 
 				// make spotFX a child of the fighter
 				spotFXObject.transform.parent = transform;
@@ -482,7 +477,7 @@ namespace FightingLegends
 
 				var spotFXx2Object = Instantiate(profile.SpotFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				spotFXx2 = spotFXx2Object.GetComponent<SpotFX>();
-				spotFXx2.OnEndState += FXStateEnd;			// listening for feedback state ends
+				spotFXx2.OnEndState += SpotFXStateEnd;			// listening for feedback state ends
 
 				spotFXx2.transform.localScale = new Vector3(4, 4, 4);
 
@@ -497,7 +492,7 @@ namespace FightingLegends
 			{
 				var elementsFXObject = Instantiate(profile.ElementsFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				elementsFX = elementsFXObject.GetComponent<ElementsFX>();
-				elementsFX.OnEndState += FXStateEnd;			// listening for feedback state ends
+				elementsFX.OnEndState += ElementFXStateEnd;			// listening for feedback state ends
 
 				// make elementsFXObject a child of the fighter
 				elementsFXObject.transform.parent = transform;
@@ -515,7 +510,7 @@ namespace FightingLegends
 			{
 				var smokeFXObject = Instantiate(profile.SmokeFXPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 				smokeFX = smokeFXObject.GetComponent<SmokeFX>();
-				smokeFX.OnEndState += FXStateEnd;			// listening for feedback state ends
+				smokeFX.OnEndState += SmokeFXStateEnd;			// listening for feedback state ends
 
 				// make smokeFXObject a child of the fighter
 				smokeFXObject.transform.parent = transform;
@@ -594,10 +589,10 @@ namespace FightingLegends
 
 			// destroy instantiated children
 
-			spotFX.OnEndState -= FXStateEnd;
-			spotFXx2.OnEndState -= FXStateEnd;
-			elementsFX.OnEndState -= FXStateEnd;
-			smokeFX.OnEndState -= FXStateEnd;
+			spotFX.OnEndState -= SpotFXStateEnd;
+			spotFXx2.OnEndState -= SpotFXStateEnd;
+			elementsFX.OnEndState -= ElementFXStateEnd;
+			smokeFX.OnEndState -= SmokeFXStateEnd;
 
 			Destroy(spotFX.gameObject);
 			Destroy(spotFXx2.gameObject);
@@ -1126,7 +1121,7 @@ namespace FightingLegends
 			
 		public bool ExpiredHealth { get { return ProfileData.SavedData.Health <= 0; } }
 
-		protected virtual bool TravelOnExpiry { get { return true; } }
+		public virtual bool TravelOnExpiry { get { return true; } }
 			
 		#endregion 		// moves
 
@@ -1300,10 +1295,19 @@ namespace FightingLegends
 			}
 		}
 
-
-		private void FXStateEnd(AnimationState endingState)
+		private void ElementFXStateEnd(AnimationState endingState)
 		{
-			CancelFX();
+			CancelElementFX();
+		}
+
+		private void SpotFXStateEnd(AnimationState endingState)
+		{
+			CancelSpotFX();
+		}
+
+		private void SmokeFXStateEnd(AnimationState endingState)
+		{
+			CancelSmokeFX();
 		}
 
 		public void CancelFX()
@@ -1320,16 +1324,13 @@ namespace FightingLegends
 		{
 //			Debug.Log(FullName + ": SingleFingerTap");
 
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
 			if (UnderAI)		// listening but not interested in this
 				return;
 
-			if (!fightManager.ReadyToFight) // && !PreviewMoves)
+			if (!fightManager.ReadyToFight)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1402,10 +1403,7 @@ namespace FightingLegends
 
 		public void TwoFingerTap()		// same signature as GestureListener.TwoFingerTapAction delegate
 		{
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-			
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1440,13 +1438,10 @@ namespace FightingLegends
 			
 		public void HoldDown()		// same signature as GestureListener.HeldDownAction delegate
 		{
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-			
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
-			if (!fightManager.ReadyToFight) // && !PreviewMoves)
+			if (!fightManager.ReadyToFight)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1488,13 +1483,10 @@ namespace FightingLegends
 
 		public void SwipeLeft()	// same signature as GestureListener.SwipeLeftAction delegate
 		{
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-			
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
-			if (!fightManager.ReadyToFight) // && !PreviewMoves)
+			if (!fightManager.ReadyToFight)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1526,13 +1518,10 @@ namespace FightingLegends
 
 		public void SwipeRight()	// same signature as GestureListener.SwipeRightAction delegate
 		{
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-			
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
-			if (!fightManager.ReadyToFight) // && !PreviewMoves)
+			if (!fightManager.ReadyToFight)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1570,13 +1559,10 @@ namespace FightingLegends
 			
 		public void SwipeLeftRight()	// same signature as GestureListener.SwipeLeftRightAction delegate
 		{
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-			
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
-			if (!fightManager.ReadyToFight) // && !PreviewMoves)
+			if (!fightManager.ReadyToFight)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1611,13 +1597,10 @@ namespace FightingLegends
 		// shove
 		public void SwipeDown()	// same signature as GestureListener.SwipeDownAction delegate
 		{
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-			
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
-			if (!fightManager.ReadyToFight) // && !PreviewMoves)
+			if (!fightManager.ReadyToFight)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1644,15 +1627,12 @@ namespace FightingLegends
 		// powerup
 		public void SwipeUp()	// same signature as GestureListener.SwipeUpAction delegate
 		{
-//			if (FeedbackUI.InfoBubbleShowing)
-//				return;
-			
 //			Debug.Log(FullName + ": SwipeUp - FightPaused = " + fightManager.FightPaused + ", TriggerPowerUp = " + TriggerPowerUp + ", CanTriggerPowerUp = " + CanTriggerPowerUp);
 
-			if (FightManager.FightPaused) // && !PreviewMoves)
+			if (FightManager.FightPaused)
 				return;
 
-			if (!fightManager.ReadyToFight) // && !PreviewMoves)
+			if (!fightManager.ReadyToFight)
 				return;
 
 			if (fightManager.EitherFighterExpiredHealth)
@@ -1816,7 +1796,7 @@ namespace FightingLegends
 					break;
 
 //				case StatusEffect.OK:
-//					StatusEffectFramesRemaining = OKEffectFrames;
+//					statusEffectFrames = OKEffectFrames;
 //					break;
 			}
 
@@ -1876,16 +1856,7 @@ namespace FightingLegends
 			currentStatusEffect = StatusEffect.None;
 			StatusEffectStartFrame = 0;
 		}
-
-//		public void StopAllStatusEffects()
-//		{
-//			Debug.Log(FullName + ": StopAllStatusEffects");
-//			StopOnFire();
-//			StopHealthUp();
-//			StopArmourUp();
-//			StopArmourDown();
-//		}
-
+			
 
 		public void SetPreview(uint idleFrameNumber) 		// for preview in fighter select menus
 		{
@@ -2316,7 +2287,10 @@ namespace FightingLegends
 			if (InTraining)
 				return;
 
-			if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Training || FightManager.CombatMode == FightMode.Dojo)
+//			if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Training || FightManager.CombatMode == FightMode.Dojo)
+//				return;
+
+			if (FightManager.CombatMode != FightMode.Survival)
 				return;
 			
 			if (xp <= 0)
@@ -5320,7 +5294,6 @@ namespace FightingLegends
 //			fightManager.CancelFeedbackFX();
 			HealthUp = false;
 		}
-
 			
 		private void CounterHitElementFX()
 		{
@@ -5460,10 +5433,7 @@ namespace FightingLegends
 
 		// recoil deferred until after freeze
 		public void RecoilFromAttack()
-		{
-//			if (PreviewMoves)
-//				return;
-			
+		{	
 			if (returnToDefault)
 			{
 				ReturnToDefaultDistance();		// default fighting distance
@@ -5970,39 +5940,41 @@ namespace FightingLegends
 						winner.OnScoreChanged(winner.ProfileData.SavedData.MatchRoundsWon);
 				}
 			}
+
+			yield return StartCoroutine(KnockOutCamera());		// camera tracks loser - virtual
 				
-			var travelTime = ProfileData.ExpiryTime;
-
-			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
-				travelTime *= fastExpiryFactor;	
-
-			travelTime /= fightManager.AnimationSpeed; 			// scale travelTime according to animation speed
-
-			if (TravelOnExpiry)
-			{
-				var	expiryDistance = IsPlayer1 ? -ProfileData.ExpiryDistance : ProfileData.ExpiryDistance;
-				var startPosition = transform.position;
-				var targetPosition = new Vector3(startPosition.x + expiryDistance, startPosition.y, startPosition.z);
-				var winnerStartPosition = winner.transform.position;
-				var winnerTargetPosition = new Vector3(winnerStartPosition.x - expiryDistance, winnerStartPosition.y, winnerStartPosition.z);
-				float t = 0.0f;
-
-				while (t < 1.0f)
-				{
-					t += Time.deltaTime * (Time.timeScale / travelTime); 
-					transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-
-					// winner also moves back in arcade mode (camera tracks the loser)
-					if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Dojo)
-						winner.transform.position = Vector3.Lerp(winnerStartPosition, winnerTargetPosition, t);
-				
-					yield return null;
-				}
-			}
-			else
-			{
-				yield return new WaitForSeconds(travelTime);
-			}
+//			var travelTime = ProfileData.ExpiryTime;
+//
+//			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
+//				travelTime *= fastExpiryFactor;	
+//
+//			travelTime /= fightManager.AnimationSpeed; 			// scale travelTime according to animation speed
+//
+//			if (TravelOnExpiry)
+//			{
+//				var	expiryDistance = IsPlayer1 ? -ProfileData.ExpiryDistance : ProfileData.ExpiryDistance;
+//				var startPosition = transform.position;
+//				var targetPosition = new Vector3(startPosition.x + expiryDistance, startPosition.y, startPosition.z);
+//				var winnerStartPosition = winner.transform.position;
+//				var winnerTargetPosition = new Vector3(winnerStartPosition.x - expiryDistance, winnerStartPosition.y, winnerStartPosition.z);
+//				float t = 0.0f;
+//
+//				while (t < 1.0f)
+//				{
+//					t += Time.deltaTime * (Time.timeScale / travelTime); 
+//					transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+//
+//					// winner also moves back in arcade mode (camera tracks the loser)
+//					if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Dojo)
+//						winner.transform.position = Vector3.Lerp(winnerStartPosition, winnerTargetPosition, t);
+//				
+//					yield return null;
+//				}
+//			}
+//			else
+//			{
+//				yield return new WaitForSeconds(travelTime);
+//			}
 				
 			if (UnderAI && winner.InTraining) 					// AI KO'd in training
 			{
@@ -6248,6 +6220,42 @@ namespace FightingLegends
 		protected virtual void KnockOut()
 		{
 			// final KO - overrides handle any special behaviour (eg. skeletron)	
+		}
+
+		protected virtual IEnumerator KnockOutCamera()
+		{
+			// KO camera tracking - overrides handle any special behaviour (eg. skeletron)	
+			// move winner away from camera, which tracks the loser
+
+			if (!TravelOnExpiry)
+				yield break;
+			
+			var travelTime = ProfileData.ExpiryTime;
+
+			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
+				travelTime *= fastExpiryFactor;	
+
+			travelTime /= fightManager.AnimationSpeed; 			// scale travelTime according to animation speed
+
+			var winner = Opponent;
+			var	expiryDistance = IsPlayer1 ? -ProfileData.ExpiryDistance : ProfileData.ExpiryDistance;
+			var startPosition = transform.position;
+			var targetPosition = new Vector3(startPosition.x + expiryDistance, startPosition.y, startPosition.z);
+			var winnerStartPosition = winner.transform.position;
+			var winnerTargetPosition = new Vector3(winnerStartPosition.x - expiryDistance, winnerStartPosition.y, winnerStartPosition.z);
+			float t = 0.0f;
+
+			while (t < 1.0f)
+			{
+				t += Time.deltaTime * (Time.timeScale / travelTime); 
+				transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+
+				// winner also moves back in arcade mode (camera tracks the loser)
+				if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Dojo)
+					winner.transform.position = Vector3.Lerp(winnerStartPosition, winnerTargetPosition, t);
+
+				yield return null;
+			}
 		}
 			
 		protected virtual void CounterAttack(bool chained)

@@ -100,8 +100,10 @@ namespace FightingLegends
 					bool survivalLoser = FightManager.CombatMode == FightMode.Survival && AIWinner;	
 					bool followLoser = FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Training
 						|| FightManager.CombatMode == FightMode.Dojo || survivalLoser || fightManager.ChallengeLastInTeam(AIWinner);
-					
-					if (followLoser)
+
+					var travelOnExpiry = fightManager.Player1.ExpiredState ? fightManager.Player1.TravelOnExpiry : fightManager.Player2.TravelOnExpiry;
+
+					if (followLoser && travelOnExpiry)
 					{
 						var koPosition = fightManager.Player1.ExpiredState ? P1Position : P2Position;
 						var targetPosition = new Vector3(koPosition.x, originalPosition.y, originalPosition.z);

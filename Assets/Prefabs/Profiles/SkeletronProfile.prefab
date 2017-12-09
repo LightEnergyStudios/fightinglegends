@@ -79,8 +79,8 @@ MonoBehaviour:
     AttackDistance: 100
     RomanCancelFreezeFrames: 6
     PowerUpFreezeFrames: 15
-    ExpiryTime: 3
-    ExpiryDistance: 200
+    ExpiryTime: 4
+    ExpiryDistance: 750
     AIDoNothingFactor: 1
     AIHealthBoostLevel: 250
     AIVengeanceBoostLevel: 2

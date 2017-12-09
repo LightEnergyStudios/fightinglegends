@@ -659,7 +659,7 @@ namespace FightingLegends
 			Player2Button.gameObject.SetActive(true);
 
 			WinnerName.gameObject.SetActive(false);
-			WinnerNamePanel.gameObject.SetActive(true);
+			WinnerNamePanel.gameObject.SetActive(false);
 
 			KudosUp.gameObject.SetActive(false);
 			KudosLabel.gameObject.SetActive(false);
@@ -987,8 +987,8 @@ namespace FightingLegends
 			worldTourCongratsShowing = true;
 			WorldTourPanel.SetActive(true);
 
-			WorldTourPanel.GetComponent<Animator>().SetTrigger("WorldTourComplete");
 			WorldTourFireworks.Play();
+			WorldTourPanel.GetComponent<Animator>().SetTrigger("WorldTourComplete");
 		}
 
 //		private void WorldTourCongrats()

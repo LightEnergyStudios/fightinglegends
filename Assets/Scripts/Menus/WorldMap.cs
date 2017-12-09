@@ -242,8 +242,9 @@ namespace FightingLegends
 
 		private void FlyToSpaceStation()
 		{
-			if (! fightManager.CompletedEarthLocations)
-				return;
+			// TODO: reinstate!!
+//			if (! fightManager.CompletedEarthLocations)
+//				return;
 			if (HasCompletedLocation(FightManager.spaceStation))
 				return;
 

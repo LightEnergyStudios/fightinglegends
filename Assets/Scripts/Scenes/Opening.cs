@@ -69,7 +69,7 @@ namespace FightingLegends
 		private void CreateLobby()
 		{
 			if (lobbyManager != null)
-				Destroy(lobbyManager);
+				Destroy(lobbyManager.gameObject);
 			
 			var lobbyManagerObject = Instantiate(LobbyPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			lobbyManagerObject.name = "LobbyManager";		// so find can find it!
