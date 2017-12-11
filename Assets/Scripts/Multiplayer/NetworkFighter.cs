@@ -22,6 +22,10 @@ namespace FightingLegends
 		private const string feedbackLayer = "Curtain";		// so curtain camera picks it up
 		private const float exitFightPause = 3.0f;		// network message displayed
 
+		private int ServerTickCount = 0;					// incremented every FixedUpdate (60fps) - used to determine fighter frames (15fps)
+		private const int FighterAnimationFrameInterval = 4;	// 60 / 4 = 15
+		public bool IsServerAnimationFrame { get { return (ServerTickCount % FighterAnimationFrameInterval == 0); }}
+
 		private FightManager fightManager;
 
 
@@ -41,6 +45,8 @@ namespace FightingLegends
 		{			
 			var fightManagerObject = GameObject.Find("FightManager");
 			fightManager = fightManagerObject.GetComponent<FightManager>();
+
+			ServerTickCount = 0;
 		}
 			
 
@@ -132,8 +138,13 @@ namespace FightingLegends
 		[ServerCallback]
 		private void FixedUpdate()
 		{
-			if (FightManager.IsNetworkFight && isServer && FightManager.IsFighterAnimationFrame)		// TODO: this ok?
-				RpcUpdateAnimation();
+			if (FightManager.IsNetworkFight && isServer)
+			{
+				ServerTickCount++;
+
+				if (IsServerAnimationFrame)
+					RpcUpdateAnimation();
+			}
 		}
 
 		[ClientRpc]

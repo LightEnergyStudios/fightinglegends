@@ -206,9 +206,9 @@ namespace FightingLegends
 		public int AnimationFrameCount { get; private set; }	// incremented according to AnimationFPS
 //		private const int FxTargetFPS = 60;						// for FX
 
-		private static int GameTickCount = 0;					// incremented every FixedUpdate (60fps) - used to determine fighter frames (15fps)
+		private int GameTickCount = 0;					// incremented every FixedUpdate (60fps) - used to determine fighter frames (15fps)
 		private const int FighterAnimationFrameInterval = 4;	// 60 / 4 = 15
-		public static bool IsFighterAnimationFrame { get { return (GameTickCount % FighterAnimationFrameInterval == 0); }}
+		public bool IsFighterAnimationFrame { get { return (GameTickCount % FighterAnimationFrameInterval == 0); }}
 
 		private StatusUI statusUI;
 		private bool statusUIVisible = false;					// by default
@@ -854,11 +854,11 @@ namespace FightingLegends
 		// 0.0166667 = 1/60 sec
 		private void FixedUpdate()
 		{
+			GameTickCount++;		// always - needed for fighter preview idling in all modes
+
 			if (IsNetworkFight && CombatMode == FightMode.Arcade)		// handled by NetworkFighter
 				return;
 
-			GameTickCount++;
-//			IsFighterAnimationFrame = (GameTickCount % FighterAnimationFrameInterval == 0);
 			UpdateAnimation();
 		}
 			
@@ -2198,25 +2198,7 @@ namespace FightingLegends
 //			else
 //				Player2.KnockOut()
 		}
-
-
-//		public void DummyChallengeResults(List<FighterCard> selectedTeam, List<FighterCard> AITeam)
-//		{
-//			ChallengeRoundResults = new List<ChallengeRoundResult>();
-//
-//			bool AIwon = false;
-//
-//			foreach (var fighter in selectedTeam)
-//			{
-//				if (AIwon)
-//					ChallengeRoundResults.Add(new ChallengeRoundResult(selectedTeam[0], fighter, true));			// player2 won
-//				else
-//					ChallengeRoundResults.Add(new ChallengeRoundResult(fighter, selectedTeam[0], false));			// player1 won
-//				
-//				AIwon = ! AIwon;
-//			}
-//		}
-
+			
 
 		private void PayoutChallengePot(Fighter winner)
 		{
@@ -2225,9 +2207,6 @@ namespace FightingLegends
 			
 			if (CombatMode != FightMode.Challenge)
 				return;
-
-//			if (challengeInProgress == null)
-//				return;
 			
 			if (!winner.UnderAI)
 			{
@@ -4408,7 +4387,6 @@ namespace FightingLegends
 				OnMenuChanged(MenuType.MatchStats, false, false, false, false);
 
 			if (CombatMode == FightMode.Challenge)
-//				matchStats.ShowChallengeResults(roundResults);				// loop through round results, showing FighterCards
 				matchStats.FirstChallengeResult(roundResults);				// loop through round results, showing FighterCards
 			else
 				matchStats.RevealWinner(winner, completedWorldTour);		// set image and animate entry from side

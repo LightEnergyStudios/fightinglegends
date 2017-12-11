@@ -12,7 +12,7 @@ namespace FightingLegends
 		public Text loadingText;				// animated dots
 		public HitFlash whiteFlash;				// not used
 
-		public GameObject LobbyPrefab;
+//		public GameObject LobbyPrefab;
 		private LobbyManager lobbyManager;
 
 		private const string loading = "Loading";
@@ -27,6 +27,7 @@ namespace FightingLegends
 		public void Start()
 		{
 //			Debug.Log("Opening.Start");
+//			DontDestroyOnLoad(gameObject);
 
 			fightingLegends.enabled = false;
 			loadingText.enabled = false;
@@ -40,10 +41,10 @@ namespace FightingLegends
 
 			// LobbyManager is not destroyed between scenes, but we have to
 			// get a new reference to it after scene is switched
-//			var lobbyManagerObject = GameObject.Find("LobbyManager");
-//			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
+			var lobbyManagerObject = GameObject.Find("LobbyManager");
+			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
 
-			CreateLobby();
+//			CreateLobby();
 
 			if (lobbyManager != null)
 			{
@@ -66,16 +67,16 @@ namespace FightingLegends
 			BHS.OnDrums -= OnLogoDrums;
 		}
 
-		private void CreateLobby()
-		{
-			if (lobbyManager != null)
-				Destroy(lobbyManager.gameObject);
-			
-			var lobbyManagerObject = Instantiate(LobbyPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			lobbyManagerObject.name = "LobbyManager";		// so find can find it!
-			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
-
-		}
+//		private void CreateLobby()
+//		{
+//			if (lobbyManager != null)
+//				Destroy(lobbyManager.gameObject);
+//			
+//			var lobbyManagerObject = Instantiate(LobbyPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+//			lobbyManagerObject.name = "LobbyManager";		// so find can find it!
+//			lobbyManager = lobbyManagerObject.GetComponent<LobbyManager>();
+//
+//		}
 
 
 		private IEnumerator WhiteFlash()

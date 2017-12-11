@@ -1763,7 +1763,7 @@ namespace FightingLegends
 
 		private void FixedUpdate()
 		{
-			if (PreviewIdle && FightManager.IsFighterAnimationFrame) 			// eg. for fighter select scene preview idle (not driven by FightManager)
+			if (PreviewIdle && fightManager.IsFighterAnimationFrame) 			// eg. for fighter select scene preview idle (not driven by FightManager)
 				NextAnimationFrame();
 		}
 			
@@ -2001,12 +2001,13 @@ namespace FightingLegends
 
 
 		// character animation is at 15fps by default
+		// driven by FightManager.FixedUpdate
 		public void UpdateAnimation()
 		{
 			if (!InFight)
 				return;
 
-			if (!FightManager.IsFighterAnimationFrame) 		// just in case
+			if (!fightManager.IsFighterAnimationFrame) 		// just in case
 				return;
 
 			FightFrameCount++;

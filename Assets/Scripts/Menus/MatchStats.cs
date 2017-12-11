@@ -110,7 +110,13 @@ namespace FightingLegends
 		public Text WorldTourText;
 		public ParticleSystem WorldTourFireworks;
 		public AudioClip WorldTourSound;
-		public Image WorldTourCast;
+
+		public Sprite leoniHoiLunWin;						// world tour only
+		public Sprite shiroDanjumaWin;						// world tour only
+		public Sprite shiyangAlazneWin;						// world tour only
+		public Sprite natalyaJacksonWin;					// world tour only
+		public Sprite skeletronNinjaWin;					// world tour only
+		public Image worldTourWinner;						// one of the above
 
 		private const float worldTourCongratsTime = 0.25f;
 
@@ -258,7 +264,7 @@ namespace FightingLegends
 
 			if (worldTourComplete)
 			{
-				WorldTourCongrats();				// animation
+				WorldTourCongrats(victor);				// animation
 				return;
 			}
 
@@ -683,7 +689,6 @@ namespace FightingLegends
 			inputAllowed = false;
 
 			EnableChallengeResults();
-
 			NextChallengeResult();		// ie. first
 		}
 
@@ -979,67 +984,48 @@ namespace FightingLegends
 		#endregion  // challenge results
 
 
-		private void WorldTourCongrats()
+		private void WorldTourCongrats(Fighter winner)
 		{
-			inputAllowed = true;			// TODO: completed event?
+			inputAllowed = true;		
 			EnableWinnerStats(false);
-//			EnableChallengeStats(false);
 			worldTourCongratsShowing = true;
 			WorldTourPanel.SetActive(true);
 
 			WorldTourFireworks.Play();
 			WorldTourPanel.GetComponent<Animator>().SetTrigger("WorldTourComplete");
+
+			switch (winner.FighterName)
+			{
+				case "Shiro":
+				case "Danjuma":
+					worldTourWinner.sprite = shiroDanjumaWin;
+					break;
+
+				case "Natalya":
+				case "Jackson":
+					worldTourWinner.sprite = natalyaJacksonWin;
+					break;
+
+				case "Leoni":
+				case "Hoi Lun":
+					worldTourWinner.sprite = leoniHoiLunWin;
+					break;
+
+				case "Shiyang":
+				case "Alazne":
+					worldTourWinner.sprite = shiyangAlazneWin;
+					break;
+
+				case "Skeletron":
+				case "Ninja":
+					worldTourWinner.sprite = skeletronNinjaWin;
+					break;
+
+				default:
+					worldTourWinner.sprite = null; 		// hopefully doesn't happen!
+					break;
+			}
 		}
-
-//		private void WorldTourCongrats()
-//		{
-//			inputAllowed = false;
-//			EnableWinnerStats(false);
-//			worldTourCongratsShowing = true;
-//			fightManager.Success(0, "Curtain");		// top layer. AnimateWorldTourCongrats at end
-//		}
-
-//		private IEnumerator AnimateWorldTourCongrats()
-//		{
-////			WorldTourPanel.transform.localScale = Vector3.zero;
-//
-//			Vector3 castStartScale = new Vector3(0, 1, 1);
-//			WorldTourCast.transform.localScale = castStartScale;
-//			WorldTourPanel.SetActive(true);
-//
-//			CongratsText.text = FightManager.Translate("congratulations", false, true, true) + "!!";
-//			WorldTourText.text = FightManager.Translate("completedWorldTour", false, true);
-//
-//			float t = 0.0f;
-//
-////			while (t < 1.0f)
-////			{
-////				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
-////
-////				WorldTourPanel.transform.localScale = Vector3.Lerp(Vector3.zero, Vector3.one, t);
-////				yield return null;
-////			}
-//
-////			t = 0.0f;
-//
-//			while (t < 1.0f)
-//			{
-//				t += Time.deltaTime * (Time.timeScale / worldTourCongratsTime); 
-//
-//				WorldTourCast.transform.localScale = Vector3.Lerp(castStartScale, Vector3.one, t);
-//				yield return null;
-//			}
-//
-//			WorldTourFireworks.Play();
-//			if (WorldTourSound != null)
-//				AudioSource.PlayClipAtPoint(WorldTourSound, Vector3.zero, FightManager.SFXVolume);
-//
-//			Stars.Play();
-//
-//			inputAllowed = true;
-//
-//			yield return null;
-//		}
 
 
 		private IEnumerator CycleInsertCoinText()
