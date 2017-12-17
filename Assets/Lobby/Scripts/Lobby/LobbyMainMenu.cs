@@ -37,6 +37,7 @@ namespace Prototype.NetworkLobby
 		private bool internetReachable = false;
 		private bool localNetworkReachable = false;
 
+
         public void OnEnable()
         {
 			internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
@@ -95,7 +96,7 @@ namespace Prototype.NetworkLobby
         {
 			fightCancelledText.gameObject.SetActive(false);
 
-			NetworkServer.Reset();
+//			NetworkServer.Reset();
 
             lobbyManager.StartHost();
 			lobbyManager.BroadcastHostIP();			// SM
@@ -137,18 +138,14 @@ namespace Prototype.NetworkLobby
 
             lobbyManager.networkAddress = ipInput.text;
             lobbyManager.StartClient();
-
 //            lobbyManager.backDelegate = lobbyManager.StopClientClbk;
             lobbyManager.DisplayIsConnecting();
-
             lobbyManager.SetServerInfo("Connecting...", lobbyManager.networkAddress);
         }
 
 
 		private void StartListening()
 		{
-//			NetworkServer.Reset();
-
 			lobbyManager.DiscoverHostIP();		// listen as client to host broadcasts 
 			listeningforHost = true;
 			scanningText.gameObject.SetActive(true);
@@ -176,9 +173,7 @@ namespace Prototype.NetworkLobby
         {
             lobbyManager.ChangeTo(null);
             lobbyManager.StartServer();
-
 //            lobbyManager.backDelegate = lobbyManager.StopServerClbk;
-
             lobbyManager.SetServerInfo("Dedicated Server", lobbyManager.networkAddress);
         }
 
@@ -195,7 +190,6 @@ namespace Prototype.NetworkLobby
 //            lobbyManager.backDelegate = lobbyManager.StopHostClbk;
             lobbyManager._isMatchmaking = true;
             lobbyManager.DisplayIsConnecting();
-
             lobbyManager.SetServerInfo("Matchmaker Host", lobbyManager.matchHost);
         }
 

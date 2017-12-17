@@ -94,7 +94,7 @@ namespace FightingLegends
 		private int challengeResultRound = 0;				// challenge result currently being shown
 
 //		public GameObject InsertCoin;	
-		private const float continuePause = 1.0f;			// before countdown starts
+		private const float continuePause = 1.5f;			// before countdown starts
 
 		public GameObject InsertCoinTextPanel;	
 		public List<Text> InsertCoinText;					// animated text x3

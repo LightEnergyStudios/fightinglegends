@@ -3772,6 +3772,9 @@ namespace FightingLegends
 			if (DumbAI)
 				return false;
 
+			if (choosingStrategy)
+				return false;
+
 			return true;
 		}
 

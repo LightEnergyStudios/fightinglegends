@@ -24,7 +24,7 @@ namespace FightingLegends
 
 		private const float fadeInTime = 0.25f;				// continue message / button
 //		private const float countdownPause = 1.0f;			// before countdown starts
-		private const float exitPause = 2.0f;				// before countdown exits
+		private const float exitPause = 1.5f; // 2.0f;		// before countdown exits
 
 		private const float feedbackX = 0;
 		private const float feedbackY = -58.0f;
@@ -86,12 +86,12 @@ namespace FightingLegends
 			countdownCoroutine = CountdownFX();
 			yield return StartCoroutine(countdownCoroutine);
 
-			// didn't insert coin...
-			if (exitAction != null)
-				exitAction();
-
-			countdownPanel.gameObject.SetActive(false);
-			yield return null;
+//			// didn't insert coin...
+//			if (exitAction != null)
+//				exitAction();
+//
+//			countdownPanel.gameObject.SetActive(false);
+//			yield return null;
 		}
 
 
@@ -126,11 +126,19 @@ namespace FightingLegends
 
 				yield return new WaitForSeconds(1.0f);
 			}
+				
+			yield return new WaitForSeconds(exitPause);			// so music plays out
 
 			// timed out!
 			continueButton.interactable = false;
 
-			yield return new WaitForSeconds(exitPause);			// so music plays out
+			// didn't insert coin...
+			if (exitAction != null)
+				exitAction();
+
+			countdownPanel.gameObject.SetActive(false);
+//
+//			yield return new WaitForSeconds(exitPause);			// so music plays out
 		}
 
 

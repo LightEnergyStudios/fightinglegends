@@ -141,7 +141,7 @@ namespace FightingLegends
 		public Fighter Player2;
 
 		// multiplayer
-		public static bool IsNetworkFight = true;				// fighter animation and gesture input handled by NetworkFighter
+		public static bool IsNetworkFight = false; // true;				// fighter animation and gesture input handled by NetworkFighter
 		private const int networkArcadeFightCountdown = 3;		// before starting new network fight
 		private const float networkArcadeFightPause = 0.5f;		// before starting countdown
 		private const string countdownLayer = "Curtain";		// so curtain camera picks it up
@@ -503,14 +503,46 @@ namespace FightingLegends
 			}
 		}
 
-		public static void IncreaseKudos(float increase)
+		public static void IncreaseKudos(float increase, bool applyDifficulty)
 		{
 			if (CombatMode == FightMode.Dojo)
 				increase *= KudosDojoFactor;
 			else if (CombatMode == FightMode.Training)
 				increase *= KudosTrainingFactor;
 
+			if (applyDifficulty)
+				increase *= DifficultyKudosFactor;
+
 			Kudos += increase;
+		}
+
+		private static float DifficultyKudosFactor
+		{
+			get
+			{
+				if ((CombatMode == FightMode.Arcade && !IsNetworkFight && !SavedGameStatus.NinjaSchoolFight) || CombatMode == FightMode.Challenge)
+				{
+					switch (SavedGameStatus.Difficulty)
+					{
+						case AIDifficulty.Simple:
+							return SimpleKudosFactor;
+
+						case AIDifficulty.Easy:
+							return EasyKudosFactor;
+
+						case AIDifficulty.Medium:
+							return MediumKudosFactor;
+
+						case AIDifficulty.Hard:
+							return HardKudosFactor;
+
+						case AIDifficulty.Brutal:
+							return BrutalKudosFactor;
+					}
+				}
+
+				return 1.0f;
+			}
 		}
 
 		public static string SelectedFighterName
@@ -631,6 +663,12 @@ namespace FightingLegends
 
 		public const float KudosTrainingFactor = 0.5f;			// less kudos if training
 		public const float KudosDojoFactor = 0.25f;				// less kudos if practicing in dojo
+
+		private const float SimpleKudosFactor = 0.25f;			// AI difficulty
+		private const float EasyKudosFactor = 0.5f;	
+		private const float MediumKudosFactor = 1.0f;	
+		private const float HardKudosFactor = 2.0f;
+		private const float BrutalKudosFactor = 4.0f;
 
 		#endregion 	// kudos
 
@@ -871,7 +909,7 @@ namespace FightingLegends
 //			UpdateAnimationSpeed();		// in case it was adjusted
 			AnimationFrameCount++; 
 
-			if (! IsFighterAnimationFrame)
+			if (!IsNetworkFight && !IsFighterAnimationFrame)
 				return;
 			
 			if (FightFrozen)
@@ -1832,7 +1870,8 @@ namespace FightingLegends
 			if (! (CurrentMenuCanvas == MenuType.Combat || CurrentMenuCanvas == MenuType.WorldMap))
 				return;
 
-			if (! IsNetworkFight)
+			if (!IsNetworkFight)
+//				PauseFight(true);
 				FreezeFight();
 
 			if (CombatMode == FightMode.Dojo)
@@ -2897,15 +2936,15 @@ namespace FightingLegends
 				adjustedAnimationSpeed = maxSpeedFactor;
 		}
 
-//		private void UpdateAnimationSpeed()			// called on animation frames
-//		{
-//			if (AnimationSpeed == adjustedAnimationSpeed)
-//				return; 		// no change
-//			
-//			AnimationFPS *= (adjustedAnimationSpeed / AnimationSpeed);
-//			Time.fixedDeltaTime = AnimationFrameInterval;		// based on FPS
-//			AnimationSpeed = adjustedAnimationSpeed;
-//		}
+		private void UpdateAnimationSpeed()			// called on animation frames
+		{
+			if (AnimationSpeed == adjustedAnimationSpeed)
+				return; 		// no change
+			
+			AnimationFPS *= (adjustedAnimationSpeed / AnimationSpeed);
+			Time.fixedDeltaTime = AnimationFrameInterval;		// based on FPS
+			AnimationSpeed = adjustedAnimationSpeed;
+		}
 			
 //		private void OnAnimationSpeedChanged(float value)		// 0 - 1
 //		{
@@ -2930,44 +2969,44 @@ namespace FightingLegends
 			if (receivedHit)
 				kudosDamage *= KudosReceivedFactor;		// less kudos if receiving damage
 
-			FightManager.IncreaseKudos(kudosDamage); 
+			FightManager.IncreaseKudos(kudosDamage, true); 
 		}
 
 		// kudos for shoving and also (less) for receiving shove
 		public void ShoveKudos(bool receivedShove)
 		{
 			if (! receivedShove)
-				FightManager.IncreaseKudos(KudosShove);
+				FightManager.IncreaseKudos(KudosShove, true);
 			
 //			FightManager.IncreaseKudos(KudosShove * (receivedShove ? KudosReceivedFactor : 1));
 		}
 
 		public void StartGameKudos()
 		{
-			FightManager.IncreaseKudos(KudosStartGame);
+			FightManager.IncreaseKudos(KudosStartGame, false);
 		}
 
 		public void TrainingCompleteKudos()
 		{
-			FightManager.IncreaseKudos(KudosTrainingComplete);
+			FightManager.IncreaseKudos(KudosTrainingComplete, false);
 		}
 
 		// kudos for KO and also (less) for being knocked out
 		public void KnockOutKudos(bool knockedOut)
 		{
-			FightManager.IncreaseKudos(KudosKnockOut * (knockedOut ? KudosLoserFactor : 1));
+			FightManager.IncreaseKudos(KudosKnockOut * (knockedOut ? KudosLoserFactor : 1), true);
 		}
 
 		// kudos for winning and also (less) for losing
 		public void MatchWonKudos(bool loser)
 		{
-			FightManager.IncreaseKudos(KudosWinMatch * (loser ? KudosLoserFactor : 1));
+			FightManager.IncreaseKudos(KudosWinMatch * (loser ? KudosLoserFactor : 1), true);
 		}
 
 		// kudos for resetting level to 1
 		public void ResetLevelKudos(int level)
 		{
-			FightManager.IncreaseKudos(KudosResetLevel * level);
+			FightManager.IncreaseKudos(KudosResetLevel * level, false);
 		}
 
 		#endregion

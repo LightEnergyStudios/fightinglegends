@@ -143,7 +143,7 @@ namespace Prototype.NetworkLobby
 		{
 			StopDiscovery();		// stops listening and broadcasting
 //			StopAll();
-////			StopHostClbk();
+
 //			Network.Disconnect();		// ??
 //			NetworkServer.Reset();		// ??
 
@@ -166,15 +166,15 @@ namespace Prototype.NetworkLobby
 		private void QuitLobby()
 		{
 			Debug.Log("QuitLobby");
-			StartCoroutine(FadeQuitLobby(true));
+			StartCoroutine(FadeQuitLobby());
 
 			if (OnQuitLobby != null)
 				OnQuitLobby();
 		}
 
-		private IEnumerator FadeQuitLobby(bool stopAll = false)
+		private IEnumerator FadeQuitLobby() //bool stopAll)
 		{
-			if (stopAll)
+//			if (stopAll)
 				StopAll();		// SM ok ???
 			
 			yield return StartCoroutine(FadeLobbyUI(true));
@@ -312,14 +312,10 @@ namespace Prototype.NetworkLobby
         public void ChangeTo(RectTransform newPanel)
         {
             if (currentPanel != null)
-            {
                 currentPanel.gameObject.SetActive(false);
-            }
 
             if (newPanel != null)
-            {
                 newPanel.gameObject.SetActive(true);
-            }
 
             currentPanel = newPanel;
 
@@ -328,8 +324,11 @@ namespace Prototype.NetworkLobby
                 SetServerInfo("Offline", "None");
                 _isMatchmaking = false;
 
+//				backButton.gameObject.SetActive(true);
 				backDelegate = QuitLobby;
             }
+//			else
+//				backButton.gameObject.SetActive(false);
         }
 
 		public void DisplayIsConnecting()
@@ -401,8 +400,8 @@ namespace Prototype.NetworkLobby
 			StopHostClbk();
 			StopServerClbk();
 
-			Network.Disconnect();		// ??
-			NetworkServer.Reset();		// ??
+//			Network.Disconnect();		// ??
+//			NetworkServer.Reset();		// ??
 		}
 
 		public void StopHostClbk()

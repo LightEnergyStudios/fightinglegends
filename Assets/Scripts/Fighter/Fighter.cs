@@ -772,7 +772,7 @@ namespace FightingLegends
 
 				// more kudos for higher priority states
 				if (IsPlayer1 && increased)
-					FightManager.IncreaseKudos(CurrentPriority);
+					FightManager.IncreaseKudos(CurrentPriority, true);
 			}
 		}
 			
@@ -2007,7 +2007,7 @@ namespace FightingLegends
 			if (!InFight)
 				return;
 
-			if (!fightManager.IsFighterAnimationFrame) 		// just in case
+			if (!FightManager.IsNetworkFight && !fightManager.IsFighterAnimationFrame) 		// just in case
 				return;
 
 			FightFrameCount++;
@@ -2279,9 +2279,6 @@ namespace FightingLegends
 
 		private void IncreaseXP(float xp)
 		{
-//			if (PreviewMoves)
-//				return;
-			
 			if (UnderAI)
 				return;
 
@@ -2580,7 +2577,7 @@ namespace FightingLegends
 
 			// more kudos for more expensive power-ups
 			if (IsPlayer1)
-				FightManager.IncreaseKudos(ProfileData.SavedData.TriggerPowerUpCost); // * FightManager.KudosPowerUpFactor);
+				FightManager.IncreaseKudos(ProfileData.SavedData.TriggerPowerUpCost, true); // * FightManager.KudosPowerUpFactor);
 
 			if (OnPowerUpTriggered != null)
 				OnPowerUpTriggered(this, TriggerPowerUp, CurrentState == State.Idle);		// stars + cool-off countdown
@@ -5050,25 +5047,25 @@ namespace FightingLegends
 				{
 					IncreaseXP(FightManager.Combo20XP);
 					if (IsPlayer1)
-						FightManager.IncreaseKudos(FightManager.KudosCombo20);
+						FightManager.IncreaseKudos(FightManager.KudosCombo20, true);
 				}
 				else if (HitComboCount == 30)
 				{
 					IncreaseXP(FightManager.Combo30XP);
 					if (IsPlayer1)
-						FightManager.IncreaseKudos(FightManager.KudosCombo30);
+						FightManager.IncreaseKudos(FightManager.KudosCombo30, true);
 				}
 				else if (HitComboCount == 40)
 				{
 					IncreaseXP(FightManager.Combo40XP);
 					if (IsPlayer1)
-						FightManager.IncreaseKudos(FightManager.KudosCombo40);
+						FightManager.IncreaseKudos(FightManager.KudosCombo40, true);
 				}
 				else if (HitComboCount == 50)
 				{
 					IncreaseXP(FightManager.Combo50XP);
 					if (IsPlayer1)
-						FightManager.IncreaseKudos(FightManager.KudosCombo50);
+						FightManager.IncreaseKudos(FightManager.KudosCombo50, true);
 				}
 			}
 		}
