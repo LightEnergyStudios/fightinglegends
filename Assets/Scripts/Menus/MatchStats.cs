@@ -111,12 +111,12 @@ namespace FightingLegends
 		public ParticleSystem WorldTourFireworks;
 		public AudioClip WorldTourSound;
 
-		public Sprite leoniHoiLunWin;						// world tour only
-		public Sprite shiroDanjumaWin;						// world tour only
-		public Sprite shiyangAlazneWin;						// world tour only
-		public Sprite natalyaJacksonWin;					// world tour only
-		public Sprite skeletronNinjaWin;					// world tour only
-		public Image worldTourWinner;						// one of the above
+//		public Sprite leoniHoiLunWin;						// world tour only
+//		public Sprite shiroDanjumaWin;						// world tour only
+//		public Sprite shiyangAlazneWin;						// world tour only
+//		public Sprite natalyaJacksonWin;					// world tour only
+//		public Sprite skeletronNinjaWin;					// world tour only
+//		public Image worldTourWinner;						// one of the above
 
 		private const float worldTourCongratsTime = 0.25f;
 
@@ -154,6 +154,8 @@ namespace FightingLegends
 		private void OnEnable()
 		{
 //			feedbackUI.feedbackFX.OnEndState += FeedbackStateEnd;
+			WorldTourPanel.GetComponent<WorldTourPanel>().OnWorldTourCongratsEnd += WorldTourCongratsEnd;
+
 			SaveInsertCoinTextPositions();
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
@@ -168,6 +170,9 @@ namespace FightingLegends
 		private void OnDisable()
 		{
 //			feedbackUI.feedbackFX.OnEndState -= FeedbackStateEnd;
+
+			WorldTourPanel.GetComponent<WorldTourPanel>().OnWorldTourCongratsEnd -= WorldTourCongratsEnd;
+
 			RestoreInsertCoinTextPositions();
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
@@ -362,27 +367,6 @@ namespace FightingLegends
 
 			yield return StartCoroutine(IncreaseKudos(kudosGained));
 
-//			if (kudosGained > 0)
-//			{
-//				for (int kudos = (int)FightManager.SavedGameStatus.FightStartKudos+1; kudos <= (int)FightManager.Kudos; kudos++)
-//				{
-////					yield return new WaitForSeconds(kudosUpPause);
-//					KudosUp.text = string.Format("{0:N0}", kudos);
-//
-//					if (kudos % kudosBlingInterval == 0)
-//					{
-//						yield return new WaitForSeconds(kudosUpPause);
-//						fightManager.BlingAudio();
-//					}
-//				}
-//				KudosUpFireworks.Play();
-//			}
-//			else
-//			{
-//				KudosUp.text = string.Format("{0:N0}", FightManager.Kudos);
-//				fightManager.BlingAudio();
-//			}
-
 			if (FightManager.CombatMode == FightMode.Survival) // || FightManager.CombatMode == FightMode.Challenge)
 			{
 				yield return new WaitForSeconds(levelUpPause);
@@ -392,22 +376,6 @@ namespace FightingLegends
 
 				yield return StartCoroutine(IncreaseLevel(player, levelGained));
 
-//				if (levelGained > 0)
-//				{
-//					for (int level = player.ProfileData.SavedData.FightStartLevel + 1; level <= player.Level; level++)
-//					{
-//						yield return new WaitForSeconds(levelUpPause);
-//						LevelUp.text = level.ToString();
-//						fightManager.BlingAudio();
-//					}
-//					LevelUpFireworks.Play();
-//				}
-//				else
-//				{
-//					LevelUp.text = player.Level.ToString();
-//					fightManager.BlingAudio();
-//				}
-
 				if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
 				{
 					yield return new WaitForSeconds(coinsUpPause);
@@ -416,22 +384,6 @@ namespace FightingLegends
 					CoinsUp.text = string.Format("{0:N0}", FightManager.SavedGameStatus.FightStartCoins);
 
 					yield return StartCoroutine(IncreaseCoins(coinsGained));
-
-//					if (coinsGained > 0)
-//					{
-//						for (int coins = FightManager.SavedGameStatus.FightStartCoins + 1; coins <= FightManager.Coins; coins++)
-//						{
-//							yield return new WaitForSeconds(coinsUpPause);
-//							CoinsUp.text = string.Format("{0:N0}", coins);
-//							fightManager.CoinAudio();
-//						}
-//						CoinsUpFireworks.Play();
-//					}
-//					else
-//					{
-//						CoinsUp.text = string.Format("{0:N0}", FightManager.Coins);
-//						fightManager.CoinAudio();
-//					}
 				}
 			}
 			else if (FightManager.IsNetworkFight)
@@ -624,7 +576,7 @@ namespace FightingLegends
 			InsertCoinTextPanel.SetActive(false);
 			InsertCoinStrip.gameObject.SetActive(false);
 
-			WorldTourPanel.gameObject.SetActive(false);
+//			WorldTourPanel.gameObject.SetActive(false);		// TODO: reinstate?
 
 			Stars.Stop();
 		}
@@ -646,7 +598,8 @@ namespace FightingLegends
 		{
 			StartCoroutine(WinQuoteFadeIn());		// not challenge mode
 
-			if (winner != null && winner.UnderAI && Store.CanAfford(1) && FightManager.CombatMode == FightMode.Arcade && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
+			if (winner != null && winner.UnderAI && Store.CanAfford(1) &&
+						FightManager.CombatMode == FightMode.Arcade && !worldTourComplete && !FightManager.SavedGameStatus.NinjaSchoolFight)		// player lost to AI - countdown 'insert coin to continue'
 			{
 				InsertCoinCountdown(ArcadeContinue, ArcadeExit);
 				StartCoroutine(CycleInsertCoinText());
@@ -986,7 +939,7 @@ namespace FightingLegends
 
 		private void WorldTourCongrats(Fighter winner)
 		{
-			inputAllowed = true;		
+			inputAllowed = false;		
 			EnableWinnerStats(false);
 			worldTourCongratsShowing = true;
 			WorldTourPanel.SetActive(true);
@@ -994,37 +947,42 @@ namespace FightingLegends
 			WorldTourFireworks.Play();
 			WorldTourPanel.GetComponent<Animator>().SetTrigger("WorldTourComplete");
 
-			switch (winner.FighterName)
-			{
-				case "Shiro":
-				case "Danjuma":
-					worldTourWinner.sprite = shiroDanjumaWin;
-					break;
+//			switch (winner.FighterName)
+//			{
+//				case "Shiro":
+//				case "Danjuma":
+//					worldTourWinner.sprite = shiroDanjumaWin;
+//					break;
+//
+//				case "Natalya":
+//				case "Jackson":
+//					worldTourWinner.sprite = natalyaJacksonWin;
+//					break;
+//
+//				case "Leoni":
+//				case "Hoi Lun":
+//					worldTourWinner.sprite = leoniHoiLunWin;
+//					break;
+//
+//				case "Shiyang":
+//				case "Alazne":
+//					worldTourWinner.sprite = shiyangAlazneWin;
+//					break;
+//
+//				case "Skeletron":
+//				case "Ninja":
+//					worldTourWinner.sprite = skeletronNinjaWin;
+//					break;
+//
+//				default:
+//					worldTourWinner.sprite = null; 		// hopefully doesn't happen!
+//					break;
+//			}
+		}
 
-				case "Natalya":
-				case "Jackson":
-					worldTourWinner.sprite = natalyaJacksonWin;
-					break;
-
-				case "Leoni":
-				case "Hoi Lun":
-					worldTourWinner.sprite = leoniHoiLunWin;
-					break;
-
-				case "Shiyang":
-				case "Alazne":
-					worldTourWinner.sprite = shiyangAlazneWin;
-					break;
-
-				case "Skeletron":
-				case "Ninja":
-					worldTourWinner.sprite = skeletronNinjaWin;
-					break;
-
-				default:
-					worldTourWinner.sprite = null; 		// hopefully doesn't happen!
-					break;
-			}
+		private void WorldTourCongratsEnd()
+		{
+			RevealWinner(winner, false);
 		}
 
 
