@@ -9,18 +9,8 @@ using UnityEngine.Purchasing;
 
 namespace FightingLegends
 {
-	// implements IStoreListener interface to enable receiving messages from Unity IAP
-	public class Store : MenuCanvas, IStoreListener
+	public class Store : MenuCanvas
 	{
-		private static IStoreController storeController = null;          // the Unity IAP system
-		private static IExtensionProvider storeExtensionProvider = null; // the store-specific IAP subsystems
-
-		// general product identifiers for the consumable, non-consumable, and subscription products.
-		// used in code to reference which product to purchase and when defining the Product Identifiers in the store.
-		public const string Coins100ProductID = "com.burningheart.fightinglegends.100coins";   
-		public const string Coins1000ProductID = "com.burningheart.fightinglegends.1000coins";   
-		public const string Coins10000ProductID = "com.burningheart.fightinglegends.10000coins";   
-
 		private FightManager fightManager;
 		private SurvivalSelect fighterSelect;		// includes level, xp, power-ups etc
 
@@ -71,8 +61,6 @@ namespace FightingLegends
 		public Button Buy1000Button;
 		public Button Buy10000Button;
 		public Text BuyFeedback;
-
-		private static Product productToPurchase = null;
 
 		// coin spend overlay
 		public Text spendTitleText;
@@ -274,9 +262,6 @@ namespace FightingLegends
 
 		private void Start()
 		{
-			if (! IsInitialised)
-				InitialisePurchasing();
-			
 			AddListeners();
 		}
 
@@ -299,8 +284,10 @@ namespace FightingLegends
 				StartSwipeFeedback();
 
 //			ChallengesButton.gameObject.SetActive(internetReachable);
-			FriendsButton.gameObject.SetActive(internetReachable);
-			LeaderboardsButton.gameObject.SetActive(internetReachable);
+			FriendsButton.interactable = internetReachable;
+			LeaderboardsButton.interactable = internetReachable;
+
+			BuyCoinsButton.interactable = internetReachable;
 
 			// hide if already registered!
 			NewUserButton.gameObject.SetActive(false); // string.IsNullOrEmpty(FightManager.SavedGameStatus.UserId));
@@ -357,7 +344,7 @@ namespace FightingLegends
 			FightManager.OnFeedbackStateEnd += FeedbackEnd;
 
 			TrainingButton.onClick.AddListener(delegate { Train(); });
-			BuyCoinsButton.onClick.AddListener(delegate { PurchaseCoins(); });
+			BuyCoinsButton.onClick.AddListener(delegate { BuyCoins(); });
 			ResetLevelButton.onClick.AddListener(delegate { ConfirmResetLevel(); });
 			LevelUpButton.onClick.AddListener(delegate { ConfirmLevelUp(); });
 			FriendsButton.onClick.AddListener(delegate { Facebook(); });
@@ -378,10 +365,6 @@ namespace FightingLegends
 
 			EquippedStatic.onClick.AddListener(delegate { OnStaticPowerUpClicked(); });
 			EquippedTrigger.onClick.AddListener(delegate { OnTriggerPowerUpClicked(); });
-
-//			Buy100Button.onClick.AddListener(delegate { ConfirmBuyProductID(coins100Consumable); });
-//			Buy1000Button.onClick.AddListener(delegate { ConfirmBuyProductID(coins1000Consumable); });
-//			Buy10000Button.onClick.AddListener(delegate { ConfirmBuyProductID(coins10000Consumable); });
 
 			ArmourPiercing.GetComponent<Button>().onClick.AddListener(delegate { SelectPowerUp(ArmourPiercing); });
 			Avenger.GetComponent<Button>().onClick.AddListener(delegate { SelectPowerUp(Avenger); });
@@ -411,7 +394,7 @@ namespace FightingLegends
 			GestureListener.OnSwipeLeft -= PreviewPreviousFighter;	
 			GestureListener.OnSwipeRight -= PreviewNextFighter;	
 
-			BuyCoinsButton.onClick.RemoveListener(delegate { PurchaseCoins(); });
+			BuyCoinsButton.onClick.RemoveListener(delegate { BuyCoins(); });
 			ResetLevelButton.onClick.RemoveListener(delegate { ConfirmResetLevel(); });
 			LevelUpButton.onClick.RemoveListener(delegate { ConfirmLevelUp(); });
 			FriendsButton.onClick.RemoveListener(delegate { Facebook(); });
@@ -433,10 +416,6 @@ namespace FightingLegends
 
 			EquippedStatic.onClick.RemoveListener(delegate { OnStaticPowerUpClicked(); });
 			EquippedTrigger.onClick.RemoveListener(delegate { OnTriggerPowerUpClicked(); });
-
-//			Buy100Button.onClick.RemoveListener(delegate { ConfirmBuyProductID(coins100Consumable); });
-//			Buy1000Button.onClick.RemoveListener(delegate { ConfirmBuyProductID(coins1000Consumable); });
-//			Buy10000Button.onClick.RemoveListener(delegate { ConfirmBuyProductID(coins10000Consumable); });
 
 			ArmourPiercing.GetComponent<Button>().onClick.RemoveListener(delegate { SelectPowerUp(ArmourPiercing); });
 			Avenger.GetComponent<Button>().onClick.RemoveListener(delegate { SelectPowerUp(Avenger); });
@@ -482,9 +461,6 @@ namespace FightingLegends
 				else
 					selectedFighterIndex--;
 
-//				if (SelectedFighterName == "Skeletron")
-//					return PreviousFighterName;
-
 				return SelectedFighterName;
 			}
 		}
@@ -497,9 +473,6 @@ namespace FightingLegends
 					selectedFighterIndex = 0;
 				else
 					selectedFighterIndex++;
-
-//				if (SelectedFighterName == "Skeletron")
-//					return NextFighterName;
 
 				return SelectedFighterName;
 			}
@@ -676,7 +649,7 @@ namespace FightingLegends
 			if (CanAfford(LevelUpCoins))			// confirm spend of coins
 				FightManager.GetConfirmation(string.Format(FightManager.Translate("confirmLevelUp"), fighter.FighterName), LevelUpCoins, UseCoinsForLevelUp);
 			else  									// offer option to purchase more coins
-				FightManager.GetConfirmation(string.Format(FightManager.Translate("confirmBuyLevelUpCoins"), fighter.FighterName), LevelUpCoins, PurchaseCoins);
+				FightManager.GetConfirmation(string.Format(FightManager.Translate("confirmBuyLevelUpCoins"), fighter.FighterName), LevelUpCoins, BuyCoins);
 		}
 
 		private void UseCoinsForLevelUp()
@@ -783,7 +756,7 @@ namespace FightingLegends
 //			StartCoroutine(FadeOverlay(PowerUpOverlay))
 		}
 
-		public void PurchaseCoins()
+		private void BuyCoins()
 		{
 			// offer option to buy more coins (store)
 			FightManager.RequestPurchase();
@@ -823,17 +796,6 @@ namespace FightingLegends
 			fighterSelect.RevealFighter();
 			StartCoroutine(HideOverlay(SpendOverlay));
 		}
-
-//		private bool ConfirmSpend(int coinsToSpend)
-//		{
-//			CoinsWaitingSpendConfirm += coinsToSpend;
-//
-//			if (! CanAfford(coinsToSpend))
-//				return false;
-//
-//			ShowSpendOverlay();
-//			return false;
-//		}
 
 		public void ShowPowerUpOverlay(string fighterName, string fighterColour)
 		{
@@ -941,7 +903,7 @@ namespace FightingLegends
 				if (CanAffordSelectedPowerUp)		// confirm spend of coins
 					FightManager.GetPowerUpConfirmation(selectedPowerUp, UseCoinsForSelectedPowerUp);
 				else 								// offer option to purchase more coins
-					FightManager.GetPowerUpConfirmation(selectedPowerUp, PurchaseCoins);
+					FightManager.GetPowerUpConfirmation(selectedPowerUp, BuyCoins);
 			}
 		}
 
@@ -1610,215 +1572,5 @@ namespace FightingLegends
 		{
 			return (coins <= FightManager.Coins);
 		}
-			
-
-		#region purchasing internals
-
-		private void InitialisePurchasing() 
-		{
-			BuyFeedback.text = "InitialisePurchasing";
-
-//			if (IsInitialised)
-//				return;
-
-			// Create a builder, first passing in a suite of Unity provided stores.
-			var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
-
-			// Add a product to sell / restore by way of its identifier, associating the general identifier
-			// with its store-specific identifiers
-			builder.AddProduct(Coins100ProductID, ProductType.Consumable);
-			builder.AddProduct(Coins1000ProductID, ProductType.Consumable);
-			builder.AddProduct(Coins10000ProductID, ProductType.Consumable);
-
-			productToPurchase = null;
-
-			// Kick off the remainder of the set-up with an asynchronous call, passing the configuration 
-			// and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed
-			UnityPurchasing.Initialize(this, builder);
-		}
-
-
-		private static bool IsInitialised
-		{
-			get { return storeController != null && storeExtensionProvider != null; }
-		}
-
-
-		public static void PurchaseProductID(string productId)
-		{
-//			switch (productId)
-//			{
-//				case coins100Consumable:
-//					FightManager.Coins += 100;
-//					break;
-//				case coins1000Consumable:
-//					FightManager.Coins += 1000;
-//					break;
-//				case coins10000Consumable:
-//					FightManager.Coins += 10000;
-//					break;
-//				default:
-//					return;
-//			}
-
-//			HideBuyOverlay();
-
-			productToPurchase = null;
-
-			if (IsInitialised)
-			{
-				// ... look up the Product reference with the general product identifier and the Purchasing system's products collection
-				productToPurchase = storeController.products.WithID(productId);
-
-				// If the look up found a product for this device's store and that product is ready to be sold ... 
-				if (productToPurchase != null && productToPurchase.availableToPurchase)
-				{
-					var productDesc = productToPurchase.metadata.localizedDescription;
-					var productCurrency = productToPurchase.metadata.isoCurrencyCode;
-					var productPrice = productToPurchase.metadata.localizedPrice;
-
-					FightManager.GetConfirmation(string.Format(FightManager.Translate("confirmPurchase"), productDesc, productCurrency, productPrice), 0, InitiatePurchase);
-
-//					Debug.Log(string.Format("PurchasingManager: Purchasing product asychronously: '{0}'", productToPurchase.definition.id));
-//					BuyFeedback.text = string.Format("BuyProductID: '{0}'", productToPurchase.definition.id);
-
-//					// ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed asynchronously
-					storeController.InitiatePurchase(productToPurchase);
-				}
-				else
-				{
-					Debug.Log("BuyProductID FAILED: Product not found or is not available for purchase");
-//					BuyFeedback.text = string.Format("BuyProductID:'{0}' not available for purchase", productToPurchase.definition.id);
-				}
-			}
-			else
-			{
-				// ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or retrying initialization
-				Debug.Log("BuyProductID FAILED: Not initialized.");
-//				BuyFeedback.text = "BuyProductID: Not initialized";
-			}
-		}
-
-		private static void InitiatePurchase()
-		{
-			// buy the product - expect a response either through ProcessPurchase or OnPurchaseFailed asynchronously
-			if (productToPurchase != null)
-			{
-				Debug.Log(string.Format("Purchasing product asychronously: '{0}'", productToPurchase.definition.id));
-//				BuyFeedback.text = string.Format("InitiatePurchase: '{0}'", productToPurchase.definition.id);
-
-				storeController.InitiatePurchase(productToPurchase);
-			}
-		}
-
-
-		// Restore purchases previously made by this customer. Some platforms automatically restore purchases, like Google. 
-		// Apple currently requires explicit purchase restoration for IAP, conditionally displaying a password prompt
-		public void RestorePurchases()
-		{
-			if (! IsInitialised)
-			{
-				// ... report the situation and stop restoring. Consider either waiting longer, or retrying initialization
-				Debug.Log("RestorePurchases FAIL. Not initialized.");
-				return;
-			}
-				
-			if (Application.platform == RuntimePlatform.IPhonePlayer)
-			{
-				// ... begin restoring purchases
-				Debug.Log("RestorePurchases started ...");
-
-				// Fetch the Apple store-specific subsystem.
-				var apple = storeExtensionProvider.GetExtension<IAppleExtensions>();
-
-				// Begin the asynchronous process of restoring purchases. Expect a confirmation response in 
-				// the Action<bool> below, and ProcessPurchase if there are previously purchased products to restore
-				apple.RestoreTransactions((result) => {
-					// The first phase of restoration. If no more responses are received on ProcessPurchase then 
-					// no purchases are available to be restored
-					Debug.Log("RestorePurchases continuing: " + result + ". If no further messages, no purchases available to restore.");
-				});
-			}
-			else
-			{
-				// Not running on an Apple device. No work is necessary to restore purchases.
-				Debug.Log("RestorePurchases not supported on this platform " + Application.platform);
-			}
-		}
-
-		#endregion
-
-
-		//  
-		// --- IStoreListener callbacks
-		//
-
-		public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
-		{
-			// Purchasing has succeeded initializing. Collect our Purchasing references.
-			BuyFeedback.text = "PurchasingManager: OnInitialized: SUCCESS!";
-//			Debug.Log("PurchasingManager: OnInitialized: SUCCESS!");
-
-			// Overall Purchasing system, configured with products for this application.
-			storeController = controller;
-			// Store specific subsystem, for accessing device-specific store features.
-			storeExtensionProvider = extensions;
-		}
-
-
-		public void OnInitializeFailed(InitializationFailureReason error)
-		{
-			BuyFeedback.text = string.Format("PurchasingManager: OnInitializeFailed: reason: {0}", error);
-
-			// Purchasing set-up has not succeeded. Check error for reason. Consider sharing this reason with the user.
-			Debug.Log("PurchasingManager: OnInitializeFailed: reason: " + error);
-		}
-
-
-		public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args) 
-		{
-			BuyFeedback.text = string.Format("ProcessPurchase: '{0}' SUCCESS!", args.purchasedProduct.definition.id);
-
-			// The consumable item has been successfully purchased, add coins to the player's in-game coins.
-			if (String.Equals(args.purchasedProduct.definition.id, Coins100ProductID, StringComparison.Ordinal))
-			{
-				Debug.Log(string.Format("ProcessPurchase: SUCCESS - Product: '{0}'", args.purchasedProduct.definition.id));
-				FightManager.Coins += 100;
-			}
-			else if (String.Equals(args.purchasedProduct.definition.id, Coins1000ProductID, StringComparison.Ordinal))
-			{
-				Debug.Log(string.Format("ProcessPurchase: SUCCESS - Product: '{0}'", args.purchasedProduct.definition.id));
-				FightManager.Coins += 1000;
-			}
-			else if (String.Equals(args.purchasedProduct.definition.id, Coins10000ProductID, StringComparison.Ordinal))
-			{
-				Debug.Log(string.Format("ProcessPurchase: SUCCESS - Product: '{0}'", args.purchasedProduct.definition.id));
-				FightManager.Coins += 10000;
-			}
-
-			productToPurchase = null;
-
-//			HideBuyOverlay();
-
-//			FormatTitle();
-
-			// Return a flag indicating whether this product has completely been received, or if the application needs 
-			// to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still 
-			// saving purchased products to the cloud, and when that save is delayed. 
-			return PurchaseProcessingResult.Complete;
-		}
-
-
-		public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
-		{
-			productToPurchase = null;
-
-			BuyFeedback.text = string.Format("OnPurchaseFailed: '{0}' reason: {1}", product.definition.id, failureReason);
-
-			// A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
-			// this reason with the user to guide their troubleshooting actions.
-			Debug.Log(string.Format("OnPurchaseFailed: Product: '{0}', PurchaseFailureReason: {1}", product.definition.id, failureReason));
-		}
 	}
-
 }

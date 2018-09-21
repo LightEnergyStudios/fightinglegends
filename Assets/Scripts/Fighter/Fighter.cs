@@ -2358,9 +2358,6 @@ namespace FightingLegends
 			if (UnderAI)
 				return;
 
-//			if (PreviewMoves)
-//				return;
-
 			if (FightManager.CombatMode != FightMode.Survival)
 				return;
 
@@ -2374,17 +2371,20 @@ namespace FightingLegends
 				Level++;
 				XP = 0;		// reset till next level
 
-				// freeze both fighters for effect ... on next frame
-				SetFreezeFrames(levelUpFreezeFrames);	
-				fightManager.LevelUpFeedback(ProfileData.SavedData.Level, true, false);
-
-				if (hitFlash != null)
+				if (ProfileData.SavedData.Health > 0)		// no feedback if KO'd! 
 				{
-					if (colourFlashCoroutine != null)
-						StopCoroutine(colourFlashCoroutine);
+					// freeze both fighters for effect ... on next frame
+					SetFreezeFrames(levelUpFreezeFrames);	
+					fightManager.LevelUpFeedback(ProfileData.SavedData.Level, true, false);
 
-					colourFlashCoroutine = hitFlash.PlayColourFlash(colourFlashColour, levelUpFlashTime);
-					StartCoroutine(colourFlashCoroutine);
+					if (hitFlash != null)
+					{
+						if (colourFlashCoroutine != null)
+							StopCoroutine(colourFlashCoroutine);
+
+						colourFlashCoroutine = hitFlash.PlayColourFlash(colourFlashColour, levelUpFlashTime);
+						StartCoroutine(colourFlashCoroutine);
+					}
 				}
 			}
 		}
@@ -3872,7 +3872,8 @@ namespace FightingLegends
 
 			// global damage factor to change damage for all hits
 			damage *= Opponent.ProfileData.HitDamageFactor;
-			damage *= fightManager.HitDamageFactor;
+			if (UnderAI)
+				damage *= fightManager.HitDamageFactor;
 
 			if (Opponent != null && Opponent.CurrentMove == Move.Power_Attack)
 				damage *= ProfileData.PowerAttackDamageFactor;
@@ -5940,39 +5941,6 @@ namespace FightingLegends
 			}
 
 			yield return StartCoroutine(KnockOutCamera());		// camera tracks loser - virtual
-				
-//			var travelTime = ProfileData.ExpiryTime;
-//
-//			if (FightManager.CombatMode == FightMode.Survival || FightManager.CombatMode == FightMode.Challenge)
-//				travelTime *= fastExpiryFactor;	
-//
-//			travelTime /= fightManager.AnimationSpeed; 			// scale travelTime according to animation speed
-//
-//			if (TravelOnExpiry)
-//			{
-//				var	expiryDistance = IsPlayer1 ? -ProfileData.ExpiryDistance : ProfileData.ExpiryDistance;
-//				var startPosition = transform.position;
-//				var targetPosition = new Vector3(startPosition.x + expiryDistance, startPosition.y, startPosition.z);
-//				var winnerStartPosition = winner.transform.position;
-//				var winnerTargetPosition = new Vector3(winnerStartPosition.x - expiryDistance, winnerStartPosition.y, winnerStartPosition.z);
-//				float t = 0.0f;
-//
-//				while (t < 1.0f)
-//				{
-//					t += Time.deltaTime * (Time.timeScale / travelTime); 
-//					transform.position = Vector3.Lerp(startPosition, targetPosition, t);
-//
-//					// winner also moves back in arcade mode (camera tracks the loser)
-//					if (FightManager.CombatMode == FightMode.Arcade || FightManager.CombatMode == FightMode.Dojo)
-//						winner.transform.position = Vector3.Lerp(winnerStartPosition, winnerTargetPosition, t);
-//				
-//					yield return null;
-//				}
-//			}
-//			else
-//			{
-//				yield return new WaitForSeconds(travelTime);
-//			}
 				
 			if (UnderAI && winner.InTraining) 					// AI KO'd in training
 			{

@@ -274,7 +274,7 @@ namespace FightingLegends
 			UpdateTeamCost();
 			EnableActionButtons();
 
-//			AddListeners();
+			AddListeners();
 
 			StartCoroutine(AnimateCardEntry());
 		}
@@ -282,14 +282,12 @@ namespace FightingLegends
 		private void OnEnable()
 		{
 			//			Debug.Log("TeamSelect.OnEnable");
-			AddListeners();
-
 			CheckInternet();
-
 			LayerTeam();
 
 			uploadText.text = FightManager.Translate("upload");
 			resultText.text = FightManager.Translate("result");
+			statusText.text = "";
 
 			PopulateFighterCards();
 
@@ -300,11 +298,6 @@ namespace FightingLegends
 			}
 
 			EnableActionButtons();
-
-			//			if (FightManager.SavedGameStatus.UserId == "")		// button will register user if not already registered
-			//				uploadButton.interactable = true;
-			//			else
-			//				uploadButton.interactable = false;				// until user profile retrieved - checks for existing challenge
 		}
 
 		private void OnDisable()
@@ -319,14 +312,12 @@ namespace FightingLegends
 
 			ChallengeUploading = null;
 			challengeUploaded = false;
-
-			RemoveListeners();
 		}
 
-//		public void OnDestroy()
-//		{
-//			RemoveListeners();
-//		}
+		public void OnDestroy()
+		{
+			RemoveListeners();
+		}
 
 
 		private void PopulateFighterCards()
@@ -656,6 +647,9 @@ namespace FightingLegends
 
 				button.transform.SetSiblingIndex(firstCardIndex + index++);
 			}
+
+			// force challenges overlay on top!
+			ChallengesOverlay.transform.SetSiblingIndex(firstCardIndex + 100);
 		}
 
 		// cards not in team
@@ -673,6 +667,9 @@ namespace FightingLegends
 
 				button.transform.SetSiblingIndex(firstCardIndex + index++);
 			}
+
+			// force challenges overlay on top!
+			ChallengesOverlay.transform.SetSiblingIndex(firstCardIndex + 100);
 		}
 
 		private void UpdateTeamCost(bool silent = true)
@@ -809,7 +806,7 @@ namespace FightingLegends
 		{
 			bool fightersInTeam = selectedTeam.Count > 0;
 			fightHouseButton.interactable = fightersInTeam;
-			fightPlayerButton.interactable = CanUploadChallenge; // fightersInTeam;
+			fightPlayerButton.interactable = fightersInTeam; // CanUploadChallenge;
 			uploadButton.interactable = CanUploadChallenge;
 //			resultButton.interactable = fightersInTeam;
 		}
@@ -842,6 +839,8 @@ namespace FightingLegends
 		private void CategoryChosen(ChallengeCategory category)
 		{
 			selectedCategory = category;
+
+			Debug.Log("CategoryChosen: selectedCategory = " + selectedCategory.ToString());
 
 			switch (selectedCategory)
 			{
@@ -1007,6 +1006,10 @@ namespace FightingLegends
 			fightManager.PlayerCreatedChallenges = playerChallenges;
 
 			SetChallengesTitle();
+
+//			HideAllOverlays();
+			Debug.Log("ShowChallengesOverlay: playerChallenges = " + playerChallenges);
+
 			StartCoroutine(RevealOverlay(ChallengesOverlay));		// challenge categories
 		}
 
@@ -1602,6 +1605,7 @@ namespace FightingLegends
 				}
 
 //				Debug.Log("OnChallengeUploaded: " + challenge.TimeCreated);
+//				fightManager.TeamSelectChoice = MenuType.ModeSelect;
 			}
 		}
 

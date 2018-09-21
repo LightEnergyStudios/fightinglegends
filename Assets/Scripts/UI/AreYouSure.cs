@@ -126,7 +126,7 @@ namespace FightingLegends
 
 			PowerUpPanel.gameObject.SetActive(false);
 
-			coinsValue.text = string.Format("{0:N0}", coins);
+			coinsValue.text = (coins > 0) ? string.Format("{0:N0}", coins) : "";
 			coinsPanel.gameObject.SetActive(coins > 0);
 			coinsToConfirm = coins;
 			

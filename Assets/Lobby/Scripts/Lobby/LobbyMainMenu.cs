@@ -92,6 +92,7 @@ namespace Prototype.NetworkLobby
 				JoinText.text = string.IsNullOrEmpty(ipInput.text) ? FightManager.Translate("findAGame") : FightManager.Translate("joinGame");
 		}
 
+		// host wifi
         public void OnClickHost()
         {
 			fightCancelledText.gameObject.SetActive(false);

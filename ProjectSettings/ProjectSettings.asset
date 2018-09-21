@@ -10,7 +10,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Burning Heart Software
+  companyName: Light Energy Studios
   productName: Fighting Legends
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -120,7 +120,7 @@ PlayerSettings:
     16:9: 1
     Others: 1
   bundleIdentifier: com.BurningHeart.FightingLegends
-  bundleVersion: 1.35
+  bundleVersion: 2.5
   preloadedAssets: []
   metroInputSource: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -135,7 +135,7 @@ PlayerSettings:
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
-  iPhoneBuildNumber: 1
+  iPhoneBuildNumber: 2.5
   ForceInternetPermission: 0
   ForceSDCardPermission: 0
   CreateWallpaper: 0
@@ -217,68 +217,6 @@ PlayerSettings:
       m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
       m_Width: 128
       m_Height: 128
-  - m_BuildTarget: iPhone
-    m_Icons:
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 180
-      m_Height: 180
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 167
-      m_Height: 167
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 152
-      m_Height: 152
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 144
-      m_Height: 144
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 120
-      m_Height: 120
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 114
-      m_Height: 114
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 76
-      m_Height: 76
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 72
-      m_Height: 72
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 57
-      m_Height: 57
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 120
-      m_Height: 120
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 80
-      m_Height: 80
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 40
-      m_Height: 40
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 87
-      m_Height: 87
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 58
-      m_Height: 58
-    - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 54e4addf1ea934564963f6b8cc8cdf9f, type: 3}
-      m_Width: 29
-      m_Height: 29
   m_BuildTargetBatching:
   - m_BuildTarget: Android
     m_StaticBatching: 1

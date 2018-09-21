@@ -224,10 +224,12 @@
 		<string name="level">Level</string>
 		<string name="lv">Lv</string>
 		<string name="victories">Victories</string>
+		<string name="thanksForPlaying">THANKS FOR \n PLAYING!</string>
 
 		<string name="playerId">Player ID</string>
 
 		<string name="confirmPurchase">Purchase {0} \n for {1} {2}?</string> 
+		<string name="confirmPurchase2">Proceed with coin purchase?</string> 
 		<string name="confirmBuyCoins">Buy more coins?</string> 
 		<string name="confirmUsePowerUpCoins">Use coins to equip this power-up?</string> 
 		<string name="confirmBuyPowerUpCoins">Buy coins to equip this power-up?</string> 

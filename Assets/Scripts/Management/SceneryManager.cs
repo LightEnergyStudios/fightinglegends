@@ -115,6 +115,9 @@ namespace FightingLegends
 			if (track == null)
 				return;
 
+			if (audioSource == null)
+				return;
+
 			if (track == audioSource.clip)		// track already playing
 				return;
 
@@ -174,9 +177,10 @@ namespace FightingLegends
 			audioSource.volume = newVolume;
 		}
 
-		private void DestroyCurrentScenery()
+		public void DestroyCurrentScenery(bool stopMusic = true)
 		{
-			StopMusic();
+			if (stopMusic)
+				StopMusic();
 
 			foreach (var current in currentScenery)
 			{
@@ -184,6 +188,7 @@ namespace FightingLegends
 			}
 
 			currentScenery.Clear();
+			currentLocationName = "";
 		}
 	}
 }

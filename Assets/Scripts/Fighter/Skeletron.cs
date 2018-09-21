@@ -19,7 +19,6 @@ namespace FightingLegends
 		public float IdleDamagedHealth;		// idle / block idle damaged state when health falls below this value
 
 		private const float knockOutCameraTime = 2.0f;
-		private const float knockOutCameraDistance = 500.0f;
 
 		public override bool HasShove
 		{
@@ -100,43 +99,12 @@ namespace FightingLegends
 
 		protected override IEnumerator KnockOutCamera()
 		{
-			StartCoroutine(MoveFightersBack(IsPlayer1));
-
 			var cameraController = Camera.main.GetComponent<CameraController>();
-			var targetPosition = new Vector3(transform.localPosition.x + (IsPlayer1 ? -knockOutCameraDistance : knockOutCameraDistance),
-																					transform.localPosition.y, transform.localPosition.z);
-			yield return StartCoroutine(cameraController.TrackTo(targetPosition, knockOutCameraTime));	// track flying brain
+			StartCoroutine(cameraController.Shake(20, true));
+		
+			yield return new WaitForSeconds(knockOutCameraTime);
 		}
-
-		private IEnumerator MoveFightersBack(bool AIWinner)
-		{
-			var travelTime = ProfileData.ExpiryTime;
-
-			travelTime /= fightManager.AnimationSpeed; 			// scale travelTime according to animation speed
-
-			var player1 = fightManager.Player1;
-			var player2 = fightManager.Player2;
-			var	player1Distance = player1.ProfileData.ExpiryDistance;
-			var	player2Distance = player2.ProfileData.ExpiryDistance;
-
-			var player1Start = player1.transform.position;
-			var player2Start = player2.transform.position;
-			var player1Target = new Vector3(player1Start.x + (AIWinner ? -player1Distance : player1Distance), player1Start.y, player1Start.z);
-			var player2Target = new Vector3(player2Start.x + (AIWinner ? -player2Distance : player2Distance), player2Start.y, player2Start.z);
-
-			float t = 0.0f;
-
-			while (t < 1.0f)
-			{
-				t += Time.deltaTime * (Time.timeScale / travelTime); 
-
-				player1.transform.position = Vector3.Lerp(player1Start, player1Target, t);
-				player2.transform.position = Vector3.Lerp(player2Start, player2Target, t);
-
-				yield return null;
-			}
-		}
-
+			
 
 		public override bool TravelOnExpiry { get { return false; } }
 

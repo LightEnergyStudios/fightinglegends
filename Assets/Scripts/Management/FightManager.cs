@@ -224,6 +224,7 @@ namespace FightingLegends
 		public static Sprite ThemeFooter;
 
 		private static int SurvivalPowerUpRound = 5;			// AI powerups not used until this many rounds won
+		private static int SurvivalDifficultyRound = 5;			// AI difficulty increases each increment of rounds won
 
 		#region menu canvases
 
@@ -2088,7 +2089,10 @@ namespace FightingLegends
 
 				// survival AI opponent starts fight at same level as Player1
 				if (CombatMode == FightMode.Survival)
+				{
 					SetSurvivalAILevel(false);				// AI same as fighter
+					SetSurvivalAIDifficulty();				// according to match rounds won
+				}
 
 				// save current arcade mode difficulty, to restore at end of challenge match
 				if (CombatMode == FightMode.Challenge)
@@ -2150,6 +2154,7 @@ namespace FightingLegends
 			
 		public void ResetWorldTour()
 		{
+			Debug.Log("ResetWorldTour");
 			ResetCompletedLocations();
 			worldTourCompleted = false;				// reset for next arcade world tour
 		}
@@ -2314,12 +2319,12 @@ namespace FightingLegends
 		{
 			if (CombatMode != FightMode.Arcade)
 				return;
-			
+
 			if (Player1.ProfileData.SavedData.CompletedLocations.Contains(SelectedLocation))		// already completed this location
 				return;
 
-			Debug.Log("CompleteCurrentLocation: " + SelectedLocation);
 			Player1.ProfileData.SavedData.CompletedLocations.Add(SelectedLocation);
+//			Debug.Log("CompleteCurrentLocation: SelectedLocation = " + SelectedLocation + ", CompletedEarthLocations = " + CompletedEarthLocations);
 
 			if (CompletedEarthLocations)
 			{
@@ -2332,12 +2337,8 @@ namespace FightingLegends
 					ResetCompletedLocations();
 					worldTourCompleted = true;					// to prevent returning to world map
 
-					Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
+//					Debug.Log("CompleteCurrentLocation: WorldTourCompletions = " + Player1.ProfileData.SavedData.WorldTourCompletions);
 				}
-//				else
-//				{
-//					worldMap.EnableSpaceStation();
-//				}
 			}
 
 			Player1.SaveProfile();
@@ -2668,7 +2669,7 @@ namespace FightingLegends
 					var loser = challengeTeam.Dequeue();		// remove from head of queue
 					var winner = challengeAITeam.Peek();
 
-					Debug.Log("NextFighterInTeam: P1 lost: winner = " + winner.FighterName + " loser = " + loser.FighterName );
+//					Debug.Log("NextFighterInTeam: P1 lost: winner = " + winner.FighterName + " loser = " + loser.FighterName );
 					ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, true));			// player1 lost
 				}
 
@@ -2684,7 +2685,7 @@ namespace FightingLegends
 					var loser = challengeAITeam.Dequeue();					// remove from head of queue
 					var winner = challengeTeam.Peek();
 
-					Debug.Log("NextFighterInTeam: P1 won: winner = " + winner.FighterName + " loser = " + loser.FighterName );
+//					Debug.Log("NextFighterInTeam: P1 won: winner = " + winner.FighterName + " loser = " + loser.FighterName );
 					ChallengeRoundResults.Add(new ChallengeRoundResult(winner, loser, false));			// player1 won
 				}
 
@@ -2693,7 +2694,7 @@ namespace FightingLegends
 
 			if (nextFighterCard == null)		// shouldn't happen!
 			{
-				Debug.Log("NextFighterInTeam: null nextFighterCard!!!");
+//				Debug.Log("NextFighterInTeam: null nextFighterCard!!!");
 				return null;
 			}
 
@@ -2818,6 +2819,8 @@ namespace FightingLegends
 
 			// each new AI fighter increases in level (based on Player1 level)
 			SetSurvivalAILevel(true);
+			// AI difficulty increases in bands of rounds won
+			SetSurvivalAIDifficulty();
 
 			if (RoundNumber == survivalPowerUpRound)
 				SetAIRandomPowerUps();
@@ -2842,6 +2845,23 @@ namespace FightingLegends
 			
 			Player2.Level = Player1.Level + (addRoundsWon ? Player1.ProfileData.SavedData.MatchRoundsWon : 0);		// not saved
 			Player2.ResetHealth();					// according to level
+		}
+
+		// survival difficulty increases with match rounds won
+		private void SetSurvivalAIDifficulty()
+		{
+			int difficultyBand = Player1.ProfileData.SavedData.MatchRoundsWon / SurvivalDifficultyRound;
+
+			if (difficultyBand < 0)
+				FightManager.SavedGameStatus.Difficulty = AIDifficulty.Simple;
+			else if (difficultyBand < 1)
+				FightManager.SavedGameStatus.Difficulty = AIDifficulty.Easy;
+			else if (difficultyBand < 2)
+				FightManager.SavedGameStatus.Difficulty = AIDifficulty.Medium;
+			else if (difficultyBand < 3)
+				FightManager.SavedGameStatus.Difficulty = AIDifficulty.Hard;
+			else
+				FightManager.SavedGameStatus.Difficulty = AIDifficulty.Brutal;
 		}
 
 		private void SetAIRandomPowerUps()
@@ -3697,6 +3717,11 @@ namespace FightingLegends
 			return locationFound;
 		}
 
+		public void DestroyCurrentScenery()
+		{
+			sceneryManager.DestroyCurrentScenery(false);
+		}
+
 
 		#region UI 
 
@@ -3801,19 +3826,22 @@ namespace FightingLegends
 		private void LoadSavedData()
 		{
 			// restore coins, kudos, settings, inventory, fight status, etc
-			if (RestoreStatus())
-			{
-				Coins = 99000;		// TODO: remove this!!
-				
-				// TODO: restore fight status (2 fighters)
-			}
-			else
+//			if (RestoreStatus())
+//			{
+////				Coins = 99000;		// TODO: remove this!!
+//				
+//				// TODO: restore fight status (2 fighters)
+//			}
+//			else
+
+			if (!RestoreStatus())
 			{
 				// no saved status to restore - init default values
-				Coins = InitialCoins;
-				Kudos = 0;
-				SFXVolume = DefaultSFXVolume;
-				MusicVolume = DefaultMusicVolume;
+				ResetSettings();
+//				Coins = InitialCoins;
+//				Kudos = 0;
+//				SFXVolume = DefaultSFXVolume;
+//				MusicVolume = DefaultMusicVolume;
 			}
 				
 			SetTheme(SavedGameStatus.Theme);
@@ -3822,10 +3850,18 @@ namespace FightingLegends
 				OnLoadSavedStatus(SavedGameStatus);
 		}
 
+		private void ResetSettings()
+		{
+			Coins = InitialCoins;
+			Kudos = 0;
+			SFXVolume = DefaultSFXVolume;
+			MusicVolume = DefaultMusicVolume;
+		}
+
 
 		public static void ResetInfoBubbleMessages()
 		{
-			Debug.Log("ResetInfoBubbleMessages");
+//			Debug.Log("ResetInfoBubbleMessages");
 			SavedGameStatus.InfoMessagesRead = InfoBubbleMessage.None;
 		}
 
@@ -4026,6 +4062,7 @@ namespace FightingLegends
 						break;
 
 					case MenuType.TeamSelect:
+//						teamSelect.HideAllOverlays();
 						if (! teamSelect.HideActiveOverlay())
 							return;
 						break;
@@ -5068,7 +5105,7 @@ namespace FightingLegends
 				fileStream.Close();
 			}
 
-//			Debug.Log("Saved status: " + SavedStatus.CombatMode + " FightInProgress = " + SavedStatus.FightInProgress + " Coins = " + Coins);
+			Debug.Log("Saved status: Coins = " + Coins);
 		}
 			
 
@@ -5160,7 +5197,7 @@ namespace FightingLegends
 						SelectedFighterColour = "P1";
 					}
 
-//					Debug.Log("RestoreStatus ok: Coins = " + Coins + ", Kudos = " + Kudos);
+					Debug.Log("RestoreStatus ok: Coins = " + Coins + ", Kudos = " + Kudos);
 					OnSavedStatusChanged();
 					return true;
 				}
@@ -5220,6 +5257,8 @@ namespace FightingLegends
 			SavedGameStatus = new SavedStatus();
 			SavedGameStatus.VersionNumber = Application.version;
 
+			ResetSettings();
+
 			SaveGameStatus();
 
 			PlayerPrefs.SetString("FL_UserId", "");
@@ -5246,19 +5285,24 @@ namespace FightingLegends
 			Profile.DeleteFighterProfile("Ninja");	
 			Profile.DeleteFighterProfile("Skeletron");	
 
-			// all but Leoni and Shiro locked
+
 			Profile.InitFighterLockStatus("Leoni", false, 0, 0, 0, AIDifficulty.Easy);	
 			Profile.InitFighterLockStatus("Shiro", false, 0, 0, 0, AIDifficulty.Easy);	
 			Profile.InitFighterLockStatus("Danjuma", false, 0, 0, 0, AIDifficulty.Easy);	
 			Profile.InitFighterLockStatus("Natalya", false, 0, 0, 0, AIDifficulty.Easy);	
 
-			Profile.InitFighterLockStatus("Hoi Lun", true, 1, 900, 5, AIDifficulty.Medium);	
-			Profile.InitFighterLockStatus("Jackson", true, 1, 900, 5, AIDifficulty.Medium);
-			Profile.InitFighterLockStatus("Alazne", true, 1, 900, 5, AIDifficulty.Medium);	
-			Profile.InitFighterLockStatus("Shiyang", true, 1, 900, 5, AIDifficulty.Medium);	
+			Profile.InitFighterLockStatus("Hoi Lun", false, 0, 0, 0, AIDifficulty.Easy);		
+			Profile.InitFighterLockStatus("Jackson", false, 0, 0, 0, AIDifficulty.Easy);	
+			Profile.InitFighterLockStatus("Alazne", false, 0, 0, 0, AIDifficulty.Easy);		
+			Profile.InitFighterLockStatus("Shiyang", false, 0, 0, 0, AIDifficulty.Easy);		
 
-			Profile.InitFighterLockStatus("Ninja", true, 2, 5000, 100, AIDifficulty.Medium); 	// beat any opponent in arcade mode (never face AI Ninja)
-			Profile.InitFighterLockStatus("Skeletron", true, 3, 90000, 3, AIDifficulty.Hard); 	
+//			Profile.InitFighterLockStatus("Hoi Lun", true, 1, 900, 5, AIDifficulty.Medium);	
+//			Profile.InitFighterLockStatus("Jackson", true, 1, 900, 5, AIDifficulty.Medium);
+//			Profile.InitFighterLockStatus("Alazne", true, 1, 900, 5, AIDifficulty.Medium);	
+//			Profile.InitFighterLockStatus("Shiyang", true, 1, 900, 5, AIDifficulty.Medium);	
+
+			Profile.InitFighterLockStatus("Ninja", true, 1, 5000, 100, AIDifficulty.Medium); 	// beat any opponent in arcade mode (never face AI Ninja)
+			Profile.InitFighterLockStatus("Skeletron", true, 1, 90000, 3, AIDifficulty.Hard); 	
 
 			CleanupFighters();
 			StartGame();

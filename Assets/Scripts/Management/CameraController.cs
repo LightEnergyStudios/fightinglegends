@@ -185,7 +185,6 @@ namespace FightingLegends
 				while (t < 1.0f)
 				{
 					t += Time.deltaTime * (Time.timeScale / HomeTime);
-
 					transform.position = Vector3.Lerp(startPosition, originalPosition, t);
 					yield return null;
 				}
@@ -224,29 +223,34 @@ namespace FightingLegends
 
 
 		// a single 'camera shake' is a complete movement inwards, back to centre, out then inwards back to centre
-		public IEnumerator Shake(int numberOfShakes)
+		public IEnumerator Shake(int numberOfShakes, bool increasing = false)
 		{
 			if (numberOfShakes <= 0 || Shaking)			// camera shakes become too exaggerated when compounded
 				yield break;
 			
 			Shaking = true;
-			float shakeDistance = ShakeDistance; 		// ever decreasing
+			float increasingFactor = 0.1f;		
+			float shakeDistance = increasing ? ShakeDistance * increasingFactor : ShakeDistance; 		// ever decreasing
+//			float shakeTime = ShakeTime * (increasing ? 2.0f : 1.0f); 
 
 			// shorten the distance for each complete shake to simulate an 'exponential' spring effect
 			for (int i = 0; i < numberOfShakes; i++)
 			{
-				shakeDistance /= (i + 1);
+				if (increasing)
+					shakeDistance += (i * increasingFactor);
+				else
+					shakeDistance /= (i + 1);
 
-				StartCoroutine(ShakeMove(true, shakeDistance));		// in from centre
+				StartCoroutine(ShakeMove(true, shakeDistance, ShakeTime));		// in from centre
 				yield return new WaitForSeconds(ShakeTime);
 
-				StartCoroutine(ShakeMove(false, shakeDistance));	// out back to centre
+				StartCoroutine(ShakeMove(false, shakeDistance, ShakeTime));		// out back to centre
 				yield return new WaitForSeconds(ShakeTime);
 
-				StartCoroutine(ShakeMove(false, shakeDistance));	// out from centre
+				StartCoroutine(ShakeMove(false, shakeDistance, ShakeTime));		// out from centre
 				yield return new WaitForSeconds(ShakeTime);
 
-				StartCoroutine(ShakeMove(true, shakeDistance));		// in back to centre
+				StartCoroutine(ShakeMove(true, shakeDistance, ShakeTime));		// in back to centre
 				yield return new WaitForSeconds(ShakeTime);
 			}
 
@@ -254,7 +258,7 @@ namespace FightingLegends
 		}
 
 
-		private IEnumerator ShakeMove(bool inWards, float distance)
+		private IEnumerator ShakeMove(bool inWards, float distance, float shakeTime)
 		{
 			if (! inWards)
 				distance = -distance;
@@ -266,11 +270,63 @@ namespace FightingLegends
 
 			while (t < 1.0f)
 			{
-				t += Time.deltaTime * (Time.timeScale / ShakeTime); 	// timeScale of 1.0 == real time
+				t += Time.deltaTime * (Time.timeScale / shakeTime); 	// timeScale of 1.0 == real time
 
 				transform.position = Vector3.Lerp(startPosition, targetPosition, t);
 				yield return null;
 			}
 		}
+
+//
+//		// a single 'camera shake' is a complete movement left, back to centre, right then left back to centre
+//		public IEnumerator ShakeLeftRight(int numberOfShakes, float shakeDistanceFactor, float shakeTimeFactor)
+//		{
+//			if (numberOfShakes <= 0 || Shaking)			// camera shakes become too exaggerated when compounded
+//				yield break;
+//
+//			Shaking = true;
+//			float shakeDistance = ShakeDistance * shakeDistanceFactor; 		// ever decreasing
+//			float shakeTime = ShakeTime * shakeTimeFactor; 
+//
+//			// shorten the distance for each complete shake to simulate an 'exponential' spring effect
+//			for (int i = 0; i < numberOfShakes; i++)
+//			{
+//				shakeDistance /= (i + 1);
+//
+//				StartCoroutine(ShakeLeftRightMove(true, shakeDistance));		// left from centre
+//				yield return new WaitForSeconds(shakeTime);
+//
+//				StartCoroutine(ShakeLeftRightMove(false, shakeDistance));	// right back to centre
+//				yield return new WaitForSeconds(shakeTime);
+//
+//				StartCoroutine(ShakeLeftRightMove(false, shakeDistance));	// right from centre
+//				yield return new WaitForSeconds(shakeTime);
+//
+//				StartCoroutine(ShakeLeftRightMove(true, shakeDistance));		// left back to centre
+//				yield return new WaitForSeconds(shakeTime);
+//			}
+//
+//			Shaking = false;
+//		}
+//
+//
+//		private IEnumerator ShakeLeftRightMove(bool left, float distance)
+//		{
+//			if (! left)
+//				distance = -distance;
+//
+//			var startPosition = transform.position;
+//			var targetPosition = new Vector3(transform.position.x + distance, transform.position.y, transform.position.z);
+//
+//			float t = 0.0f;
+//
+//			while (t < 1.0f)
+//			{
+//				t += Time.deltaTime * (Time.timeScale / ShakeTime); 	// timeScale of 1.0 == real time
+//
+//				transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+//				yield return null;
+//			}
+//		}
 	}
 }

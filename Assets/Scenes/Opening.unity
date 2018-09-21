@@ -1531,8 +1531,6 @@ MonoBehaviour:
   fightingLegends: {fileID: 280}
   loadingText: {fileID: 289}
   whiteFlash: {fileID: 281}
-  LobbyPrefab: {fileID: 1194966549216926, guid: 5163035e57b1f45a3979807416bcada3,
-    type: 2}
 --- !u!114 &287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1769,12 +1767,11 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 223127181137633548, guid: 5163035e57b1f45a3979807416bcada3,
-        type: 2}
-      propertyPath: m_Camera
-      value: 
-      objectReference: {fileID: 93}
-    - target: {fileID: 1194966549216926, guid: 5163035e57b1f45a3979807416bcada3, type: 2}
+    - target: {fileID: 1487487700498826, guid: 5163035e57b1f45a3979807416bcada3, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1563080288870544, guid: 5163035e57b1f45a3979807416bcada3, type: 2}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}

@@ -44,7 +44,7 @@ namespace FightingLegends
 
 		private const float previewX = 1000;   		// offset to current camera position (fighter camera/layer)
 		private const float previewY = 550;
-		private const float previewZ = 20; //50;
+		private const float previewZ = 20; // -200;
 
 		protected FightManager fightManager;
 		public Fighter previewFighter { get; private set; }		// preview
@@ -228,10 +228,10 @@ namespace FightingLegends
 			alazneButton.onClick.AddListener(delegate { CreatePreview("Alazne", "P1", true, true); });
 			shiyangButton.onClick.AddListener(delegate { CreatePreview("Shiyang", "P1", true, true); });
 
-			if (skeletronButton != null)
-				skeletronButton.onClick.AddListener(delegate { CreatePreview("Skeletron", "P1", true, true); });
 			if (ninjaButton != null)
 				ninjaButton.onClick.AddListener(delegate { CreatePreview("Ninja", "P1", true, true); });
+			if (skeletronButton != null)
+				skeletronButton.onClick.AddListener(delegate { CreatePreview("Skeletron", "P1", true, true); });
 
 			Profile.OnProfileSaved += OnFighterProfileSaved;
 			FighterUnlock.OnFighterUnlocked += OnFighterUnlocked;
@@ -272,10 +272,10 @@ namespace FightingLegends
 			alazneButton.onClick.RemoveListener(delegate { CreatePreview("Alazne", "P1", true, true); });
 			shiyangButton.onClick.RemoveListener(delegate { CreatePreview("Shiyang", "P1", true, true); });
 
-			if (skeletronButton != null)
-				skeletronButton.onClick.RemoveListener(delegate { CreatePreview("Skeletron", "P1", true, true); });
 			if (ninjaButton != null)
 				ninjaButton.onClick.RemoveListener(delegate { CreatePreview("Ninja", "P1", true, true); });
+			if (skeletronButton != null)
+				skeletronButton.onClick.RemoveListener(delegate { CreatePreview("Skeletron", "P1", true, true); });
 
 			Profile.OnProfileSaved -= OnFighterProfileSaved;
 			FighterUnlock.OnFighterUnlocked -= OnFighterUnlocked;

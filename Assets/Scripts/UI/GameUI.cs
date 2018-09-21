@@ -165,8 +165,8 @@ namespace FightingLegends
 			else if (FightManager.CombatMode == FightMode.Survival) 	// not relevant for AI (match end as soon as AI wins)
 			{
 				Player1Health.ShowScore(true);
-				Player2Health.ShowScore(true);					// not relevant - end of match when AI wins!
-				ScoreDash.gameObject.SetActive(true);			// not relevant - end of match when AI wins!
+				Player2Health.ShowScore(true);					// not really relevant - end of match as soon as AI wins!
+				ScoreDash.gameObject.SetActive(true);			// not really relevant - end of match as soon as AI wins!
 
 				var mode = FightManager.CombatMode.ToString().ToLower();
 				CombatMode.text = FightManager.Translate(mode);

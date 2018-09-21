@@ -189,7 +189,6 @@ namespace FightingLegends
 			SetHintsOnOff(hintsToggle.isOn);
 			SetTrainingNarrativeLabel(trainingNarrativeToggle.isOn);
 
-//			version.text = "v " + FightManager.SavedGameStatus.VersionNumber;
 			version.text = "v " + Application.version;
 
 			bool fromFight = NavigatedFrom == MenuType.Combat || NavigatedFrom == MenuType.WorldMap || NavigatedFrom == MenuType.MatchStats;
@@ -198,6 +197,9 @@ namespace FightingLegends
 
 			resetGameButton.interactable = !fromFight;
 			trainingButton.interactable = !fromFight;
+
+			var internetReachable = (Application.internetReachability != NetworkReachability.NotReachable);
+			buyCoinsButton.interactable = internetReachable;
 
 			waterButton.onClick.AddListener(delegate { SetTheme(UITheme.Water); });
 			fireButton.onClick.AddListener(delegate { SetTheme(UITheme.Fire); });
@@ -354,7 +356,8 @@ namespace FightingLegends
 
 		private void BuyCoins()
 		{
-
+			// offer option to buy more coins (store)
+			FightManager.RequestPurchase();
 		}
 
 		private void Training()

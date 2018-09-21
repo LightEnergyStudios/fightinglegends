@@ -28,6 +28,8 @@ namespace FightingLegends
 
 		public float fadeTime;
 
+		public PurchaseController purchaseController;
+
 		void Awake()
 		{
 			background = GetComponent<Image>();
@@ -41,18 +43,18 @@ namespace FightingLegends
 
 		private void OnEnable()
 		{
-			Coins100Button.onClick.AddListener(delegate { PurchaseProduct(Store.Coins100ProductID); });
-			Coins1000Button.onClick.AddListener(delegate { PurchaseProduct(Store.Coins1000ProductID); });
-			Coins10000Button.onClick.AddListener(delegate { PurchaseProduct(Store.Coins10000ProductID); });
+			Coins100Button.onClick.AddListener(delegate { PurchaseProduct(PurchaseController.Coins100ProductID); });
+			Coins1000Button.onClick.AddListener(delegate { PurchaseProduct(PurchaseController.Coins1000ProductID); });
+			Coins10000Button.onClick.AddListener(delegate { PurchaseProduct(PurchaseController.Coins10000ProductID); });
 
 			CancelButton.onClick.AddListener(CancelClicked);
 		}
 
 		private void OnDestroy()
 		{
-			Coins100Button.onClick.RemoveListener(delegate { PurchaseProduct(Store.Coins100ProductID); });
-			Coins1000Button.onClick.RemoveListener(delegate { PurchaseProduct(Store.Coins1000ProductID); });
-			Coins10000Button.onClick.RemoveListener(delegate { PurchaseProduct(Store.Coins10000ProductID); });
+			Coins100Button.onClick.RemoveListener(delegate { PurchaseProduct(PurchaseController.Coins100ProductID); });
+			Coins1000Button.onClick.RemoveListener(delegate { PurchaseProduct(PurchaseController.Coins1000ProductID); });
+			Coins10000Button.onClick.RemoveListener(delegate { PurchaseProduct(PurchaseController.Coins10000ProductID); });
 
 			CancelButton.onClick.RemoveListener(CancelClicked);
 		}
@@ -60,6 +62,9 @@ namespace FightingLegends
 
 		public void RequestPurchase()
 		{
+			if (! purchaseController.IsInitialised)
+				purchaseController.InitialisePurchasing();
+			
 			StartCoroutine(Show());
 		}
 			
@@ -114,7 +119,8 @@ namespace FightingLegends
 			if (BuySound != null)
 				AudioSource.PlayClipAtPoint(BuySound, Vector3.zero, FightManager.SFXVolume);
 
-			Store.PurchaseProductID(productID);
+//			Store.PurchaseProductID(productID);
+			purchaseController.PurchaseProductID(productID);
 			StartCoroutine(Hide());
 		}
 	
